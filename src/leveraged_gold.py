@@ -1,8 +1,8 @@
 """Five leveraged-research H4 gold paper books.
 
 NO broker access or real positions. Two times the standard stop-risk budget
-(1.5% vs 0.75%), with a strict 3x notional cap. *Actual* notional leverage
-may be below 1x if volatility limits sizing. Never advertise a guaranteed 3x.
+(1.5% vs 0.75%) with actual 2x notional exposure, capped at 3x. Stops tighten
+to meet the budget before slippage, financing or gaps.
 """
 from __future__ import annotations
 import json
@@ -23,9 +23,12 @@ CONFIG={
  "lev_trend_long":("trend_long_only","Trend Long L"),
 }
 RISK_FRACTION=0.015
+# Actual starting exposure for each leveraged paper entry: 2x equity.
+# Protective stops shrink when required, so sizing targets 1.5% planned risk.
+TARGET_NOTIONAL_LEVERAGE=2.0
 MAX_NOTIONAL_LEVERAGE=3.0
 STOP_ATR=2.0
-TARGET_ATR=3.5
+TARGET_R_MULTIPLE=1.75
 MAX_HOLD_BARS=90
 DAILY_ENTRY_LOSS_LIMIT=0.03
 ACCOUNT_ENTRY_DRAWDOWN_LIMIT=0.15
@@ -106,15 +109,20 @@ def one_bar(book,name,h4,ind,i):
     if not atr or atr<=0 or opening<=0:
         return
     equity=book["equity"]
-    qty=min(equity*RISK_FRACTION/(STOP_ATR*atr),
-            MAX_NOTIONAL_LEVERAGE*equity/opening)
+    # Real experimental paper leverage: open a 2x equity notional position.
+    # Smaller stop distance controls *planned* loss to 1.5% of account.
+    # Gaps, funding, slippage and fees can exceed the stop-risk budget.
+    qty=min(TARGET_NOTIONAL_LEVERAGE,MAX_NOTIONAL_LEVERAGE)*equity/opening
     if qty<=0:
+        return
+    stop_distance=min(STOP_ATR*atr, RISK_FRACTION*equity/qty)
+    if stop_distance<=0:
         return
     notional=qty*opening
     book["position"]={
        "side":current,"entry":opening,"start":ts,"qty":qty,
-       "stop":opening-current*STOP_ATR*atr,
-       "target":opening+current*TARGET_ATR*atr,
+       "stop":opening-current*stop_distance,
+       "target":opening+current*TARGET_R_MULTIPLE*stop_distance,
        "held_bars":0,"borrowed":max(0.0,notional-equity),
        "notional_leverage":notional/equity
     }
