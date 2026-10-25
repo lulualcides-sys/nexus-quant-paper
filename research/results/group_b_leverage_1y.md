@@ -6,13 +6,13 @@ Período: 24/10/2025 a 24/10/2026, histórico de futuros GC=F. O grupo B tem 5 b
 
 | Robô | Operações | Win rate | Lucro/prejuízo líquido | Saldo final | Retorno 12m | DD fechado | Transação | Financiamento |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Channel 55 L | 30 | 53.3% | US$ +601.73 | US$ 5,601.73 | +12.03% | 5.31% | US$ 429.60 | US$ 20.22 |
-| Channel 20 L | 37 | 48.6% | US$ +354.05 | US$ 5,354.05 | +7.08% | 8.66% | US$ 527.97 | US$ 25.46 |
-| Momentum 40 L | 28 | 50.0% | US$ +349.46 | US$ 5,349.46 | +6.99% | 8.67% | US$ 417.20 | US$ 27.48 |
-| Trend Long L | 19 | 52.6% | US$ +346.39 | US$ 5,346.39 | +6.93% | 5.31% | US$ 270.46 | US$ 15.85 |
-| Momentum 100 L | 28 | 53.6% | US$ +313.50 | US$ 5,313.50 | +6.27% | 6.02% | US$ 407.87 | US$ 29.27 |
+| Momentum 100 L | 29 | 58.6% | US$ +714.79 | US$ 5,714.79 | +14.30% | 5.64% | US$ 427.79 | US$ 25.94 |
+| Channel 55 L | 30 | 50.0% | US$ +381.55 | US$ 5,381.55 | +7.63% | 5.31% | US$ 427.13 | US$ 16.52 |
+| Momentum 40 L | 32 | 46.9% | US$ +181.44 | US$ 5,181.44 | +3.63% | 11.47% | US$ 475.05 | US$ 29.49 |
+| Channel 20 L | 37 | 46.0% | US$ +136.26 | US$ 5,136.26 | +2.73% | 8.66% | US$ 523.69 | US$ 24.95 |
+| Trend Long L | 19 | 47.4% | US$ +134.53 | US$ 5,134.53 | +2.69% | 5.31% | US$ 269.14 | US$ 12.19 |
 
-**Soma hipotética das 5 contas:** US$ +1,965.13 de resultado; US$ 26,965.13 de saldo final sobre US$ 25.000 iniciais. Não é uma carteira real nem prova de diversificação; as 5 estratégias usam o mesmo ouro.
+**Soma hipotética das 5 contas:** US$ +1,548.57 de resultado; US$ 26,548.57 de saldo final sobre US$ 25.000 iniciais. Não é uma carteira real nem prova de diversificação; as 5 estratégias usam o mesmo ouro.
 
 ## Limitações importantes
 
