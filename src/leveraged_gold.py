@@ -36,8 +36,8 @@ ACCOUNT_ENTRY_DRAWDOWN_LIMIT=0.15
 # Research assumptions, NOT advertised FBS borrowing or spread costs.
 COST_BPS_ROUNDTRIP=2*COST_BPS["XAUUSD"]  # conservative transaction costs
 ANNUAL_BORROW_APR=0.08
-# Live paper mode may change only AFTER A/B comparison. Existing positions keep their entry mode.
-LIVE_POLICY="fixed"
+# Enabled for FUTURE VIRTUAL entries after A/B research; previous positions keep their recorded entry mode.
+LIVE_POLICY="green_runner"
 
 def fresh(h4):
     if len(h4)<245:
