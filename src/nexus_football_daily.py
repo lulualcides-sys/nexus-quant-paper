@@ -88,6 +88,23 @@ def format_football(data, coverage=None):
                 f"🏦 Pinnacle pública: {p['offers']} odds observadas em {p['matched']} jogos\n"
                 f"Linhas: {detail}\n"
             )
+        quality = coverage.get("book_quality") or {}
+        book_quality = ""
+        if isinstance(quality, dict) and quality.get("status") == "fresh":
+            lines = quality.get("complete_market_lines", 0)
+            ft = (quality.get("families") or {}).get("match_odds") or {}
+            margin = ft.get("median_overround_pct")
+            book_quality = f"📐 Linhas completas: {lines}"
+            if isinstance(margin, (int, float)):
+                book_quality += f" | Margem 1X2 mediana: {margin:.2f}%"
+            book_quality += " (não é ROI)\n"
+        missing_items = coverage.get("top_missing") or []
+        missing_names = []
+        if isinstance(missing_items, list):
+            for item in missing_items[:3]:
+                if isinstance(item, dict) and item.get("home") and item.get("away"):
+                    missing_names.append(str(item["home"])[:30] + " x " + str(item["away"])[:30])
+        watchlist = ("👀 Ainda sem odds: " + "; ".join(missing_names) + "\n") if missing_names else ""
         upcoming = (
             "🏆 JOGOS IMPORTANTES (próximas 48h)\n"
             f"Monitorados: {coverage['important_games']} | "
@@ -95,6 +112,8 @@ def format_football(data, coverage=None):
             f"Somente indicativas: {coverage['indicative_only_games']} | "
             f"Sem cotação: {coverage['missing_bookmaker_price_games']}\n"
             f"{pinnacle}"
+            f"{book_quality}"
+            f"{watchlist}"
             "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
         )
     return (
