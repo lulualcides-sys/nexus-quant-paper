@@ -1,5 +1,27 @@
 # Nexus Quant Paper — monitor gratuito
 
+## Pesquisa v2 — seleção por robustez (25/10/2026)
+
+A primeira seleção de cinco estratégias H1 foi reprovada em backtest. Elas continuam identificadas como **LEGADOS NÃO APROVADOS** no diagnóstico.
+
+A nova pesquisa testou **11 estratégias x cinco mercados = 55 combinações** em candles completos de 4h, com custos estimados, risco de 0,5% do saldo por sinal e limite nocional de 2x. Critério de seleção: apenas dados de 24/10/2024 a 23/10/2025; checagem em 24/10/2025 a 24/10/2026. A checagem posterior não é um holdout totalmente desconhecido, pois o período já havia sido examinado antes.
+
+Os cinco escolhidos por desempenho no treino foram `rsi_trend`, `channel20`, `pullback20`, `momentum100` e `channel55`, todos para **ouro**, pois os quatro demais mercados não demonstraram robustez suficiente no conjunto selecionado. **Não implica que ouro nunca dará prejuízo: os cinco modelos são correlacionados e podem perder ao mesmo tempo.**
+
+Resultados posteriores, cada um com US$ 5.000 independentes (backtest e não operações executadas na FBS):
+- RSI Trend: +1,44%.
+- Channel 20: +7,80%.
+- Pullback 20: +1,31%.
+- Momentum 100: +5,59%.
+- Channel 55: +4,67%.
+
+O sistema prospectivo `src/gold_forward.py` iniciou seus livros virtuais independentes do zero, **sem registrar operações históricas como se tivessem acontecido em produção**. Os demais quatro mercados permanecem em observação. Só sinais futuros e valores virtuais após custos aproximados aparecerão no relatório diário; nenhuma ordem real é enviada à FBS.
+
+[Relatório integral das 55 combinações](research/results/strategy_screen_v2.md) · [Dados e operações de todos os candidatos](research/results/strategy_screen_v2.json) · [Política de seleção](research/config/paper_cohort.json)
+
+---
+
+
 Cinco robôs de sinais em cinco mercados, **sem conexão com FBS, sem operações executadas e sem resultados de lucro inventados**.
 
 **Mercados:** EUR/USD e USD/JPY (câmbio indicativo), ouro GC=F, S&P 500 ES=F e petróleo WTI CL=F (três contratos futuros usados como proxies, não CFDs FBS).
