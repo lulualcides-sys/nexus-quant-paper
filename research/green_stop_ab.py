@@ -5,6 +5,8 @@ period, margin size, simulated transactions and funding. Four modes pre-register
 take effect ONLY on a later 4h bar. No silent profit guarantees.
 """
 import json
+import hashlib
+from datetime import datetime, timezone
 from pathlib import Path
 from research.backtest_group_b import liquidate_at_end
 from research.backtest_year import get_history, START, END
@@ -57,6 +59,8 @@ def main():
     bars=get_history(MARKETS["XAUUSD"])
     h4=aggregate_hourly_to_h4(bars)
     ind=make_indicators(h4)
+    # Historical futures charts may revise/roll between downloads.
+    history_hash=hashlib.sha256(json.dumps(h4,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
     output={}
     for mode in MODES:
         d=simulate(h4,ind,mode)
@@ -74,6 +78,10 @@ def main():
       "capital_usd_each":bot.CAPITAL,"notional_leverage_each_entry":2,
       "estimated_roundtrip_bps":bot.COST_BPS_ROUNDTRIP,
       "estimated_borrow_apr":bot.ANNUAL_BORROW_APR,
+      "history_sha256":history_hash,
+      "history_total_h4":len(h4),
+      "history_first_utc":datetime.fromtimestamp(h4[0]["time"],timezone.utc).isoformat(),
+      "history_last_utc":datetime.fromtimestamp(h4[-1]["time"],timezone.utc).isoformat(),
       "modes":output,
       "reference_fixed_total_usd":base["total_pnl_usd"]
     }
@@ -84,6 +92,7 @@ def main():
       "",
       "**SOMENTE SIMULAÇÃO RETROSPECTIVA. Sem operações reais, sem FBS.**",
       "Cinco robôs, cinco bancas de US$ 5.000, ouro GC=F, H4, exposição virtual 2× por entrada.",
+      f"Identificação da série de preços usada neste teste (SHA-256): \\`{history_hash}\\`.".replace("\\\\`","`"),
       "Período 24/10/2025–24/10/2026, 14 bps por operação ida e volta e 8% a.a. de financiamento virtual sobre excedente do saldo.",
       "",
       "### Como funcionam os quatro modos",
