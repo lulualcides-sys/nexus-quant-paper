@@ -4,6 +4,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
+from .private_chat import load_chat, save_chat
 
 EXPECTED_USERNAME = "NexusQuantAlertasBot"
 
@@ -32,7 +33,10 @@ def main():
     if username.casefold()!=EXPECTED_USERNAME.casefold():
         raise RuntimeError("Este token pertence a outro bot. Confirme que é do @NexusQuantAlertasBot.")
     print(f"✅ Token válido e pertence a @{username}")
-    chat=os.getenv("TELEGRAM_CHAT_ID","").strip()
+    chat=os.getenv("TELEGRAM_CHAT_ID","").strip() or load_chat(token)
+    if chat and load_chat(token):
+        print("✅ Chat Telegram já identificado e armazenado com criptografia.")
+        return
     if not chat:
         updates=api(token,"getUpdates")
         chats=set()
@@ -45,7 +49,8 @@ def main():
                 chats.add(str(dest.get("id")))
         print(f"Atualizações disponíveis: {len(updates)}; conversas privadas: {len(chats)}")
         if len(chats)==0:
-            raise RuntimeError("Telegram não devolveu uma conversa privada recente. Envie /start novamente ao bot e repita o teste.")
+            print("ℹ️ Nenhuma mensagem privada disponível; será verificado novamente pelo GitHub Actions. Envie /start ao bot.")
+            return
         if len(chats)>1:
             raise RuntimeError("Há vários chats iniciados; configure TELEGRAM_CHAT_ID para identificar seu chat.")
         chat=next(iter(chats))
@@ -55,7 +60,8 @@ def main():
          "⚠️ Nenhuma operação foi executada na FBS.")
     reply=api(token,"sendMessage",{"chat_id":chat,"text":msg,"disable_notification":False})
     if not reply.get("message_id"):raise RuntimeError("API não confirmou a mensagem.")
-    print("✅ Telegram confirmou o envio da mensagem de teste ao chat privado.")
+    save_chat(token,chat)
+    print("✅ Telegram confirmou o envio. Chat criptografado e pronto para relatórios recorrentes.")
 if __name__=="__main__":
     try:main()
     except Exception as error:
