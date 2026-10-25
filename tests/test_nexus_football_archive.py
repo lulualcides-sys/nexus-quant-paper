@@ -10,7 +10,7 @@ class ArchiveQualityTests(unittest.TestCase):
                  "source": "OddsPapi", "bookmaker": "Pinnacle",
                  "captured_at": "2026-10-25T10:00:00+00:00", "scope": "pregame"}
         archive = {"day": "2026-10-25", "games": {
-            "g": {"kickoff_unix": 1792900800,
+            "g": {"kickoff_unix": 1793000000,
                   "observations": [
                     {"phase": "scheduled", "odds": [price], "liquidity": good},
                     {"phase": "finished", "odds": [price],
@@ -18,7 +18,7 @@ class ArchiveQualityTests(unittest.TestCase):
                          "match_odds": "home", "total_goals": 3,
                          "both_teams_to_score": True, "total_corners": 10}}
                   ]},
-            "n": {"kickoff_unix": 1792900800,
+            "n": {"kickoff_unix": 1793000000,
                   "observations": [
                     {"phase": "finished", "odds": [], "settlement": {
                         "match_odds": "draw", "total_goals": 0,
