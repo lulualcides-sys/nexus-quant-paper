@@ -1,8 +1,8 @@
 """One-year A/B trial of fixed TP/SL against cost-aware GREEN trailing variants.
 
 All alternatives use identical five Group B entry strategies, historical
-period, margin size, simulated transactions and funding. Mode chosen in advance
-of running this test. Trailing updates take effect ONLY on a later 4h bar.
+period, margin size, simulated transactions and funding. Four modes pre-registered ahead of this historical comparison. Trailing updates
+take effect ONLY on a later 4h bar. No silent profit guarantees.
 """
 import json
 from pathlib import Path
