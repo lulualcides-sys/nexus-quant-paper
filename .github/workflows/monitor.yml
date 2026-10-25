@@ -32,6 +32,12 @@ jobs:
           python-version: '3.11'
       - name: Tests
         run: python -m unittest discover -s tests -v
+      - name: Verify Telegram bot
+        if: github.event_name == 'push' && github.event.head_commit.message == 'test: verify Nexus Quant Telegram connection'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m src.telegram_check
       - name: Observe public market prices
         if: github.event_name != 'push'
         env:
