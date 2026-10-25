@@ -1,0 +1,17 @@
+{
+  "status": "forward-paper-only",
+  "reason": "Selection exclusively ranked with 2024-10-24..2025-10-23 training; historical later data inspected previously, not independent verification.",
+  "risk_fraction_per_trade": 0.005,
+  "virtual_usd_per_robot": 5000,
+  "notional_leverage_cap": 2,
+  "market_observation_only": ["EURUSD", "USDJPY", "US500", "XTIUSD"],
+  "selected_for_forward_gold_watch": [
+    {"bot": "RSI Trend H4", "strategy": "rsi_trend", "market": "XAUUSD"},
+    {"bot": "Channel 20 H4", "strategy": "channel20", "market": "XAUUSD"},
+    {"bot": "Pullback 20 H4", "strategy": "pullback20", "market": "XAUUSD"},
+    {"bot": "Momentum 100 H4", "strategy": "momentum100", "market": "XAUUSD"},
+    {"bot": "Channel 55 H4", "strategy": "channel55", "market": "XAUUSD"}
+  ],
+  "long_term_research_rule": "Paper-only until independently verified prospective evidence; no real-money trading approved.",
+  "notes": "Never claim live FBS fills or guaranteed nonnegative results. All gold strategies share correlated risk and can lose simultaneously."
+}
