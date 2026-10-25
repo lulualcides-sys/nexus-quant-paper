@@ -31,6 +31,8 @@ class PriorityDigestTests(unittest.TestCase):
                     "missing_bookmaker_price_games":33}
         message = format_football(BASE, priority)
         self.assertIn("JOGOS IMPORTANTES (próximas 48h)\nMonitorados: 50", message)
+        self.assertIn("Resultados gerais (liquidez não comprovada)", message)
+        self.assertIn("1X2: Casa 5 | Empate 3 | Fora 7", message)
         self.assertIn("Com odds verificadas: 7", message)
         self.assertIn("Somente indicativas: 10", message)
         self.assertIn("Sem cotação: 33", message)
