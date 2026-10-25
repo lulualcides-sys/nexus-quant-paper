@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "market": "XAUUSD",
+  "h4_watermark": 1792771200,
+  "paper_only": true,
+  "books": {
+    "rsi_trend": {
+      "equity": 5000.0,
+      "position": null,
+      "closed": []
+    },
+    "channel20": {
+      "equity": 5000.0,
+      "position": null,
+      "closed": []
+    },
+    "pullback20": {
+      "equity": 5000.0,
+      "position": null,
+      "closed": []
+    },
+    "momentum100": {
+      "equity": 5000.0,
+      "position": null,
+      "closed": []
+    },
+    "channel55": {
+      "equity": 5000.0,
+      "position": null,
+      "closed": []
+    }
+  }
+}

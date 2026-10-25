@@ -1,0 +1,31 @@
+{
+  "last_report_day": null,
+  "markets": {
+    "EURUSD": {
+      "signals": [],
+      "source": "EURUSD=X",
+      "watermark": 1792789200
+    },
+    "US500": {
+      "signals": [],
+      "source": "ES=F",
+      "watermark": 1792789200
+    },
+    "USDJPY": {
+      "signals": [],
+      "source": "JPY=X",
+      "watermark": 1792785600
+    },
+    "XAUUSD": {
+      "signals": [],
+      "source": "GC=F",
+      "watermark": 1792785600
+    },
+    "XTIUSD": {
+      "signals": [],
+      "source": "CL=F",
+      "watermark": 1792785600
+    }
+  },
+  "schema": 4
+}
