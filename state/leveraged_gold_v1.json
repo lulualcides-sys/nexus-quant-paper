@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "paper_only": true,
+  "type": "leveraged-research",
+  "h4_watermark": 1792771200,
+  "books": {
+    "lev_channel20": {
+      "equity": 5000.0,
+      "peak_equity": 5000.0,
+      "today": null,
+      "day_start_equity": 5000.0,
+      "frozen": false,
+      "position": null,
+      "closed": []
+    },
+    "lev_momentum100": {
+      "equity": 5000.0,
+      "peak_equity": 5000.0,
+      "today": null,
+      "day_start_equity": 5000.0,
+      "frozen": false,
+      "position": null,
+      "closed": []
+    },
+    "lev_channel55": {
+      "equity": 5000.0,
+      "peak_equity": 5000.0,
+      "today": null,
+      "day_start_equity": 5000.0,
+      "frozen": false,
+      "position": null,
+      "closed": []
+    },
+    "lev_momentum40": {
+      "equity": 5000.0,
+      "peak_equity": 5000.0,
+      "today": null,
+      "day_start_equity": 5000.0,
+      "frozen": false,
+      "position": null,
+      "closed": []
+    },
+    "lev_trend_long": {
+      "equity": 5000.0,
+      "peak_equity": 5000.0,
+      "today": null,
+      "day_start_equity": 5000.0,
+      "frozen": false,
+      "position": null,
+      "closed": []
+    }
+  }
+}
