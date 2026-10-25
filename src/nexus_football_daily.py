@@ -39,7 +39,32 @@ def load_summary(day, opener=request.urlopen):
     return data
 
 
-def format_football(data):
+
+def load_priority_coverage(opener=request.urlopen):
+    url = SCORE_REPO + "/market-telegram-data/market-history/priority-coverage.json"
+    req = request.Request(url, headers={"User-Agent": "NexusQuantDailyFootball/1.2"})
+    with opener(req, timeout=12) as response:
+        raw = response.read(600_001)
+    if len(raw) > 600_000:
+        raise ValueError("Coverage report exceeds safe size")
+    doc = json.loads(raw)
+    if not isinstance(doc, dict) or doc.get("schema") != 1:
+        raise ValueError("Invalid priority-coverage report")
+    updated = datetime.fromisoformat(str(doc.get("checked_at", "")).replace("Z","+00:00"))
+    if updated.tzinfo is None:
+        raise ValueError("Coverage timestamp unverified")
+    # Do not present a stale report as recent data in the next midnight message.
+    age = (datetime.now(timezone.utc) - updated).total_seconds()
+    if not -120 <= age <= 6*3600:
+        raise ValueError("Coverage report is stale")
+    for key in ("important_games","verified_bookmaker_games",
+                "indicative_only_games","missing_bookmaker_price_games"):
+        if not isinstance(doc.get(key),int) or doc[key] < 0:
+            raise ValueError("Coverage counters invalid")
+    return doc
+
+
+def format_football(data, coverage=None):
     # Com arquivo bruto, o painel principal mostra SÓ jogos com volume comprovado.
     # Resumos legados sem separação explícita mantêm o rótulo geral.
     qualified = data.get("qualified_results")
@@ -48,6 +73,16 @@ def format_football(data):
         return f"{r.get(key + '_yes', 0)} sim / {r.get(key + '_no', 0)} não"
     houses = ", ".join(k for k in list(data["bookmakers"])[:4]) or "sem cotações confirmadas"
     markets = ", ".join(k for k in list(data.get("market_families_quoted") or {})[:6]) or "nenhum com preço verificado"
+    upcoming = ""
+    if isinstance(coverage,dict):
+        upcoming = (
+            "🏆 JOGOS IMPORTANTES (próximas 48h)\\n"
+            f"Monitorados: {coverage['important_games']} | "
+            f"Com odds verificadas: {coverage['verified_bookmaker_games']}\\n"
+            f"Somente indicativas: {coverage['indicative_only_games']} | "
+            f"Sem cotação: {coverage['missing_bookmaker_price_games']}\\n"
+            "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\\n"
+        )
     return (
         f"⚽ NEXUS FUTEBOL — FECHAMENTO {data['day']}\n"
         f"Jogos {data['games']} | Encerrados {data['finished']}\n"
@@ -69,13 +104,14 @@ def format_football(data):
         f"📋 Amostra geral: {data['finished']} partidas encerradas | "
         f"1X2 casa {data['results'].get('1x2_home',0)}, empate {data['results'].get('1x2_draw',0)}, "
         f"fora {data['results'].get('1x2_away',0)}\n"
+        f"{upcoming}"
         f"⛔ Dados esportivos; sem lucros ou entradas comprovados.\n"
         f"https://nexus-score-gratis.pages.dev/"
     )
 
 
 def deliver(day, marker_folder=Path("state/nexus_football_reports"), fetch=load_summary,
-            messenger=api):
+            messenger=api, priority_fetch=None):
     marker_folder.mkdir(parents=True, exist_ok=True)
     marker = marker_folder / (day + ".json")
     if marker.exists():
@@ -92,7 +128,13 @@ def deliver(day, marker_folder=Path("state/nexus_football_reports"), fetch=load_
         raise RuntimeError("Token não pertence ao bot NexusQuantAlertasBot")
     try:
         data = fetch(day)
-        message = format_football(data)
+        coverage = None
+        if priority_fetch is not None:
+            try:
+                coverage = priority_fetch()
+            except (OSError, ValueError, KeyError, TypeError, TimeoutError):
+                print("Radar de jogos importantes indisponível; relatório normal preservado.")
+        message = format_football(data, coverage)
     except (OSError, ValueError, KeyError, TimeoutError) as exc:
         # Falta de arquivo ou falha de rede NÃO vira dados zero inventados.
         print("Relatório esportivo não disponível: " + type(exc).__name__)
@@ -116,7 +158,7 @@ def main():
     args = parser.parse_args()
     day = args.day or (datetime.now(TZ).date() - timedelta(days=1)).isoformat()
     datetime.strptime(day, "%Y-%m-%d")
-    deliver(day)
+    deliver(day, priority_fetch=load_priority_coverage)
 
 
 if __name__ == "__main__":
