@@ -1,5 +1,24 @@
 # Nexus Quant Paper — monitor gratuito
 
+## Pesquisa V3 — seleção tipo tipster esportivo (25/10/2026)
+
+**Foco: lucro líquido verificado pelo preço observado, não só taxa de acerto.**
+
+- Auditoria de **50 combinações**: 10 estratégias x cinco mercados, candles diários (D1), cerca de cinco anos de dados.
+- Desenvolvimento (2022-07 a 2023-12), validação (2024), revisão retrospectiva (2025 a 2026-10-24).
+- Custos incluídos, teste com taxas dobradas, drawdown, lucro por período, número de operações e perdas também publicados.
+- A revisão mais recente **não é um holdout intocado**, pois esses anos já foram consultados anteriormente. Sem garantia futura.
+- Ouro RSI Trend D1: desenvolvimento +1,26%, validação +4,32%, revisão 2025–26 +2,13%. US500 Momentum 120 D1 passou nos critérios iniciais, mas ficou -1,59% na revisão.
+- Importante: **as simulações antigas de USD/JPY tinham P&L em JPY rotulado como USD**. A pesquisa V3 corrige a conversão. Resultados antigos de USD/JPY não devem orientar decisões.
+
+Separadamente, um teste de sensibilidade **sem trocar as estratégias** avaliou o ouro H4 com risco de 0,5%, 0,75% e 1,0% por entrada. A modalidade prospectiva virtual opera agora com risco de **0,75%**, sem dinheiro real. Aumentar risco pode ampliar tanto ganhos quanto prejuízos e não corrige um modelo ruim.
+
+Relatórios: [V3 50 combinações](research/results/regime_research_v3.md) · [Todos os dados V3](research/results/regime_research_v3.json) · [Sensibilidade de risco H4](research/results/gold_risk_sensitivity.md).
+
+**Critério de investigação futura:** comparar resultados líquidos e custos, amplitude da perda, taxa de acerto, volume de sinais, tolerância ao dobro do custo e meses favoráveis/contrários. É permitida perda mensal. Nenhuma estratégia recebe aprovação para dinheiro real sem histórico prospectivo suficiente e exame da regulação aplicável. Os cinco mercados continuam sob observação; só os cinco modelos de ouro H4 têm livros virtuais de pesquisa separados.
+
+---
+
 ## Pesquisa v2 — seleção por robustez (25/10/2026)
 
 A primeira seleção de cinco estratégias H1 foi reprovada em backtest. Elas continuam identificadas como **LEGADOS NÃO APROVADOS** no diagnóstico.
