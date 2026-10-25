@@ -2,6 +2,7 @@
 
 **SOMENTE SIMULAÇÃO RETROSPECTIVA. Sem operações reais, sem FBS.**
 Cinco robôs, cinco bancas de US$ 5.000, ouro GC=F, H4, exposição virtual 2× por entrada.
+Identificação da série de preços usada neste teste (SHA-256): \`905ffc0508884ea1d6f05b0eff00acc053a4f81eeb3b91bb63c41113a37ae70d\`.
 Período 24/10/2025–24/10/2026, 14 bps por operação ida e volta e 8% a.a. de financiamento virtual sobre excedente do saldo.
 
 ### Como funcionam os quatro modos

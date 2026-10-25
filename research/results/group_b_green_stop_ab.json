@@ -9,6 +9,10 @@
   "notional_leverage_each_entry": 2,
   "estimated_roundtrip_bps": 14,
   "estimated_borrow_apr": 0.08,
+  "history_sha256": "905ffc0508884ea1d6f05b0eff00acc053a4f81eeb3b91bb63c41113a37ae70d",
+  "history_total_h4": 2464,
+  "history_first_utc": "2024-10-24T04:00:00+00:00",
+  "history_last_utc": "2026-10-23T16:00:00+00:00",
   "modes": {
     "fixed": {
       "total_pnl_usd": 1548.57,
