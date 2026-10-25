@@ -66,6 +66,7 @@ def summarize(document, day):
     statuses, outcomes, markets, books = Counter(), Counter(), Counter(), Counter()
     prices, priced_games, qualified_quote_keys = set(), set(), set()
     finished = 0
+    qualified_outcomes = Counter()
     for match_id, record in games.items():
         if not isinstance(record, dict):
             continue
@@ -76,6 +77,7 @@ def summarize(document, day):
         liq_status = liquidity_status(snapshots)
         statuses[liq_status] += 1
         last = snapshots[-1]
+        results_before = outcomes.copy()
         settlement = last.get("settlement") or {}
         if (last.get("phase") == "finished" and isinstance(settlement, dict)
                 and settlement.get("match_odds") in ("home", "draw", "away")):
@@ -91,6 +93,8 @@ def summarize(document, day):
             btts = settlement.get("both_teams_to_score")
             if isinstance(btts, bool):
                 outcomes["btts_yes" if btts else "btts_no"] += 1
+        if liq_status == "qualified":
+            qualified_outcomes.update(outcomes - results_before)
         for sample in snapshots:
             if not isinstance(sample, dict):
                 continue
@@ -120,5 +124,6 @@ def summarize(document, day):
         "market_families_with_verified_prices": len(markets),
         "market_families_quoted": dict(markets.most_common()),
         "bookmakers": dict(books.most_common()), "results": dict(outcomes),
+        "qualified_results": dict(qualified_outcomes),
         "note": "Estudo de mercado; não é lucro nem operação real."
     }
