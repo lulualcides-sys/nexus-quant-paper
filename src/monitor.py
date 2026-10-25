@@ -80,7 +80,7 @@ def report(state,datasets,day):
             if e["eval"] is not None:
                 tally[e["strategy"]][{"favoravel":0,"contrario":1,"neutro":2}[e["eval"]]]+=1
         lines.append("")
-    lines.append("🏆 COMPARATIVO ACUMULADO — DIREÇÃO APÓS 6 CANDLES")
+    lines.append("⚠️ LEGADOS H1 — NÃO APROVADOS (apenas análise de direção)")
     for k,v in tally.items():
         lines.append(f"{CONFIGS[k]}: ✅{v[0]} ❌{v[1]} ➖{v[2]}")
     lines.extend(["","Dados de referência, não preços negociáveis da FBS.",
