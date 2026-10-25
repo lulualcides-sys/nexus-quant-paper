@@ -51,6 +51,8 @@ class LeveragedCohortTests(unittest.TestCase):
         self.assertIsNotNone(pos)
         self.assertGreater(RISK_FRACTION,0.0075)
         self.assertLessEqual(pos["notional_leverage"],MAX_NOTIONAL_LEVERAGE+1e-9)
+        self.assertAlmostEqual(pos["notional_leverage"],2.0,places=6)
+        self.assertGreater(pos["borrowed"],0)
         self.assertLessEqual(pos["qty"]*(pos["entry"]-pos["stop"]),5000*RISK_FRACTION+1e-6)
         conventional=initial_regular(h4)["books"]["channel20"]
         with patch("src.gold_forward.sign",side_effect=[1,0]):
