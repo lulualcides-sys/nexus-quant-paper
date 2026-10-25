@@ -12,6 +12,7 @@ from src.strategies import make_indicators
 from src.gold_forward import day_of
 from research.screen_v2 import aggregate_hourly_to_h4, sign
 from research.backtest_year import COST_BPS
+from src.green_stop import MODES, check_mode, update_after_close
 
 FILE=Path("state/leveraged_gold_v1.json")
 CAPITAL=5000.0
@@ -35,6 +36,8 @@ ACCOUNT_ENTRY_DRAWDOWN_LIMIT=0.15
 # Research assumptions, NOT advertised FBS borrowing or spread costs.
 COST_BPS_ROUNDTRIP=2*COST_BPS["XAUUSD"]  # conservative transaction costs
 ANNUAL_BORROW_APR=0.08
+# Live paper mode may change only AFTER A/B comparison. Existing positions keep their entry mode.
+LIVE_POLICY="fixed"
 
 def fresh(h4):
     if len(h4)<245:
@@ -59,7 +62,8 @@ def blocked(book):
         return True
     return False
 
-def one_bar(book,name,h4,ind,i):
+def one_bar(book,name,h4,ind,i,*,mode="fixed"):
+    check_mode(mode)
     row=h4[i];ts=row["time"];opening=row["open"]
     mark_day(book,ts)
     previous=book["position"]
@@ -68,7 +72,8 @@ def one_bar(book,name,h4,ind,i):
         p["held_bars"]=p.get("held_bars",0)+1
         direction=p["side"]
         stopped=(row["low"]<=p["stop"] if direction>0 else row["high"]>=p["stop"])
-        targeted=(row["high"]>=p["target"] if direction>0 else row["low"]<=p["target"])
+        targeted=(p.get("target") is not None and
+             (row["high"]>=p["target"] if direction>0 else row["low"]<=p["target"]))
         price=None;reason=""
         if stopped:
             price=min(opening,p["stop"]) if direction>0 else max(opening,p["stop"])
@@ -94,9 +99,13 @@ def one_bar(book,name,h4,ind,i):
                "transaction_cost":round(transaction,5),
                "funding_cost":round(financing,5),
                "notional_leverage":round(p["notional_leverage"],4),
-               "exit_type":reason
+               "exit_type":reason,"stop_policy":p.get("mode","fixed")
             })
             book["position"]=None
+        else:
+            # Evaluate this candle against OLD stop first, then tighten only
+            # for the next H4 candle. Avoids same-bar lookahead profits.
+            update_after_close(p,row,ts,COST_BPS_ROUNDTRIP,ANNUAL_BORROW_APR)
     # No reopen on the same four-hour candle as an exit.
     if previous is not None or blocked(book):
         return
@@ -122,7 +131,10 @@ def one_bar(book,name,h4,ind,i):
     book["position"]={
        "side":current,"entry":opening,"start":ts,"qty":qty,
        "stop":opening-current*stop_distance,
-       "target":opening+current*TARGET_R_MULTIPLE*stop_distance,
+       "entry_risk":stop_distance,
+       "mode":mode,"green_protected":False,"peak_favorable":0.0,
+       "target":(opening+current*TARGET_R_MULTIPLE*stop_distance
+                 if MODES[mode]["target"] else None),
        "held_bars":0,"borrowed":max(0.0,notional-equity),
        "notional_leverage":notional/equity
     }
@@ -140,7 +152,7 @@ def update(state,hourly):
     inds=make_indicators(h4)
     for i in range(241,len(h4)):
         if h4[i]["time"]<=old:continue
-        for key in CONFIG:one_bar(state["books"][key],key,h4,inds,i)
+        for key in CONFIG:one_bar(state["books"][key],key,h4,inds,i,mode=LIVE_POLICY)
         state["h4_watermark"]=h4[i]["time"]
     return state
 
