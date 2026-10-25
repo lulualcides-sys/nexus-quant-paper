@@ -1,5 +1,22 @@
 # Nexus Quant Paper — monitor gratuito
 
+## Stop móvel de green — Grupo B (25/10/2026)
+
+**Ativado exclusivamente nas PRÓXIMAS posições VIRTUAIS dos cinco robôs alavancados.** As posições já abertas preservam a política na qual entraram; nenhuma operação real na FBS foi criada.
+
+- Ao atingir **+1R de movimento favorável**, no fechamento do candle H4, o stop avança para acima do preço de entrada (ou abaixo nas vendas), incluindo uma margem estimada para custos e juros.
+- A partir de **+1,5R**, o stop acompanha o melhor preço favorável a **1R de distância**. Nunca afrouxa.
+- O take-profit fixo é retirado **somente das novas posições do Grupo B**, para permitir capturar tendências maiores. Há saída por stop ou tempo máximo (90 candles H4).
+- O ajuste feito com o candle fechado **só vale para o próximo candle**. O algoritmo não inventa ordens executadas dentro do candle do gatilho. Continua usando o mesmo nível de risco-stop planejado (1,50%) e exposição virtual 2×.
+- **Stop no green não garante lucro:** gaps, deslizamentos, aumento de custos, financiamento e indisponibilidade da fonte podem provocar prejuízo.
+
+**Comparação A/B auditada no mesmo conjunto de preços** — 24/10/2025 a 24/10/2026, cinco robôs, US$ 25.000 virtuais: stop fixo **+US$ 1.548,57**, green mantendo o alvo **+US$ 1.548,95**, green runner **+US$ 2.790,99** e green mais folgado **+US$ 2.677,02**. Valores exclusivamente simulados; três robôs melhoraram e dois renderam menos com o runner. O período já havia sido analisado, portanto **não comprova vantagem futura**. Cotações públicas de futuros GC=F são mutáveis; o arquivo de auditoria inclui a impressão digital da série utilizada. O backtest de stop fixo anterior foi recalculado e convergiu para +US$ 1.548,57 na série mais recente.
+
+[Relatório A/B completo](research/results/group_b_green_stop_ab.md) · [Todas as negociações e resultados](research/results/group_b_green_stop_ab.json) · [Implementação](src/green_stop.py).
+
+---
+
+
 ## Copa de 10 robôs — dois grupos independentes (25/10/2026)
 
 O monitor automático usa **dez bancas de pesquisa**, US$ 5.000 virtuais em cada uma (US$ 50.000 virtual no total), operando **apenas no ouro H4**. Os outros quatro mercados continuam observados para futuras pesquisas. Nenhuma ordem é enviada à FBS.
