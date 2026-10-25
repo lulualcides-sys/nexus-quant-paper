@@ -1,6 +1,6 @@
 """Encaminha o fechamento esportivo NEXUS pelo bot Telegram JÁ conectado ao Nexus Quant."""
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import json
 import os
 from pathlib import Path
@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 
 from .private_chat import load_chat
 from .telegram_check import api
+from .nexus_football_archive import summarize
 
 SCORE_REPO = "https://raw.githubusercontent.com/lulualcides-sys/nexus-score-gratis"
 BOT = "NexusQuantAlertasBot"
@@ -16,15 +17,19 @@ TZ = ZoneInfo("America/Sao_Paulo")
 
 
 def load_summary(day, opener=request.urlopen):
-    url = SCORE_REPO + "/market-telegram-data/market-history/daily/" + day + ".json"
+    url = SCORE_REPO + "/market-telegram-data/market-history/" + day + ".json"
     req = request.Request(url, headers={"User-Agent": "NexusQuantDailyFootball/1.0"})
     with opener(req, timeout=20) as response:
-        raw = response.read(1024 * 1024 + 1)
-    if len(raw) > 1024 * 1024:
-        raise ValueError("Resumo diário excedeu 1 MiB")
+        raw = response.read(40 * 1024 * 1024 + 1)
+    if len(raw) > 40 * 1024 * 1024:
+        raise ValueError("Histórico de odds excedeu 40 MiB")
     data = json.loads(raw)
-    if not isinstance(data, dict) or data.get("day") != day or data.get("schema") != 2:
-        raise ValueError("Resumo NEXUS incompatível ou com data errada")
+    if not isinstance(data, dict) or data.get("day") != day:
+        raise ValueError("Arquivo NEXUS incompatível ou com data errada")
+    if data.get("schema") == 1:
+        return summarize(data, day)
+    if data.get("schema") != 2:
+        raise ValueError("Schema de arquivo NEXUS inesperado")
     for k in ("games", "finished", "quotes_verified", "games_with_verified_odds",
               "market_families_with_verified_prices", "market_families_catalogued"):
         if not isinstance(data.get(k), int) or data[k] < 0:
@@ -44,6 +49,9 @@ def format_football(data):
         f"⚽ NEXUS FUTEBOL — FECHAMENTO {data['day']}\n"
         f"Jogos {data['games']} | Encerrados {data['finished']}\n"
         f"Odds verificadas {data['quotes_verified']} em {data['games_with_verified_odds']} jogos\n"
+        f"💰 Liquidez comprovada ≥ R$ 3 mil: {data.get('liquidity_qualified_games', 0)} jogos\n"
+        f"⚪ Volume abaixo: {data.get('liquidity_below_games', 0)} | "
+        f"Sem comprovação: {data.get('liquidity_unknown_games', data['games'])}\n"
         f"Famílias com preço {data['market_families_with_verified_prices']}/{data['market_families_catalogued']}\n"
         f"Mercados: {markets}\n"
         f"Casas: {houses}\n\n"
@@ -98,7 +106,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--day")
     args = parser.parse_args()
-    day = args.day or datetime.now(TZ).date().isoformat()
+    day = args.day or (datetime.now(TZ).date() - timedelta(days=1)).isoformat()
     datetime.strptime(day, "%Y-%m-%d")
     deliver(day)
 
