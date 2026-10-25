@@ -19,10 +19,12 @@ class GreenStopTests(unittest.TestCase):
         self.assertGreater(p["stop"],100.14)
         self.assertGreater(p["stop"],prior)
         stop=p["stop"]
-        self.assertFalse(update_after_close(p,
+        # Carry cost grows with time, so the green floor may tighten
+        # slightly even if price fails to set a new high; it never loosens.
+        update_after_close(p,
             {"open":100,"high":100.5,"low":99.9,"close":100.1},
-            1000000+28800,14,.08))
-        self.assertEqual(p["stop"],stop)
+            1000000+28800,14,.08)
+        self.assertGreaterEqual(p["stop"],stop)
     def test_trail_after_one_and_half_r(self):
         p=self.book()
         update_after_close(p,{"open":100,"high":101.7,"low":99.9,"close":101.5},
