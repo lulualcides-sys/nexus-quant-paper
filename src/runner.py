@@ -4,6 +4,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 from .feed import MARKETS,get_bars
 from .monitor import empty_state,scan_market,report,date_local
+from .private_chat import load_chat, save_chat
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -31,7 +32,7 @@ def telegram(message):
     if not token:
         print("Bot sem token; relatório não enviado.")
         return False
-    chat=chat or discover_private_chat(token)
+    chat=chat or load_chat(token) or discover_private_chat(token)
     if not chat:
         print("Nenhuma conversa /start única; configure TELEGRAM_CHAT_ID no GitHub.")
         return False
@@ -44,6 +45,7 @@ def telegram(message):
     except Exception:
         raise RuntimeError("Não foi possível enviar ao Telegram. Confira o bot e seu chat ID.") from None
     if not result.get("ok"):raise RuntimeError("Telegram não confirmou o envio")
+    save_chat(token,chat)
     return True
 
 def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegram,now=None):
