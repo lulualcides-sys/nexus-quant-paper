@@ -65,6 +65,31 @@ class GreenStopTests(unittest.TestCase):
         self.assertFalse(update_after_close(p,
           {"open":100,"high":102,"low":99.9,"close":101.9},1000000+14400,14,.08))
         self.assertEqual(p["stop"],99)
+    def test_live_virtual_entries_use_green_runner_policy(self):
+        self.assertEqual(lever.LIVE_POLICY,"green_runner")
+
+    def test_green_activation_never_closes_in_same_bar(self):
+        h4=[{"time":i*14400,"open":100.0,"high":101.7,
+             "low":99.5,"close":101.5} for i in range(251)]
+        h4[250]["time"]=250*14400
+        features=[{"atr":2} for _ in range(251)]
+        book=lever.fresh([{"time":i*14400} for i in range(245)])["books"]["lev_channel20"]
+        book["today"]="1970-02-12"
+        book["position"]={"side":1,"entry":100.0,"start":249*14400,
+            "qty":100.0,"stop":99.0,"entry_risk":1.0,"target":None,
+            "mode":"green_runner","green_protected":False,"peak_favorable":0.0,
+            "held_bars":0,"borrowed":500.0,"notional_leverage":2.0}
+        lever.one_bar(book,"lev_channel20",h4,features,250,mode="green_runner")
+        self.assertEqual(len(book["closed"]),0)
+        self.assertIsNotNone(book["position"])
+        self.assertGreater(book["position"]["stop"],100.0)
+        # A stop generated from candle 250 may be checked only on candle 251.
+        nxt=h4+[{"time":251*14400,"open":100.7,"high":100.9,"low":100.1,"close":100.2}]
+        # Current stop is 100.7 after +1.7R favorable excursion. New candle
+        # may cross it; earlier bar was never retroactively exited.
+        lever.one_bar(book,"lev_channel20",nxt,features+[{"atr":2}],251,mode="green_runner")
+        self.assertEqual(len(book["closed"]),1)
+
     def test_reject_unknown_mode(self):
         with self.assertRaises(ValueError):
             check_mode("profit-guaranteed")
