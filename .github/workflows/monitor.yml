@@ -1,7 +1,13 @@
 name: Nexus Quant | Five markets
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/monitor.yml'
   schedule:
-    - cron: '19 * * * 1-5'
+    - cron: '19 */4 * * 1-5'
     - cron: '15 22 * * 1-5'
   workflow_dispatch:
     inputs:
@@ -27,6 +33,7 @@ jobs:
       - name: Tests
         run: python -m unittest discover -s tests -v
       - name: Observe public market prices
+        if: github.event_name != 'push'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -38,12 +45,13 @@ jobs:
           if [[ "$SCHEDULE_EXPR" == '15 22 * * 1-5' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
           python -m src.runner --mode "$MODE"
       - name: Store signal journal
-        if: success()
+        if: success() && github.event_name != 'push'
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A state reports 2>/dev/null || true
+          git add -A state
+          if [[ -d reports ]]; then git add -A reports; fi
           if ! git diff --cached --quiet; then
             git commit -m 'chore: record public observations [skip ci]'
             git pull --rebase
