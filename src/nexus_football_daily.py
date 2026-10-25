@@ -78,12 +78,23 @@ def format_football(data, coverage=None):
     markets = ", ".join(k for k in list(data.get("market_families_quoted") or {})[:6]) or "nenhum com preço verificado"
     upcoming = ""
     if isinstance(coverage,dict):
+        p = coverage.get("pinnacle_guest") or {}
+        pinnacle = ""
+        if isinstance(p, dict) and p.get("status") == "checked" and p.get("offers",0)>0:
+            types = p.get("market_families") or {}
+            detail = ", ".join(f"{name} {count}" for name,count in
+                               sorted(types.items(), key=lambda row: -row[1])[:4])
+            pinnacle = (
+                f"🏦 Pinnacle pública: {p['offers']} odds observadas em {p['matched']} jogos\n"
+                f"Linhas: {detail}\n"
+            )
         upcoming = (
             "🏆 JOGOS IMPORTANTES (próximas 48h)\n"
             f"Monitorados: {coverage['important_games']} | "
             f"Com odds verificadas: {coverage['verified_bookmaker_games']}\n"
             f"Somente indicativas: {coverage['indicative_only_games']} | "
             f"Sem cotação: {coverage['missing_bookmaker_price_games']}\n"
+            f"{pinnacle}"
             "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
         )
     return (
