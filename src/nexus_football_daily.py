@@ -40,7 +40,10 @@ def load_summary(day, opener=request.urlopen):
 
 
 def format_football(data):
-    r = data["results"]
+    # Com arquivo bruto, o painel principal mostra SÓ jogos com volume comprovado.
+    # Resumos legados sem separação explícita mantêm o rótulo geral.
+    qualified = data.get("qualified_results")
+    r = qualified if isinstance(qualified, dict) else data["results"]
     def line(key):
         return f"{r.get(key + '_yes', 0)} sim / {r.get(key + '_no', 0)} não"
     houses = ", ".join(k for k in list(data["bookmakers"])[:4]) or "sem cotações confirmadas"
@@ -49,18 +52,23 @@ def format_football(data):
         f"⚽ NEXUS FUTEBOL — FECHAMENTO {data['day']}\n"
         f"Jogos {data['games']} | Encerrados {data['finished']}\n"
         f"Odds verificadas {data['quotes_verified']} em {data['games_with_verified_odds']} jogos\n"
+        f"🎯 Odds em jogos com liquidez comprovada: {data.get('qualified_game_quotes_verified', 0)}\n"
         f"💰 Liquidez comprovada ≥ R$ 3 mil: {data.get('liquidity_qualified_games', 0)} jogos\n"
         f"⚪ Volume abaixo: {data.get('liquidity_below_games', 0)} | "
         f"Sem comprovação: {data.get('liquidity_unknown_games', data['games'])}\n"
         f"Famílias com preço {data['market_families_with_verified_prices']}/{data['market_families_catalogued']}\n"
         f"Mercados: {markets}\n"
         f"Casas: {houses}\n\n"
+        f"📊 Resultados {'com liquidez ≥ R$ 3 mil' if isinstance(qualified, dict) else 'gerais'}\n"
         f"1X2: Casa {r.get('1x2_home', 0)} | Empate {r.get('1x2_draw', 0)} | Fora {r.get('1x2_away', 0)}\n"
         f"Over 2.5: {line('over_2_5')}\n"
         f"BTTS: {line('btts')}\n"
         f"Escanteios >9.5: {line('corners_9_5')}\n"
         f"Cartões amarelos >4.5: {line('cards_4_5')}\n"
         f"Chutes no alvo >7.5: {line('sot_7_5')}\n"
+        f"📋 Amostra geral: {data['finished']} partidas encerradas | "
+        f"1X2 casa {data['results'].get('1x2_home',0)}, empate {data['results'].get('1x2_draw',0)}, "
+        f"fora {data['results'].get('1x2_away',0)}\n"
         f"⛔ Dados esportivos; sem lucros ou entradas comprovados.\n"
         f"https://nexus-score-gratis.pages.dev/"
     )
