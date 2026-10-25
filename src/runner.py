@@ -5,7 +5,9 @@ from pathlib import Path
 from .feed import MARKETS,get_bars
 from .monitor import empty_state,scan_market,report,date_local
 from .private_chat import load_chat, save_chat
-from .gold_forward import process as process_gold, summary as gold_summary
+from .gold_forward import process as process_gold
+from .leveraged_gold import process as process_leveraged
+from .daily_digest import digest as ten_bot_digest
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -57,18 +59,24 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     for key,asset in MARKETS.items():
         try:
             bars=fetch(asset,now)
-            count=scan_market(state,key,bars)
             datasets[key]=bars
-            print(f"{key}: {len(bars)} candles; {count} novos sinais")
-        except Exception as exc:
-            failed.append(f"{key}: {exc}")
-    if failed:raise RuntimeError("Fonte/estado incompleto: "+"; ".join(failed))
+            try:
+                count=scan_market(state,key,bars)
+                print(f"{key}: {len(bars)} candles; {count} sinais diagnósticos.")
+            except Exception as error:
+                # Old H1 research must never block all ten H4 paper books.
+                failed.append(f"{key} H1: {error}")
+        except Exception as error:
+            failed.append(key)
+    if "XAUUSD" not in datasets:
+        raise RuntimeError("Sem candles verificados do ouro; os 10 robôs não serão atualizados.")
     gold_book=process_gold(datasets["XAUUSD"])
+    leveraged_book=process_leveraged(datasets["XAUUSD"])
     statefile.parent.mkdir(parents=True,exist_ok=True)
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
-        msg=report(state,datasets,day)+"\n"+gold_summary(gold_book,day)
-        if len(msg)>3900:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
+        msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed)
+        if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         (reports/f"{day}.txt").write_text(msg+"\n",encoding="utf-8")
         if send(msg):
