@@ -68,7 +68,10 @@ def format_football(data, coverage=None):
     # Com arquivo bruto, o painel principal mostra SÓ jogos com volume comprovado.
     # Resumos legados sem separação explícita mantêm o rótulo geral.
     qualified = data.get("qualified_results")
-    r = qualified if isinstance(qualified, dict) else data["results"]
+    has_qualified = isinstance(qualified, dict) and data.get("liquidity_qualified_games", 0) > 0
+    # Quando o provedor não expõe liquidez BRL, mostre os resultados GERAIS
+    # explicitamente identificados em vez de exibir uma página enganosa de zeros.
+    r = qualified if has_qualified else data["results"]
     def line(key):
         return f"{r.get(key + '_yes', 0)} sim / {r.get(key + '_no', 0)} não"
     houses = ", ".join(k for k in list(data["bookmakers"])[:4]) or "sem cotações confirmadas"
@@ -94,7 +97,7 @@ def format_football(data, coverage=None):
         f"Famílias com preço {data['market_families_with_verified_prices']}/{data['market_families_catalogued']}\n"
         f"Mercados: {markets}\n"
         f"Casas: {houses}\n\n"
-        f"📊 Resultados {'com liquidez ≥ R$ 3 mil' if isinstance(qualified, dict) else 'gerais'}\n"
+        f"📊 Resultados {'com liquidez ≥ R$ 3 mil' if has_qualified else 'gerais (liquidez não comprovada)'}\n"
         f"1X2: Casa {r.get('1x2_home', 0)} | Empate {r.get('1x2_draw', 0)} | Fora {r.get('1x2_away', 0)}\n"
         f"Over 2.5: {line('over_2_5')}\n"
         f"BTTS: {line('btts')}\n"
