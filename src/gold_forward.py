@@ -8,11 +8,20 @@ from pathlib import Path
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from src.strategies import make_indicators
-from research.screen_v2 import aggregate_hourly_to_h4,sign,CAPITAL,RISK,MAX_LEVERAGE,ATR_STOP,ATR_TARGET,MAX_HOLD
+from research.screen_v2 import aggregate_hourly_to_h4,sign,CAPITAL,MAX_LEVERAGE,ATR_STOP,ATR_TARGET,MAX_HOLD
 from research.backtest_year import COST_BPS
 
 FILE=Path("state/selected_gold_v2.json")
 STUDY=("rsi_trend","channel20","pullback20","momentum100","channel55")
+# Prospective paper-only risk. Does not modify prior historic backtests.
+RISK=0.0075
+DISPLAY={
+  "rsi_trend":"RSI Trend",
+  "channel20":"Channel 20",
+  "pullback20":"Pullback 20",
+  "momentum100":"Momentum 100",
+  "channel55":"Channel 55",
+}
 
 def initial(bars):
     if len(bars)<245:raise ValueError("Gold H4 warmup below 245 bars")
@@ -79,17 +88,40 @@ def update(state,bars):
 def day_of(ts):
     return datetime.fromtimestamp(ts,timezone.utc).astimezone(ZoneInfo("America/Sao_Paulo")).date().isoformat()
 
+def scorecard(book):
+    equity=CAPITAL
+    peak=CAPITAL
+    max_drawdown=0
+    wins=0
+    losses=0
+    for trade in book["closed"]:
+        net=trade["net_usd"]
+        equity+=net
+        wins+=int(net>0)
+        losses+=int(net<0)
+        peak=max(peak,equity)
+        max_drawdown=max(max_drawdown,100*(peak-equity)/peak)
+    return {"pnl":book["equity"]-CAPITAL,"pnl_pct":100*(book["equity"]/CAPITAL-1),
+            "wins":wins,"losses":losses,"count":len(book["closed"]),
+            "max_realized_drawdown_pct":max_drawdown}
+
 def summary(state,day):
-    lines=["","🧪 GOLD H4 | 5 robôs selecionados para avaliação futura",
-           "Dados reais de referência; transações VIRTUAIS, não FBS."]
-    for key in STUDY:
-        b=state["books"][key]
-        todays=[t for t in b["closed"] if day_of(t["exit_ts"]+14400)==day]
+    lines=["","🏆 NEXUS QUANT | COPA 5 ROBÔS — OURO H4",
+           "📌 Conta de pesquisa virtual, não FBS; preços de referência.",
+           "📊 Risco planejado: 0,75%/operação, mesma regra para todos."]
+    ranking=sorted(STUDY,key=lambda k:scorecard(state["books"][k])["pnl"],reverse=True)
+    for place,key in enumerate(ranking,1):
+        book=state["books"][key]
+        score=scorecard(book)
+        todays=[t for t in book["closed"] if day_of(t["exit_ts"]+14400)==day]
         daily=sum(t["net_usd"] for t in todays)
-        cum=b["equity"]-CAPITAL
-        lines.append(f"{key}: {len(todays)} encerradas hoje | US$ {daily:+.2f} | acumulado US$ {cum:+.2f} | {'aberta virtual' if b['position'] else 'sem posição'}")
-    lines.append("Demais 4 mercados: observação; não selecionados para ordens.")
-    lines.append("A estratégia pode perder dinheiro; nenhuma operação real foi executada.")
+        lines.append(f"{place}º {DISPLAY[key]}: hoje {len(todays)} fechamentos, US$ {daily:+.2f};"
+           f" total US$ {score['pnl']:+.2f} ({score['pnl_pct']:+.2f}%),"
+           f" V/D {score['wins']}/{score['losses']},"
+           f" drawdown realizado {score['max_realized_drawdown_pct']:.1f}%,"
+           f" {'posição virtual aberta' if book['position'] else 'sem posição'}")
+    lines.append("🌍 EUR/USD, USD/JPY, US500, WTI: monitorados, não aprovados para a copa de posições.")
+    lines.append("⚠️ Retornos não incluem swap FBS; lucro/prejuízo virtual e perdas são possíveis.")
     return "\n".join(lines)
 
 def process(bars,path=FILE):
