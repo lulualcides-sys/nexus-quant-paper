@@ -19,15 +19,17 @@ def digest(day,conventional,leveraged,datasets=None,unavailable=None):
         lines.append(f"{DISPLAY[key]}: {n} fech. | dia US$ {today:+.2f}"
           f" | total US$ {s['pnl']:+.2f} | V/D {s['wins']}/{s['losses']}"
           f" | {'aberta' if b['position'] else 'sem posição'}")
-    lines+=["","🟥 5 ALAVANCADOS | 1,50% risco-stop | limite 3× nocional"]
+    lines+=["","🟥 5 ALAVANCADOS | 1,50% risco-stop | limite 3× nocional",
+            "🟢 Stop móvel GREEN: após +1R, acompanha o movimento; sem TP fixo."]
     for key in sorted(LEV_CONFIG,key=lambda k:lev_stats(new_books[k])["pnl_usd"],reverse=True):
         b=new_books[key];s=lev_stats(b)
         n,today=_daily(b["closed"],day)
         state="PAUSADO" if s["frozen"] else ("aberto" if b["position"] else "sem posição")
         lev=f"{s['effective_leverage']:.2f}×" if b["position"] else "0×"
+        green=("green protegido" if b["position"].get("green_protected") else "esperando +1R") if b["position"] and b["position"].get("mode")=="green_runner" else "stop fixo/sem entrada"
         lines.append(f"{LEV_CONFIG[key][1]}: {n} fech. | dia US$ {today:+.2f}"
            f" | total US$ {s['pnl_usd']:+.2f} | V/D {s['wins']}/{s['losses']}"
-           f" | {state}, exp. {lev}")
+           f" | {state}, exp. {lev}, {green}")
     lines.append("")
     all_books=[(DISPLAY[k],scorecard(old_books[k])["pnl"]) for k in STUDY]
     all_books.extend((LEV_CONFIG[k][1],lev_stats(new_books[k])["pnl_usd"]) for k in LEV_CONFIG)
