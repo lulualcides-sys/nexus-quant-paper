@@ -1,3 +1,14 @@
+## NEXUS Futebol: resumo multimercado diário às 00h01 (25/10/2026)
+
+- O mesmo bot [@NexusQuantAlertasBot](https://t.me/NexusQuantAlertasBot) passa a enviar **um relatório esportivo por dia**, agendado para **00h01 America/Sao_Paulo** (03h01 UTC). É o fechamento **do dia anterior**; GitHub Actions pode atrasar.
+- Origem: arquivo bruto gratuito `market-history/AAAA-MM-DD.json` da branch `market-telegram-data` no [NEXUS SCORE](https://github.com/lulualcides-sys/nexus-score-gratis/tree/market-telegram-data/market-history). O monitor Quant lê somente a coleta, sem credenciais adicionais nem novos acessos a casas.
+- Mostra total de jogos, odds verificadas, casas, diversidade de mercados, liquidez comprovada **≥ R$ 3 mil** e resultados separados em **amostra qualificada** e **amostra geral**. Liquidez sem valor, origem, tipo e moeda BRL é **desconhecida**, nunca aprovada por suposição.
+- O código do Quant financeiro (10 robôs de ouro em simulação) e o respectivo relatório em dias úteis permanecem **separados e inalterados**; o horário 00h01 vale para o relatório *futebol*.
+- Nenhuma coleta tenta contornar proteção anti-bot, autenticação, bloqueio regional, paywall ou cotas. Backtests e ganhos reais não são inferidos de placares.
+- Código: [resumo](src/nexus_football_daily.py) · [auditoria de histórico](src/nexus_football_archive.py) · [workflow](.github/workflows/nexus-football-daily.yml).
+
+---
+
 # Nexus Quant Paper — monitor gratuito
 
 ## Stop móvel de green — Grupo B (25/10/2026)
