@@ -1,0 +1,38 @@
+name: Research | Group B green trailing A-B
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/green_stop_ab.py'
+      - '.github/workflows/green-stop-ab.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nexus-green-stop-research
+  cancel-in-progress: false
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify stop logic and all standard tests
+        run: |
+          python -m pip install cryptography
+          python -m unittest discover -s tests -v
+      - name: Backtest fixed versus green variants
+        run: python -m research.green_stop_ab
+      - name: Store full positive and negative outcomes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/results/group_b_green_stop_ab.md research/results/group_b_green_stop_ab.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: publish full green stop A-B comparison [skip ci]'
+            git pull --rebase
+            git push
+          fi
