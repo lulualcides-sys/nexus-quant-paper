@@ -1,0 +1,40 @@
+# Nexus Quant Paper — monitor gratuito
+
+Cinco robôs de sinais em cinco mercados, **sem conexão com FBS, sem operações executadas e sem resultados de lucro inventados**.
+
+**Mercados:** EUR/USD e USD/JPY (câmbio indicativo), ouro GC=F, S&P 500 ES=F e petróleo WTI CL=F (três contratos futuros usados como proxies, não CFDs FBS).
+
+**Robôs:** Trend Hunter (Donchian 55), Breakout Pro (Donchian 20), Reversal RSI, Momentum X e Pullback Master.
+
+O sistema observa somente candles de uma hora já fechados e registra sinais prospectivos. Após seis candles posteriores, classifica cada sinal como favorável, contrário ou neutro. Esses números **não equivalem a lucro/RED em uma conta da corretora** e não incluem spread, taxas, liquidez ou execução.
+
+## Ativar Telegram pelo celular
+
+1. Abra o [@NexusQuantAlertasBot](https://t.me/NexusQuantAlertasBot) e envie **/start**. Se já iniciou, envie /start de novo antes do primeiro teste.
+2. Abra [Settings > Secrets and variables > Actions](https://github.com/lulualcides-sys/nexus-quant-paper/settings/secrets/actions) neste repositório pelo navegador logado no GitHub.
+3. Toque em **New repository secret**. Em **Name**, digite exatamente `TELEGRAM_BOT_TOKEN`; em **Secret**, cole o token recebido do @BotFather e salve. Não coloque o token em README, Issues, mensagens ou arquivos públicos.
+4. **Opcional:** cadastre `TELEGRAM_CHAT_ID` com o ID numérico da conversa privada. Sem ele, o programa tenta descobrir automaticamente se houver exatamente uma conversa privada iniciada com /start nas últimas 24 horas. Se houver mais de uma, por segurança o envio não acontece.
+5. Abra [Actions](https://github.com/lulualcides-sys/nexus-quant-paper/actions), selecione **Nexus Quant | Five markets**, **Run workflow**, escolha `report` e execute. Consulte os logs da execução. O relatório pode inicialmente indicar que não há novos sinais; isso é normal.
+
+Se o bot não encontrar sua conversa, envie /start novamente no Telegram e execute o relatório. O Telegram mantém updates sem confirmação por no máximo 24 horas. Se necessário, configure o CHAT_ID.
+
+## Funcionamento
+
+- Scans periódicos aproximadamente a cada quatro horas em dias úteis (GitHub Actions pode atrasar).
+- Um relatório agendado às 19h15 (horário de São Paulo), dias úteis. A mensagem só é enviada se as cinco fontes fornecerem dados válidos; caso contrário o workflow falha e não inventa números.
+- Histórico prospectivo e relatórios são gravados em `state/` e `reports/`.
+- Primeira execução apenas inicializa os pontos de partida. Histórico anterior nunca é rotulado como sinal produzido ao vivo.
+- O endpoint Yahoo Finance utilizado é **não oficial** e pode ficar temporariamente indisponível.
+- Não conectar contas reais nem usar esses sinais para investir sem verificação independente.
+
+## Testes
+
+```bash
+python -m unittest discover -s tests -v
+python -m src.runner --mode scan
+python -m src.runner --mode report
+```
+
+**Gratuidade:** GitHub Actions em repositórios públicos com runners padrão é gratuito dentro da política de uso do GitHub. Os alertas não exigem VPS, depósito na FBS ou computador ligado.
+
+Fontes: [GitHub Actions](https://docs.github.com/en/actions/concepts/billing-and-usage) · [Telegram Bot API](https://core.telegram.org/bots/api).
