@@ -1,4 +1,4 @@
-name: Nexus Quant | Five markets
+name: Nexus Quant | Ten bots / Five markets
 on:
   push:
     branches: [main]
@@ -7,8 +7,8 @@ on:
       - 'tests/**'
       - '.github/workflows/monitor.yml'
   schedule:
-    - cron: '19 */4 * * 1-5'
-    - cron: '15 22 * * 1-5'
+    - cron: '19 */4 * * 1-5' # scan all 10 paper bots, weekdays
+    - cron: '15 22 * * 1-5' # one digest ~19:15 America/Sao_Paulo
     - cron: '2 * * * *' # hourly opt-in check only, no trading
   workflow_dispatch:
     inputs:
