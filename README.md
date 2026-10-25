@@ -1,5 +1,23 @@
 # Nexus Quant Paper — monitor gratuito
 
+## Copa de 10 robôs — dois grupos independentes (25/10/2026)
+
+O monitor automático usa **dez bancas de pesquisa**, US$ 5.000 virtuais em cada uma (US$ 50.000 virtual no total), operando **apenas no ouro H4**. Os outros quatro mercados continuam observados para futuras pesquisas. Nenhuma ordem é enviada à FBS.
+
+**Grupo A — 5 convencionais, sem empréstimo nocional:** RSI Trend, Channel 20, Pullback 20, Momentum 100, Channel 55. Risco-stop planejado de **0,75% por ordem**, exposição máxima de **1×** o capital da banca. Histórico original `state/selected_gold_v2.json` preservado e algoritmo de duração de posição corrigido para reinícios.
+
+**Grupo B — 5 experimentais com maior risco e capacidade de alavancagem:** Channel 20 L, Momentum 100 L, Channel 55 L, Momentum 40 L, Trend Long L. Risco-stop planejado de **1,50% por ordem** (2× o grupo A), exposição nocional máxima de **3×** a banca. O multiplicador nocional efetivamente utilizado pode ser inferior a 1×: a volatilidade e a distância do stop determinam o lote. **Capacidade de usar alavancagem não significa automaticamente posição 3×.** Não há empréstimo real.
+
+Proteções do grupo B: stop de 2 ATR, alvo de 3,5 ATR, duração de até 90 candles H4, custos estimados de ida e volta de 14 pontos-base, financiamento teórico de **8% ao ano sobre o valor emprestado**, bloqueio de novas entradas no dia após **3%** de perda realizada e pausa permanente de novas entradas após **15%** de drawdown realizado. Essas travas **não garantem** perdas limitadas: gaps, custos ou mercados que se movem rapidamente podem ultrapassar o stop. Riscos são maiores que no grupo A e nenhuma estratégia está aprovada para dinheiro real.
+
+Os cinco novos livros são persistidos em `state/leveraged_gold_v1.json`. **A primeira execução inicia as bancas no momento atual sem inventar operações antigas.** O relatório diário do [@NexusQuantAlertasBot](https://t.me/NexusQuantAlertasBot) compara **os 10 robôs**, separando resultados do dia (fechamentos), acumulados e operações abertas. Agendamento de segunda a sexta aproximadamente **19h15 (America/Sao_Paulo)**, sujeito a atrasos/ausência de execução do GitHub Actions.
+
+A classificação é pelo **lucro líquido virtual realizado**, não por lucro real. Resultados positivos podem desaparecer na frente, e operar ouro com dez estratégias não equivale a diversificar em dez ativos.
+
+[Workflow do monitor](.github/workflows/monitor.yml) · [Grupo A](src/gold_forward.py) · [Grupo B](src/leveraged_gold.py) · [Relatório](src/daily_digest.py).
+
+---
+
 ## Pesquisa V3 — seleção tipo tipster esportivo (25/10/2026)
 
 **Foco: lucro líquido verificado pelo preço observado, não só taxa de acerto.**
