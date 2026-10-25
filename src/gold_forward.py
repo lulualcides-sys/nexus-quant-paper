@@ -107,7 +107,7 @@ def scorecard(book):
 
 def summary(state,day):
     lines=["","🏆 NEXUS QUANT | COPA 5 ROBÔS — OURO H4",
-           "📌 Conta de pesquisa virtual, não FBS; preços de referência.",
+           "📌 Transações VIRTUAIS, não FBS; preços de referência.",
            "📊 Risco planejado: 0,75%/operação, mesma regra para todos."]
     ranking=sorted(STUDY,key=lambda k:scorecard(state["books"][k])["pnl"],reverse=True)
     for place,key in enumerate(ranking,1):
