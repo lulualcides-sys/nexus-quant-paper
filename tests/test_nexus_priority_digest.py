@@ -64,6 +64,19 @@ class PriorityDigestTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             load_priority_coverage(open_doc(old))
 
+    def test_book_quality_and_missing_games_in_daily_telegram(self):
+        data={"important_games":12,"verified_bookmaker_games":7,
+              "indicative_only_games":1,"missing_bookmaker_price_games":4,
+              "top_missing":[{"home":"Flamengo","away":"Atletico Mineiro"}],
+              "book_quality":{"status":"fresh","complete_market_lines":145,
+                              "families":{"match_odds":{"median_overround_pct":5.91}}}}
+        message=format_football(BASE,data)
+        self.assertIn("Linhas completas: 145",message)
+        self.assertIn("Margem 1X2 mediana: 5.91%",message)
+        self.assertIn("Flamengo x Atletico Mineiro",message)
+        data["book_quality"]["status"]="stale"
+        self.assertNotIn("Linhas completas:",format_football(BASE,data))
+
     def test_failed_radar_keeps_regular_daily_delivery(self):
         sent = []
         def fake_api(token, method, payload=None):
