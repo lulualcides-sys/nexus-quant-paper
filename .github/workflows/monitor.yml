@@ -54,7 +54,7 @@ jobs:
           if [[ "$SCHEDULE_EXPR" == '15 22 * * 1-5' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
           python -m src.runner --mode "$MODE"
       - name: Store signal journal
-        if: success() && github.event_name != 'push'
+        if: "success() && (github.event_name != 'push' || startsWith(github.event.head_commit.message, 'test: verify Nexus Quant Telegram connection'))"
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
