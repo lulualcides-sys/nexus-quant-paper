@@ -76,12 +76,12 @@ def format_football(data, coverage=None):
     upcoming = ""
     if isinstance(coverage,dict):
         upcoming = (
-            "🏆 JOGOS IMPORTANTES (próximas 48h)\\n"
+            "🏆 JOGOS IMPORTANTES (próximas 48h)\n"
             f"Monitorados: {coverage['important_games']} | "
-            f"Com odds verificadas: {coverage['verified_bookmaker_games']}\\n"
+            f"Com odds verificadas: {coverage['verified_bookmaker_games']}\n"
             f"Somente indicativas: {coverage['indicative_only_games']} | "
-            f"Sem cotação: {coverage['missing_bookmaker_price_games']}\\n"
-            "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\\n"
+            f"Sem cotação: {coverage['missing_bookmaker_price_games']}\n"
+            "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
         )
     return (
         f"⚽ NEXUS FUTEBOL — FECHAMENTO {data['day']}\n"
