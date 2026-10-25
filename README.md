@@ -13,14 +13,15 @@ O sistema observa somente candles de uma hora já fechados e registra sinais pro
 1. Abra o [@NexusQuantAlertasBot](https://t.me/NexusQuantAlertasBot) e envie **/start**. Se já iniciou, envie /start de novo antes do primeiro teste.
 2. Abra [Settings > Secrets and variables > Actions](https://github.com/lulualcides-sys/nexus-quant-paper/settings/secrets/actions) neste repositório pelo navegador logado no GitHub.
 3. Toque em **New repository secret**. Em **Name**, digite exatamente `TELEGRAM_BOT_TOKEN`; em **Secret**, cole o token recebido do @BotFather e salve. Não coloque o token em README, Issues, mensagens ou arquivos públicos.
-4. **Opcional:** cadastre `TELEGRAM_CHAT_ID` com o ID numérico da conversa privada. Sem ele, o programa tenta descobrir automaticamente se houver exatamente uma conversa privada iniciada com /start nas últimas 24 horas. Se houver mais de uma, por segurança o envio não acontece.
+4. **Não precisa cadastrar `TELEGRAM_CHAT_ID`.** O GitHub Actions procura uma conversa privada recente iniciada com o bot, envia uma confirmação e salva o ID criptografado em `state/telegram_chat.enc.json`. Se houver mais de uma conversa, será necessário definir `TELEGRAM_CHAT_ID` manualmente como Secret.
 5. Abra [Actions](https://github.com/lulualcides-sys/nexus-quant-paper/actions), selecione **Nexus Quant | Five markets**, **Run workflow**, escolha `report` e execute. Consulte os logs da execução. O relatório pode inicialmente indicar que não há novos sinais; isso é normal.
 
-Se o bot não encontrar sua conversa, envie /start novamente no Telegram e execute o relatório. O Telegram mantém updates sem confirmação por no máximo 24 horas. Se necessário, configure o CHAT_ID.
+Se o bot não encontrar sua conversa, **envie /start novamente no Telegram após salvar o token**. O GitHub Actions verifica a conexão automaticamente a cada hora e envia uma única confirmação quando encontra sua conversa. Uma mensagem antiga pode não estar disponível porque o Telegram retém updates por no máximo 24 horas, ou porque outro cliente já os confirmou. O arquivo de configuração no repositório armazena apenas a versão criptografada do ID; a chave deriva do token secreto.
 
 ## Funcionamento
 
 - Scans periódicos aproximadamente a cada quatro horas em dias úteis (GitHub Actions pode atrasar).
+- Verificação de autorização do Telegram a cada hora. Após a primeira confirmação, nenhuma nova mensagem de conexão será enviada.
 - Um relatório agendado às 19h15 (horário de São Paulo), dias úteis. A mensagem só é enviada se as cinco fontes fornecerem dados válidos; caso contrário o workflow falha e não inventa números.
 - Histórico prospectivo e relatórios são gravados em `state/` e `reports/`.
 - Primeira execução apenas inicializa os pontos de partida. Histórico anterior nunca é rotulado como sinal produzido ao vivo.
@@ -30,6 +31,7 @@ Se o bot não encontrar sua conversa, envie /start novamente no Telegram e execu
 ## Testes
 
 ```bash
+python -m pip install cryptography
 python -m unittest discover -s tests -v
 python -m src.runner --mode scan
 python -m src.runner --mode report
