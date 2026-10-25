@@ -1,0 +1,40 @@
+name: Historical 1y backtest | Five robots
+on:
+  push:
+    branches: [main]
+    paths:
+      - research/backtest_year.py
+      - .github/workflows/backtest.yml
+      - src/strategies.py
+      - src/feed.py
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: historical-backtest
+  cancel-in-progress: false
+jobs:
+  historical_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests
+        run: |
+          python -m pip install cryptography
+          python -m unittest discover -s tests -v
+      - name: Backtest one year against public OHLC data
+        run: python -m research.backtest_year
+      - name: Commit research report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/results/backtest_1y.json research/results/backtest_1y.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: publish reproducible 1y report [skip ci]'
+            git pull --rebase
+            git push
+          fi
