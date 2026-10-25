@@ -49,7 +49,7 @@ def parse_yahoo(data, now):
 
 def get_bars(asset,now=None):
     now=int(now if now is not None else time.time())
-    url="https://query1.finance.yahoo.com/v8/finance/chart/"+quote(asset.ticker,safe="")+"?interval=60m&range=1mo"
+    url="https://query1.finance.yahoo.com/v8/finance/chart/"+quote(asset.ticker,safe="")+("?interval=60m&range=3mo" if asset.ticker=="GC=F" else "?interval=60m&range=1mo")
     request=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0", "Accept":"application/json"})
     try:
         with urllib.request.urlopen(request,timeout=20) as response:
