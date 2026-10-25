@@ -1,8 +1,8 @@
 name: "NEXUS Futebol | relatório diário Telegram existente"
 on:
   schedule:
-    # 19h45 America/Sao_Paulo, após consolidação diária no NEXUS SCORE.
-    - cron: "45 22 * * *"
+    # 00h01 America/Sao_Paulo (03h01 UTC), resumo DO DIA ANTERIOR.
+    - cron: "1 3 * * *"
   workflow_dispatch:
 permissions:
   contents: write
