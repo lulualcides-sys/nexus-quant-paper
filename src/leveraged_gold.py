@@ -1,0 +1,163 @@
+"""Five leveraged-research H4 gold paper books.
+
+NO broker access or real positions. Two times the standard stop-risk budget
+(1.5% vs 0.75%), with a strict 3x notional cap. *Actual* notional leverage
+may be below 1x if volatility limits sizing. Never advertise a guaranteed 3x.
+"""
+from __future__ import annotations
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from src.strategies import make_indicators
+from src.gold_forward import day_of
+from research.screen_v2 import aggregate_hourly_to_h4, sign
+from research.backtest_year import COST_BPS
+
+FILE=Path("state/leveraged_gold_v1.json")
+CAPITAL=5000.0
+CONFIG={
+ "lev_channel20":("channel20","Channel 20 L"),
+ "lev_momentum100":("momentum100","Momentum 100 L"),
+ "lev_channel55":("channel55","Channel 55 L"),
+ "lev_momentum40":("momentum40","Momentum 40 L"),
+ "lev_trend_long":("trend_long_only","Trend Long L"),
+}
+RISK_FRACTION=0.015
+MAX_NOTIONAL_LEVERAGE=3.0
+STOP_ATR=2.0
+TARGET_ATR=3.5
+MAX_HOLD_BARS=90
+DAILY_ENTRY_LOSS_LIMIT=0.03
+ACCOUNT_ENTRY_DRAWDOWN_LIMIT=0.15
+# Research assumptions, NOT advertised FBS borrowing or spread costs.
+COST_BPS_ROUNDTRIP=2*COST_BPS["XAUUSD"]  # conservative transaction costs
+ANNUAL_BORROW_APR=0.08
+
+def fresh(h4):
+    if len(h4)<245:
+        raise ValueError("Incomplete H4 historical warmup")
+    return {"schema":1,"paper_only":True,"type":"leveraged-research",
+      "h4_watermark":h4[-1]["time"],
+      "books":{k:{"equity":CAPITAL,"peak_equity":CAPITAL,
+                  "today":None,"day_start_equity":CAPITAL,
+                  "frozen":False,"position":None,"closed":[]} for k in CONFIG}}
+
+def mark_day(book,ts):
+    d=day_of(ts)
+    if book["today"] != d:
+        book["today"]=d
+        book["day_start_equity"]=book["equity"]
+
+def blocked(book):
+    if book["frozen"] or book["equity"] <= 0:
+        return True
+    day_start=book["day_start_equity"]
+    if day_start>0 and book["equity"] <= day_start*(1-DAILY_ENTRY_LOSS_LIMIT):
+        return True
+    return False
+
+def one_bar(book,name,h4,ind,i):
+    row=h4[i];ts=row["time"];opening=row["open"]
+    mark_day(book,ts)
+    previous=book["position"]
+    if previous is not None:
+        p=previous
+        p["held_bars"]=p.get("held_bars",0)+1
+        direction=p["side"]
+        stopped=(row["low"]<=p["stop"] if direction>0 else row["high"]>=p["stop"])
+        targeted=(row["high"]>=p["target"] if direction>0 else row["low"]<=p["target"])
+        price=None;reason=""
+        if stopped:
+            price=min(opening,p["stop"]) if direction>0 else max(opening,p["stop"])
+            reason="STOP"
+        elif targeted:
+            price=p["target"];reason="TARGET"
+        elif p["held_bars"]>=MAX_HOLD_BARS:
+            price=row["close"];reason="TIME"
+        if price is not None:
+            gross=(price-p["entry"])*p["side"]*p["qty"]
+            transaction=COST_BPS_ROUNDTRIP/10000*p["qty"]*((p["entry"]+price)/2)
+            hours=max(0,(ts-p["start"])/3600)
+            financing=p["borrowed"]*ANNUAL_BORROW_APR*hours/8760
+            net=gross-transaction-financing
+            book["equity"]+=net
+            book["peak_equity"]=max(book["peak_equity"],book["equity"])
+            if book["peak_equity"]>0 and book["equity"] <= book["peak_equity"]*(1-ACCOUNT_ENTRY_DRAWDOWN_LIMIT):
+                book["frozen"]=True
+            book["closed"].append({
+               "entry_ts":p["start"],"exit_ts":ts,"side":p["side"],
+               "entry":round(p["entry"],6),"exit":round(price,6),
+               "net_usd":round(net,5),"gross_usd":round(gross,5),
+               "transaction_cost":round(transaction,5),
+               "funding_cost":round(financing,5),
+               "notional_leverage":round(p["notional_leverage"],4),
+               "exit_type":reason
+            })
+            book["position"]=None
+    # No reopen on the same four-hour candle as an exit.
+    if previous is not None or blocked(book):
+        return
+    rule=CONFIG[name][0]
+    current=sign(rule,h4,ind,i-1)
+    prior=sign(rule,h4,ind,i-2)
+    if not current or current==prior:
+        return
+    atr=ind[i-1]["atr"]
+    if not atr or atr<=0 or opening<=0:
+        return
+    equity=book["equity"]
+    qty=min(equity*RISK_FRACTION/(STOP_ATR*atr),
+            MAX_NOTIONAL_LEVERAGE*equity/opening)
+    if qty<=0:
+        return
+    notional=qty*opening
+    book["position"]={
+       "side":current,"entry":opening,"start":ts,"qty":qty,
+       "stop":opening-current*STOP_ATR*atr,
+       "target":opening+current*TARGET_ATR*atr,
+       "held_bars":0,"borrowed":max(0.0,notional-equity),
+       "notional_leverage":notional/equity
+    }
+
+def update(state,hourly):
+    h4=aggregate_hourly_to_h4(hourly)
+    if len(h4)<245:raise ValueError("Insufficient complete H4 gold candles")
+    if state is None:return fresh(h4)
+    if not state.get("paper_only") or state.get("schema")!=1 or state.get("type")!="leveraged-research":
+        raise ValueError("Unexpected state schema; refuse live/legacy state")
+    old=state["h4_watermark"]
+    times={b["time"] for b in h4}
+    if old not in times:
+        raise ValueError("Gold data gap prevents auditable incremental tracking")
+    inds=make_indicators(h4)
+    for i in range(241,len(h4)):
+        if h4[i]["time"]<=old:continue
+        for key in CONFIG:one_bar(state["books"][key],key,h4,inds,i)
+        state["h4_watermark"]=h4[i]["time"]
+    return state
+
+def stats(book):
+    equity=CAPITAL
+    peak=CAPITAL
+    dd=0.0
+    wins=0;losses=0
+    for trade in book["closed"]:
+        pnl=trade["net_usd"]
+        equity+=pnl
+        wins+=int(pnl>0);losses+=int(pnl<0)
+        peak=max(peak,equity)
+        dd=max(dd,100*(peak-equity)/peak)
+    p=book["position"]
+    return {"pnl_usd":book["equity"]-CAPITAL,
+       "return_pct":100*(book["equity"]/CAPITAL-1),
+       "drawdown_closed_pct":dd,"closed":len(book["closed"]),
+       "wins":wins,"losses":losses,
+       "effective_leverage":p["notional_leverage"] if p else 0.0,
+       "frozen":book["frozen"]}
+
+def process(hourly,path=FILE):
+    old=json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    new=update(old,hourly)
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(json.dumps(new,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+    return new
