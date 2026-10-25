@@ -8,13 +8,15 @@ from pathlib import Path
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from src.strategies import make_indicators
-from research.screen_v2 import aggregate_hourly_to_h4,sign,CAPITAL,MAX_LEVERAGE,ATR_STOP,ATR_TARGET,MAX_HOLD
+from research.screen_v2 import aggregate_hourly_to_h4,sign,CAPITAL,ATR_STOP,ATR_TARGET,MAX_HOLD
 from research.backtest_year import COST_BPS
 
 FILE=Path("state/selected_gold_v2.json")
 STUDY=("rsi_trend","channel20","pullback20","momentum100","channel55")
 # Prospective paper-only risk. Does not modify prior historic backtests.
 RISK=0.0075
+# Conventional comparison cohort: never borrow; no more than 1x notional.
+MAX_LEVERAGE=1.0
 DISPLAY={
   "rsi_trend":"RSI Trend",
   "channel20":"Channel 20",
@@ -32,6 +34,7 @@ def evaluate_bar(book,key,bars,ind,i):
     row=bars[i];t=row["time"];open_price=row["open"]
     p=book["position"]
     if p:
+        p["held_bars"]=p.get("held_bars",0)+1
         side=p["side"];stop=p["stop"];target=p["target"]
         if side==1:
             stopped=row["low"]<=stop;taken=row["high"]>=target
@@ -42,7 +45,7 @@ def evaluate_bar(book,key,bars,ind,i):
         fill=None
         if stopped:fill=stop_fill;reason="STOP"
         elif taken:fill=target;reason="TARGET"
-        elif i-p["i"]>=MAX_HOLD:fill=row["close"];reason="TIME"
+        elif p["held_bars"]>=MAX_HOLD:fill=row["close"];reason="TIME"
         if fill is not None:
             gross=side*(fill-p["entry"])*p["qty"]
             fee=COST_BPS["XAUUSD"]/10000*p["qty"]*((fill+p["entry"])/2)
@@ -65,7 +68,7 @@ def evaluate_bar(book,key,bars,ind,i):
                     MAX_LEVERAGE*book["equity"]/open_price)
             if qty>0:
                 book["position"]={"side":signal_now,"entry":open_price,
-                    "start":t,"i":i,"qty":qty,
+                    "start":t,"i":i,"held_bars":0,"qty":qty,
                     "stop":open_price-signal_now*ATR_STOP*atr,
                     "target":open_price+signal_now*ATR_TARGET*atr}
 
