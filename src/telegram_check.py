@@ -39,10 +39,13 @@ def main():
         for update in updates:
             message=update.get("message") or {}
             dest=message.get("chat") or {}
-            if dest.get("type")=="private" and (message.get("text") or "").strip().startswith("/start"):
+            # A private message to the bot is sufficient to opt in; only use
+            # automatic discovery when exactly one private conversation exists.
+            if dest.get("type")=="private" and dest.get("id"):
                 chats.add(str(dest.get("id")))
+        print(f"Atualizações disponíveis: {len(updates)}; conversas privadas: {len(chats)}")
         if len(chats)==0:
-            raise RuntimeError("Nenhum /start encontrado nas últimas atualizações. Envie /start ao bot e execute novamente.")
+            raise RuntimeError("Telegram não devolveu uma conversa privada recente. Envie /start novamente ao bot e repita o teste.")
         if len(chats)>1:
             raise RuntimeError("Há vários chats iniciados; configure TELEGRAM_CHAT_ID para identificar seu chat.")
         chat=next(iter(chats))
