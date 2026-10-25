@@ -3,6 +3,7 @@
 Does NOT change production books or send Telegram messages. Prices are public
 Yahoo GC=F continuous futures proxy candles, not FBS CFD prices. The annual
 period was inspected in earlier research and is NOT fresh out-of-sample data.
+Public price series can change, so archived reports should record their candle fingerprint.
 """
 from __future__ import annotations
 import json
