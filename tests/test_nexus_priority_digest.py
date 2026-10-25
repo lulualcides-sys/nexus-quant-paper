@@ -38,6 +38,19 @@ class PriorityDigestTests(unittest.TestCase):
         self.assertIn("Sem cotação: 33", message)
         self.assertIn("não comprovam odds de entrada", message)
 
+    def test_pinnacle_prices_are_shown_only_when_confirmed_by_radar(self):
+        coverage = {"important_games": 12, "verified_bookmaker_games": 5,
+                    "indicative_only_games": 1, "missing_bookmaker_price_games": 6,
+                    "pinnacle_guest": {"status": "checked", "matched": 3,
+                                       "offers": 28,
+                                       "market_families": {"total_goals": 16,
+                                                           "asian_handicap": 12}}}
+        msg = format_football(BASE, coverage)
+        self.assertIn("Pinnacle pública: 28 odds observadas em 3 jogos", msg)
+        self.assertIn("total_goals 16", msg)
+        coverage["pinnacle_guest"]["status"] = "stale"
+        self.assertNotIn("Pinnacle pública:", format_football(BASE, coverage))
+
     def test_priority_report_rejects_stale_data(self):
         def open_doc(value):
             def opener(req, timeout=0):
