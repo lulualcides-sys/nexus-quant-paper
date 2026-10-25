@@ -5,6 +5,7 @@ from pathlib import Path
 from .feed import MARKETS,get_bars
 from .monitor import empty_state,scan_market,report,date_local
 from .private_chat import load_chat, save_chat
+from .gold_forward import process as process_gold, summary as gold_summary
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -62,10 +63,12 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
         except Exception as exc:
             failed.append(f"{key}: {exc}")
     if failed:raise RuntimeError("Fonte/estado incompleto: "+"; ".join(failed))
+    gold_book=process_gold(datasets["XAUUSD"])
     statefile.parent.mkdir(parents=True,exist_ok=True)
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
-        msg=report(state,datasets,day)
+        msg=report(state,datasets,day)+"\n"+gold_summary(gold_book,day)
+        if len(msg)>3900:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         (reports/f"{day}.txt").write_text(msg+"\n",encoding="utf-8")
         if send(msg):
