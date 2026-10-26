@@ -1,4 +1,4 @@
-name: Nexus Quant | Ten bots / Five markets
+name: Nexus Quant | 11 paper bots / Five markets
 on:
   push:
     branches: [main]
@@ -7,15 +7,16 @@ on:
       - 'tests/**'
       - '.github/workflows/monitor.yml'
   schedule:
-    - cron: '19 */4 * * 1-5' # scan all 10 paper bots, weekdays
+    - cron: '19 */4 * * 1-5' # scan original ten H4 paper bots, weekdays
+    - cron: '5,20,35,50 * * * 1-5' # USD/CAD M15-only scan, weekdays; GitHub timing may lag
     - cron: '15 22 * * 1-5' # one digest ~19:15 America/Sao_Paulo
     - cron: '2 * * * *' # hourly opt-in check only, no trading
   workflow_dispatch:
     inputs:
       mode:
-        description: Scan (registrar dados) ou report (enviar relatorio)
+        description: Scan H4, report Telegram ou M15 isolado
         type: choice
-        options: [scan, report]
+        options: [scan, report, mtf]
         default: scan
 permissions:
   contents: write
@@ -51,6 +52,7 @@ jobs:
         shell: bash
         run: |
           MODE=scan
+          if [[ "$SCHEDULE_EXPR" == '5,20,35,50 * * * 1-5' || "$MANUAL_MODE" == 'mtf' ]]; then MODE=mtf; fi
           if [[ "$SCHEDULE_EXPR" == '15 22 * * 1-5' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
           python -m src.runner --mode "$MODE"
       - name: Store signal journal
