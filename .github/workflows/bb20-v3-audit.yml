@@ -1,0 +1,34 @@
+name: Nexus Quant | Validate deployed BB20 M15 v3
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/validate_bb20_v3.py'
+      - '.github/workflows/bb20-v3-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nexus-quant-bb20-v3-audit
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate deployed engine using frozen M15 observations
+        run: python -m research.validate_bb20_v3
+      - name: Preserve verification
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/results/bb20_m15_v3_engine_validation_2026-10-26.*
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: audit deployed v3 BB20 paper strategy [skip ci]'
+            git pull --rebase
+            git push
+          fi
