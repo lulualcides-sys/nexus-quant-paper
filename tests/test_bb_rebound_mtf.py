@@ -1,6 +1,7 @@
 """Network-free safety checks for the USD/CAD BB20 H1 -> M15 paper bot."""
 import copy
 import unittest
+from statistics import mean
 from datetime import datetime, timezone
 
 from src.bb_rebound_mtf import (
@@ -24,17 +25,19 @@ def hours(up=True, count=61):
     return out
 
 
-def minutes():
+def minutes(up=True):
     out = []
+    direction = 1 if up else -1
     for hour in range(60):
-        base = 1.30 + 0.0002 * hour
+        base = 1.30 + direction * 0.0002 * hour
         for q in range(4):
-            close = base + 0.00004 * q
-            op = close - 0.00003
+            close = base + direction * 0.00004 * q
+            op = close - direction * 0.00003
             out.append({
                 "time": 3600 * hour + 900 * q,
-                "open": op, "high": close + 0.00005,
-                "low": base - 0.003 if q == 0 else op - 0.00005,
+                "open": op,
+                "high": max(op, close) + (0.003 if q == 0 and not up else 0.00005),
+                "low": min(op, close) - (0.003 if q == 0 and up else 0.00005),
                 "close": close,
             })
     return out
@@ -52,37 +55,90 @@ class BB20BotTests(unittest.TestCase):
         down = hours(up=False)
         self.assertEqual(h1_rejection(down, make_indicators(down), 59), -1)
 
-    def test_first_run_is_clean_and_m15_confirmed_entry_is_incremental(self):
+    def test_first_run_is_clean_and_m15_pullback_not_breakout(self):
         bars = minutes()
         state = update(None, bars)
         self.assertIsNone(state["position"])
         self.assertEqual(state["closed"], [])
         self.assertEqual(state["equity"], CAPITAL)
-        # A breakout M15 closes after the completed H1 rejection.
-        breakout_open = bars[-1]["close"] + 0.00001
-        breakout_close = breakout_open + 0.00040
+        middle = mean(x["close"] for x in to_h1(bars)[-20:])
+        # Price returns down to the H1 BB middle, then prints a small bullish
+        # M15 rebound. It stays BELOW the prior M15 high (no breakout).
         bars.append({
-            "time": 60 * 3600, "open": breakout_open,
-            "high": breakout_close + 0.00005,
-            "low": breakout_open - 0.00005,
-            "close": breakout_close,
+            "time": 60 * 3600, "open": bars[-1]["close"],
+            "high": bars[-1]["close"] + 0.00015,
+            "low": middle - 0.00003, "close": middle + 0.00002,
         })
         bars.append({
-            "time": 60 * 3600 + 900, "open": breakout_close,
-            "high": breakout_close + 0.00005,
-            "low": breakout_close - 0.00005,
-            "close": breakout_close,
+            "time": 60 * 3600 + 900, "open": middle + 0.00002,
+            "high": middle + 0.00025,
+            "low": middle - 0.00002, "close": middle + 0.00020,
+        })
+        self.assertLess(bars[-1]["close"], bars[-2]["high"])  # NOT a breakout
+        bars.append({
+            "time": 60 * 3600 + 1800, "open": middle + 0.00020,
+            "high": middle + 0.00025,
+            "low": middle + 0.00013, "close": middle + 0.00021,
         })
         state = update(state, bars)
         self.assertIsNotNone(state["position"])
         self.assertEqual(state["position"]["side"], 1)
-        self.assertEqual(state["position"]["entry_ts"], 60 * 3600 + 900)
+        self.assertEqual(state["position"]["entry_ts"], 60 * 3600 + 1800)
+        self.assertEqual(state["position"]["entry_rule"], "bb20_h1_m15_pullback_v2")
         self.assertLessEqual(state["position"]["qty_usd"], CAPITAL)
         self.assertEqual(state["closed"], [])
         watermark = state["watermark_m15"]
         again = update(state, bars)
         self.assertEqual(again["watermark_m15"], watermark)
         self.assertEqual(again["last_entry_h1"], 59 * 3600)
+
+    def test_bearish_m15_rebound_triggers_sell_without_low_breakout(self):
+        bars = minutes(up=False)
+        state = update(None, bars)
+        middle = mean(x["close"] for x in to_h1(bars)[-20:])
+        bars.append({
+            "time": 60 * 3600, "open": bars[-1]["close"],
+            "high": middle + 0.00003,
+            "low": bars[-1]["close"] - 0.00015, "close": middle - 0.00002,
+        })
+        bars.append({
+            "time": 60 * 3600 + 900, "open": middle - 0.00002,
+            "high": middle + 0.00002,
+            "low": middle - 0.00025, "close": middle - 0.00020,
+        })
+        self.assertGreater(bars[-1]["close"], bars[-2]["low"])
+        bars.append({
+            "time": 60 * 3600 + 1800, "open": middle - 0.00020,
+            "high": middle - 0.00013, "low": middle - 0.00025,
+            "close": middle - 0.00021,
+        })
+        state = update(state, bars)
+        self.assertIsNotNone(state["position"])
+        self.assertEqual(state["position"]["side"], -1)
+        self.assertEqual(state["position"]["entry_ts"], 60 * 3600 + 1800)
+
+    def test_no_entry_when_return_candle_does_not_reject_mean(self):
+        bars = minutes()
+        state = update(None, bars)
+        middle = mean(x["close"] for x in to_h1(bars)[-20:])
+        bars.append({
+            "time": 60 * 3600, "open": bars[-1]["close"],
+            "high": bars[-1]["close"] + 0.00015,
+            "low": middle - 0.00003, "close": middle + 0.00002,
+        })
+        bars.append({
+            "time": 60 * 3600 + 900, "open": middle + 0.00002,
+            "high": middle + 0.00005,
+            "low": middle - 0.00025, "close": middle - 0.00020,
+        })
+        bars.append({
+            "time": 60 * 3600 + 1800, "open": middle - 0.00020,
+            "high": middle - 0.0001, "low": middle - 0.00030,
+            "close": middle - 0.00022,
+        })
+        state = update(state, bars)
+        self.assertIsNone(state["position"])
+        self.assertEqual(state["closed"], [])
 
     def test_missing_watermark_does_not_fabricate_orders(self):
         bars = minutes()
@@ -141,7 +197,7 @@ class BB20BotTests(unittest.TestCase):
             leveraged_update(None, rows), mtf=update(None, minutes())
         )
         self.assertIn("11 robôs", report)
-        self.assertIn("BB20 Retorno H1/M15", report)
+        self.assertIn("BB20 Pullback H1/M15", report)
         self.assertIn("51,000", report)
         self.assertIn("Sem operações reais", report)
         self.assertLess(len(report), 4000)

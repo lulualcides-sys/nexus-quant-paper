@@ -38,7 +38,7 @@ def digest(day,conventional,leveraged,datasets=None,unavailable=None,mtf=None,mt
         if mtf is not None:
             lines.extend(bb_digest(mtf,day))
         else:
-            lines.extend(["🟨 11º ROBÔ — BB20 Retorno H1/M15 | USD/CAD",
+            lines.extend(["🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD",
                           "⚠️ Dados indisponíveis: " + str(mtf_error)[:130] + ". Não atribuir P&L zero."])
     lines.append("")
     all_books=[(DISPLAY[k],scorecard(old_books[k])["pnl"]) for k in STUDY]

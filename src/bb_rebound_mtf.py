@@ -18,7 +18,7 @@ from src.strategies import make_indicators
 
 FILE = Path("state/bb20_mtf_usdcad_v1.json")
 TICKER = "CAD=X"  # Yahoo USD/CAD reference; not FBS executable prices
-NAME = "BB20 Retorno H1/M15"
+NAME = "BB20 Pullback H1/M15"
 CAPITAL = 1000.0
 RISK_FRACTION = 0.0075
 MAX_NOTIONAL = 1.0  # 1x USD base notional, no borrowing
@@ -184,16 +184,32 @@ def step(book, bars, i, h1, inds):
 
     middle = mean(x["close"] for x in h1[j-19:j+1])
     older = bars[i-2]
-    long_trigger = prior["close"] > prior["open"] and prior["close"] > older["high"] and prior["close"] > middle
-    short_trigger = prior["close"] < prior["open"] and prior["close"] < older["low"] and prior["close"] < middle
-    if not (long_trigger if side > 0 else short_trigger):
-        book["last_reason"] = "H1 confirmou; aguardando rompimento M15"
-        return
-
     atr = inds[j]["atr"]
     opening = current["open"]
     if atr <= 0 or opening <= 0:
         book["last_reason"] = "ATR/preço inválido"
+        return
+
+    # TRUE PULLBACK: the completed H1 candle already touched and rejected
+    # the BB20 central line. On M15 enter the reaction AWAY from that line,
+    # not a breakout beyond the previous candle's high/low.
+    # Keep the reaction near the central mean; avoid chasing late moves.
+    proximity = 0.25 * atr
+    max_rebound_distance = 0.75 * atr
+    long_trigger = (
+        prior["low"] <= middle + proximity
+        and 0 < prior["close"] - middle <= max_rebound_distance
+        and prior["close"] > prior["open"]
+        and prior["close"] > older["close"]
+    )
+    short_trigger = (
+        prior["high"] >= middle - proximity
+        and 0 < middle - prior["close"] <= max_rebound_distance
+        and prior["close"] < prior["open"]
+        and prior["close"] < older["close"]
+    )
+    if not (long_trigger if side > 0 else short_trigger):
+        book["last_reason"] = "H1 confirmou; aguardando retorno M15 junto à SMA20"
         return
     distance = max(STOP_ATR * atr, 6 * PIP)
     # Quantity is USD base units. Convert quote-currency stop loss back to USD.
@@ -202,7 +218,7 @@ def step(book, bars, i, h1, inds):
     if qty <= 0:
         return
     book["position"] = {
-        "side": side, "entry": opening, "entry_ts": current["time"],
+        "side": side, "entry": opening, "entry_ts": current["time"], "entry_rule": "bb20_h1_m15_pullback_v2",
         "qty_usd": qty, "stop": opening - side * distance,
         "target": opening + side * TARGET_R * distance,
         "confirm_h1": confirmed_h1["time"],
@@ -255,8 +271,8 @@ def digest(book, day):
     losses = sum(p["net_usd"] < 0 for p in book["closed"])
     state = "posição virtual aberta" if book["position"] else "sem posição"
     return [
-        "🟨 11º ROBÔ — BB20 Retorno H1/M15 | USD/CAD",
+        "🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD",
         f"{len(closed_today)} fech. hoje | dia US$ {pnl:+.2f} | total US$ {total:+.2f} | V/D {wins}/{losses} | {state}",
         f"📍 {book.get('last_reason', 'Sem diagnóstico')} | banca US$ {CAPITAL:,.0f} virtual",
-        "⚠️ SMA20 central (BB 20,2), toque/rejeição H1 + rompimento M15; preço CAD=X indicativo.",
+        "⚠️ SMA20 central (BB 20,2), toque/rejeição H1 + retorno M15 junto à média; preço CAD=X indicativo.",
     ]

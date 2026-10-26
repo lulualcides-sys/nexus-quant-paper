@@ -11,13 +11,13 @@
 
 # Nexus Quant Paper — monitor gratuito
 
-## Robô 11 — BB20 Retorno H1/M15 no USD/CAD (26/10/2026)
+## Robô 11 — BB20 Pullback H1/M15 no USD/CAD (26/10/2026)
 
 **Status:** experimento prospectivo em conta virtual, sem execução na FBS. É **um único novo robô**, separado dos dez robôs H4 no ouro. Não é estratégia validada para dinheiro real.
 
 - **Indicador da imagem:** Bandas de Bollinger (período 20, multiplicador 2); referência de entrada é a **média central SMA20**, não as bandas externas. O indicador %B apenas ajuda a localizar o preço e confirma o lado da SMA.
 - **Confirmação H1:** a máxima/mínima da vela H1 toca a SMA20 e o fechamento rejeita o nível na direção do movimento; exige também fechamento do lado correto da EMA50 e candle direcional.
-- **Gatilho M15:** dentro da hora seguinte à confirmação H1, um candle de 15 minutos precisa fechar além da máxima do candle M15 anterior (compra) ou abaixo da mínima (venda), mantendo o lado da SMA20. A entrada **simulada** é no início do M15 seguinte; nenhuma compra ou venda ocorre na corretora.
+- **Gatilho M15 (PULLBACK, não rompimento):** após o H1 tocar a SMA20 e fechar rejeitando, a entrada depende de um M15 que reaja **de volta para longe da média**: compra quando o candle M15 volta a fechar em alta acima da SMA20, venda quando volta a fechar em baixa abaixo dela. Exige proximidade com a SMA20 (toque/reteste com tolerância de 0,25 ATR H1 e fechamento até 0,75 ATR dela) e progressão favorável em relação ao fechamento M15 anterior. **Não exige ultrapassar máxima/mínima do M15 anterior.** A entrada virtual é na abertura do próximo candle disponível; nenhuma ordem é enviada à corretora.
 - **Risco:** banca virtual independente de US$ 1.000, risco-stop planejado no máximo 0,75%, exposição nocional máxima de 1×, stop de 1,2 ATR H1 (mínimo 6 pips), alvo de 1,6R, tempo máximo 8 horas, custo simulado de 1,5 pip por round-trip. Custos e fills reais podem ser piores.
 - **Fonte:** Yahoo `CAD=X` em M15 (preços de referência). Não é feed bid/ask FBS, e o preço da imagem do aplicativo pode diferir. Primeira inicialização não inventa operações anteriores.
 - **Agendamento:** somente a nova estratégia, cerca de quatro vezes por hora nos dias úteis, via GitHub Actions. Execuções do GitHub podem atrasar; a periodicidade não garante captura negociável em M15. Os outros dez usam os horários anteriores.
