@@ -17,7 +17,7 @@ def hours(up=True, count=61):
         op = close - (0.0001 if up else -0.0001)
         out.append({
             "time": 3600 * i, "open": op,
-            "high": max(op, close) + 0.001,
+            "high": max(op, close) + 0.003,
             "low": min(op, close) - 0.003,
             "close": close,
         })
