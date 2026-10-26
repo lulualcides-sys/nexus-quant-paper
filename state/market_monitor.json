@@ -4,27 +4,78 @@
     "EURUSD": {
       "signals": [],
       "source": "EURUSD=X",
-      "watermark": 1792789200
+      "watermark": 1792972800
     },
     "US500": {
-      "signals": [],
+      "signals": [
+        {
+          "asset": "US500",
+          "atr": 20.930816655673272,
+          "close": 7665.0,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:momentum_x:1792969200",
+          "side": -1,
+          "strategy": "momentum_x",
+          "ts": 1792969200
+        },
+        {
+          "asset": "US500",
+          "atr": 20.930816655673272,
+          "close": 7665.0,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:pullback_master:1792969200",
+          "side": -1,
+          "strategy": "pullback_master",
+          "ts": 1792969200
+        }
+      ],
       "source": "ES=F",
-      "watermark": 1792789200
+      "watermark": 1792972800
     },
     "USDJPY": {
       "signals": [],
       "source": "JPY=X",
-      "watermark": 1792785600
+      "watermark": 1792972800
     },
     "XAUUSD": {
-      "signals": [],
+      "signals": [
+        {
+          "asset": "XAUUSD",
+          "atr": 12.821389211817436,
+          "close": 4014.0,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XAUUSD:reversal_ai:1792965600",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1792965600
+        }
+      ],
       "source": "GC=F",
-      "watermark": 1792785600
+      "watermark": 1792972800
     },
     "XTIUSD": {
-      "signals": [],
+      "signals": [
+        {
+          "asset": "XTIUSD",
+          "atr": 0.9018568869798433,
+          "close": 102.05999755859375,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:reversal_ai:1792965600",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1792965600
+        }
+      ],
       "source": "CL=F",
-      "watermark": 1792785600
+      "watermark": 1792972800
     }
   },
   "schema": 4
