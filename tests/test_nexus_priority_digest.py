@@ -77,6 +77,24 @@ class PriorityDigestTests(unittest.TestCase):
         data["book_quality"]["status"]="stale"
         self.assertNotIn("Linhas completas:",format_football(BASE,data))
 
+    def test_price_movements_are_pregame_not_trading_profit(self):
+        radar = {"important_games":10,"verified_bookmaker_games":5,
+                 "indicative_only_games":1,"missing_bookmaker_price_games":4,
+                 "price_movements":{"status":"fresh",
+                     "selections_with_changes":36,
+                     "top_changes":[{
+                         "home":"Flamengo","away":"Corinthians",
+                         "market_family":"total_goals",
+                         "implied_probability_change_pp":5.77,
+                         "first_odds":2.1,"last_odds":1.95}]}}
+        msg=format_football(BASE,radar)
+        self.assertIn("Movimentos de odds observados: 36",msg)
+        self.assertIn("Flamengo x Corinthians",msg)
+        self.assertIn("+5.77 p.p. implícitos",msg)
+        radar["price_movements"]["status"]="stale"
+        self.assertNotIn("Movimentos de odds",format_football(BASE,radar))
+        self.assertNotIn("lucro confirmado",msg)
+
     def test_failed_radar_keeps_regular_daily_delivery(self):
         sent = []
         def fake_api(token, method, payload=None):
