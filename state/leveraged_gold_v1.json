@@ -2,12 +2,12 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1792771200,
+  "h4_watermark": 1792972800,
   "books": {
     "lev_channel20": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": null,
+      "today": "2026-10-25",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -16,7 +16,7 @@
     "lev_momentum100": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": null,
+      "today": "2026-10-25",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -25,7 +25,7 @@
     "lev_channel55": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": null,
+      "today": "2026-10-25",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -34,7 +34,7 @@
     "lev_momentum40": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": null,
+      "today": "2026-10-25",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -43,7 +43,7 @@
     "lev_trend_long": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": null,
+      "today": "2026-10-25",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
