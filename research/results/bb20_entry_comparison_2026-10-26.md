@@ -5,7 +5,7 @@ Treino: 15 dias iniciais; validação retrospectiva: 15 dias finais.
 
 | Filtro de entrada | 30d operações | 30d acerto | 30d P&L US$ | Treino P&L US$ | Validação operações | Validação acerto | Validação P&L US$ |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| baseline | 21 | 33.33% | -4.95 | -7.53 | 10 | 60.0% | +2.60 |
+| baseline | 34 | 35.29% | +0.38 | -4.10 | 16 | 50.0% | +4.50 |
 | touch | 14 | 28.57% | -6.37 | -4.34 | 7 | 42.86% | -2.04 |
 | touch_slope | 11 | 18.18% | -7.19 | -4.50 | 5 | 40.0% | -2.70 |
 | touch_wick | 9 | 33.33% | -1.13 | -0.29 | 2 | 50.0% | -0.83 |
