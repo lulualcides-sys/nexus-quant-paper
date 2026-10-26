@@ -1,0 +1,41 @@
+name: Nexus Quant | BB20 Five-Market Research
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/bb20_five_markets.py'
+      - '.github/workflows/bb20-five-markets.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nexus-quant-bb20-five-markets
+  cancel-in-progress: false
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify existing 11-robot code is unchanged
+        run: |
+          python -m pip install cryptography
+          python -m unittest discover -s tests -v
+      - name: Replay 5 markets independently at H1/M15, with USD/CAD golden-control check
+        run: python -m research.bb20_five_markets
+      - name: Save research for audit
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if [[ -f research/results/bb20_5_markets_2026-10-26.json ]]; then
+            git add research/results/bb20_5_markets_2026-10-26.*
+            if ! git diff --cached --quiet; then
+              git commit -m 'research: save five market BB20 comparison [skip ci]'
+              git pull --rebase
+              git push
+            fi
+          fi
