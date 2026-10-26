@@ -105,6 +105,17 @@ def format_football(data, coverage=None):
                 if isinstance(item, dict) and item.get("home") and item.get("away"):
                     missing_names.append(str(item["home"])[:30] + " x " + str(item["away"])[:30])
         watchlist = ("👀 Ainda sem odds: " + "; ".join(missing_names) + "\n") if missing_names else ""
+        official = coverage.get("official_corners_cards") or {}
+        official_book_prices = ""
+        if (isinstance(official,dict) and official.get("status")=="checked"
+                and (official.get("verified_corners_quotes",0)>0
+                     or official.get("verified_cards_quotes",0)>0)):
+            official_book_prices = (
+                "🎲 Odds de casa para escanteios: "
+                f"{official.get('verified_corners_quotes',0)} | "
+                f"cartões: {official.get('verified_cards_quotes',0)}\n"
+                "⚠️ Preço observado não comprova liquidez negociada.\n"
+            )
         coverage_stats = ""
         if isinstance(coverage.get("games_with_corners_stats"),int):
             coverage_stats = (
@@ -138,6 +149,7 @@ def format_football(data, coverage=None):
             f"{book_quality}"
             f"{price_trends}"
             f"{watchlist}"
+            f"{official_book_prices}"
             f"{coverage_stats}"
             "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
         )
