@@ -158,6 +158,19 @@ def format_football(data, coverage=None):
                     f"• Odds de casa: escanteios {corners} · cartões {cards}"
                 )
 
+        # Cobertura das estatísticas esportivas: não confundir com odds de casas.
+        stats = (
+            ("games_with_corners_stats", "escanteios"),
+            ("games_with_yellow_cards_stats", "cartões"),
+            ("games_with_shots_on_target_stats", "chutes no alvo"),
+        )
+        available = [
+            f"{label} {coverage[key]}j" for key, label in stats
+            if isinstance(coverage.get(key), int) and coverage[key] > 0
+        ]
+        if available:
+            lines.append("• Dados de jogo (não odds): " + " · ".join(available))
+
         moves = coverage.get("price_movements") or {}
         if isinstance(moves, dict) and moves.get("status") == "fresh":
             count = moves.get("selections_with_changes")
