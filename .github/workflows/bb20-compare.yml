@@ -1,0 +1,34 @@
+name: Nexus Quant | BB20 Entry Comparison
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/tune_bb20_entry.py'
+      - '.github/workflows/bb20-compare.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nexus-quant-bb20-entry-compare
+  cancel-in-progress: false
+jobs:
+  comparison:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compare frozen historical candles
+        run: python -m research.tune_bb20_entry
+      - name: Save audited comparison
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/results/bb20_entry_comparison_2026-10-26.json research/results/bb20_entry_comparison_2026-10-26.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: record entry-filter comparison [skip ci]'
+            git pull --rebase
+            git push
+          fi
