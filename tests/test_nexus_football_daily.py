@@ -57,11 +57,21 @@ class FootballTelegramTests(unittest.TestCase):
             return {"message_id": 9}
         with TemporaryDirectory() as folder, patch.dict(os.environ,
             {"TELEGRAM_BOT_TOKEN": "fake-test-token", "TELEGRAM_CHAT_ID": "123"}):
-            deliver("2026-10-25", Path(folder),
-                    fetch=lambda d: (_ for _ in ()).throw(ValueError("missing")),
-                    messenger=mock_api)
-        self.assertIn("ainda não está disponível", messages[0])
-        self.assertNotIn("0 jogos", messages[0])
+            root=Path(folder)
+            with self.assertRaises(RuntimeError):
+                deliver("2026-10-25", root,
+                        fetch=lambda d: (_ for _ in ()).throw(ValueError("missing")),
+                        messenger=mock_api)
+            self.assertEqual(messages,[])
+            self.assertFalse((root/"2026-10-25.json").exists())
+            # Recovery run must send the REAL report exactly once.
+            self.assertTrue(deliver("2026-10-25",root,
+                                    fetch=lambda d:SAMPLE,messenger=mock_api))
+            self.assertIn("NEXUS FUTEBOL",messages[0])
+            self.assertIn("12 em 3 jogos",messages[0])
+            self.assertFalse(deliver("2026-10-25",root,
+                                     fetch=lambda d:SAMPLE,messenger=mock_api))
+            self.assertEqual(len(messages),1)
 
 if __name__ == "__main__":
     unittest.main()
