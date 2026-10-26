@@ -184,12 +184,13 @@ def deliver(day, marker_folder=Path("state/nexus_football_reports"), fetch=load_
                 print("Radar de jogos importantes indisponível; relatório normal preservado.")
         message = format_football(data, coverage)
     except (OSError, ValueError, KeyError, TimeoutError) as exc:
-        # Falta de arquivo ou falha de rede NÃO vira dados zero inventados.
-        print("Relatório esportivo não disponível: " + type(exc).__name__)
-        message = (f"⚠️ NEXUS FUTEBOL | {day}\n"
-                   "A coleta diária ainda não está disponível/validada. "
-                   "Nenhum resultado ou lucro foi estimado.\n"
-                   "https://nexus-score-gratis.pages.dev/")
+        # Uma coleta atrasada NÃO envia mensagem de zeros nem marca o dia
+        # como concluído. O workflow agenda tentativas de recuperação.
+        # A primeira mensagem válida deste dia é a ÚNICA enviada.
+        print("Arquivo esportivo ainda inválido/indisponível; sem envio, "
+              "nova tentativa será feita no próximo agendamento: "
+              + type(exc).__name__)
+        raise RuntimeError("Dados do fechamento NEXUS indisponíveis; Telegram não enviado") from exc
     result = messenger(token, "sendMessage", {"chat_id": chat, "text": message})
     if not isinstance(result, dict) or not result.get("message_id"):
         raise RuntimeError("Telegram não confirmou entrega do relatório esportivo")
