@@ -1,0 +1,36 @@
+name: Nexus Quant | BB20 M15 30-day backtest
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/backtest_bb20_mtf.py'
+      - '.github/workflows/bb20-backtest.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nexus-quant-bb20-backtest
+  cancel-in-progress: false
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test current robot
+        run: python -m unittest discover -s tests -v
+      - name: Replay 30 days of verifiable M15 prices
+        run: python -m research.backtest_bb20_mtf
+      - name: Store audit results and raw historical candles
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/results/bb20_usdcad_m15_1mo_*
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: save real BB20 M15 historical replay [skip ci]'
+            git pull --rebase
+            git push
+          fi
