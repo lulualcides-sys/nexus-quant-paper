@@ -11,6 +11,22 @@
 
 # Nexus Quant Paper — monitor gratuito
 
+## Robô 11 — BB20 Retorno H1/M15 no USD/CAD (26/10/2026)
+
+**Status:** experimento prospectivo em conta virtual, sem execução na FBS. É **um único novo robô**, separado dos dez robôs H4 no ouro. Não é estratégia validada para dinheiro real.
+
+- **Indicador da imagem:** Bandas de Bollinger (período 20, multiplicador 2); referência de entrada é a **média central SMA20**, não as bandas externas. O indicador %B apenas ajuda a localizar o preço e confirma o lado da SMA.
+- **Confirmação H1:** a máxima/mínima da vela H1 toca a SMA20 e o fechamento rejeita o nível na direção do movimento; exige também fechamento do lado correto da EMA50 e candle direcional.
+- **Gatilho M15:** dentro da hora seguinte à confirmação H1, um candle de 15 minutos precisa fechar além da máxima do candle M15 anterior (compra) ou abaixo da mínima (venda), mantendo o lado da SMA20. A entrada **simulada** é no início do M15 seguinte; nenhuma compra ou venda ocorre na corretora.
+- **Risco:** banca virtual independente de US$ 1.000, risco-stop planejado no máximo 0,75%, exposição nocional máxima de 1×, stop de 1,2 ATR H1 (mínimo 6 pips), alvo de 1,6R, tempo máximo 8 horas, custo simulado de 1,5 pip por round-trip. Custos e fills reais podem ser piores.
+- **Fonte:** Yahoo `CAD=X` em M15 (preços de referência). Não é feed bid/ask FBS, e o preço da imagem do aplicativo pode diferir. Primeira inicialização não inventa operações anteriores.
+- **Agendamento:** somente a nova estratégia, cerca de quatro vezes por hora nos dias úteis, via GitHub Actions. Execuções do GitHub podem atrasar; a periodicidade não garante captura negociável em M15. Os outros dez usam os horários anteriores.
+- **Relatório:** o resumo diário do Telegram passa a listar o 11º robô de forma independente e mostra indisponibilidade de dados explicitamente, sem confundir a nova banca de US$ 1.000 com as dez de US$ 5.000. Capital total de referência: US$ 51.000 virtuais.
+
+Arquivos: [motor BB20](src/bb_rebound_mtf.py) · [testes](tests/test_bb_rebound_mtf.py) · [execução automática](.github/workflows/monitor.yml) · [relatório](src/daily_digest.py).
+
+---
+
 ## Stop móvel de green — Grupo B (25/10/2026)
 
 **Ativado exclusivamente nas PRÓXIMAS posições VIRTUAIS dos cinco robôs alavancados.** As posições já abertas preservam a política na qual entraram; nenhuma operação real na FBS foi criada.
