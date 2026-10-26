@@ -30,13 +30,13 @@ class PriorityDigestTests(unittest.TestCase):
                     "verified_bookmaker_games":7, "indicative_only_games":10,
                     "missing_bookmaker_price_games":33}
         message = format_football(BASE, priority)
-        self.assertIn("JOGOS IMPORTANTES (próximas 48h)\nMonitorados: 50", message)
-        self.assertIn("Resultados gerais (liquidez não comprovada)", message)
-        self.assertIn("1X2: Casa 5 | Empate 3 | Fora 7", message)
-        self.assertIn("Com odds verificadas: 7", message)
-        self.assertIn("Somente indicativas: 10", message)
-        self.assertIn("Sem cotação: 33", message)
-        self.assertIn("não comprovam odds de entrada", message)
+        self.assertIn("Jogos importantes · próximas 48h", message)
+        self.assertIn("Resultados gerais", message)
+        self.assertIn("1X2: Casa 5 · Empate 3 · Fora 7", message)
+        self.assertIn("com odds: <b>7</b>", message)
+        self.assertIn("Só indicativas: 10", message)
+        self.assertIn("sem cotação: 33", message)
+        self.assertIn("preço de entrada nem lucro", message)
 
     def test_pinnacle_prices_are_shown_only_when_confirmed_by_radar(self):
         coverage = {"important_games": 12, "verified_bookmaker_games": 5,
@@ -46,8 +46,8 @@ class PriorityDigestTests(unittest.TestCase):
                                        "market_families": {"total_goals": 16,
                                                            "asian_handicap": 12}}}
         msg = format_football(BASE, coverage)
-        self.assertIn("Pinnacle pública: 28 odds observadas em 3 jogos", msg)
-        self.assertIn("total_goals 16", msg)
+        self.assertIn("Pinnacle pública: <b>28</b> odds em 3 jogos", msg)
+        self.assertNotIn("total_goals 16", msg)  # detalhe técnico omitido no alerta compacto
         coverage["pinnacle_guest"]["status"] = "stale"
         self.assertNotIn("Pinnacle pública:", format_football(BASE, coverage))
 
@@ -72,7 +72,7 @@ class PriorityDigestTests(unittest.TestCase):
                               "families":{"match_odds":{"median_overround_pct":5.91}}}}
         message=format_football(BASE,data)
         self.assertIn("Linhas completas: 145",message)
-        self.assertIn("Margem 1X2 mediana: 5.91%",message)
+        self.assertIn("Margem mediana 1X2: 5.91%",message)
         self.assertIn("Flamengo x Atletico Mineiro",message)
         data["book_quality"]["status"]="stale"
         self.assertNotIn("Linhas completas:",format_football(BASE,data))
@@ -88,9 +88,9 @@ class PriorityDigestTests(unittest.TestCase):
                          "implied_probability_change_pp":5.77,
                          "first_odds":2.1,"last_odds":1.95}]}}
         msg=format_football(BASE,radar)
-        self.assertIn("Movimentos de odds observados: 36",msg)
+        self.assertIn("Movimentos de odds: 36",msg)
         self.assertIn("Flamengo x Corinthians",msg)
-        self.assertIn("+5.77 p.p. implícitos",msg)
+        self.assertIn("+5.77 p.p. de prob. implícita",msg)
         radar["price_movements"]["status"]="stale"
         self.assertNotIn("Movimentos de odds",format_football(BASE,radar))
         self.assertNotIn("lucro confirmado",msg)
@@ -104,11 +104,11 @@ class PriorityDigestTests(unittest.TestCase):
                   "official_corners_cards":{"status":"checked",
                         "verified_corners_quotes":8,"verified_cards_quotes":4}}
         text=format_football(BASE,coverage)
-        self.assertIn("Odds de casa para escanteios: 8 | cartões: 4",text)
-        self.assertIn("escanteios 3 | cartões 2 | chutes no alvo 2",text)
-        self.assertIn("não comprova liquidez",text)
+        self.assertIn("Odds de casa: escanteios 8 · cartões 4",text)
+        self.assertIn("escanteios 3j · cartões 2j · chutes no alvo 2j",text)
+        self.assertIn("não comprovam volume negociado",text)
         coverage["official_corners_cards"]["status"]="no_observed_prices"
-        self.assertNotIn("Odds de casa para escanteios:",format_football(BASE,coverage))
+        self.assertNotIn("Odds de casa:",format_football(BASE,coverage))
 
     def test_failed_radar_keeps_regular_daily_delivery(self):
         sent = []
