@@ -105,6 +105,15 @@ def format_football(data, coverage=None):
                 if isinstance(item, dict) and item.get("home") and item.get("away"):
                     missing_names.append(str(item["home"])[:30] + " x " + str(item["away"])[:30])
         watchlist = ("👀 Ainda sem odds: " + "; ".join(missing_names) + "\n") if missing_names else ""
+        coverage_stats = ""
+        if isinstance(coverage.get("games_with_corners_stats"),int):
+            coverage_stats = (
+                "📋 Jogos com dados esportivos: "
+                f"escanteios {coverage['games_with_corners_stats']} | "
+                f"cartões {coverage.get('games_with_yellow_cards_stats', 0)} | "
+                f"chutes no alvo {coverage.get('games_with_shots_on_target_stats', 0)}\n"
+                "Dados de jogo, NÃO são odds ou volumes negociados.\n"
+            )
         moves = coverage.get("price_movements") or {}
         price_trends = ""
         if isinstance(moves,dict) and moves.get("status") == "fresh":
@@ -129,6 +138,7 @@ def format_football(data, coverage=None):
             f"{book_quality}"
             f"{price_trends}"
             f"{watchlist}"
+            f"{coverage_stats}"
             "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
         )
     return (
