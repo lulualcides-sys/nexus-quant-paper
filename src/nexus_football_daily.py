@@ -105,6 +105,20 @@ def format_football(data, coverage=None):
                 if isinstance(item, dict) and item.get("home") and item.get("away"):
                     missing_names.append(str(item["home"])[:30] + " x " + str(item["away"])[:30])
         watchlist = ("👀 Ainda sem odds: " + "; ".join(missing_names) + "\n") if missing_names else ""
+        moves = coverage.get("price_movements") or {}
+        price_trends = ""
+        if isinstance(moves,dict) and moves.get("status") == "fresh":
+            count = moves.get("selections_with_changes")
+            if isinstance(count,int) and count >= 0:
+                price_trends = f"📈 Movimentos de odds observados: {count}\n"
+            top = moves.get("top_changes") or []
+            if isinstance(top,list) and top and isinstance(top[0],dict):
+                one = top[0]
+                delta = one.get("implied_probability_change_pp")
+                if isinstance(delta,(int,float)) and abs(delta) <= 100:
+                    title = str(one.get("home") or "")[:25] + " x " + str(one.get("away") or "")[:25]
+                    market = str(one.get("market_family") or "")[:25]
+                    price_trends += f"Maior variação: {title} | {market} | {delta:+.2f} p.p. implícitos\n"
         upcoming = (
             "🏆 JOGOS IMPORTANTES (próximas 48h)\n"
             f"Monitorados: {coverage['important_games']} | "
@@ -113,6 +127,7 @@ def format_football(data, coverage=None):
             f"Sem cotação: {coverage['missing_bookmaker_price_games']}\n"
             f"{pinnacle}"
             f"{book_quality}"
+            f"{price_trends}"
             f"{watchlist}"
             "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
         )
