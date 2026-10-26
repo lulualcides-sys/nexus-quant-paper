@@ -1,0 +1,24 @@
+🏆 NEXUS QUANT — 2026-10-26
+🔎 10 robôs • Ouro H4 • RESULTADOS VIRTUAIS
+📌 Preços de futuros GC=F, não cotações nem execuções FBS.
+
+🟦 5 CONVENCIONAIS | 0,75% risco-stop | até 1× nocional
+RSI Trend: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Channel 20: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Pullback 20: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Momentum 100: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Channel 55: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+
+🟥 5 ALAVANCADOS | 1,50% risco-stop | limite 3× nocional
+🟢 Stop móvel GREEN: após +1R, acompanha o movimento; sem TP fixo.
+Channel 20 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Momentum 100 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Channel 55 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Momentum 40 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Trend Long L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+
+🏅 Melhor saldo acumulado: RSI Trend (US$ +0.00)
+💼 Capital de referência: US$ 50,000 em 10 bancas independentes.
+🌍 Outros mercados observados: EUR/USD, USD/JPY, US500, WTI.
+⚠️ Risco maior pode ampliar perdas; financiamento alavancado estimado.
+⛔ Sem operações reais ou ganhos de corretora. Dados e custos aproximados.
