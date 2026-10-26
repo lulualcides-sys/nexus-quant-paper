@@ -65,119 +65,144 @@ def load_priority_coverage(opener=request.urlopen):
 
 
 def format_football(data, coverage=None):
-    # Com arquivo bruto, o painel principal mostra SÓ jogos com volume comprovado.
-    # Resumos legados sem separação explícita mantêm o rótulo geral.
+    """Relatório Telegram curto, em HTML nativo e sem resultados/odds inventados."""
+    from html import escape
+
     qualified = data.get("qualified_results")
-    has_qualified = isinstance(qualified, dict) and data.get("liquidity_qualified_games", 0) > 0
-    # Quando o provedor não expõe liquidez BRL, mostre os resultados GERAIS
-    # explicitamente identificados em vez de exibir uma página enganosa de zeros.
-    r = qualified if has_qualified else data["results"]
-    def line(key):
-        return f"{r.get(key + '_yes', 0)} sim / {r.get(key + '_no', 0)} não"
-    houses = ", ".join(k for k in list(data["bookmakers"])[:4]) or "sem cotações confirmadas"
-    markets = ", ".join(k for k in list(data.get("market_families_quoted") or {})[:6]) or "nenhum com preço verificado"
-    upcoming = ""
-    if isinstance(coverage,dict):
-        p = coverage.get("pinnacle_guest") or {}
-        pinnacle = ""
-        if isinstance(p, dict) and p.get("status") == "checked" and p.get("offers",0)>0:
-            types = p.get("market_families") or {}
-            detail = ", ".join(f"{name} {count}" for name,count in
-                               sorted(types.items(), key=lambda row: -row[1])[:4])
-            pinnacle = (
-                f"🏦 Pinnacle pública: {p['offers']} odds observadas em {p['matched']} jogos\n"
-                f"Linhas: {detail}\n"
-            )
-        quality = coverage.get("book_quality") or {}
-        book_quality = ""
-        if isinstance(quality, dict) and quality.get("status") == "fresh":
-            lines = quality.get("complete_market_lines", 0)
-            ft = (quality.get("families") or {}).get("match_odds") or {}
-            margin = ft.get("median_overround_pct")
-            book_quality = f"📐 Linhas completas: {lines}"
-            if isinstance(margin, (int, float)):
-                book_quality += f" | Margem 1X2 mediana: {margin:.2f}%"
-            book_quality += " (não é ROI)\n"
-        missing_items = coverage.get("top_missing") or []
-        missing_names = []
-        if isinstance(missing_items, list):
-            for item in missing_items[:3]:
-                if isinstance(item, dict) and item.get("home") and item.get("away"):
-                    missing_names.append(str(item["home"])[:30] + " x " + str(item["away"])[:30])
-        watchlist = ("👀 Ainda sem odds: " + "; ".join(missing_names) + "\n") if missing_names else ""
-        official = coverage.get("official_corners_cards") or {}
-        official_book_prices = ""
-        if (isinstance(official,dict) and official.get("status")=="checked"
-                and (official.get("verified_corners_quotes",0)>0
-                     or official.get("verified_cards_quotes",0)>0)):
-            official_book_prices = (
-                "🎲 Odds de casa para escanteios: "
-                f"{official.get('verified_corners_quotes',0)} | "
-                f"cartões: {official.get('verified_cards_quotes',0)}\n"
-                "⚠️ Preço observado não comprova liquidez negociada.\n"
-            )
-        coverage_stats = ""
-        if isinstance(coverage.get("games_with_corners_stats"),int):
-            coverage_stats = (
-                "📋 Jogos com dados esportivos: "
-                f"escanteios {coverage['games_with_corners_stats']} | "
-                f"cartões {coverage.get('games_with_yellow_cards_stats', 0)} | "
-                f"chutes no alvo {coverage.get('games_with_shots_on_target_stats', 0)}\n"
-                "Dados de jogo, NÃO são odds ou volumes negociados.\n"
-            )
-        moves = coverage.get("price_movements") or {}
-        price_trends = ""
-        if isinstance(moves,dict) and moves.get("status") == "fresh":
-            count = moves.get("selections_with_changes")
-            if isinstance(count,int) and count >= 0:
-                price_trends = f"📈 Movimentos de odds observados: {count}\n"
-            top = moves.get("top_changes") or []
-            if isinstance(top,list) and top and isinstance(top[0],dict):
-                one = top[0]
-                delta = one.get("implied_probability_change_pp")
-                if isinstance(delta,(int,float)) and abs(delta) <= 100:
-                    title = str(one.get("home") or "")[:25] + " x " + str(one.get("away") or "")[:25]
-                    market = str(one.get("market_family") or "")[:25]
-                    price_trends += f"Maior variação: {title} | {market} | {delta:+.2f} p.p. implícitos\n"
-        upcoming = (
-            "🏆 JOGOS IMPORTANTES (próximas 48h)\n"
-            f"Monitorados: {coverage['important_games']} | "
-            f"Com odds verificadas: {coverage['verified_bookmaker_games']}\n"
-            f"Somente indicativas: {coverage['indicative_only_games']} | "
-            f"Sem cotação: {coverage['missing_bookmaker_price_games']}\n"
-            f"{pinnacle}"
-            f"{book_quality}"
-            f"{price_trends}"
-            f"{watchlist}"
-            f"{official_book_prices}"
-            f"{coverage_stats}"
-            "ℹ️ Indicativas não comprovam odds de entrada ou liquidez.\n"
-        )
-    return (
-        f"⚽ NEXUS FUTEBOL — FECHAMENTO {data['day']}\n"
-        f"Jogos {data['games']} | Encerrados {data['finished']}\n"
-        f"Odds verificadas {data['quotes_verified']} em {data['games_with_verified_odds']} jogos\n"
-        f"🎯 Odds em jogos com liquidez comprovada: {data.get('qualified_game_quotes_verified', 0)}\n"
-        f"💰 Liquidez comprovada ≥ R$ 3 mil: {data.get('liquidity_qualified_games', 0)} jogos\n"
-        f"⚪ Volume abaixo: {data.get('liquidity_below_games', 0)} | "
-        f"Sem comprovação: {data.get('liquidity_unknown_games', data['games'])}\n"
-        f"Famílias com preço {data['market_families_with_verified_prices']}/{data['market_families_catalogued']}\n"
-        f"Mercados: {markets}\n"
-        f"Casas: {houses}\n\n"
-        f"📊 Resultados {'com liquidez ≥ R$ 3 mil' if has_qualified else 'gerais (liquidez não comprovada)'}\n"
-        f"1X2: Casa {r.get('1x2_home', 0)} | Empate {r.get('1x2_draw', 0)} | Fora {r.get('1x2_away', 0)}\n"
-        f"Over 2.5: {line('over_2_5')}\n"
-        f"BTTS: {line('btts')}\n"
-        f"Escanteios >9.5: {line('corners_9_5')}\n"
-        f"Cartões amarelos >4.5: {line('cards_4_5')}\n"
-        f"Chutes no alvo >7.5: {line('sot_7_5')}\n"
-        f"📋 Amostra geral: {data['finished']} partidas encerradas | "
-        f"1X2 casa {data['results'].get('1x2_home',0)}, empate {data['results'].get('1x2_draw',0)}, "
-        f"fora {data['results'].get('1x2_away',0)}\n"
-        f"{upcoming}"
-        f"⛔ Dados esportivos; sem lucros ou entradas comprovados.\n"
-        f"https://nexus-score-gratis.pages.dev/"
+    has_qualified = (
+        isinstance(qualified, dict)
+        and data.get("liquidity_qualified_games", 0) > 0
     )
+    results = qualified if has_qualified else data["results"]
+
+    def outcome(key):
+        return (f"{results.get(key + '_yes', 0)} sim"
+                f" · {results.get(key + '_no', 0)} não")
+
+    def name(value, limit=40):
+        return escape(str(value or "")[:limit])
+
+    try:
+        display_day = datetime.strptime(data["day"], "%Y-%m-%d").strftime("%d/%m/%Y")
+    except (KeyError, TypeError, ValueError):
+        display_day = name(data.get("day", "sem data"), 15)
+
+    lines = [
+        "<b>⚽ NEXUS FUTEBOL | FECHAMENTO</b>",
+        f"📅 {display_day}",
+        "",
+        "<b>📌 Resumo do dia</b>",
+        f"• <b>{data['finished']}</b> jogos encerrados"
+        f" · {data['games']} no arquivo",
+        f"• Odds verificadas: <b>{data['quotes_verified']}</b>"
+        f" em <b>{data['games_with_verified_odds']} jogos</b>",
+        f"• Liquidez ≥ R$ 3 mil comprovada: "
+        f"<b>{data.get('liquidity_qualified_games', 0)} jogos</b>",
+        "",
+        "<b>📊 Resultados "
+        + ("com liquidez comprovada" if has_qualified else "gerais")
+        + "</b>",
+    ]
+    if not has_qualified:
+        lines.append("<i>Sem comprovação de liquidez nesta amostra.</i>")
+
+    lines.extend([
+        "1X2: "
+        f"Casa {results.get('1x2_home', 0)} · "
+        f"Empate {results.get('1x2_draw', 0)} · "
+        f"Fora {results.get('1x2_away', 0)}",
+        f"Over 2.5: {outcome('over_2_5')}",
+        f"Ambas marcam: {outcome('btts')}",
+        f"Escanteios +9.5: {outcome('corners_9_5')}",
+        f"Amarelos +4.5: {outcome('cards_4_5')}",
+        f"Chutes no alvo +7.5: {outcome('sot_7_5')}",
+    ])
+
+    if isinstance(coverage, dict):
+        lines.extend([
+            "",
+            "<b>🏆 Jogos importantes · próximas 48h</b>",
+            f"• Monitorados: <b>{coverage.get('important_games', 0)}</b>"
+            f" · com odds: <b>{coverage.get('verified_bookmaker_games', 0)}</b>",
+            f"• Só indicativas: {coverage.get('indicative_only_games', 0)}"
+            f" · sem cotação: {coverage.get('missing_bookmaker_price_games', 0)}",
+        ])
+
+        pinnacle = coverage.get("pinnacle_guest") or {}
+        if (isinstance(pinnacle, dict) and pinnacle.get("status") == "checked"
+                and isinstance(pinnacle.get("offers"), int)
+                and pinnacle["offers"] > 0):
+            lines.append(
+                f"• Pinnacle pública: <b>{pinnacle['offers']}</b> odds"
+                f" em {pinnacle.get('matched', 0)} jogos"
+            )
+
+        quality = coverage.get("book_quality") or {}
+        if isinstance(quality, dict) and quality.get("status") == "fresh":
+            complete = quality.get("complete_market_lines", 0)
+            if isinstance(complete, int) and complete > 0:
+                lines.append(f"• Linhas completas: {complete}")
+            ft = (quality.get("families") or {}).get("match_odds") or {}
+            margin = ft.get("median_overround_pct") if isinstance(ft, dict) else None
+            if (isinstance(margin, (int, float)) and not isinstance(margin, bool)
+                    and 0 <= margin < 100):
+                lines.append(f"• Margem mediana 1X2: {margin:.2f}% <i>(não é ROI)</i>")
+
+        official = coverage.get("official_corners_cards") or {}
+        if isinstance(official, dict) and official.get("status") == "checked":
+            corners = official.get("verified_corners_quotes", 0)
+            cards = official.get("verified_cards_quotes", 0)
+            if (isinstance(corners, int) and isinstance(cards, int)
+                    and (corners > 0 or cards > 0)):
+                lines.append(
+                    f"• Odds de casa: escanteios {corners} · cartões {cards}"
+                )
+
+        moves = coverage.get("price_movements") or {}
+        if isinstance(moves, dict) and moves.get("status") == "fresh":
+            count = moves.get("selections_with_changes")
+            if isinstance(count, int) and count > 0:
+                lines.append(f"• Movimentos de odds: {count}")
+            tops = moves.get("top_changes") or []
+            if isinstance(tops, list) and tops and isinstance(tops[0], dict):
+                top = tops[0]
+                delta = top.get("implied_probability_change_pp")
+                if (isinstance(delta, (int, float)) and not isinstance(delta, bool)
+                        and abs(delta) <= 100 and top.get("home") and top.get("away")):
+                    lines.extend([
+                        "",
+                        "<b>📈 Maior variação observada</b>",
+                        f"{name(top['home'], 30)} x {name(top['away'], 30)}",
+                        f"{name(top.get('market_family'), 35)}: "
+                        f"{delta:+.2f} p.p. de prob. implícita",
+                    ])
+
+        missing = coverage.get("top_missing") or []
+        names = []
+        if isinstance(missing, list):
+            for item in missing[:3]:
+                if isinstance(item, dict) and item.get("home") and item.get("away"):
+                    names.append(f"• {name(item['home'], 28)} x {name(item['away'], 28)}")
+        if names:
+            lines.extend(["", "<b>⏳ Jogos aguardando odds</b>", *names])
+
+    lines.extend([
+        "",
+        "⚠️ <i>Odds observadas não comprovam volume negociado,"
+        " preço de entrada nem lucro.</i>",
+        '🔗 <a href="https://nexus-score-gratis.pages.dev/">Abrir NEXUS</a>',
+    ])
+    message = "\n".join(lines)
+    if len(message) > 4096:
+        # Telegram limita sendMessage a 4096 caracteres. Preserve o essencial.
+        essentials = lines[:]
+        marker = "<b>⏳ Jogos aguardando odds</b>"
+        if marker in essentials:
+            essentials = essentials[:essentials.index(marker)] + essentials[-3:]
+        message = "\n".join(essentials)
+    if len(message) > 4096:
+        raise ValueError("Resumo Telegram excedeu o limite seguro de 4096 caracteres")
+    return message
 
 
 def deliver(day, marker_folder=Path("state/nexus_football_reports"), fetch=load_summary,
@@ -213,7 +238,9 @@ def deliver(day, marker_folder=Path("state/nexus_football_reports"), fetch=load_
               "nova tentativa será feita no próximo agendamento: "
               + type(exc).__name__)
         raise RuntimeError("Dados do fechamento NEXUS indisponíveis; Telegram não enviado") from exc
-    result = messenger(token, "sendMessage", {"chat_id": chat, "text": message})
+    result = messenger(token, "sendMessage", {"chat_id": chat, "text": message,
+                                              "parse_mode": "HTML",
+                                              "disable_web_page_preview": True})
     if not isinstance(result, dict) or not result.get("message_id"):
         raise RuntimeError("Telegram não confirmou entrega do relatório esportivo")
     marker.write_text(json.dumps({"day": day, "sent_at": datetime.now(timezone.utc).isoformat(),
