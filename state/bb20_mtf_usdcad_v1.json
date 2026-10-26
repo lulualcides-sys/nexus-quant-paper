@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "paper_only": true,
+  "ticker": "CAD=X",
+  "watermark_m15": 1793054700,
+  "equity": 1000.0,
+  "position": null,
+  "closed": [],
+  "last_entry_h1": null,
+  "last_reason": "Inicializado sem operações retroativas"
+}
