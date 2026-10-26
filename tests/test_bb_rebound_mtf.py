@@ -5,7 +5,8 @@ from statistics import mean
 from datetime import datetime, timezone
 
 from src.bb_rebound_mtf import (
-    TICKER, CAPITAL, digest, exit_position, h1_rejection, parse_15m,
+    TICKER, CAPITAL, TRAIL_POLICY, NET_GREEN_BUFFER_PIPS,
+    digest, exit_position, advance_trailing_stop, h1_rejection, parse_15m,
     to_h1, update,
 )
 from src.strategies import make_indicators
@@ -85,6 +86,8 @@ class BB20BotTests(unittest.TestCase):
         self.assertEqual(state["position"]["side"], 1)
         self.assertEqual(state["position"]["entry_ts"], 60 * 3600 + 1800)
         self.assertEqual(state["position"]["entry_rule"], "bb20_h1_m15_pullback_v2")
+        self.assertEqual(state["position"]["stop_policy"], TRAIL_POLICY)
+        self.assertIsNone(state["position"]["target"])
         self.assertLessEqual(state["position"]["qty_usd"], CAPITAL)
         self.assertEqual(state["closed"], [])
         watermark = state["watermark_m15"]
@@ -161,6 +164,132 @@ class BB20BotTests(unittest.TestCase):
         self.assertEqual(state["closed"][0]["exit_type"], "STOP")
         self.assertLess(state["equity"], 1000)
         self.assertIsNone(state["position"])
+
+
+    @staticmethod
+    def trailing_book(side=1, stop_policy=TRAIL_POLICY):
+        entry, risk = 1.4, 0.01
+        return {
+            "equity": CAPITAL,
+            "position": {
+                "side": side, "entry": entry, "entry_ts": 0,
+                "qty_usd": 1000, "stop": entry-side*risk,
+                "initial_r": risk, "best_close": entry,
+                "stop_policy": stop_policy, "target": None,
+                "green_protected": False, "stop_updates": 0,
+            },
+            "closed": [], "last_reason": "",
+        }
+
+    def test_unlimited_green_long_monotone_close_trail_no_tp_or_timeout(self):
+        book = self.trailing_book()
+        # Stops are checked with the level that existed BEFORE this candle.
+        first = {"time": 900, "open": 1.4, "high": 1.45,
+                 "low": 1.395, "close": 1.412}
+        self.assertFalse(exit_position(book, first))
+        self.assertFalse(book["position"]["green_protected"])
+        self.assertTrue(advance_trailing_stop(book, first))
+        self.assertAlmostEqual(book["position"]["stop"], 1.402)
+        self.assertTrue(book["position"]["green_protected"])
+        # An arbitrarily large uptrend does not hit a take-profit.
+        second = {"time": 1800, "open": 1.412, "high": 1.46,
+                  "low": 1.409, "close": 1.455}
+        self.assertFalse(exit_position(book, second))
+        advance_trailing_stop(book, second)
+        self.assertAlmostEqual(book["position"]["stop"], 1.445)
+        self.assertEqual(book["closed"], [])
+        # Stop may NEVER retreat as price retreats, even after >8h.
+        retrace = {"time": 100 * 900, "open": 1.451, "high": 1.453,
+                   "low": 1.448, "close": 1.449}
+        self.assertFalse(exit_position(book, retrace))
+        self.assertFalse(advance_trailing_stop(book, retrace))
+        self.assertEqual(book["position"]["stop"], 1.445)
+        exit_bar = {"time": 101 * 900, "open": 1.449, "high": 1.451,
+                    "low": 1.44, "close": 1.441}
+        self.assertTrue(exit_position(book, exit_bar))
+        self.assertEqual(book["closed"][0]["exit_type"], "TRAIL_STOP")
+        self.assertAlmostEqual(book["closed"][0]["exit"], 1.445)
+        self.assertGreater(book["closed"][0]["net_usd"], 0)
+
+    def test_short_stop_monotone_without_fixed_profit_cap(self):
+        book = self.trailing_book(-1)
+        first = {"time": 900, "open": 1.4, "high": 1.405,
+                 "low": 1.36, "close": 1.386}
+        self.assertFalse(exit_position(book, first))
+        self.assertTrue(advance_trailing_stop(book, first))
+        self.assertAlmostEqual(book["position"]["stop"], 1.396)
+        second = {"time": 1800, "open": 1.386, "high": 1.390,
+                  "low": 1.33, "close": 1.340}
+        self.assertFalse(exit_position(book, second))
+        self.assertTrue(advance_trailing_stop(book, second))
+        self.assertAlmostEqual(book["position"]["stop"], 1.35)
+        self.assertFalse(advance_trailing_stop(book, {
+            "time": 2700, "open": 1.343, "high": 1.345,
+            "low": 1.341, "close": 1.344,
+        }))
+        self.assertAlmostEqual(book["position"]["stop"], 1.35)
+        self.assertTrue(exit_position(book, {
+            "time": 3600, "open": 1.344, "high": 1.355,
+            "low": 1.343, "close": 1.354,
+        }))
+        self.assertEqual(book["closed"][0]["exit_type"], "TRAIL_STOP")
+        self.assertGreater(book["closed"][0]["net_usd"], 0)
+
+    def test_no_same_bar_lookahead_green_from_intrabar_wick(self):
+        book = self.trailing_book()
+        # An intrabar peak is NOT enough to tighten. The closing value
+        # improves by only 0.2R; the former stop did not get hit.
+        volatile = {"time": 900, "open": 1.4, "high": 1.460,
+                    "low": 1.391, "close": 1.402}
+        self.assertFalse(exit_position(book, volatile))
+        advance_trailing_stop(book, volatile)
+        self.assertAlmostEqual(book["position"]["stop"], 1.392)
+        self.assertFalse(book["position"]["green_protected"])
+        self.assertEqual(book["closed"], [])
+
+    def test_gap_below_stop_can_lose_even_after_stop_protects_green(self):
+        book = self.trailing_book()
+        bar = {"time": 900, "open": 1.4, "high": 1.42,
+               "low": 1.395, "close": 1.415}
+        self.assertFalse(exit_position(book, bar))
+        advance_trailing_stop(book, bar)
+        self.assertTrue(book["position"]["green_protected"])
+        gap = {"time": 10000, "open": 1.38, "high": 1.386,
+               "low": 1.378, "close": 1.382}
+        self.assertTrue(exit_position(book, gap))
+        self.assertAlmostEqual(book["closed"][0]["exit"], 1.38)
+        self.assertLess(book["closed"][0]["net_usd"], 0)
+
+    def test_trailing_stop_loss_after_return_without_first_green(self):
+        book = self.trailing_book()
+        decline = {"time": 900, "open": 1.4, "high": 1.401,
+                   "low": 1.389, "close": 1.393}
+        self.assertTrue(exit_position(book, decline))
+        self.assertEqual(book["closed"][0]["exit_type"], "STOP")
+        self.assertLess(book["closed"][0]["net_usd"], 0)
+
+    def test_legacy_position_keeps_target_and_time_policy(self):
+        legacy = self.trailing_book(stop_policy="legacy_fixed")
+        legacy["position"]["target"] = 1.42
+        self.assertTrue(exit_position(legacy, {
+            "time": 900, "open": 1.4, "high": 1.43,
+            "low": 1.399, "close": 1.422,
+        }))
+        self.assertEqual(legacy["closed"][0]["exit_type"], "TARGET")
+        again = self.trailing_book(stop_policy="legacy_fixed")
+        self.assertTrue(exit_position(again, {
+            "time": 34*900, "open": 1.4, "high": 1.41,
+            "low": 1.399, "close": 1.405,
+        }))
+        self.assertEqual(again["closed"][0]["exit_type"], "TIME")
+
+    def test_report_shows_live_trailing_stop_level(self):
+        book = self.trailing_book()
+        book["last_reason"] = "Em posição"
+        body = "\n".join(digest(book, "2026-10-26"))
+        self.assertIn("stop móvel", body)
+        self.assertIn("sem TP", body)
+        self.assertIn("1.39000", body)
 
     def test_m15_feed_rejects_unfinished_bars(self):
         t = 1_800_000_000 - (1_800_000_000 % 900)

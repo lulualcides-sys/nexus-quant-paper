@@ -25,8 +25,12 @@ MAX_NOTIONAL = 1.0  # 1x USD base notional, no borrowing
 PIP = 0.0001
 ROUNDTRIP_PIPS = 1.5  # illustrative costs, NOT FBS observed spreads
 STOP_ATR = 1.2
+# Old positions remain on their original rules; new runner has no TP/time cap.
 TARGET_R = 1.6
-MAX_HOLD_M15 = 32  # 8 hours
+MAX_HOLD_M15 = 32  # legacy positions only
+TRAIL_R = 1.0  # stop follows best completed M15 CLOSE, one initial risk unit back
+TRAIL_POLICY = "close_trailing_no_tp_v1"
+NET_GREEN_BUFFER_PIPS = ROUNDTRIP_PIPS + 0.5  # indicative round-trip cost + margin
 MIN_M15 = 240
 
 
@@ -119,20 +123,29 @@ def initial(bars):
 
 
 def exit_position(book, bar):
+    """Check the already-active stop first, BEFORE advancing any trailing level.
+
+    Stop gaps use the worse opening price; no intrabar high-to-low oracle.
+    Legacy positions retain their originally recorded target and expiry policy.
+    """
     pos = book["position"]
     if pos is None:
         return False
     direction = pos["side"]
-    stop = bar["low"] <= pos["stop"] if direction > 0 else bar["high"] >= pos["stop"]
-    target = bar["high"] >= pos["target"] if direction > 0 else bar["low"] <= pos["target"]
+    trailing = pos.get("stop_policy") == TRAIL_POLICY
+    stopped = bar["low"] <= pos["stop"] if direction > 0 else bar["high"] >= pos["stop"]
+    targeted = (
+        not trailing and pos.get("target") is not None
+        and (bar["high"] >= pos["target"] if direction > 0 else bar["low"] <= pos["target"])
+    )
     elapsed = (bar["time"] - pos["entry_ts"]) // 900
-    if stop:
+    if stopped:
         price = min(bar["open"], pos["stop"]) if direction > 0 else max(bar["open"], pos["stop"])
-        why = "STOP"
-    elif target:
+        why = "TRAIL_STOP" if trailing and pos.get("stop_updates", 0) else "STOP"
+    elif targeted:
         price = pos["target"]
         why = "TARGET"
-    elif elapsed >= MAX_HOLD_M15:
+    elif not trailing and elapsed >= MAX_HOLD_M15:
         price = bar["close"]
         why = "TIME"
     else:
@@ -145,20 +158,55 @@ def exit_position(book, bar):
         "entry_ts": pos["entry_ts"], "exit_ts": bar["time"],
         "entry": pos["entry"], "exit": price, "side": direction,
         "net_usd": round(net_usd, 5), "cost_usd": round(costs_cad / price, 5),
-        "exit_type": why,
+        "exit_type": why, "stop_policy": pos.get("stop_policy", "legacy_fixed"),
+        "final_stop": pos["stop"],
     })
     book["position"] = None
     book["last_reason"] = "Saída virtual " + why
     return True
 
 
+def advance_trailing_stop(book, bar):
+    """Only CLOSED M15 price data can move the stop for the NEXT M15 bar.
+
+    A favorable close raises the stop on buys and lowers it on sells.
+    The stop never loosens. There is no take profit, and gains have no cap.
+    Intrabar highs and lows are deliberately excluded to avoid look-ahead
+    and false same-candle profitable fills.
+    """
+    pos = book["position"]
+    if pos is None or pos.get("stop_policy") != TRAIL_POLICY:
+        return False
+    side = pos["side"]
+    entry = pos["entry"]
+    risk_unit = pos["initial_r"]
+    if risk_unit <= 0:
+        raise ValueError("Stop móvel: unidade de risco inválida")
+    previous_peak = pos.get("best_close", entry)
+    best = max(previous_peak, bar["close"]) if side == 1 else min(previous_peak, bar["close"])
+    pos["best_close"] = best
+    # Monotonic trailing at fixed initial-R distance from the best M15 close.
+    proposal = best - side * TRAIL_R * risk_unit
+    prior_stop = pos["stop"]
+    tightened = max(prior_stop, proposal) if side == 1 else min(prior_stop, proposal)
+    # Old stop has already been checked against this whole candle.
+    if (side == 1 and tightened > prior_stop) or (side == -1 and tightened < prior_stop):
+        pos["stop"] = tightened
+        pos["stop_updates"] = pos.get("stop_updates", 0) + 1
+        book["last_reason"] = "Stop móvel subiu" if side == 1 else "Stop móvel desceu"
+    net_buffer = NET_GREEN_BUFFER_PIPS * PIP
+    pos["green_protected"] = side * (pos["stop"] - entry) >= net_buffer
+    return pos["stop"] != prior_stop
+
+
 def step(book, bars, i, h1, inds):
     current, prior = bars[i], bars[i-1]
-    # An order determined by the previous closed M15 bar is modelled at this
-    # candle's opening. Stops/targets are then checked conservatively on this bar.
+    # Signal at prior closed M15, virtual fill at this bar's opening.
+    # Check the old stop first; then use the M15 close for NEXT bar's trail.
     if book["position"] is not None:
-        exit_position(book, current)
-        return  # no re-entry on an exit candle
+        if not exit_position(book, current):
+            advance_trailing_stop(book, current)
+        return  # never re-enter on a bar with an existing position
     if book["equity"] <= 0:
         book["last_reason"] = "Banca virtual esgotada"
         return
@@ -220,12 +268,16 @@ def step(book, bars, i, h1, inds):
     book["position"] = {
         "side": side, "entry": opening, "entry_ts": current["time"], "entry_rule": "bb20_h1_m15_pullback_v2",
         "qty_usd": qty, "stop": opening - side * distance,
-        "target": opening + side * TARGET_R * distance,
+        "initial_r": distance, "best_close": opening,
+        "stop_policy": TRAIL_POLICY, "stop_updates": 0,
+        "green_protected": False, "target": None,
         "confirm_h1": confirmed_h1["time"],
     }
     book["last_entry_h1"] = confirmed_h1["time"]
     book["last_reason"] = "Entrada virtual COMPRA" if side > 0 else "Entrada virtual VENDA"
-    exit_position(book, current)
+    # Current candle's old stop is checked before trailing its *close*.
+    if not exit_position(book, current):
+        advance_trailing_stop(book, current)
 
 
 def update(state, bars):
@@ -244,10 +296,15 @@ def update(state, bars):
         raise ValueError("USD/CAD: lacuna no histórico; não reconstruir fills retrospectivos")
     inds = make_indicators(h1)
     for i in range(max(2, times[watermark] + 1), len(bars)):
-        # Skip gaps: the previous quarter-hour must be contiguous for confirmation.
+        # Gaps block NEW entries, but an OPEN position must still be assessed:
+        # weekend/reconnect opening prices can gap through the protective stop.
         if bars[i]["time"] - bars[i-1]["time"] != 900 or bars[i-1]["time"] - bars[i-2]["time"] != 900:
+            if state["position"] is not None:
+                if not exit_position(state, bars[i]):
+                    advance_trailing_stop(state, bars[i])
+            else:
+                state["last_reason"] = "Intervalo M15 com lacuna; entrada ignorada"
             state["watermark_m15"] = bars[i]["time"]
-            state["last_reason"] = "Intervalo M15 com lacuna; entrada ignorada"
             continue
         step(state, bars, i, h1, inds)
         state["watermark_m15"] = bars[i]["time"]
@@ -269,10 +326,19 @@ def digest(book, day):
     total = book["equity"] - CAPITAL
     wins = sum(p["net_usd"] > 0 for p in book["closed"])
     losses = sum(p["net_usd"] < 0 for p in book["closed"])
-    state = "posição virtual aberta" if book["position"] else "sem posição"
+    pos = book["position"]
+    state = "posição virtual aberta" if pos else "sem posição"
+    trailing_details = []
+    if pos and pos.get("stop_policy") == TRAIL_POLICY:
+        direction = "COMPRA" if pos["side"] == 1 else "VENDA"
+        protected = "green protegido*" if pos.get("green_protected") else "stop em ajuste"
+        trailing_details.append(
+            f"🟢 {direction} | stop móvel {pos['stop']:.5f} | pico fechamento {pos['best_close']:.5f} | {protected} | sem TP"
+        )
     return [
         "🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD",
         f"{len(closed_today)} fech. hoje | dia US$ {pnl:+.2f} | total US$ {total:+.2f} | V/D {wins}/{losses} | {state}",
+        *trailing_details,
         f"📍 {book.get('last_reason', 'Sem diagnóstico')} | banca US$ {CAPITAL:,.0f} virtual",
-        "⚠️ SMA20 central (BB 20,2), toque/rejeição H1 + retorno M15 junto à média; preço CAD=X indicativo.",
+        "⚠️ SMA20 (BB 20,2), pullback H1/M15, trailing por fechamento; sem TP fixo. *Gaps/custos podem gerar red.",
     ]
