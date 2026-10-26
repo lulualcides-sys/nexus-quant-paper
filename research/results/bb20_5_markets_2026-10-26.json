@@ -1,0 +1,1774 @@
+{
+  "created_utc": "2026-10-26 23:57 UTC",
+  "requested_days": 30,
+  "warmup_days": 13,
+  "paper_only": true,
+  "initial_bank_per_market_usd": 1000.0,
+  "strategy_version": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
+  "trailing": "1R of best closed M15, no TP; same candle stop first",
+  "markets": {
+    "EURUSD": {
+      "status": "ok",
+      "m15_warmup": 945,
+      "h1_warmup": 235,
+      "m15_test": 1990,
+      "first_test": "2026-09-27 23:00 UTC",
+      "last_test": "2026-10-26 23:30 UTC",
+      "closed_n": 36,
+      "wins": 12,
+      "losses": 24,
+      "win_rate_pct": 33.333333333333336,
+      "realized_pnl_usd": -0.813383452976268,
+      "realized_return_pct": -0.0813383452976268,
+      "pnl_open_usd": 0.7593236869877524,
+      "pnl_including_open_usd": -0.054059765988515585,
+      "max_realized_drawdown_pct": 1.6110333237831231,
+      "profit_factor": 0.969416178572149,
+      "total_estimated_friction_usd": 4.825040799999998,
+      "best_trade_usd": 5.6009764,
+      "worst_trade_usd": -2.2821525,
+      "open_position": {
+        "side": -1,
+        "entry": 1.1185681819915771,
+        "entry_ts": 1793040300,
+        "quantity_base": 893.2728756578807,
+        "risk_distance": 0.0012440584383449334,
+        "stop": 1.1188121936998805,
+        "best_close": 1.1175681352615356,
+        "updates": 6
+      },
+      "exit_reasons": {
+        "TRAIL_STOP": 27,
+        "INITIAL_STOP": 9
+      },
+      "closed_trades": [
+        {
+          "entry_ts": 1790571600,
+          "exit_ts": 1790581500,
+          "side": -1,
+          "entry": 1.1389521360397339,
+          "exit": 1.138623074417478,
+          "pnl_usd": 0.1572161,
+          "costs_usd": 0.1317,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790584200,
+          "exit_ts": 1790608500,
+          "side": -1,
+          "entry": 1.1381744146347046,
+          "exit": 1.1370974856412452,
+          "pnl_usd": 0.8145278,
+          "costs_usd": 0.1318107,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790610300,
+          "exit_ts": 1790612100,
+          "side": -1,
+          "entry": 1.1371389627456665,
+          "exit": 1.1380949509840521,
+          "pnl_usd": -0.9735512,
+          "costs_usd": 0.1320382,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790621100,
+          "exit_ts": 1790678700,
+          "side": -1,
+          "entry": 1.137268304824829,
+          "exit": 1.135237257394225,
+          "pnl_usd": 1.654002,
+          "costs_usd": 0.1318948,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790680500,
+          "exit_ts": 1790704800,
+          "side": -1,
+          "entry": 1.1349449157714844,
+          "exit": 1.1331006356216808,
+          "pnl_usd": 1.4952967,
+          "costs_usd": 0.1323834,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790721900,
+          "exit_ts": 1790747100,
+          "side": -1,
+          "entry": 1.1341726779937744,
+          "exit": 1.1346967211721282,
+          "pnl_usd": -0.5961744,
+          "costs_usd": 0.1326713,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790804700,
+          "exit_ts": 1790849700,
+          "side": -1,
+          "entry": 1.1334012746810913,
+          "exit": 1.1286768311889246,
+          "pnl_usd": 4.0463289,
+          "costs_usd": 0.1326827,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790857800,
+          "exit_ts": 1790881200,
+          "side": -1,
+          "entry": 1.1295605897903442,
+          "exit": 1.1242333119602121,
+          "pnl_usd": 4.613684,
+          "costs_usd": 0.1336711,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790900100,
+          "exit_ts": 1790911800,
+          "side": -1,
+          "entry": 1.12447988986969,
+          "exit": 1.1254628882974052,
+          "pnl_usd": -1.0188718,
+          "costs_usd": 0.1348905,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790920800,
+          "exit_ts": 1790923500,
+          "side": -1,
+          "entry": 1.124985933303833,
+          "exit": 1.1263213147214952,
+          "pnl_usd": -1.3338132,
+          "costs_usd": 0.134694,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1790929800,
+          "exit_ts": 1790944200,
+          "side": -1,
+          "entry": 1.1258726119995117,
+          "exit": 1.1257457733154297,
+          "pnl_usd": -0.0207541,
+          "costs_usd": 0.1344102,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790958600,
+          "exit_ts": 1791178200,
+          "side": -1,
+          "entry": 1.1254924535751343,
+          "exit": 1.119093821672225,
+          "pnl_usd": 5.6009764,
+          "costs_usd": 0.1344529,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791181800,
+          "exit_ts": 1791185400,
+          "side": -1,
+          "entry": 1.118943691253662,
+          "exit": 1.1205857640900607,
+          "pnl_usd": -1.6247005,
+          "costs_usd": 0.1359906,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791198000,
+          "exit_ts": 1791212400,
+          "side": -1,
+          "entry": 1.1204482316970825,
+          "exit": 1.1216143114725445,
+          "pnl_usd": -1.1896527,
+          "costs_usd": 0.1355905,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791217800,
+          "exit_ts": 1791228600,
+          "side": -1,
+          "entry": 1.1205737590789795,
+          "exit": 1.122245184014332,
+          "pnl_usd": -1.6443345,
+          "costs_usd": 0.1354161,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791242100,
+          "exit_ts": 1791249300,
+          "side": -1,
+          "entry": 1.1222084760665894,
+          "exit": 1.1231713411867426,
+          "pnl_usd": -1.0015712,
+          "costs_usd": 0.134999,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791252000,
+          "exit_ts": 1791258300,
+          "side": -1,
+          "entry": 1.1222084760665894,
+          "exit": 1.1228384971618652,
+          "pnl_usd": -0.7013176,
+          "costs_usd": 0.1348651,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791260100,
+          "exit_ts": 1791270900,
+          "side": -1,
+          "entry": 1.1223344802856445,
+          "exit": 1.1220825910568237,
+          "pnl_usd": 0.0915347,
+          "costs_usd": 0.1347563,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791382500,
+          "exit_ts": 1791385200,
+          "side": -1,
+          "entry": 1.118067979812622,
+          "exit": 1.1198093111241072,
+          "pnl_usd": -1.7057635,
+          "costs_usd": 0.1352828,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1791405900,
+          "exit_ts": 1791423900,
+          "side": -1,
+          "entry": 1.1198208332061768,
+          "exit": 1.1211319955855632,
+          "pnl_usd": -1.3135121,
+          "costs_usd": 0.1348425,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791438300,
+          "exit_ts": 1791461700,
+          "side": -1,
+          "entry": 1.1205737590789795,
+          "exit": 1.1190976288161194,
+          "pnl_usd": 1.1897695,
+          "costs_usd": 0.1345761,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791567000,
+          "exit_ts": 1791761400,
+          "side": -1,
+          "entry": 1.1195701360702515,
+          "exit": 1.120747986020232,
+          "pnl_usd": -1.1937914,
+          "costs_usd": 0.1348561,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1791789300,
+          "exit_ts": 1791853200,
+          "side": -1,
+          "entry": 1.120824933052063,
+          "exit": 1.1166707037206993,
+          "pnl_usd": 3.5916707,
+          "costs_usd": 0.1345454,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791883800,
+          "exit_ts": 1791887400,
+          "side": -1,
+          "entry": 1.1179429292678833,
+          "exit": 1.1190200748757744,
+          "pnl_usd": -1.107492,
+          "costs_usd": 0.1353742,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792178100,
+          "exit_ts": 1792364400,
+          "side": 1,
+          "entry": 1.123974323272705,
+          "exit": 1.1215791702270508,
+          "pnl_usd": -2.2821525,
+          "costs_usd": 0.1344999,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792376100,
+          "exit_ts": 1792390500,
+          "side": 1,
+          "entry": 1.1233429908752441,
+          "exit": 1.1221414408902026,
+          "pnl_usd": -1.2098244,
+          "costs_usd": 0.1342708,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792393200,
+          "exit_ts": 1792394100,
+          "side": 1,
+          "entry": 1.12296462059021,
+          "exit": 1.1217113636195264,
+          "pnl_usd": -1.2550208,
+          "costs_usd": 0.1341544,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792444500,
+          "exit_ts": 1792462500,
+          "side": -1,
+          "entry": 1.1214534044265747,
+          "exit": 1.122643100775435,
+          "pnl_usd": -1.1982899,
+          "costs_usd": 0.1341673,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792477800,
+          "exit_ts": 1792485900,
+          "side": 1,
+          "entry": 1.1234692335128784,
+          "exit": 1.122620119284848,
+          "pnl_usd": -0.8909874,
+          "costs_usd": 0.1337666,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792512000,
+          "exit_ts": 1792559700,
+          "side": 1,
+          "entry": 1.1234692335128784,
+          "exit": 1.122606255001462,
+          "pnl_usd": -0.9025479,
+          "costs_usd": 0.1336476,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792615500,
+          "exit_ts": 1792651500,
+          "side": 1,
+          "entry": 1.123721718788147,
+          "exit": 1.1241008043289185,
+          "pnl_usd": 0.2038818,
+          "costs_usd": 0.1334971,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792652400,
+          "exit_ts": 1792656000,
+          "side": 1,
+          "entry": 1.1246063709259033,
+          "exit": 1.1235247103069397,
+          "pnl_usd": -1.0955155,
+          "costs_usd": 0.1334193,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792751400,
+          "exit_ts": 1792759500,
+          "side": -1,
+          "entry": 1.1200717687606812,
+          "exit": 1.1204136015874486,
+          "pnl_usd": -0.4387567,
+          "costs_usd": 0.1338128,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792769400,
+          "exit_ts": 1792788300,
+          "side": -1,
+          "entry": 1.1200717687606812,
+          "exit": 1.1206670634312108,
+          "pnl_usd": -0.6645743,
+          "costs_usd": 0.133754,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1793007900,
+          "exit_ts": 1793024100,
+          "side": -1,
+          "entry": 1.1214534044265747,
+          "exit": 1.1186933517456055,
+          "pnl_usd": 2.3229524,
+          "costs_usd": 0.1335003,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1793034000,
+          "exit_ts": 1793034900,
+          "side": -1,
+          "entry": 1.1185681819915771,
+          "exit": 1.1197959660622374,
+          "pnl_usd": -1.232255,
+          "costs_usd": 0.1341562,
+          "exit_type": "INITIAL_STOP"
+        }
+      ],
+      "source": "Yahoo Finance EURUSD=X via query1.finance.yahoo.com",
+      "ticker": "EURUSD=X",
+      "quoted_cost_roundtrip": 0.00015,
+      "quote_currency": "USD",
+      "price_sha256": "18a9639e1d10ac50982e6146b1ea5dcfa7ce7095b0362059937d915ce3d081f2"
+    },
+    "USDJPY": {
+      "status": "ok",
+      "m15_warmup": 943,
+      "h1_warmup": 235,
+      "m15_test": 1984,
+      "first_test": "2026-09-27 23:00 UTC",
+      "last_test": "2026-10-26 23:30 UTC",
+      "closed_n": 27,
+      "wins": 8,
+      "losses": 19,
+      "win_rate_pct": 29.62962962962963,
+      "realized_pnl_usd": -14.453806996896219,
+      "realized_return_pct": -1.445380699689622,
+      "pnl_open_usd": null,
+      "pnl_including_open_usd": -14.453806996896219,
+      "max_realized_drawdown_pct": 1.9211767157086783,
+      "profit_factor": 0.45324011039870243,
+      "total_estimated_friction_usd": 2.5480375,
+      "best_trade_usd": 4.8511593,
+      "worst_trade_usd": -2.4238659,
+      "open_position": null,
+      "exit_reasons": {
+        "TRAIL_STOP": 21,
+        "INITIAL_STOP": 6
+      },
+      "closed_trades": [
+        {
+          "entry_ts": 1790806500,
+          "exit_ts": 1790836200,
+          "side": 1,
+          "entry": 157.36900329589844,
+          "exit": 158.15122006417982,
+          "pnl_usd": 4.8511593,
+          "costs_usd": 0.0948459,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790843400,
+          "exit_ts": 1790851500,
+          "side": 1,
+          "entry": 158.36000061035156,
+          "exit": 158.11226978004845,
+          "pnl_usd": -1.6697337,
+          "costs_usd": 0.0953295,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790864100,
+          "exit_ts": 1790865000,
+          "side": 1,
+          "entry": 158.09500122070312,
+          "exit": 157.81016896823402,
+          "pnl_usd": -1.9059998,
+          "costs_usd": 0.0953533,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1790892000,
+          "exit_ts": 1790915400,
+          "side": 1,
+          "entry": 158.04600524902344,
+          "exit": 157.79169511994812,
+          "pnl_usd": -1.7089215,
+          "costs_usd": 0.0951833,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790926200,
+          "exit_ts": 1790927100,
+          "side": 1,
+          "entry": 157.8419952392578,
+          "exit": 157.56266574594054,
+          "pnl_usd": -1.8672057,
+          "costs_usd": 0.0951589,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1790969400,
+          "exit_ts": 1791162000,
+          "side": 1,
+          "entry": 157.8179931640625,
+          "exit": 157.55803515439243,
+          "pnl_usd": -1.7411071,
+          "costs_usd": 0.094984,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791210600,
+          "exit_ts": 1791233100,
+          "side": 1,
+          "entry": 158.1540069580078,
+          "exit": 157.874996343198,
+          "pnl_usd": -1.854773,
+          "costs_usd": 0.0946279,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1791244800,
+          "exit_ts": 1791286200,
+          "side": 1,
+          "entry": 157.95399475097656,
+          "exit": 158.01234181913168,
+          "pnl_usd": 0.2727095,
+          "costs_usd": 0.0943695,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791288900,
+          "exit_ts": 1791291600,
+          "side": 1,
+          "entry": 158.15899658203125,
+          "exit": 157.98882844407467,
+          "pnl_usd": -1.1654417,
+          "costs_usd": 0.0944095,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791302400,
+          "exit_ts": 1791354600,
+          "side": 1,
+          "entry": 158.12100219726562,
+          "exit": 158.26581629693467,
+          "pnl_usd": 0.8146595,
+          "costs_usd": 0.0941338,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791367200,
+          "exit_ts": 1791381600,
+          "side": 1,
+          "entry": 158.3350067138672,
+          "exit": 158.12808177633116,
+          "pnl_usd": -1.3950654,
+          "costs_usd": 0.0942931,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791441900,
+          "exit_ts": 1791468900,
+          "side": 1,
+          "entry": 158.18800354003906,
+          "exit": 158.05008446794776,
+          "pnl_usd": -0.9604051,
+          "costs_usd": 0.0942072,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791472500,
+          "exit_ts": 1791476100,
+          "side": 1,
+          "entry": 158.23399353027344,
+          "exit": 158.14304465980572,
+          "pnl_usd": -0.6643751,
+          "costs_usd": 0.0940607,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791538200,
+          "exit_ts": 1791571500,
+          "side": 1,
+          "entry": 158.20799255371094,
+          "exit": 158.17119826345407,
+          "pnl_usd": -0.3245118,
+          "costs_usd": 0.093981,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791825300,
+          "exit_ts": 1791838800,
+          "side": 1,
+          "entry": 158.66900634765625,
+          "exit": 158.566959332265,
+          "pnl_usd": -0.7312763,
+          "costs_usd": 0.0937157,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791980100,
+          "exit_ts": 1791987300,
+          "side": 1,
+          "entry": 158.44200134277344,
+          "exit": 158.79457655408677,
+          "pnl_usd": 2.1044956,
+          "costs_usd": 0.0935123,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792091700,
+          "exit_ts": 1792118700,
+          "side": 1,
+          "entry": 158.14999389648438,
+          "exit": 157.89361519815355,
+          "pnl_usd": -1.7050872,
+          "costs_usd": 0.0942458,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792144800,
+          "exit_ts": 1792148400,
+          "side": -1,
+          "entry": 157.92599487304688,
+          "exit": 158.05442732822678,
+          "pnl_usd": -0.8987297,
+          "costs_usd": 0.0939881,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792153800,
+          "exit_ts": 1792161900,
+          "side": -1,
+          "entry": 157.95700073242188,
+          "exit": 157.92081494770747,
+          "pnl_usd": 0.1327392,
+          "costs_usd": 0.0939823,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792163700,
+          "exit_ts": 1792167300,
+          "side": -1,
+          "entry": 157.86099243164062,
+          "exit": 158.1051739028287,
+          "pnl_usd": -1.6222215,
+          "costs_usd": 0.0938853,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792372500,
+          "exit_ts": 1792381500,
+          "side": -1,
+          "entry": 157.8979949951172,
+          "exit": 158.12754680477246,
+          "pnl_usd": -1.5279288,
+          "costs_usd": 0.0937181,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792432800,
+          "exit_ts": 1792462500,
+          "side": 1,
+          "entry": 158.4709930419922,
+          "exit": 158.425048209405,
+          "pnl_usd": -0.3794728,
+          "costs_usd": 0.0933974,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792684800,
+          "exit_ts": 1792719000,
+          "side": -1,
+          "entry": 157.11099243164062,
+          "exit": 156.52331856585272,
+          "pnl_usd": 3.6076866,
+          "costs_usd": 0.0944958,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792743300,
+          "exit_ts": 1792753200,
+          "side": -1,
+          "entry": 156.94000244140625,
+          "exit": 156.8945468465209,
+          "pnl_usd": 0.1921081,
+          "costs_usd": 0.0946172,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792758600,
+          "exit_ts": 1792763100,
+          "side": -1,
+          "entry": 156.70799255371094,
+          "exit": 156.69203988490958,
+          "pnl_usd": 0.0060182,
+          "costs_usd": 0.0947578,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792768500,
+          "exit_ts": 1792773000,
+          "side": -1,
+          "entry": 156.70599365234375,
+          "exit": 157.0756243254334,
+          "pnl_usd": -2.4238659,
+          "costs_usd": 0.094527,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792782000,
+          "exit_ts": 1792973700,
+          "side": -1,
+          "entry": 156.85400390625,
+          "exit": 157.13965935146373,
+          "pnl_usd": -1.8892611,
+          "costs_usd": 0.0942571,
+          "exit_type": "TRAIL_STOP"
+        }
+      ],
+      "source": "Yahoo Finance JPY=X via query1.finance.yahoo.com",
+      "ticker": "JPY=X",
+      "quoted_cost_roundtrip": 0.015,
+      "quote_currency": "JPY",
+      "price_sha256": "83a6b643ba571870ccc570a4dd4a6369fa857d26352f9b327b5ccbfda689b864"
+    },
+    "XAUUSD": {
+      "status": "ok",
+      "m15_warmup": 914,
+      "h1_warmup": 228,
+      "m15_test": 1941,
+      "first_test": "2026-09-27 22:00 UTC",
+      "last_test": "2026-10-26 23:30 UTC",
+      "closed_n": 37,
+      "wins": 8,
+      "losses": 29,
+      "win_rate_pct": 21.62162162162162,
+      "realized_pnl_usd": -35.43593207524384,
+      "realized_return_pct": -3.543593207524384,
+      "pnl_open_usd": 1.0536655463845033,
+      "pnl_including_open_usd": -34.38226652885934,
+      "max_realized_drawdown_pct": 4.729813480000019,
+      "profit_factor": 0.5396156314757754,
+      "total_estimated_friction_usd": 6.943822499999999,
+      "best_trade_usd": 14.7386439,
+      "worst_trade_usd": -5.35862,
+      "open_position": {
+        "side": -1,
+        "entry": 4028.10009765625,
+        "entry_ts": 1793040300,
+        "quantity_base": 0.23945881297388508,
+        "risk_distance": 17.230213124041814,
+        "stop": 4040.1301154677917,
+        "best_close": 4022.89990234375,
+        "updates": 3
+      },
+      "exit_reasons": {
+        "TRAIL_STOP": 32,
+        "INITIAL_STOP": 5
+      },
+      "closed_trades": [
+        {
+          "entry_ts": 1790592300,
+          "exit_ts": 1790597700,
+          "side": -1,
+          "entry": 4188.5,
+          "exit": 4201.904115478037,
+          "pnl_usd": -3.3912177,
+          "costs_usd": 0.1909992,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790599500,
+          "exit_ts": 1790603100,
+          "side": -1,
+          "entry": 4177.0,
+          "exit": 4193.12706600767,
+          "pnl_usd": -4.0387031,
+          "costs_usd": 0.1908755,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790613900,
+          "exit_ts": 1790660700,
+          "side": -1,
+          "entry": 4164.7998046875,
+          "exit": 4172.124268223745,
+          "pnl_usd": -1.9362514,
+          "costs_usd": 0.1906589,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790695800,
+          "exit_ts": 1790704800,
+          "side": -1,
+          "entry": 4184.5,
+          "exit": 4192.817040598592,
+          "pnl_usd": -2.1583579,
+          "costs_usd": 0.1893911,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790797500,
+          "exit_ts": 1790817300,
+          "side": -1,
+          "entry": 4184.0,
+          "exit": 4193.24353326021,
+          "pnl_usd": -2.3727979,
+          "costs_usd": 0.189001,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790820900,
+          "exit_ts": 1790826300,
+          "side": -1,
+          "entry": 4183.5,
+          "exit": 4200.007969216457,
+          "pnl_usd": -4.0797023,
+          "costs_usd": 0.1885699,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1790872200,
+          "exit_ts": 1790875800,
+          "side": -1,
+          "entry": 4197.60009765625,
+          "exit": 4215.108507725259,
+          "pnl_usd": -4.2832282,
+          "costs_usd": 0.1871589,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790973900,
+          "exit_ts": 1791162000,
+          "side": -1,
+          "entry": 4166.89990234375,
+          "exit": 4187.547896099834,
+          "pnl_usd": -5.0326517,
+          "costs_usd": 0.1877155,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791197100,
+          "exit_ts": 1791247500,
+          "side": -1,
+          "entry": 4185.7001953125,
+          "exit": 4174.323520748705,
+          "pnl_usd": 2.4578937,
+          "costs_usd": 0.1859105,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791250200,
+          "exit_ts": 1791254700,
+          "side": -1,
+          "entry": 4163.39990234375,
+          "exit": 4163.515453303036,
+          "pnl_usd": -0.2144433,
+          "costs_usd": 0.1873786,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791360000,
+          "exit_ts": 1791377100,
+          "side": -1,
+          "entry": 4159.10009765625,
+          "exit": 4109.851349235557,
+          "pnl_usd": 11.3570562,
+          "costs_usd": 0.1875311,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791400500,
+          "exit_ts": 1791421200,
+          "side": -1,
+          "entry": 4133.5,
+          "exit": 4147.354941294282,
+          "pnl_usd": -3.4968622,
+          "costs_usd": 0.1908905,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791449100,
+          "exit_ts": 1791461700,
+          "side": -1,
+          "entry": 4148.7001953125,
+          "exit": 4156.480997199243,
+          "pnl_usd": -2.0327582,
+          "costs_usd": 0.1895168,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791463500,
+          "exit_ts": 1791468900,
+          "side": -1,
+          "entry": 4143.5,
+          "exit": 4159.692353091662,
+          "pnl_usd": -4.0221372,
+          "costs_usd": 0.1893622,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791813600,
+          "exit_ts": 1791842400,
+          "side": -1,
+          "entry": 4196.0,
+          "exit": 4199.763048633011,
+          "pnl_usd": -1.0621984,
+          "costs_usd": 0.1862261,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791846900,
+          "exit_ts": 1791854100,
+          "side": -1,
+          "entry": 4191.89990234375,
+          "exit": 4192.329764878663,
+          "pnl_usd": -0.286259,
+          "costs_usd": 0.1862055,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791879300,
+          "exit_ts": 1791895500,
+          "side": 1,
+          "entry": 4214.2001953125,
+          "exit": 4203.213830118314,
+          "pnl_usd": -2.7280402,
+          "costs_usd": 0.1851658,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791898200,
+          "exit_ts": 1791899100,
+          "side": 1,
+          "entry": 4212.39990234375,
+          "exit": 4199.336111739643,
+          "pnl_usd": -3.2012684,
+          "costs_usd": 0.1847269,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1791924300,
+          "exit_ts": 1791941400,
+          "side": -1,
+          "entry": 4181.2998046875,
+          "exit": 4187.997217446627,
+          "pnl_usd": -1.7383535,
+          "costs_usd": 0.1854884,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791951300,
+          "exit_ts": 1791957600,
+          "side": -1,
+          "entry": 4179.2001953125,
+          "exit": 4185.123716160197,
+          "pnl_usd": -1.5569051,
+          "costs_usd": 0.1852488,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792393200,
+          "exit_ts": 1792399500,
+          "side": 1,
+          "entry": 4204.5,
+          "exit": 4190.215880573632,
+          "pnl_usd": -3.4662902,
+          "costs_usd": 0.1838379,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792408500,
+          "exit_ts": 1792411200,
+          "side": 1,
+          "entry": 4195.2998046875,
+          "exit": 4179.968909473926,
+          "pnl_usd": -3.7016376,
+          "costs_usd": 0.18358,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792437300,
+          "exit_ts": 1792461600,
+          "side": -1,
+          "entry": 4163.2001953125,
+          "exit": 4152.5373240025265,
+          "pnl_usd": 2.2719639,
+          "costs_usd": 0.1842842,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792464300,
+          "exit_ts": 1792465200,
+          "side": -1,
+          "entry": 4151.89990234375,
+          "exit": 4164.295915079463,
+          "pnl_usd": -3.0552648,
+          "costs_usd": 0.1852235,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792474200,
+          "exit_ts": 1792476900,
+          "side": -1,
+          "entry": 4152.0,
+          "exit": 4150.753096394645,
+          "pnl_usd": 0.10314,
+          "costs_usd": 0.1846304,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792496700,
+          "exit_ts": 1792503000,
+          "side": -1,
+          "entry": 4139.7001953125,
+          "exit": 4148.982179379318,
+          "pnl_usd": -2.333965,
+          "costs_usd": 0.1851989,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792512900,
+          "exit_ts": 1792560600,
+          "side": -1,
+          "entry": 4146.5,
+          "exit": 4146.83606392768,
+          "pnl_usd": -0.2619264,
+          "costs_usd": 0.1844449,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792563300,
+          "exit_ts": 1792578600,
+          "side": -1,
+          "entry": 4134.7001953125,
+          "exit": 4144.919487806939,
+          "pnl_usd": -2.5471171,
+          "costs_usd": 0.1849206,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792592100,
+          "exit_ts": 1792611000,
+          "side": -1,
+          "entry": 4145.7998046875,
+          "exit": 4147.130359795303,
+          "pnl_usd": -0.4898518,
+          "costs_usd": 0.183934,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792650600,
+          "exit_ts": 1792672200,
+          "side": -1,
+          "entry": 4107.7998046875,
+          "exit": 4094.556206179904,
+          "pnl_usd": 2.8859828,
+          "costs_usd": 0.1855401,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792674900,
+          "exit_ts": 1792720800,
+          "side": -1,
+          "entry": 4092.300048828125,
+          "exit": 4028.381882159488,
+          "pnl_usd": 14.7386439,
+          "costs_usd": 0.186807,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792724400,
+          "exit_ts": 1792733400,
+          "side": -1,
+          "entry": 4032.10009765625,
+          "exit": 4039.7303808142715,
+          "pnl_usd": -2.028751,
+          "costs_usd": 0.1925203,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792738800,
+          "exit_ts": 1792761300,
+          "side": -1,
+          "entry": 4027.10009765625,
+          "exit": 4048.5863204483194,
+          "pnl_usd": -5.35862,
+          "costs_usd": 0.1923563,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792763100,
+          "exit_ts": 1792765800,
+          "side": -1,
+          "entry": 4037.39990234375,
+          "exit": 4007.6185956498357,
+          "pnl_usd": 6.9121798,
+          "costs_usd": 0.1908038,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792781100,
+          "exit_ts": 1792983600,
+          "side": -1,
+          "entry": 4010.5,
+          "exit": 4017.579373299248,
+          "pnl_usd": -1.9054533,
+          "costs_usd": 0.1934624,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792996200,
+          "exit_ts": 1793004300,
+          "side": -1,
+          "entry": 4017.89990234375,
+          "exit": 4034.4895255350652,
+          "pnl_usd": -4.1893063,
+          "costs_usd": 0.1927267,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1793011500,
+          "exit_ts": 1793024100,
+          "side": -1,
+          "entry": 4025.5,
+          "exit": 4021.3270524843433,
+          "pnl_usd": 0.8075271,
+          "costs_usd": 0.1915303,
+          "exit_type": "TRAIL_STOP"
+        }
+      ],
+      "source": "Yahoo Finance GC=F via query1.finance.yahoo.com",
+      "ticker": "GC=F",
+      "quoted_cost_roundtrip": 0.8,
+      "quote_currency": "USD",
+      "price_sha256": "655719a925c85fb19290a8e8bfe07c8ea42be7b8a13108e027fbceab4644f46c"
+    },
+    "US500": {
+      "status": "ok",
+      "m15_warmup": 913,
+      "h1_warmup": 228,
+      "m15_test": 1943,
+      "first_test": "2026-09-27 22:00 UTC",
+      "last_test": "2026-10-26 23:30 UTC",
+      "closed_n": 25,
+      "wins": 9,
+      "losses": 16,
+      "win_rate_pct": 36.0,
+      "realized_pnl_usd": 0.33579367697473117,
+      "realized_return_pct": 0.03357936769747312,
+      "pnl_open_usd": null,
+      "pnl_including_open_usd": 0.33579367697473117,
+      "max_realized_drawdown_pct": 1.0001901672475328,
+      "profit_factor": 1.0137230773206864,
+      "total_estimated_friction_usd": 3.2352580000000004,
+      "best_trade_usd": 6.8589607,
+      "worst_trade_usd": -3.0328932,
+      "open_position": null,
+      "exit_reasons": {
+        "TRAIL_STOP": 24,
+        "INITIAL_STOP": 1
+      },
+      "closed_trades": [
+        {
+          "entry_ts": 1790861400,
+          "exit_ts": 1790872200,
+          "side": -1,
+          "entry": 7730.0,
+          "exit": 7704.4810382173855,
+          "pnl_usd": 3.1719226,
+          "costs_usd": 0.1293661,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790904600,
+          "exit_ts": 1790917200,
+          "side": -1,
+          "entry": 7728.25,
+          "exit": 7750.614845588087,
+          "pnl_usd": -3.0328932,
+          "costs_usd": 0.1298058,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1790970300,
+          "exit_ts": 1791174600,
+          "side": 1,
+          "entry": 7778.25,
+          "exit": 7767.259531325608,
+          "pnl_usd": -1.5417524,
+          "costs_usd": 0.1285815,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791190800,
+          "exit_ts": 1791204300,
+          "side": 1,
+          "entry": 7771.0,
+          "exit": 7766.958210141933,
+          "pnl_usd": -0.6478854,
+          "costs_usd": 0.1285031,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791206100,
+          "exit_ts": 1791229500,
+          "side": 1,
+          "entry": 7772.5,
+          "exit": 7826.920816879971,
+          "pnl_usd": 6.8589607,
+          "costs_usd": 0.1283949,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791242100,
+          "exit_ts": 1791306000,
+          "side": 1,
+          "entry": 7833.0,
+          "exit": 7877.918260984177,
+          "pnl_usd": 5.6337847,
+          "costs_usd": 0.1282789,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791308700,
+          "exit_ts": 1791359100,
+          "side": 1,
+          "entry": 7879.75,
+          "exit": 7867.7412451991695,
+          "pnl_usd": -1.6681486,
+          "costs_usd": 0.1282328,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791414900,
+          "exit_ts": 1791438300,
+          "side": 1,
+          "entry": 7856.25,
+          "exit": 7842.994246375488,
+          "pnl_usd": -1.8304959,
+          "costs_usd": 0.128404,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791530100,
+          "exit_ts": 1791549000,
+          "side": 1,
+          "entry": 7839.75,
+          "exit": 7838.529245586464,
+          "pnl_usd": -0.2852354,
+          "costs_usd": 0.1284408,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791560700,
+          "exit_ts": 1791794700,
+          "side": 1,
+          "entry": 7847.75,
+          "exit": 7869.642915109744,
+          "pnl_usd": 2.6800071,
+          "costs_usd": 0.1282735,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791819900,
+          "exit_ts": 1791823500,
+          "side": 1,
+          "entry": 7861.75,
+          "exit": 7852.399207801499,
+          "pnl_usd": -1.3288963,
+          "costs_usd": 0.128386,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791960300,
+          "exit_ts": 1791981000,
+          "side": 1,
+          "entry": 7868.5,
+          "exit": 7867.793828939008,
+          "pnl_usd": -0.2185723,
+          "costs_usd": 0.1281069,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792043100,
+          "exit_ts": 1792054800,
+          "side": -1,
+          "entry": 7737.25,
+          "exit": 7753.242510716241,
+          "pnl_usd": -2.2133052,
+          "costs_usd": 0.1302518,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792061100,
+          "exit_ts": 1792072800,
+          "side": -1,
+          "entry": 7742.75,
+          "exit": 7746.289699333485,
+          "pnl_usd": -0.5895863,
+          "costs_usd": 0.1298734,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792107000,
+          "exit_ts": 1792122300,
+          "side": -1,
+          "entry": 7782.0,
+          "exit": 7798.610376920152,
+          "pnl_usd": -2.2742503,
+          "costs_usd": 0.1291426,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792390500,
+          "exit_ts": 1792418400,
+          "side": -1,
+          "entry": 7759.0,
+          "exit": 7751.804121038249,
+          "pnl_usd": 0.8007079,
+          "costs_usd": 0.1292323,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792439100,
+          "exit_ts": 1792460700,
+          "side": -1,
+          "entry": 7749.25,
+          "exit": 7745.96096642804,
+          "pnl_usd": 0.2964259,
+          "costs_usd": 0.1294983,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792481400,
+          "exit_ts": 1792499400,
+          "side": -1,
+          "entry": 7738.5,
+          "exit": 7724.845958557804,
+          "pnl_usd": 1.6414374,
+          "costs_usd": 0.1297165,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792666800,
+          "exit_ts": 1792675800,
+          "side": -1,
+          "entry": 7722.25,
+          "exit": 7731.507841971224,
+          "pnl_usd": -1.3355913,
+          "costs_usd": 0.130202,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792678500,
+          "exit_ts": 1792682100,
+          "side": -1,
+          "entry": 7721.75,
+          "exit": 7708.299810855114,
+          "pnl_usd": 1.6189908,
+          "costs_usd": 0.1300374,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792715400,
+          "exit_ts": 1792766700,
+          "side": -1,
+          "entry": 7699.75,
+          "exit": 7682.650862975881,
+          "pnl_usd": 2.1028573,
+          "costs_usd": 0.1306193,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792774800,
+          "exit_ts": 1792965600,
+          "side": -1,
+          "entry": 7676.0,
+          "exit": 7691.5,
+          "pnl_usd": -2.1664063,
+          "costs_usd": 0.1312974,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792971000,
+          "exit_ts": 1792989900,
+          "side": -1,
+          "entry": 7664.5,
+          "exit": 7678.5766344515805,
+          "pnl_usd": -1.9782308,
+          "costs_usd": 0.1312117,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792999800,
+          "exit_ts": 1793006100,
+          "side": -1,
+          "entry": 7672.75,
+          "exit": 7685.924061456404,
+          "pnl_usd": -1.8541485,
+          "costs_usd": 0.1308128,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1793010600,
+          "exit_ts": 1793015100,
+          "side": -1,
+          "entry": 7671.75,
+          "exit": 7682.266374228065,
+          "pnl_usd": -1.5039021,
+          "costs_usd": 0.1305882,
+          "exit_type": "TRAIL_STOP"
+        }
+      ],
+      "source": "Yahoo Finance ES=F via query1.finance.yahoo.com",
+      "ticker": "ES=F",
+      "quoted_cost_roundtrip": 1.0,
+      "quote_currency": "USD",
+      "price_sha256": "2357131c13688c54e9af9a5f749399488e36e4a2fb56cf111bb48bd2aab040dc"
+    },
+    "XTIUSD": {
+      "status": "ok",
+      "m15_warmup": 913,
+      "h1_warmup": 228,
+      "m15_test": 1940,
+      "first_test": "2026-09-27 22:00 UTC",
+      "last_test": "2026-10-26 23:30 UTC",
+      "closed_n": 31,
+      "wins": 11,
+      "losses": 20,
+      "win_rate_pct": 35.483870967741936,
+      "realized_pnl_usd": -29.67910982230933,
+      "realized_return_pct": -2.967910982230933,
+      "pnl_open_usd": -4.028186152916891,
+      "pnl_including_open_usd": -33.70729597522622,
+      "max_realized_drawdown_pct": 4.592351248960887,
+      "profit_factor": 0.7308070756474585,
+      "total_estimated_friction_usd": 22.053816900000005,
+      "best_trade_usd": 22.2330146,
+      "worst_trade_usd": -8.3183034,
+      "open_position": {
+        "side": 1,
+        "entry": 101.98999786376953,
+        "entry_ts": 1793038500,
+        "quantity_base": 6.197212375624646,
+        "risk_distance": 1.1743032568896197,
+        "stop": 101.18569735346195,
+        "best_close": 102.36000061035156,
+        "updates": 3
+      },
+      "exit_reasons": {
+        "INITIAL_STOP": 5,
+        "TRAIL_STOP": 26
+      },
+      "closed_trades": [
+        {
+          "entry_ts": 1790626500,
+          "exit_ts": 1790659800,
+          "side": -1,
+          "entry": 92.93000030517578,
+          "exit": 94.54764031555952,
+          "pnl_usd": -7.8709107,
+          "costs_usd": 0.3709107,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1790692200,
+          "exit_ts": 1790730900,
+          "side": -1,
+          "entry": 91.20999908447266,
+          "exit": 89.64202700252461,
+          "pnl_usd": 10.4253206,
+          "costs_usd": 0.5605116,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790743500,
+          "exit_ts": 1790757900,
+          "side": -1,
+          "entry": 89.5,
+          "exit": 89.97433839442375,
+          "pnl_usd": -5.5255901,
+          "costs_usd": 0.7974321,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790787600,
+          "exit_ts": 1790836200,
+          "side": -1,
+          "entry": 90.95999908447266,
+          "exit": 89.86255771773777,
+          "pnl_usd": 7.2975677,
+          "costs_usd": 0.5737976,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1790946000,
+          "exit_ts": 1790948700,
+          "side": -1,
+          "entry": 89.26000213623047,
+          "exit": 90.11007926450976,
+          "pnl_usd": -7.2218357,
+          "costs_usd": 0.6211817,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791179100,
+          "exit_ts": 1791189000,
+          "side": -1,
+          "entry": 90.05999755859375,
+          "exit": 90.28830822726516,
+          "pnl_usd": -2.817567,
+          "costs_usd": 0.7310981,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791201600,
+          "exit_ts": 1791211500,
+          "side": -1,
+          "entry": 90.08000183105469,
+          "exit": 90.50855596061824,
+          "pnl_usd": -3.5490648,
+          "costs_usd": 0.5582988,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791217800,
+          "exit_ts": 1791299700,
+          "side": -1,
+          "entry": 90.08999633789062,
+          "exit": 88.30740537580336,
+          "pnl_usd": 10.3918735,
+          "costs_usd": 0.4882851,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791535500,
+          "exit_ts": 1791539100,
+          "side": -1,
+          "entry": 90.26000213623047,
+          "exit": 90.92996491307136,
+          "pnl_usd": -8.3183034,
+          "costs_usd": 0.8873297,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1791542700,
+          "exit_ts": 1791549000,
+          "side": -1,
+          "entry": 90.55999755859375,
+          "exit": 91.09929432588531,
+          "pnl_usd": -6.5012971,
+          "costs_usd": 0.8398296,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791778500,
+          "exit_ts": 1791785700,
+          "side": -1,
+          "entry": 90.29000091552734,
+          "exit": 91.23920365557763,
+          "pnl_usd": -8.0207824,
+          "costs_usd": 0.623456,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1791820800,
+          "exit_ts": 1791849600,
+          "side": 1,
+          "entry": 93.83000183105469,
+          "exit": 93.12367128225709,
+          "pnl_usd": -6.4367713,
+          "costs_usd": 0.6548667,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791867600,
+          "exit_ts": 1791877500,
+          "side": 1,
+          "entry": 92.70999908447266,
+          "exit": 92.09823515055437,
+          "pnl_usd": -7.2515652,
+          "costs_usd": 0.8386173,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791917100,
+          "exit_ts": 1791955800,
+          "side": 1,
+          "entry": 94.16999816894531,
+          "exit": 94.56585444560825,
+          "pnl_usd": 2.8773856,
+          "costs_usd": 0.7287835,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791970200,
+          "exit_ts": 1791980100,
+          "side": 1,
+          "entry": 94.62000274658203,
+          "exit": 95.3144548675377,
+          "pnl_usd": 6.2827011,
+          "costs_usd": 0.8179906,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1791984600,
+          "exit_ts": 1792001700,
+          "side": 1,
+          "entry": 95.43000030517578,
+          "exit": 95.13710068637762,
+          "pnl_usd": -3.7672763,
+          "costs_usd": 0.8082124,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792093500,
+          "exit_ts": 1792138500,
+          "side": 1,
+          "entry": 96.31999969482422,
+          "exit": 95.41880709502044,
+          "pnl_usd": -7.920761,
+          "costs_usd": 0.6458068,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792143900,
+          "exit_ts": 1792152900,
+          "side": 1,
+          "entry": 95.75,
+          "exit": 95.76923847835768,
+          "pnl_usd": -0.6105173,
+          "costs_usd": 0.8038209,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792154700,
+          "exit_ts": 1792159200,
+          "side": 1,
+          "entry": 95.87000274658203,
+          "exit": 95.62509758020505,
+          "pnl_usd": -3.2584141,
+          "costs_usd": 0.8023053,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792165500,
+          "exit_ts": 1792360800,
+          "side": 1,
+          "entry": 95.9800033569336,
+          "exit": 98.30000305175781,
+          "pnl_usd": 22.2330146,
+          "costs_usd": 0.7940363,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792399500,
+          "exit_ts": 1792405800,
+          "side": 1,
+          "entry": 97.27999877929688,
+          "exit": 97.83733739524232,
+          "pnl_usd": 4.8108609,
+          "costs_usd": 0.8062806,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792413900,
+          "exit_ts": 1792415700,
+          "side": 1,
+          "entry": 98.02999877929688,
+          "exit": 97.23237882815265,
+          "pnl_usd": -8.1305015,
+          "costs_usd": 0.741141,
+          "exit_type": "INITIAL_STOP"
+        },
+        {
+          "entry_ts": 1792424700,
+          "exit_ts": 1792433700,
+          "side": 1,
+          "entry": 97.98999786376953,
+          "exit": 98.4723941700274,
+          "pnl_usd": 3.479111,
+          "costs_usd": 0.6916785,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792435500,
+          "exit_ts": 1792476900,
+          "side": 1,
+          "entry": 98.4800033569336,
+          "exit": 98.60105780547524,
+          "pnl_usd": 0.3321809,
+          "costs_usd": 0.6472982,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792560600,
+          "exit_ts": 1792566900,
+          "side": 1,
+          "entry": 99.02999877929688,
+          "exit": 98.56524686386335,
+          "pnl_usd": -5.2405303,
+          "costs_usd": 0.7696025,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792661400,
+          "exit_ts": 1792666800,
+          "side": 1,
+          "entry": 99.55000305175781,
+          "exit": 99.05003344224735,
+          "pnl_usd": -5.6842748,
+          "costs_usd": 0.784079,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792671300,
+          "exit_ts": 1792676700,
+          "side": 1,
+          "entry": 99.48999786376953,
+          "exit": 99.0933613502851,
+          "pnl_usd": -4.4080687,
+          "costs_usd": 0.7398625,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792716300,
+          "exit_ts": 1792723500,
+          "side": 1,
+          "entry": 99.29000091552734,
+          "exit": 99.76080816749328,
+          "pnl_usd": 3.3725537,
+          "costs_usd": 0.6903769,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792742400,
+          "exit_ts": 1792965600,
+          "side": 1,
+          "entry": 100.68000030517578,
+          "exit": 101.75,
+          "pnl_usd": 9.0705122,
+          "costs_usd": 0.7329709,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1792992600,
+          "exit_ts": 1793003400,
+          "side": 1,
+          "entry": 101.2699966430664,
+          "exit": 100.78026995394033,
+          "pnl_usd": -5.4293003,
+          "costs_usd": 0.7623726,
+          "exit_type": "TRAIL_STOP"
+        },
+        {
+          "entry_ts": 1793008800,
+          "exit_ts": 1793023200,
+          "side": 1,
+          "entry": 101.30999755859375,
+          "exit": 101.14308160646479,
+          "pnl_usd": -2.2888597,
+          "costs_usd": 0.7415834,
+          "exit_type": "TRAIL_STOP"
+        }
+      ],
+      "source": "Yahoo Finance CL=F via query1.finance.yahoo.com",
+      "ticker": "CL=F",
+      "quoted_cost_roundtrip": 0.08,
+      "quote_currency": "USD",
+      "price_sha256": "c2c49cc02b182f152e008aa9fd0b3c7e95f9f36e9a5681bde5afa12423a51692"
+    }
+  },
+  "caveats": [
+    "No verified FBS fills, spreads, or execution; costs estimated",
+    "Fractional continuous future equivalents are non-executable at this notional",
+    "This is a retrospective comparison, not proof of future edge"
+  ],
+  "control_usdcad": {
+    "trades": 34,
+    "pnl_usd": 0.38277108440831853,
+    "frozen_pnl_usd": 0.38277108440831853,
+    "frozen_sha256": "89468f87dc17c1f186878e6cc4e70f80485b5ea34ff747e834b4e6bf369450c3"
+  }
+}
