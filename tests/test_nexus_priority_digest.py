@@ -95,6 +95,21 @@ class PriorityDigestTests(unittest.TestCase):
         self.assertNotIn("Movimentos de odds",format_football(BASE,radar))
         self.assertNotIn("lucro confirmado",msg)
 
+    def test_official_bookmaker_corners_cards_are_distinct_from_boxscore_counts(self):
+        coverage={"important_games":12,"verified_bookmaker_games":5,
+                  "indicative_only_games":1,"missing_bookmaker_price_games":6,
+                  "games_with_corners_stats":3,
+                  "games_with_yellow_cards_stats":2,
+                  "games_with_shots_on_target_stats":2,
+                  "official_corners_cards":{"status":"checked",
+                        "verified_corners_quotes":8,"verified_cards_quotes":4}}
+        text=format_football(BASE,coverage)
+        self.assertIn("Odds de casa para escanteios: 8 | cartões: 4",text)
+        self.assertIn("escanteios 3 | cartões 2 | chutes no alvo 2",text)
+        self.assertIn("não comprova liquidez",text)
+        coverage["official_corners_cards"]["status"]="no_observed_prices"
+        self.assertNotIn("Odds de casa para escanteios:",format_football(BASE,coverage))
+
     def test_failed_radar_keeps_regular_daily_delivery(self):
         sent = []
         def fake_api(token, method, payload=None):
