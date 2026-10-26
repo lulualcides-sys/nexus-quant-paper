@@ -73,7 +73,7 @@ def decide(profile, bars, i, h1, inds, j, side, middle):
     return True
 
 
-def candidate_step(book, bars, i, h1, inds, profile):
+def candidate_step(book, bars, i, h1, inds, m15_ind=None, profile="baseline"):
     current, prior = bars[i], bars[i-1]
     if book["position"]:
         if not bot.exit_position(book,current):

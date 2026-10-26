@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from src.bb_rebound_mtf import (
     TICKER, CAPITAL, TRAIL_POLICY, NET_GREEN_BUFFER_PIPS,
     digest, exit_position, advance_trailing_stop, h1_rejection, parse_15m,
-    to_h1, update,
+    to_h1, update, h1_trend_confirmation, m15_sma20_pullback,
 )
 from src.strategies import make_indicators
 
@@ -56,92 +56,102 @@ class BB20BotTests(unittest.TestCase):
         down = hours(up=False)
         self.assertEqual(h1_rejection(down, make_indicators(down), 59), -1)
 
+    @staticmethod
+    def append_actual_m15_touch(bars, side):
+        """Build a two-candle touch/return to M15 SMA20, no high/low breakout."""
+        start = 60*3600
+        ref=mean(b["close"] for b in bars[-20:])
+        first = {
+            "time": start,
+            "open": bars[-1]["close"],
+            "high": max(bars[-1]["close"], ref) + 0.0001,
+            "low": min(bars[-1]["close"], ref) - 0.0001,
+            "close": ref + side*0.00001,
+        }
+        bars.append(first)
+        middle=mean(b["close"] for b in bars[-20:])
+        second={
+            "time": start+900,
+            "open": middle-side*0.00006,
+            "close": middle+side*0.00015,
+            "high": middle+0.00024,
+            "low": middle-0.00015,
+        }
+        bars.append(second)
+        bars.append({
+            "time": start+1800,
+            "open": second["close"],
+            "high": second["close"]+0.00004,
+            "low": second["close"]-0.00004,
+            "close": second["close"],
+        })
+        return bars
+
+    def test_h1_trend_only_and_m15_own_middle_touch(self):
+        up = minutes()
+        h1=to_h1(up)
+        direction=h1_trend_confirmation(h1,make_indicators(h1),59)
+        self.assertEqual(direction,1)
+        reference_h1=mean(b["close"] for b in h1[-20:])
+        reference_m15=mean(b["close"] for b in up[-20:])
+        self.assertNotAlmostEqual(reference_h1,reference_m15,places=5)
+        down=minutes(up=False)
+        h1=to_h1(down)
+        self.assertEqual(h1_trend_confirmation(h1,make_indicators(h1),59),-1)
+
     def test_first_run_is_clean_and_m15_pullback_not_breakout(self):
-        bars = minutes()
-        state = update(None, bars)
+        bars=minutes()
+        state=update(None,bars)
+        self.assertEqual(state["equity"],CAPITAL)
         self.assertIsNone(state["position"])
-        self.assertEqual(state["closed"], [])
-        self.assertEqual(state["equity"], CAPITAL)
-        middle = mean(x["close"] for x in to_h1(bars)[-20:])
-        # Price returns down to the H1 BB middle, then prints a small bullish
-        # M15 rebound. It stays BELOW the prior M15 high (no breakout).
-        bars.append({
-            "time": 60 * 3600, "open": bars[-1]["close"],
-            "high": bars[-1]["close"] + 0.00015,
-            "low": middle - 0.00003, "close": middle + 0.00002,
-        })
-        bars.append({
-            "time": 60 * 3600 + 900, "open": middle + 0.00002,
-            "high": middle + 0.00025,
-            "low": middle - 0.00002, "close": middle + 0.00020,
-        })
-        self.assertLess(bars[-1]["close"], bars[-2]["high"])  # NOT a breakout
-        bars.append({
-            "time": 60 * 3600 + 1800, "open": middle + 0.00020,
-            "high": middle + 0.00025,
-            "low": middle + 0.00013, "close": middle + 0.00021,
-        })
-        state = update(state, bars)
+        self.append_actual_m15_touch(bars,1)
+        state=update(state,bars)
         self.assertIsNotNone(state["position"])
-        self.assertEqual(state["position"]["side"], 1)
-        self.assertEqual(state["position"]["entry_ts"], 60 * 3600 + 1800)
-        self.assertEqual(state["position"]["entry_rule"], "bb20_h1_m15_pullback_v2")
-        self.assertEqual(state["position"]["stop_policy"], TRAIL_POLICY)
+        self.assertEqual(state["position"]["side"],1)
+        self.assertEqual(state["position"]["entry_ts"],60*3600+1800)
+        self.assertEqual(state["position"]["entry_rule"],"bb20_m15_sma20_touch_h1_ema50_trend_v3")
+        self.assertEqual(state["position"]["stop_policy"],TRAIL_POLICY)
         self.assertIsNone(state["position"]["target"])
-        self.assertLessEqual(state["position"]["qty_usd"], CAPITAL)
-        self.assertEqual(state["closed"], [])
-        watermark = state["watermark_m15"]
-        again = update(state, bars)
-        self.assertEqual(again["watermark_m15"], watermark)
-        self.assertEqual(again["last_entry_h1"], 59 * 3600)
+        self.assertLessEqual(state["position"]["qty_usd"],CAPITAL)
+        self.assertEqual(state["closed"],[])
+        self.assertEqual(state,update(state,bars))
 
     def test_bearish_m15_rebound_triggers_sell_without_low_breakout(self):
-        bars = minutes(up=False)
-        state = update(None, bars)
-        middle = mean(x["close"] for x in to_h1(bars)[-20:])
-        bars.append({
-            "time": 60 * 3600, "open": bars[-1]["close"],
-            "high": middle + 0.00003,
-            "low": bars[-1]["close"] - 0.00015, "close": middle - 0.00002,
-        })
-        bars.append({
-            "time": 60 * 3600 + 900, "open": middle - 0.00002,
-            "high": middle + 0.00002,
-            "low": middle - 0.00025, "close": middle - 0.00020,
-        })
-        self.assertGreater(bars[-1]["close"], bars[-2]["low"])
-        bars.append({
-            "time": 60 * 3600 + 1800, "open": middle - 0.00020,
-            "high": middle - 0.00013, "low": middle - 0.00025,
-            "close": middle - 0.00021,
-        })
-        state = update(state, bars)
+        bars=minutes(up=False)
+        state=update(None,bars)
+        self.append_actual_m15_touch(bars,-1)
+        state=update(state,bars)
         self.assertIsNotNone(state["position"])
-        self.assertEqual(state["position"]["side"], -1)
-        self.assertEqual(state["position"]["entry_ts"], 60 * 3600 + 1800)
+        self.assertEqual(state["position"]["side"],-1)
+        self.assertEqual(state["position"]["entry_ts"],60*3600+1800)
 
-    def test_no_entry_when_return_candle_does_not_reject_mean(self):
-        bars = minutes()
-        state = update(None, bars)
-        middle = mean(x["close"] for x in to_h1(bars)[-20:])
+    def test_no_entry_when_m15_does_not_touch_its_average(self):
+        bars=minutes()
+        state=update(None,bars)
+        reference=mean(b["close"] for b in bars[-20:])
         bars.append({
-            "time": 60 * 3600, "open": bars[-1]["close"],
-            "high": bars[-1]["close"] + 0.00015,
-            "low": middle - 0.00003, "close": middle + 0.00002,
+            "time":60*3600,"open":bars[-1]["close"],
+            "high":bars[-1]["close"]+0.0002,
+            "low":bars[-1]["close"]-0.00005,
+            "close":bars[-1]["close"]+0.0001,
         })
         bars.append({
-            "time": 60 * 3600 + 900, "open": middle + 0.00002,
-            "high": middle + 0.00005,
-            "low": middle - 0.00025, "close": middle - 0.00020,
+            "time":60*3600+900,
+            "open":reference+0.001,
+            "high":reference+0.0013,
+            "low":reference+0.0009,
+            "close":reference+0.0012,
         })
         bars.append({
-            "time": 60 * 3600 + 1800, "open": middle - 0.00020,
-            "high": middle - 0.0001, "low": middle - 0.00030,
-            "close": middle - 0.00022,
+            "time":60*3600+1800,
+            "open":reference+0.0012,
+            "high":reference+0.0013,
+            "low":reference+0.0011,
+            "close":reference+0.0012,
         })
-        state = update(state, bars)
+        state=update(state,bars)
         self.assertIsNone(state["position"])
-        self.assertEqual(state["closed"], [])
+        self.assertEqual(state["closed"],[])
 
     def test_missing_watermark_does_not_fabricate_orders(self):
         bars = minutes()

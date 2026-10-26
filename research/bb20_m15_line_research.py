@@ -81,7 +81,7 @@ def reaction(bars, i, feats, side, mode):
     )
 
 
-def run_step(book,bars,i,h1,inds,*,feats,trend_mode,trigger,stop_mode):
+def run_step(book,bars,i,h1,inds,m15_ind=None,*,feats,trend_mode,trigger,stop_mode):
     current, prior = bars[i], bars[i-1]
     if book["position"] is not None:
         if not bot.exit_position(book,current):

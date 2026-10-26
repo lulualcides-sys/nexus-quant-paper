@@ -113,6 +113,52 @@ def h1_rejection(h1, indicators, j):
     return 0
 
 
+def h1_trend_confirmation(h1, indicators, j):
+    """Direction ONLY from the last COMPLETED H1 bar, not a H1 SMA touch."""
+    if j < 55:
+        return 0
+    p = indicators[j]
+    previous = indicators[j-4]
+    candle = h1[j]
+    if (p["e50"] > p["e200"] and candle["close"] > p["e50"]
+            and p["e50"] > previous["e50"]):
+        return 1
+    if (p["e50"] < p["e200"] and candle["close"] < p["e50"]
+            and p["e50"] < previous["e50"]):
+        return -1
+    return 0
+
+
+def m15_sma20_pullback(bars, indicators, i, side):
+    """True 15m Bollinger middle (SMA20) touch, and return to trend side.
+
+    No requirement to break previous candle high/low. Only the completed
+    M15 candle is used to send a NEXT-bar virtual entry.
+    """
+    if i < 21 or side not in (-1, 1):
+        return False
+    candle, previous = bars[i-1], bars[i-2]
+    middle = mean(row["close"] for row in bars[i-20:i])
+    atr = indicators[i-1]["atr"]
+    if atr <= 0:
+        return False
+    tolerance = 0.10 * atr
+    max_distance = 0.75 * atr
+    if side > 0:
+        return (
+            candle["low"] <= middle + tolerance
+            and 0 < candle["close"] - middle <= max_distance
+            and candle["close"] > candle["open"]
+            and candle["close"] > previous["close"]
+        )
+    return (
+        candle["high"] >= middle - tolerance
+        and 0 < middle - candle["close"] <= max_distance
+        and candle["close"] < candle["open"]
+        and candle["close"] < previous["close"]
+    )
+
+
 def initial(bars):
     return {
         "schema": 1, "paper_only": True, "ticker": TICKER,
@@ -199,7 +245,7 @@ def advance_trailing_stop(book, bar):
     return pos["stop"] != prior_stop
 
 
-def step(book, bars, i, h1, inds):
+def step(book, bars, i, h1, inds, m15_ind=None):
     current, prior = bars[i], bars[i-1]
     # Signal at prior closed M15, virtual fill at this bar's opening.
     # Check the old stop first; then use the M15 close for NEXT bar's trail.
@@ -222,42 +268,25 @@ def step(book, bars, i, h1, inds):
     if prior["time"] >= closed_at + 3600:
         book["last_reason"] = "Confirmação H1 expirada"
         return
-    side = h1_rejection(h1, inds, j)
+    side = h1_trend_confirmation(h1, inds, j)
     if not side:
-        book["last_reason"] = "H1 sem toque e rejeição confirmados na SMA20"
+        book["last_reason"] = "H1 sem tendência EMA50/EMA200 alinhada"
         return
     if book["last_entry_h1"] == confirmed_h1["time"]:
         book["last_reason"] = "Sinal H1 já utilizado"
         return
 
-    middle = mean(x["close"] for x in h1[j-19:j+1])
-    older = bars[i-2]
+    # User's BB20 line is on the 15-minute chart: measure the M15 SMA20,
+    # not the H1 SMA20. H1 only decides which direction is permissible.
     atr = inds[j]["atr"]
     opening = current["open"]
     if atr <= 0 or opening <= 0:
         book["last_reason"] = "ATR/preço inválido"
         return
-
-    # TRUE PULLBACK: the completed H1 candle already touched and rejected
-    # the BB20 central line. On M15 enter the reaction AWAY from that line,
-    # not a breakout beyond the previous candle's high/low.
-    # Keep the reaction near the central mean; avoid chasing late moves.
-    proximity = 0.25 * atr
-    max_rebound_distance = 0.75 * atr
-    long_trigger = (
-        prior["low"] <= middle + proximity
-        and 0 < prior["close"] - middle <= max_rebound_distance
-        and prior["close"] > prior["open"]
-        and prior["close"] > older["close"]
-    )
-    short_trigger = (
-        prior["high"] >= middle - proximity
-        and 0 < middle - prior["close"] <= max_rebound_distance
-        and prior["close"] < prior["open"]
-        and prior["close"] < older["close"]
-    )
-    if not (long_trigger if side > 0 else short_trigger):
-        book["last_reason"] = "H1 confirmou; aguardando retorno M15 junto à SMA20"
+    if m15_ind is None:
+        m15_ind = make_indicators(bars)
+    if not m15_sma20_pullback(bars, m15_ind, i, side):
+        book["last_reason"] = "Aguardando toque e retorno na SMA20 do M15"
         return
     distance = max(STOP_ATR * atr, 6 * PIP)
     # Quantity is USD base units. Convert quote-currency stop loss back to USD.
@@ -266,7 +295,7 @@ def step(book, bars, i, h1, inds):
     if qty <= 0:
         return
     book["position"] = {
-        "side": side, "entry": opening, "entry_ts": current["time"], "entry_rule": "bb20_h1_m15_pullback_v2",
+        "side": side, "entry": opening, "entry_ts": current["time"], "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
         "qty_usd": qty, "stop": opening - side * distance,
         "initial_r": distance, "best_close": opening,
         "stop_policy": TRAIL_POLICY, "stop_updates": 0,
@@ -295,6 +324,8 @@ def update(state, bars):
     if watermark not in times:
         raise ValueError("USD/CAD: lacuna no histórico; não reconstruir fills retrospectivos")
     inds = make_indicators(h1)
+    # Precompute M15 indicators once, not once per scan candle.
+    m15_ind = make_indicators(bars)
     for i in range(max(2, times[watermark] + 1), len(bars)):
         # Gaps block NEW entries, but an OPEN position must still be assessed:
         # weekend/reconnect opening prices can gap through the protective stop.
@@ -306,7 +337,7 @@ def update(state, bars):
                 state["last_reason"] = "Intervalo M15 com lacuna; entrada ignorada"
             state["watermark_m15"] = bars[i]["time"]
             continue
-        step(state, bars, i, h1, inds)
+        step(state, bars, i, h1, inds, m15_ind)
         state["watermark_m15"] = bars[i]["time"]
     return state
 
@@ -340,5 +371,5 @@ def digest(book, day):
         f"{len(closed_today)} fech. hoje | dia US$ {pnl:+.2f} | total US$ {total:+.2f} | V/D {wins}/{losses} | {state}",
         *trailing_details,
         f"📍 {book.get('last_reason', 'Sem diagnóstico')} | banca US$ {CAPITAL:,.0f} virtual",
-        "⚠️ SMA20 (BB 20,2), pullback H1/M15, trailing por fechamento; sem TP fixo. *Gaps/custos podem gerar red.",
+        "⚠️ Tendência H1 EMA50/EMA200 + toque SMA20 M15 (BB 20,2), trailing por fechamento; sem TP. *Gaps/custos podem causar perdas.",
     ]
