@@ -122,6 +122,30 @@ class BB20BotTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "apenas 1 candles"):
             parse_15m(payload, now=t+1000)
 
+    def test_combined_report_contains_eleventh_and_independent_capital(self):
+        from src.daily_digest import digest as full_digest
+        from src.gold_forward import update as gold_update
+        from src.leveraged_gold import update as leveraged_update
+        rows = []
+        price = 2750.0
+        for i in range(1100):
+            close = price + 0.25
+            rows.append({
+                "time": 1729728000 + i * 3600,
+                "open": price, "high": close + 1.0,
+                "low": price - 1.0, "close": close,
+            })
+            price = close
+        report = full_digest(
+            "2026-10-26", gold_update(None, rows),
+            leveraged_update(None, rows), mtf=update(None, minutes())
+        )
+        self.assertIn("11 robôs", report)
+        self.assertIn("BB20 Retorno H1/M15", report)
+        self.assertIn("51,000", report)
+        self.assertIn("Sem operações reais", report)
+        self.assertLess(len(report), 4000)
+
     def test_digest_names_eleventh_without_claiming_real_fills(self):
         state = update(None, minutes())
         lines = digest(state, "2026-10-26")
