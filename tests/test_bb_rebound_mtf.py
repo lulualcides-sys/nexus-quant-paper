@@ -153,6 +153,38 @@ class BB20BotTests(unittest.TestCase):
         self.assertIsNone(state["position"])
         self.assertEqual(state["closed"],[])
 
+    def test_stale_yahoo_does_not_roll_back_watermark_or_invent_fills(self):
+        bars = minutes()
+        book = update(None, bars)
+        prior_ts = book["watermark_m15"]
+        unchanged = update(book, bars[:-2])
+        self.assertEqual(unchanged["watermark_m15"], prior_ts)
+        self.assertEqual(unchanged["equity"], CAPITAL)
+        self.assertIsNone(unchanged["position"])
+        self.assertEqual(unchanged["closed"], [])
+        self.assertIn("atrasada", unchanged["last_reason"])
+
+    def test_revised_yahoo_gap_skips_unseen_m15_without_reset(self):
+        bars = minutes()
+        book = update(None, bars)
+        missing_ts = book["watermark_m15"]
+        newest = [
+            {"time": missing_ts + 900, "open": bars[-1]["close"],
+             "high": bars[-1]["close"] + 0.00005,
+             "low": bars[-1]["close"] - 0.00005,
+             "close": bars[-1]["close"]},
+            {"time": missing_ts + 1800, "open": bars[-1]["close"],
+             "high": bars[-1]["close"] + 0.00005,
+             "low": bars[-1]["close"] - 0.00005,
+             "close": bars[-1]["close"]},
+        ]
+        revised = bars[:-1] + newest
+        book = update(book, revised)
+        self.assertEqual(book["watermark_m15"], newest[-1]["time"])
+        self.assertEqual(book["equity"], CAPITAL)
+        self.assertIsNone(book["position"])
+        self.assertEqual(book["closed"], [])
+
     def test_missing_watermark_does_not_fabricate_orders(self):
         bars = minutes()
         state = update(None, bars)

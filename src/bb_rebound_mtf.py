@@ -10,6 +10,7 @@ import math
 import time
 import urllib.request
 from collections import defaultdict
+from bisect import bisect_right
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean, pstdev
@@ -321,12 +322,28 @@ def update(state, bars):
         raise ValueError("Estado BB20 incompatível; não reiniciar silenciosamente")
     times = {b["time"]: i for i, b in enumerate(bars)}
     watermark = state["watermark_m15"]
-    if watermark not in times:
-        raise ValueError("USD/CAD: lacuna no histórico; não reconstruir fills retrospectivos")
+    if watermark in times:
+        next_bar = times[watermark] + 1
+    elif watermark >= bars[-1]["time"]:
+        # Yahoo may lag behind an earlier successfully processed observation.
+        # Do NOT roll back the watermark or manufacture missing trades/stops.
+        state["last_reason"] = (
+            "Fonte M15 atrasada; aguardando candles posteriores ao último processado"
+        )
+        return state
+    elif watermark < bars[0]["time"]:
+        # Long stale position/history outside provider retention is NOT recoverable.
+        raise ValueError("USD/CAD: lacuna no histórico; exigir recuperação auditada")
+    else:
+        # A previously processed candle disappeared from Yahoo's revised OHLC.
+        # Resume only strictly NEW bars, preserving the original account state.
+        # The existing contiguous-bar rule excludes fills across the gap.
+        next_bar = bisect_right([b["time"] for b in bars], watermark)
+        state["last_reason"] = "Lacuna M15 identificada; candle ausente não será inventado"
     inds = make_indicators(h1)
     # Precompute M15 indicators once, not once per scan candle.
     m15_ind = make_indicators(bars)
-    for i in range(max(2, times[watermark] + 1), len(bars)):
+    for i in range(max(2, next_bar), len(bars)):
         # Gaps block NEW entries, but an OPEN position must still be assessed:
         # weekend/reconnect opening prices can gap through the protective stop.
         if bars[i]["time"] - bars[i-1]["time"] != 900 or bars[i-1]["time"] - bars[i-2]["time"] != 900:
