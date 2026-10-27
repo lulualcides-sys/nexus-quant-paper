@@ -139,7 +139,7 @@ def prepare(bars, now):
     start=now-EVAL_DAYS*86400
     index=bisect.bisect_left([b["time"] for b in bars],start)
     h1=bb.to_h1(bars)
-    if index<1100 or len(h1)<400:
+    if index<900 or len(bb.to_h1(bars[:index]))<200:
         raise ValueError("Not enough warmup: %s M15, %s H1" % (index,len(h1)))
     if len(bars)-index<2400 or bars[index]["time"]>start+4*86400:
         raise ValueError("Not enough 40d M15 coverage")
