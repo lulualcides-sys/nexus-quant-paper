@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793075400,
+  "watermark_m15": 1793076300,
   "equity": 1000.0,
   "position": {
     "side": -1,
