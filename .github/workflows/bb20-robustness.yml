@@ -31,6 +31,14 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Keep the first completed audit of a given UTC day immutable.
+          # Two nearby workflow runs must not collide on the same snapshot.
+          utc_day=$(date -u +%F)
+          git fetch origin main
+          if git cat-file -e "origin/main:research/results/bb20_robustness_${utc_day}.json" 2>/dev/null; then
+            echo "A frozen audit already exists for $utc_day. Leaving it unchanged."
+            exit 0
+          fi
           shopt -s nullglob
           artifacts=(research/results/bb20_robustness_*.md research/results/bb20_robustness_*.json research/results/bb20_robustness_*_candles.json.gz)
           if (( ${#artifacts[@]} )); then git add "${artifacts[@]}"; fi
