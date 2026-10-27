@@ -155,6 +155,11 @@ class BB20BotTests(unittest.TestCase):
 
     def test_stale_yahoo_does_not_roll_back_watermark_or_invent_fills(self):
         bars = minutes()
+        for _ in range(2):
+            last = bars[-1]
+            bars.append({"time": last["time"] + 900,
+                         "open": last["close"], "high": last["close"] + 0.00005,
+                         "low": last["close"] - 0.00005, "close": last["close"]})
         book = update(None, bars)
         prior_ts = book["watermark_m15"]
         unchanged = update(book, bars[:-2])
