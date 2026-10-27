@@ -1,0 +1,39 @@
+name: Nexus Quant | BB20 5 Markets Robustness Research
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/bb20_robustness_v4.py'
+      - '.github/workflows/bb20-robustness.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nexus-quant-bb20-robustness
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run established tests (no bot edits)
+        run: |
+          python -m pip install cryptography
+          python -m unittest discover -s tests -q
+      - name: Compare 36 predeclared rules across five H1 M15 charts
+        run: python -m research.bb20_robustness_v4
+      - name: Preserve observations and results for audit
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/results/bb20_robustness_*.md research/results/bb20_robustness_*.json research/results/bb20_robustness_*_candles.json.gz
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: freeze BB20 robust 5-market experiment [skip ci]'
+            git pull --rebase
+            git push
+          fi
