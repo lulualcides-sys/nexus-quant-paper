@@ -115,9 +115,9 @@
           "asset": "EURUSD",
           "atr": 0.000627568625518069,
           "close": 1.1175681352615356,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -4.76348,
+          "eval": "contrario",
+          "evaluated_at": 1793091600,
           "id": "EURUSD:reversal_ai:1793070000",
           "side": 1,
           "strategy": "reversal_ai",
@@ -127,17 +127,53 @@
           "asset": "EURUSD",
           "atr": 0.0006034685962138714,
           "close": 1.1164453029632568,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 1.65104,
+          "eval": "favoravel",
+          "evaluated_at": 1793102400,
           "id": "EURUSD:trend_hunter:1793080800",
           "side": -1,
           "strategy": "trend_hunter",
           "ts": 1793080800
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.0009081762279300248,
+          "close": 1.1145787239074707,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:trend_hunter:1793091600",
+          "side": -1,
+          "strategy": "trend_hunter",
+          "ts": 1793091600
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.0009081762279300248,
+          "close": 1.1145787239074707,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:breakout_pro:1793091600",
+          "side": -1,
+          "strategy": "breakout_pro",
+          "ts": 1793091600
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.0009198386090998798,
+          "close": 1.1154489517211914,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:reversal_ai:1793102400",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1793102400
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793084400
+      "watermark": 1793102400
     },
     "US500": {
       "signals": [
@@ -253,9 +289,9 @@
           "asset": "US500",
           "atr": 14.976081733840928,
           "close": 7726.25,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.71781,
+          "eval": "favoravel",
+          "evaluated_at": 1793088000,
           "id": "US500:reversal_ai:1793066400",
           "side": -1,
           "strategy": "reversal_ai",
@@ -265,9 +301,9 @@
           "asset": "US500",
           "atr": 14.048521555230895,
           "close": 7708.0,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -2.42018,
+          "eval": "contrario",
+          "evaluated_at": 1793102400,
           "id": "US500:pullback_master:1793080800",
           "side": -1,
           "strategy": "pullback_master",
@@ -275,7 +311,7 @@
         }
       ],
       "source": "ES=F",
-      "watermark": 1793084400
+      "watermark": 1793102400
     },
     "USDJPY": {
       "signals": [
@@ -367,17 +403,29 @@
           "asset": "USDJPY",
           "atr": 0.16468139974475754,
           "close": 157.63800048828125,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -0.57076,
+          "eval": "contrario",
+          "evaluated_at": 1793091600,
           "id": "USDJPY:reversal_ai:1793070000",
           "side": -1,
           "strategy": "reversal_ai",
           "ts": 1793070000
+        },
+        {
+          "asset": "USDJPY",
+          "atr": 0.1640714545841186,
+          "close": 157.71400451660156,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "USDJPY:reversal_ai:1793088000",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793088000
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793084400
+      "watermark": 1793102400
     },
     "XAUUSD": {
       "signals": [
@@ -469,17 +517,29 @@
           "asset": "XAUUSD",
           "atr": 13.315012810106516,
           "close": 4023.60009765625,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.11265,
+          "eval": "neutro",
+          "evaluated_at": 1793095200,
           "id": "XAUUSD:pullback_master:1793073600",
           "side": -1,
           "strategy": "pullback_master",
           "ts": 1793073600
+        },
+        {
+          "asset": "XAUUSD",
+          "atr": 12.637478697973899,
+          "close": 4015.39990234375,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XAUUSD:reversal_ai:1793091600",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1793091600
         }
       ],
       "source": "GC=F",
-      "watermark": 1793084400
+      "watermark": 1793102400
     },
     "XTIUSD": {
       "signals": [
@@ -547,17 +607,29 @@
           "asset": "XTIUSD",
           "atr": 0.5703444238089876,
           "close": 101.7300033569336,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -1.40267,
+          "eval": "contrario",
+          "evaluated_at": 1793102400,
           "id": "XTIUSD:pullback_master:1793080800",
           "side": 1,
           "strategy": "pullback_master",
           "ts": 1793080800
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 0.6097490437927783,
+          "close": 102.30000305175781,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:reversal_ai:1793088000",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793088000
         }
       ],
       "source": "CL=F",
-      "watermark": 1793084400
+      "watermark": 1793102400
     }
   },
   "schema": 4
