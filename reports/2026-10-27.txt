@@ -1,0 +1,29 @@
+🏆 NEXUS QUANT — 2026-10-27
+🔎 11 robôs • 10 Ouro H4 + 1 USD/CAD H1/M15 • RESULTADOS VIRTUAIS
+📌 Preços de futuros GC=F, não cotações nem execuções FBS.
+
+🟦 5 CONVENCIONAIS | 0,75% risco-stop | até 1× nocional
+RSI Trend: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Channel 20: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Pullback 20: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Momentum 100: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+Channel 55: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição
+
+🟥 5 ALAVANCADOS | 1,50% risco-stop | limite 3× nocional
+🟢 Stop móvel GREEN: após +1R, acompanha o movimento; sem TP fixo.
+Channel 20 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Momentum 100 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Channel 55 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Momentum 40 L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Trend Long L: 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+
+🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD
+1 fech. hoje | dia US$ -1.05 | total US$ -1.05 | V/D 0/1 | sem posição
+📍 H1 sem tendência EMA50/EMA200 alinhada | banca US$ 1,000 virtual
+⚠️ Tendência H1 EMA50/EMA200 + toque SMA20 M15 (BB 20,2), trailing por fechamento; sem TP. *Gaps/custos podem causar perdas.
+
+🏅 Ouro H4: todos empatados, sem resultado realizado.
+💼 Capital virtual: US$ 51,000 em 11 bancas independentes.
+🌍 Outros mercados observados: EUR/USD, USD/JPY, US500, WTI.
+⚠️ Risco maior pode ampliar perdas; financiamento alavancado estimado.
+⛔ Sem operações reais ou ganhos de corretora. Dados e custos aproximados.
