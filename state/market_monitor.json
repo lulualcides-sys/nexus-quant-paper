@@ -1,5 +1,5 @@
 {
-  "last_report_day": "2026-10-27",
+  "last_report_day": "2026-10-28",
   "markets": {
     "EURUSD": {
       "signals": [
@@ -338,10 +338,22 @@
           "side": 1,
           "strategy": "breakout_pro",
           "ts": 1793210400
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.0012414397113378673,
+          "close": 1.1155734062194824,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:reversal_ai:1793221200",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793221200
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793214000
+      "watermark": 1793221200
     },
     "US500": {
       "signals": [
@@ -572,10 +584,22 @@
           "side": 1,
           "strategy": "momentum_x",
           "ts": 1793214000
+        },
+        {
+          "asset": "US500",
+          "atr": 25.34035666882872,
+          "close": 7760.75,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:reversal_ai:1793217600",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793217600
         }
       ],
       "source": "ES=F",
-      "watermark": 1793214000
+      "watermark": 1793217600
     },
     "USDJPY": {
       "signals": [
@@ -773,7 +797,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793214000
+      "watermark": 1793221200
     },
     "XAUUSD": {
       "signals": [
@@ -937,9 +961,9 @@
           "asset": "XAUUSD",
           "atr": 11.378945985841284,
           "close": 4054.60009765625,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -2.33764,
+          "eval": "contrario",
+          "evaluated_at": 1793217600,
           "id": "XAUUSD:pullback_master:1793196000",
           "side": -1,
           "strategy": "pullback_master",
@@ -968,10 +992,22 @@
           "side": 1,
           "strategy": "momentum_x",
           "ts": 1793214000
+        },
+        {
+          "asset": "XAUUSD",
+          "atr": 20.553666688224613,
+          "close": 4081.199951171875,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XAUUSD:reversal_ai:1793217600",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793217600
         }
       ],
       "source": "GC=F",
-      "watermark": 1793214000
+      "watermark": 1793217600
     },
     "XTIUSD": {
       "signals": [
@@ -1135,9 +1171,9 @@
           "asset": "XTIUSD",
           "atr": 0.7052523284324894,
           "close": 102.37999725341797,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -0.62388,
+          "eval": "contrario",
+          "evaluated_at": 1793217600,
           "id": "XTIUSD:breakout_pro:1793196000",
           "side": 1,
           "strategy": "breakout_pro",
@@ -1178,10 +1214,34 @@
           "side": -1,
           "strategy": "reversal_ai",
           "ts": 1793206800
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 0.8980921518923801,
+          "close": 101.94000244140625,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:momentum_x:1793217600",
+          "side": 1,
+          "strategy": "momentum_x",
+          "ts": 1793217600
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 0.8980921518923801,
+          "close": 101.94000244140625,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:pullback_master:1793217600",
+          "side": 1,
+          "strategy": "pullback_master",
+          "ts": 1793217600
         }
       ],
       "source": "CL=F",
-      "watermark": 1793214000
+      "watermark": 1793217600
     }
   },
   "schema": 4
