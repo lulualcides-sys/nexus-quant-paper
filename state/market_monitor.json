@@ -259,17 +259,41 @@
           "asset": "EURUSD",
           "atr": 0.0006615626196724058,
           "close": 1.1129660606384277,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -0.37444,
+          "eval": "contrario",
+          "evaluated_at": 1793174400,
           "id": "EURUSD:reversal_ai:1793152800",
           "side": 1,
           "strategy": "reversal_ai",
           "ts": 1793152800
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.000589134078417712,
+          "close": 1.1122233867645264,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:trend_hunter:1793163600",
+          "side": -1,
+          "strategy": "trend_hunter",
+          "ts": 1793163600
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.0006437283137192083,
+          "close": 1.1124708652496338,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:reversal_ai:1793170800",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1793170800
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793160000
+      "watermark": 1793174400
     },
     "US500": {
       "signals": [
@@ -452,10 +476,22 @@
           "side": -1,
           "strategy": "reversal_ai",
           "ts": 1793116800
+        },
+        {
+          "asset": "US500",
+          "atr": 9.73181898803778,
+          "close": 7764.25,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:reversal_ai:1793174400",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793174400
         }
       ],
       "source": "ES=F",
-      "watermark": 1793160000
+      "watermark": 1793174400
     },
     "USDJPY": {
       "signals": [
@@ -590,10 +626,22 @@
           "side": -1,
           "strategy": "pullback_master",
           "ts": 1793160000
+        },
+        {
+          "asset": "USDJPY",
+          "atr": 0.1396144260596429,
+          "close": 157.77699279785156,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "USDJPY:pullback_master:1793170800",
+          "side": -1,
+          "strategy": "pullback_master",
+          "ts": 1793170800
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793160000
+      "watermark": 1793174400
     },
     "XAUUSD": {
       "signals": [
@@ -733,9 +781,9 @@
           "asset": "XAUUSD",
           "atr": 9.588747552933667,
           "close": 4072.5,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 1.51219,
+          "eval": "favoravel",
+          "evaluated_at": 1793170800,
           "id": "XAUUSD:reversal_ai:1793149200",
           "side": -1,
           "strategy": "reversal_ai",
@@ -755,7 +803,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793160000
+      "watermark": 1793174400
     },
     "XTIUSD": {
       "signals": [
@@ -890,10 +938,22 @@
           "side": 1,
           "strategy": "reversal_ai",
           "ts": 1793116800
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 0.5762066131113456,
+          "close": 101.47000122070312,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:reversal_ai:1793170800",
+          "side": -1,
+          "strategy": "reversal_ai",
+          "ts": 1793170800
         }
       ],
       "source": "CL=F",
-      "watermark": 1793160000
+      "watermark": 1793174400
     }
   },
   "schema": 4
