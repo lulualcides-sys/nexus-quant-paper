@@ -2,12 +2,12 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1793203200,
+  "h4_watermark": 1793246400,
   "books": {
     "lev_channel20": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-10-28",
+      "today": "2026-10-29",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -16,16 +16,30 @@
     "lev_momentum100": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-10-28",
+      "today": "2026-10-29",
       "day_start_equity": 5000.0,
       "frozen": false,
-      "position": null,
+      "position": {
+        "side": -1,
+        "entry": 4049.89990234375,
+        "start": 1793246400,
+        "qty": 2.469196829830984,
+        "stop": 4080.2741516113283,
+        "entry_risk": 30.374249267578126,
+        "mode": "green_runner",
+        "green_protected": false,
+        "peak_favorable": 0.0,
+        "target": null,
+        "held_bars": 0,
+        "borrowed": 5000.0,
+        "notional_leverage": 2.0
+      },
       "closed": []
     },
     "lev_channel55": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-10-28",
+      "today": "2026-10-29",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -34,7 +48,7 @@
     "lev_momentum40": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-10-28",
+      "today": "2026-10-29",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -43,7 +57,7 @@
     "lev_trend_long": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-10-28",
+      "today": "2026-10-29",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
