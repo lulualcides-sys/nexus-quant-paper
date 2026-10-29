@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793235600,
+  "watermark_m15": 1793237400,
   "equity": 998.953948813077,
   "position": {
     "side": -1,
@@ -10,11 +10,11 @@
     "entry_ts": 1793235600,
     "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
     "qty_usd": 998.953948813077,
-    "stop": 1.4006536121152955,
+    "stop": 1.399343621232422,
     "initial_r": 0.0022035951398926544,
-    "best_close": 1.3984500169754028,
+    "best_close": 1.3971400260925293,
     "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 1,
+    "stop_updates": 2,
     "green_protected": false,
     "target": null,
     "confirm_h1": 1793228400
