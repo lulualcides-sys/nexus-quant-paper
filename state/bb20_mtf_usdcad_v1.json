@@ -2,23 +2,9 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793252700,
-  "equity": 998.953948813077,
-  "position": {
-    "side": -1,
-    "entry": 1.3991199731826782,
-    "entry_ts": 1793235600,
-    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 998.953948813077,
-    "stop": 1.399343621232422,
-    "initial_r": 0.0022035951398926544,
-    "best_close": 1.3971400260925293,
-    "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 2,
-    "green_protected": false,
-    "target": null,
-    "confirm_h1": 1793228400
-  },
+  "watermark_m15": 1793255400,
+  "equity": 998.6872114734455,
+  "position": null,
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -31,8 +17,20 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.402717284134613
+    },
+    {
+      "entry_ts": 1793235600,
+      "exit_ts": 1793253600,
+      "entry": 1.3991199731826782,
+      "exit": 1.399343621232422,
+      "side": -1,
+      "net_usd": -0.26674,
+      "cost_usd": 0.10708,
+      "exit_type": "TRAIL_STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.399343621232422
     }
   ],
   "last_entry_h1": 1793228400,
-  "last_reason": "Stop móvel desceu"
+  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
 }
