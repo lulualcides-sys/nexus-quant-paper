@@ -523,9 +523,9 @@
           "asset": "EURUSD",
           "atr": 0.0014704832423004033,
           "close": 1.1153244972229004,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -1.18619,
+          "eval": "contrario",
+          "evaluated_at": 1793386800,
           "id": "EURUSD:breakout_pro:1793365200",
           "side": -1,
           "strategy": "breakout_pro",
@@ -535,9 +535,9 @@
           "asset": "EURUSD",
           "atr": 0.0014704832423004033,
           "close": 1.1153244972229004,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -1.18619,
+          "eval": "contrario",
+          "evaluated_at": 1793386800,
           "id": "EURUSD:momentum_x:1793365200",
           "side": -1,
           "strategy": "momentum_x",
@@ -557,7 +557,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793383200
+      "watermark": 1793386800
     },
     "US500": {
       "signals": [
@@ -992,10 +992,22 @@
           "side": -1,
           "strategy": "momentum_x",
           "ts": 1793383200
+        },
+        {
+          "asset": "US500",
+          "atr": 46.781209323594716,
+          "close": 7612.75,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:reversal_ai:1793386800",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1793386800
         }
       ],
       "source": "ES=F",
-      "watermark": 1793383200
+      "watermark": 1793386800
     },
     "USDJPY": {
       "signals": [
@@ -1349,7 +1361,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793383200
+      "watermark": 1793386800
     },
     "XAUUSD": {
       "signals": [
@@ -1741,9 +1753,9 @@
           "asset": "XAUUSD",
           "atr": 20.425615924720013,
           "close": 3929.300048828125,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 1.78697,
+          "eval": "favoravel",
+          "evaluated_at": 1793386800,
           "id": "XAUUSD:momentum_x:1793365200",
           "side": -1,
           "strategy": "momentum_x",
@@ -1787,7 +1799,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793383200
+      "watermark": 1793386800
     },
     "XTIUSD": {
       "signals": [
@@ -2165,7 +2177,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1793383700
+      "watermark": 1793386800
     }
   },
   "schema": 4
