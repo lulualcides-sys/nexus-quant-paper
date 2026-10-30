@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793366100,
+  "watermark_m15": 1793368800,
   "equity": 999.1733216751637,
   "position": null,
   "closed": [
@@ -56,5 +56,5 @@
     }
   ],
   "last_entry_h1": 1793282400,
-  "last_reason": "Saída virtual TRAIL_STOP"
+  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
 }
