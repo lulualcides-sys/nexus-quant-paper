@@ -1,5 +1,11 @@
 name: Nexus Quant | 11 paper bots / Five markets
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/monitor.yml'
   push:
     branches: [main]
     paths:
@@ -43,7 +49,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python -m src.telegram_check
       - name: Observe public market prices
-        if: "(github.event_name != 'push' && github.event.schedule != '2 * * * *') || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'test: run forward monitor scan'))"
+        if: "(github.event_name == 'schedule' && github.event.schedule != '2 * * * *') || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'test: run forward monitor scan'))"
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -56,7 +62,7 @@ jobs:
           if [[ "$SCHEDULE_EXPR" == '15 22 * * 1-5' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
           python -m src.runner --mode "$MODE"
       - name: Store signal journal
-        if: "success() && (github.event_name != 'push' || startsWith(github.event.head_commit.message, 'test: verify Nexus Quant Telegram connection') || startsWith(github.event.head_commit.message, 'test: run forward monitor scan'))"
+        if: "success() && github.event_name != 'pull_request' && (github.event_name != 'push' || startsWith(github.event.head_commit.message, 'test: verify Nexus Quant Telegram connection') || startsWith(github.event.head_commit.message, 'test: run forward monitor scan'))"
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
