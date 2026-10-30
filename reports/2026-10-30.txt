@@ -1,0 +1,31 @@
+🏆 NEXUS QUANT — 2026-10-30
+🔎 11 robôs • 10 Ouro H4 + 1 USD/CAD H1/M15 • RESULTADOS VIRTUAIS
+📌 Preços de futuros GC=F, não cotações nem execuções FBS.
+
+🟦 5 CONVENCIONAIS | 0,75% risco-stop | até 1× nocional
+Pullback 20: 0 entradas / 1 fech. | dia US$ +63.92 | total US$ +63.92 | V/D 1/0 | sem posição
+Momentum 100: 0 entradas / 1 fech. | dia US$ +63.92 | total US$ +63.92 | V/D 1/0 | sem posição
+RSI Trend: 0 entradas / 1 fech. | dia US$ +63.88 | total US$ +63.88 | V/D 1/0 | sem posição
+Channel 20: 1 entradas / 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | aberta VENDA 2026-10-30 @ 3984.30
+Channel 55: 1 entradas / 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | aberta VENDA 2026-10-30 @ 3984.30
+
+🟥 5 ALAVANCADOS | 1,50% risco-stop | limite 3× nocional
+🟢 Stop móvel GREEN: após +1R, acompanha o movimento; sem TP fixo.
+Momentum 100 L: 0 entradas / 1 fech. | dia US$ +95.48 | total US$ +95.48 | V/D 1/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Channel 20 L: 1 entradas / 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | aberta VENDA 2026-10-30 @ 3984.30, exp. 2.00×, green protegido
+Channel 55 L: 1 entradas / 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | aberta VENDA 2026-10-30 @ 3984.30, exp. 2.00×, green protegido
+Momentum 40 L: 0 entradas / 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+Trend Long L: 0 entradas / 0 fech. | dia US$ +0.00 | total US$ +0.00 | V/D 0/0 | sem posição, exp. 0×, stop fixo/sem entrada
+📥 Entradas virtuais abertas hoje: 4 nos dez robôs de ouro.
+
+🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD
+2 fech. hoje | dia US$ -0.18 | total US$ -1.60 | V/D 1/4 | sem posição
+📍 Intervalo M15 com lacuna; entrada ignorada | banca US$ 1,000 virtual
+⚠️ Tendência H1 EMA50/EMA200 + toque SMA20 M15 (BB 20,2), trailing por fechamento; sem TP. *Gaps/custos podem causar perdas.
+
+🏅 Melhor saldo acumulado (grupo ouro): Momentum 100 L (US$ +95.48)
+💼 Capital virtual: US$ 51,000 em 11 bancas independentes.
+🌍 Outros mercados observados: EUR/USD, USD/JPY, US500, WTI.
+⚠️ Sem dados confirmados hoje: H1 experimental: XTIUSD: watermark perdido; não inventar entradas
+⚠️ Risco maior pode ampliar perdas; financiamento alavancado estimado.
+⛔ Sem operações reais ou ganhos de corretora. Dados e custos aproximados.
