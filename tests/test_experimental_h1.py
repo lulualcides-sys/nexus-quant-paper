@@ -9,7 +9,7 @@ from unittest.mock import patch
 from src.feed import MARKETS
 from src.experimental_h1 import (
     CAPITAL, RISK_FRACTION, STRATEGIES, NOTIONAL_CAP,
-    bot_key, diagnostics, digest, process, setup, step, update,
+    bot_key, diagnostics, digest, process, scorecard, setup, step, update,
 )
 from src.strategies import make_indicators
 
@@ -107,6 +107,22 @@ class PaperH1Tests(unittest.TestCase):
             self.assertIn("NÃO VALIDADOS", message)
             self.assertIn("EURUSD", message)
             self.assertEqual(len(diagnostics(s)), 15)
+
+    def test_net_cost_metrics_and_no_premature_promotion(self):
+        s = update(None, self.data)
+        b = s["books"]["EURUSD:channel10"]
+        b["closed"] = [
+            {"entry_ts": T0, "exit_ts": T0+3600, "net_usd": 2.0, "cost_usd": .1},
+            {"entry_ts": T0+7200, "exit_ts": T0+10800, "net_usd": -1.0, "cost_usd": .1},
+        ]
+        b["equity"] = CAPITAL + 1.0
+        report = scorecard(b)
+        self.assertEqual(report["profit_factor"], 2.0)
+        self.assertEqual(report["net_usd"], 1.0)
+        self.assertEqual(report["win_rate_pct"], 50.0)
+        self.assertEqual(report["fees_usd"], .2)
+        self.assertFalse(report["validated"])
+        self.assertFalse(report["sample_sufficient_for_review"])
 
     def test_signal_has_directions_or_no_signal(self):
         b = rows(130)
