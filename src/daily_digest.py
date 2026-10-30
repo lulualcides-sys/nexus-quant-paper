@@ -3,6 +3,7 @@ from src.feed import MARKETS
 from src.gold_forward import STUDY,DISPLAY,scorecard,day_of
 from src.leveraged_gold import CONFIG as LEV_CONFIG,stats as lev_stats,CAPITAL as LEV_CAPITAL
 from src.bb_rebound_mtf import digest as bb_digest, CAPITAL as BB_CAPITAL
+from src.experimental_h1 import digest as experimental_digest, STRATEGIES as H1_STRATEGIES
 
 def _daily(closed,date):
     trades=[t for t in closed if day_of(t["exit_ts"])==date]
@@ -24,13 +25,13 @@ def _position_info(book):
     direction = "COMPRA" if p["side"] > 0 else "VENDA"
     return f"aberta {direction} {day_of(start)} @ {p['entry']:.2f}"
 
-def digest(day,conventional,leveraged,datasets=None,unavailable=None,mtf=None,mtf_error=None):
+def digest(day,conventional,leveraged,datasets=None,unavailable=None,mtf=None,mtf_error=None,shadow=None):
     old_books=conventional["books"];new_books=leveraged["books"]
     if len(old_books)!=5 or len(new_books)!=5:
         raise ValueError("Daily ten-bot report needs 5+5 distinct virtual books")
     extra=mtf is not None or mtf_error is not None
-    count=11 if extra else 10
-    lines=[f"🏆 NEXUS QUANT — {day}",f"🔎 {count} robôs • 10 Ouro H4"+(" + 1 USD/CAD H1/M15" if extra else "")+" • RESULTADOS VIRTUAIS",
+    count=(11 if extra else 10)+(15 if shadow is not None else 0)
+    lines=[f"🏆 NEXUS QUANT — {day}",f"🔎 {count} robôs • 10 Ouro H4"+(" + 1 USD/CAD H1/M15" if extra else "")+(" + 15 H1 experimentais" if shadow is not None else "")+" • RESULTADOS VIRTUAIS",
       "📌 Preços de futuros GC=F, não cotações nem execuções FBS.","",
       "🟦 5 CONVENCIONAIS | 0,75% risco-stop | até 1× nocional"]
     for key in sorted(STUDY,key=lambda k:scorecard(old_books[k])["pnl"],reverse=True):
@@ -57,6 +58,8 @@ def digest(day,conventional,leveraged,datasets=None,unavailable=None,mtf=None,mt
         else:
             lines.extend(["🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD",
                           "⚠️ Dados indisponíveis: " + str(mtf_error)[:130] + ". Não atribuir P&L zero."])
+    if shadow is not None:
+        lines.extend(experimental_digest(shadow,day))
     lines.append("")
     all_books=[(DISPLAY[k],scorecard(old_books[k])["pnl"]) for k in STUDY]
     all_books.extend((LEV_CONFIG[k][1],lev_stats(new_books[k])["pnl_usd"]) for k in LEV_CONFIG)
@@ -65,7 +68,7 @@ def digest(day,conventional,leveraged,datasets=None,unavailable=None,mtf=None,mt
         lines.append(f"🏅 Melhor saldo acumulado (grupo ouro): {leader[0]} (US$ {leader[1]:+.2f})")
     else:
         lines.append("🏅 Ouro H4: todos empatados, sem resultado realizado.")
-    lines.append(f"💼 Capital virtual: US$ {5000*10+(BB_CAPITAL if extra else 0):,.0f} em {count} bancas independentes.")
+    lines.append(f"💼 Capital virtual: US$ {5000*10+(BB_CAPITAL if extra else 0)+(15000 if shadow is not None else 0):,.0f} em {count} bancas independentes.")
     lines.append("🌍 Outros mercados observados: EUR/USD, USD/JPY, US500, WTI.")
     if unavailable:
         lines.append("⚠️ Sem dados confirmados hoje: "+", ".join(unavailable))
