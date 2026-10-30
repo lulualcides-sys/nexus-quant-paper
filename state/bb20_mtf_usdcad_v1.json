@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793394000,
+  "watermark_m15": 1793397600,
   "equity": 998.3987802557483,
   "position": null,
   "closed": [
@@ -68,5 +68,5 @@
     }
   ],
   "last_entry_h1": 1793365200,
-  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
+  "last_reason": "Intervalo M15 com lacuna; entrada ignorada"
 }
