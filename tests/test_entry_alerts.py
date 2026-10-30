@@ -50,6 +50,16 @@ class EntryAlertsTests(unittest.TestCase):
         self.assertEqual(len(events), 1)
         self.assertIn("USD/CAD", events[0]["line"])
 
+    def test_network_error_preserves_retry_queue(self):
+        event = changes(self.old, {"books": {"bot": {"position": self.trade,
+                                                      "closed": []}}}, self.labels, "gold")
+        with TemporaryDirectory() as td:
+            path = Path(td) / "outbox.json"
+            def unreachable(_):
+                raise OSError("offline")
+            self.assertEqual(send_pending(event, unreachable, path), 0)
+            self.assertEqual(len(json.loads(path.read_text())["pending"]), 1)
+
     def test_telegram_failure_keeps_queue_and_success_deduplicates(self):
         event = changes(self.old, {"books": {"bot": {"position": self.trade,
                                                       "closed": []}}}, self.labels, "gold")
