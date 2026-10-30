@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793320200,
+  "watermark_m15": 1793322000,
   "equity": 998.5813023058266,
   "position": {
     "side": -1,
@@ -10,11 +10,11 @@
     "entry_ts": 1793286900,
     "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
     "qty_usd": 998.5813023058266,
-    "stop": 1.3992315054582372,
+    "stop": 1.3989215613054051,
     "initial_r": 0.00239152914750707,
-    "best_close": 1.39683997631073,
+    "best_close": 1.396530032157898,
     "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 5,
+    "stop_updates": 6,
     "green_protected": false,
     "target": null,
     "confirm_h1": 1793282400
@@ -58,5 +58,5 @@
     }
   ],
   "last_entry_h1": 1793282400,
-  "last_reason": "Lacuna M15 identificada; candle ausente não será inventado"
+  "last_reason": "Stop móvel desceu"
 }
