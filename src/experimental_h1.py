@@ -84,8 +84,12 @@ def setup(strategy, bars, ind, i):
 
 def _close(b, market, bar, price, why):
     p = b["position"]
-    gross = (price - p["entry"]) * p["side"] * p["qty"]
-    cost = COST_BPS[market] / 10000 * p["qty"] * (p["entry"] + price) / 2
+    gross_quote = (price - p["entry"]) * p["side"] * p["qty"]
+    cost_quote = COST_BPS[market] / 10000 * p["qty"] * (p["entry"] + price) / 2
+    # USDJPY is quoted JPY per USD: convert JPY P&L/fees into USD at exit.
+    conversion = price if market == "USDJPY" else 1.0
+    gross = gross_quote / conversion
+    cost = cost_quote / conversion
     net = gross - cost
     b["equity"] += net
     b["closed"].append({"entry_ts": p["start"], "exit_ts": bar["time"],
@@ -147,7 +151,11 @@ def step(b, market, strategy, bars, ind, i):
         b["last_reason"] = "Bloqueado: risco/preço inválido"
         return
     stop_dist = STOP_ATR * atr
-    qty = min(b["equity"] * RISK_FRACTION / stop_dist, b["equity"] * NOTIONAL_CAP / price)
+    # USDJPY base size is USD units; all other reference prices are USD-quoted.
+    quote_conversion = price if market == "USDJPY" else 1.0
+    qty_risk = b["equity"] * RISK_FRACTION * quote_conversion / stop_dist
+    qty_cap = b["equity"] * NOTIONAL_CAP / (1.0 if market == "USDJPY" else price)
+    qty = min(qty_risk, qty_cap)
     if qty <= 0 or not isfinite(qty):
         b["diagnostics"]["invalid"] += 1
         return
