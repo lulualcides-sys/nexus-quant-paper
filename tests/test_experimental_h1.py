@@ -63,6 +63,28 @@ class PaperH1Tests(unittest.TestCase):
             self.assertLessEqual(position["qty"] * position["entry"], CAPITAL * NOTIONAL_CAP + 1e-6)
             self.assertLessEqual(position["qty"] * position["initial_r"], CAPITAL * RISK_FRACTION + 1e-6)
 
+    def test_usdjpy_sizing_and_quote_conversion(self):
+        from src.experimental_h1 import _close, step, book
+        candles = rows(121, shift=50.0)
+        ind = make_indicators(candles)
+        b = book()
+        with patch("src.experimental_h1.setup", return_value=1):
+            step(b, "USDJPY", "channel10", candles, ind, 120)
+        self.assertIsNotNone(b["position"])
+        p = b["position"]
+        self.assertLessEqual(p["qty"], CAPITAL + 1e-6)  # USD base units
+        self.assertLessEqual(p["qty"] * p["initial_r"] / p["entry"],
+                             CAPITAL * RISK_FRACTION + 1e-6)
+        b2 = book()
+        b2["position"] = {"start": T0, "side": 1, "entry": 150.0,
+                          "stop": 149.0, "qty": 100.0}
+        candle = {"time": T0+3600, "open": 149.0, "high": 149.0,
+                  "low": 148.0, "close": 148.5}
+        _close(b2, "USDJPY", candle, 149.0, "STOP")
+        # 100 yen gross loss = about 0.67 USD, plus fees, NOT US$100.
+        self.assertGreater(b2["closed"][0]["net_usd"], -1)
+        self.assertLess(b2["closed"][0]["net_usd"], -0.67)
+
     def test_old_position_stops_on_gap_at_worse_open(self):
         s = update(None, self.data)
         b = s["books"]["EURUSD:channel10"]
