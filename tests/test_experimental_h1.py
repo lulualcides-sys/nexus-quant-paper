@@ -100,7 +100,7 @@ class PaperH1Tests(unittest.TestCase):
             f = Path(td) / "shadow.json"
             s = process(self.data, path=f)
             self.assertTrue(f.exists())
-            self.assertIn("Aguardando", s["books"]["EURUSD:rsi50"]["last_reason"])
+            self.assertIn("retroativas", s["books"]["EURUSD:rsi50"]["last_reason"])
             date = "2026-10-30"
             message = "\n".join(digest(s, date))
             self.assertIn("15 EXPERIMENTAIS", message)
