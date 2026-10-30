@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "paper_only": true,
+  "experimental_only": true,
+  "source": "Yahoo indicative H1, not FBS",
+  "watermarks": {
+    "EURUSD": 1793361600,
+    "USDJPY": 1793361600,
+    "XAUUSD": 1793361600,
+    "US500": 1793361600,
+    "XTIUSD": 1793361600
+  },
+  "books": {
+    "EURUSD:ema20_retest": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "EURUSD:channel10": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "EURUSD:rsi50": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "USDJPY:ema20_retest": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "USDJPY:channel10": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "USDJPY:rsi50": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "XAUUSD:ema20_retest": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "XAUUSD:channel10": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "XAUUSD:rsi50": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "US500:ema20_retest": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "US500:channel10": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "US500:rsi50": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "XTIUSD:ema20_retest": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "XTIUSD:channel10": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    },
+    "XTIUSD:rsi50": {
+      "equity": 1000.0,
+      "position": null,
+      "closed": [],
+      "entries": [],
+      "last_reason": "Iniciado sem operações retroativas",
+      "diagnostics": {
+        "no_setup": 0,
+        "gap": 0,
+        "cooldown": 0,
+        "in_position": 0,
+        "entered": 0,
+        "exited": 0,
+        "invalid": 0
+      },
+      "last_exit_ts": null
+    }
+  },
+  "unavailable": []
+}
