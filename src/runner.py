@@ -5,10 +5,11 @@ from pathlib import Path
 from .feed import MARKETS,get_bars
 from .monitor import empty_state,scan_market,report,date_local
 from .private_chat import load_chat, save_chat
-from .gold_forward import process as process_gold
-from .leveraged_gold import process as process_leveraged
+from .gold_forward import process as process_gold, FILE as GOLD_STATE, DISPLAY as GOLD_NAMES
+from .leveraged_gold import process as process_leveraged, FILE as LEV_STATE, CONFIG as LEV_CONFIG
 from .daily_digest import digest as ten_bot_digest
-from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20
+from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20, FILE as BB_STATE
+from .entry_alerts import read_book, changes, bb_changes, send_pending
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -56,8 +57,10 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     now=int(now if now is not None else datetime.now(timezone.utc).timestamp())
     day=date_local(now)
     if mode=="mtf":
+        prior_bb=read_book(BB_STATE)
         data_m15=fetch_usdcad_m15(now)
         bb_book=process_bb20(data_m15)
+        send_pending(bb_changes(prior_bb,bb_book),send)
         print(f"USD/CAD BB20 M15: {len(data_m15)} candles; "+bb_book["last_reason"])
         return bb_book
     state=json.loads(statefile.read_text(encoding="utf-8")) if statefile.exists() else empty_state()
@@ -76,16 +79,24 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
             failed.append(key)
     if "XAUUSD" not in datasets:
         raise RuntimeError("Sem candles verificados do ouro; os 10 robôs não serão atualizados.")
+    prior_gold=read_book(GOLD_STATE)
+    prior_lev=read_book(LEV_STATE)
     gold_book=process_gold(datasets["XAUUSD"])
     leveraged_book=process_leveraged(datasets["XAUUSD"])
+    events=changes(prior_gold,gold_book,GOLD_NAMES,"gold")
+    events.extend(changes(prior_lev,leveraged_book,
+                          {k:v[1] for k,v in LEV_CONFIG.items()},"leveraged"))
     mtf_book=None;mtf_error=None
     try:
+        prior_bb=read_book(BB_STATE)
         data_m15=fetch_usdcad_m15(now)
         mtf_book=process_bb20(data_m15)
+        events.extend(bb_changes(prior_bb,mtf_book))
         print(f"USD/CAD BB20 M15: {len(data_m15)} candles; "+mtf_book["last_reason"])
     except Exception as error:
         mtf_error=str(error)
         print("USD/CAD BB20 indisponível (sem preencher dados): "+mtf_error)
+    send_pending(events,send)
     statefile.parent.mkdir(parents=True,exist_ok=True)
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
