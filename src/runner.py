@@ -10,6 +10,7 @@ from .leveraged_gold import process as process_leveraged, FILE as LEV_STATE, CON
 from .daily_digest import digest as ten_bot_digest
 from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20, FILE as BB_STATE
 from .entry_alerts import read_book, changes, bb_changes, send_pending
+from .experimental_h1 import process as process_h1, FILE as H1_STATE, labels as h1_labels
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -96,11 +97,20 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     except Exception as error:
         mtf_error=str(error)
         print("USD/CAD BB20 indisponível (sem preencher dados): "+mtf_error)
+    shadow_book=None
+    try:
+        prior_h1=read_book(H1_STATE)
+        shadow_book=process_h1(datasets)
+        events.extend(changes(prior_h1,shadow_book,h1_labels(),"experimental"))
+        print(f"H1 experimental: {len(shadow_book['books'])} livros em {len(shadow_book['watermarks'])} mercados.")
+    except Exception as error:
+        failed.append("H1 experimental: "+str(error)[:130])
+        print("H1 experimental indisponível (estado preservado): "+str(error))
     send_pending(events,send)
     statefile.parent.mkdir(parents=True,exist_ok=True)
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
-        msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed,mtf=mtf_book,mtf_error=mtf_error)
+        msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed,mtf=mtf_book,mtf_error=mtf_error,shadow=shadow_book)
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         (reports/f"{day}.txt").write_text(msg+"\n",encoding="utf-8")
