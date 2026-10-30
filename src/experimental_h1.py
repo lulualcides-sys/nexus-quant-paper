@@ -236,8 +236,35 @@ def digest(state, day):
     return lines
 
 
+def scorecard(b):
+    """All records preserved; distinguish realized returns from open positions."""
+    closed = b["closed"]
+    gains = sum(t["net_usd"] for t in closed if t["net_usd"] > 0)
+    losses = -sum(t["net_usd"] for t in closed if t["net_usd"] < 0)
+    high = CAPITAL
+    equity = CAPITAL
+    dd = 0.0
+    for trade in closed:
+        equity += trade["net_usd"]
+        high = max(high, equity)
+        dd = max(dd, 100 * (high - equity) / high) if high else dd
+    return {
+        "entries": len(b["entries"]),
+        "closed": len(closed),
+        "open": b["position"] is not None,
+        "wins": sum(t["net_usd"] > 0 for t in closed),
+        "losses": sum(t["net_usd"] < 0 for t in closed),
+        "net_usd": round(b["equity"] - CAPITAL, 5),
+        "fees_usd": round(sum(t["cost_usd"] for t in closed), 5),
+        "profit_factor": round(gains / losses, 3) if losses > 0 else None,
+        "win_rate_pct": round(100 * sum(t["net_usd"] > 0 for t in closed) / len(closed), 2) if closed else None,
+        "max_closed_drawdown_pct": round(dd, 3),
+        "validated": False,  # requires prospective OOS tests; never infer from short history
+        "sample_sufficient_for_review": len(closed) >= 30,
+    }
+
+
 def diagnostics(state):
-    """Per-bot reasons and counts, for audit or further tuning."""
+    """Per-bot blockers and performance after estimated costs; no brokerage fills."""
     return {key: {"reason": b["last_reason"], "diagnostics": b["diagnostics"],
-                  "equity": b["equity"], "open": b["position"] is not None,
-                  "closed": len(b["closed"])} for key, b in state["books"].items()}
+                  "scorecard": scorecard(b)} for key, b in state["books"].items()}
