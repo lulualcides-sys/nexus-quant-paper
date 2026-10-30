@@ -1,0 +1,31 @@
+name: Audit 15 H1 bots - retrospective paper backtest
+on:
+  push:
+    branches: [research/audit-15-h1-20261030]
+    paths:
+      - research/audit_experimental_h1.py
+      - .github/workflows/audit-experimental-h1.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify frozen bot code imports
+        run: python -m unittest tests.test_experimental_h1 -v
+      - name: Backtest frozen entries, exits, 5 markets, costs 1x and 2x
+        run: python -m research.audit_experimental_h1
+      - name: Commit full trade ledger and compact report to research branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/results/experimental_h1_backtest_2026-10-30.*
+          git diff --cached --quiet && exit 0
+          git commit -m 'research: save 15-bot H1 audit results [skip ci]'
+          git push
