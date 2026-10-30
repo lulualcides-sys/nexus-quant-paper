@@ -10,7 +10,7 @@ from .leveraged_gold import process as process_leveraged, FILE as LEV_STATE, CON
 from .daily_digest import digest as ten_bot_digest
 from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20, FILE as BB_STATE
 from .entry_alerts import read_book, changes, bb_changes, send_pending
-from .experimental_h1 import process as process_h1, FILE as H1_STATE, labels as h1_labels
+from .experimental_h1 import process as process_h1, FILE as H1_STATE, labels as h1_labels, diagnostics as h1_diagnostics
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -114,6 +114,15 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         (reports/f"{day}.txt").write_text(msg+"\n",encoding="utf-8")
+        if shadow_book is not None:
+            audit_path=reports/"experimental_h1"/f"{day}.json"
+            audit_path.parent.mkdir(parents=True,exist_ok=True)
+            audit_path.write_text(json.dumps({
+                "day":day,"status":"experimental-unvalidated","paper_only":True,
+                "source":"Yahoo H1 proxies (not executable FBS)",
+                "market_data_unavailable":shadow_book.get("unavailable",[]),
+                "robots":h1_diagnostics(shadow_book)
+            },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
         if send(msg):
             state["last_report_day"]=day
             statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
