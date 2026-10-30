@@ -2,6 +2,7 @@
   "schema": 1,
   "pending": [],
   "sent_ids": [
-    "usdcad:bb20:exit:1793286900:1793366100"
+    "usdcad:bb20:exit:1793286900:1793366100",
+    "experimental:XAUUSD:channel10:entry:1793365200"
   ]
 }
