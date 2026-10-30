@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1793289600,
+  "h4_watermark": 1793318400,
   "books": {
     "lev_channel20": {
       "equity": 5000.0,
@@ -24,13 +24,13 @@
         "entry": 4049.89990234375,
         "start": 1793246400,
         "qty": 2.469196829830984,
-        "stop": 4043.400645171701,
+        "stop": 4032.3742492675783,
         "entry_risk": 30.374249267578126,
         "mode": "green_runner",
         "green_protected": true,
-        "peak_favorable": 33.599853515625,
+        "peak_favorable": 47.89990234375,
         "target": null,
-        "held_bars": 3,
+        "held_bars": 4,
         "borrowed": 5000.0,
         "notional_leverage": 2.0
       },
