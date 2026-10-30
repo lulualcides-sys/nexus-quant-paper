@@ -124,6 +124,22 @@ class PaperH1Tests(unittest.TestCase):
         self.assertFalse(report["validated"])
         self.assertFalse(report["sample_sufficient_for_review"])
 
+    def test_combined_26_bot_report_fits_telegram(self):
+        from src.daily_digest import digest as full_digest
+        from src.gold_forward import STUDY
+        from src.leveraged_gold import CONFIG
+        shadow = update(None, self.data)
+        gold = {"books": {k: {"equity": 5000, "closed": [], "position": None}
+                          for k in STUDY}}
+        leveraged = {"books": {k: {"equity": 5000, "peak_equity": 5000,
+                                  "closed": [], "position": None, "frozen": False}
+                               for k in CONFIG}}
+        message = full_digest("2026-10-30", gold, leveraged, shadow=shadow,
+                              mtf_error="Dados de USD/CAD temporariamente indisponíveis")
+        self.assertIn("26 robôs", message)
+        self.assertIn("15 EXPERIMENTAIS H1", message)
+        self.assertLess(len(message), 4000)
+
     def test_signal_has_directions_or_no_signal(self):
         b = rows(130)
         ind = make_indicators(b)
