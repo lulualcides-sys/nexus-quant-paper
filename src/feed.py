@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from math import isfinite
 from urllib.parse import quote
 import json, time, urllib.request
+from src.market_quality import validate_bars
 
 @dataclass(frozen=True)
 class Asset:
@@ -47,12 +48,26 @@ def parse_yahoo(data, now):
         raise ValueError(f"Histórico insuficiente: {len(out)} candles")
     return out
 
-def get_bars(asset,now=None):
-    now=int(now if now is not None else time.time())
-    url="https://query1.finance.yahoo.com/v8/finance/chart/"+quote(asset.ticker,safe="")+("?interval=60m&range=3mo" if asset.ticker=="GC=F" else "?interval=60m&range=1mo")
-    request=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0", "Accept":"application/json"})
-    try:
-        with urllib.request.urlopen(request,timeout=20) as response:
-            return parse_yahoo(json.load(response),now)
-    except Exception:
-        raise RuntimeError(f"Fonte de {asset.name} indisponível") from None
+def get_bars(asset, now=None):
+    """Indicative Yahoo OHLC, two host mirrors, fail-closed on stale/invalid data.
+
+    Both hosts are Yahoo, NOT independent pricing sources. Never substitute an
+    ETF, stock, spot, or an unrelated future for the requested instrument.
+    """
+    now = int(now if now is not None else time.time())
+    query = "?interval=60m&range=3mo" if asset.ticker == "GC=F" else "?interval=60m&range=1mo"
+    errors = []
+    for host in ("query1.finance.yahoo.com", "query2.finance.yahoo.com"):
+        url = "https://" + host + "/v8/finance/chart/" + quote(asset.ticker, safe="") + query
+        try:
+            request = urllib.request.Request(
+                url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
+            with urllib.request.urlopen(request, timeout=20) as response:
+                bars = parse_yahoo(json.load(response), now)
+            validate_bars(bars, now=now, interval=3600, min_bars=245,
+                          max_age=12 * 3600, continuous=False)
+            return bars
+        except Exception as err:
+            errors.append(host + ": " + type(err).__name__)
+    raise RuntimeError("%s: Yahoo indisponivel ou invalido; sem atualizar sinais (%s)" %
+                       (asset.name, "; ".join(errors)))
