@@ -4,8 +4,8 @@
   "spot_only": true,
   "source": "Binance SPOT USDT H1; indicative paper fills",
   "watermarks": {
-    "BTCUSDT": 1793480400,
-    "ETHUSDT": 1793480400
+    "BTCUSDT": 1793484000,
+    "ETHUSDT": 1793484000
   },
   "books": {
     "BTCUSDT:ema_pullback": {
@@ -13,28 +13,28 @@
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Inicializado sem operacoes retroativas"
+      "last_reason": "Sem setup H1 confirmado"
     },
     "BTCUSDT:channel20": {
       "equity": 1000.0,
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Inicializado sem operacoes retroativas"
+      "last_reason": "Sem setup H1 confirmado"
     },
     "ETHUSDT:ema_pullback": {
       "equity": 1000.0,
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Inicializado sem operacoes retroativas"
+      "last_reason": "Sem setup H1 confirmado"
     },
     "ETHUSDT:channel20": {
       "equity": 1000.0,
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Inicializado sem operacoes retroativas"
+      "last_reason": "Sem setup H1 confirmado"
     }
   },
   "unavailable": []
