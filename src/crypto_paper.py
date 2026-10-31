@@ -104,12 +104,13 @@ def close_position(b, candle, fill, why):
     sell_price = fill * (1 - SLIPPAGE)
     net = (sell_price - p["entry"]) * p["qty"]
     fees = FEE * p["qty"] * (sell_price + p["entry"])
+    exit_slip_cost = (fill - sell_price) * p["qty"]
     pnl = net - fees
     b["equity"] += pnl
     b["closed"].append({"entry_ts": p["start"], "exit_ts": candle["time"],
                         "entry": round(p["entry"], 6),
                         "exit": round(sell_price, 6), "qty": round(p["qty"], 8),
-                        "cost_usd": round(fees + p["slip_cost"], 4),
+                        "cost_usdt": round(fees + p["slip_cost"] + exit_slip_cost, 4),
                         "net_usd": round(pnl, 4), "exit_type": why})
     b["position"] = None
     b["last_reason"] = "Saida virtual " + why
@@ -212,7 +213,7 @@ def digest(state, day):
             todays = [t for t in b["closed"] if local_day(t["exit_ts"]) == day]
             wins = sum(t["net_usd"] > 0 for t in b["closed"])
             losses = sum(t["net_usd"] < 0 for t in b["closed"])
-            lines.append("%s %s: dia %d fech., US$ %+.2f | total US$ %+.2f | V/D %s/%s | %s" %
+            lines.append("%s %s: dia %d fech., USDT %+.2f | total USDT %+.2f | V/D %s/%s | %s" %
                          (symbol, strategy, len(todays),
                           sum(t["net_usd"] for t in todays),
                           b["equity"] - CAPITAL, wins, losses,
