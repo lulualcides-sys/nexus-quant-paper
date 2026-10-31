@@ -2,7 +2,16 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from src import crypto_runner
-from tests.test_crypto_paper import rows
+import math
+T0 = 1800000000 - 1800000000 % 3600
+def rows(n=265, shift=0):
+    out=[]
+    for i in range(n):
+        p=300.0+shift+.05*i+math.sin(i/9)
+        o,c=p-.15,p+.12
+        out.append({"time":T0+i*3600,"open":o,"high":max(o,c)+.3,
+                    "low":min(o,c)-.3,"close":c})
+    return out
 
 
 class CryptoRunnerTest(unittest.TestCase):
