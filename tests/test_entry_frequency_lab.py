@@ -14,7 +14,7 @@ from src.strategies import make_indicators
 def rows():
     # Include a warmup before the pre-registered training window.
     # These are synthetic candles, NOT evidence of financial performance.
-    pre = [TRAIN_START - (280-i)*14400 for i in range(280)]
+    pre = [TRAIN_START - (360-i)*14400 for i in range(360)]
     train = [TRAIN_START + i*14400 for i in range(660)]
     review = [TRAIN_END + i*14400 for i in range(950)]
     result = []
