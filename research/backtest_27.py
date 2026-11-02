@@ -141,11 +141,13 @@ def _ledger_result(group, name, book, capital, *, first, last, samples,
     }
 
 
-def _h4_replay(hourly, *, stress=1.):
+def _h4_replay(hourly, *, stress=1., min_selected_bars=250):
     h4=aggregate_hourly_to_h4(hourly)
     ind=make_indicators(h4)
     selected=[i for i in range(242,len(h4)) if HIST_START<=h4[i]["time"]<HIST_END]
-    if len(selected)<250:
+    if min_selected_bars<1:
+        raise ValueError("Invalid minimum H4 bars")
+    if len(selected)<min_selected_bars:
         raise ValueError("Poucos H4 completos na janela histórica")
     first,last=h4[selected[0]]["time"],h4[selected[-1]]["time"]
     out={}
