@@ -1,5 +1,5 @@
 """Scheduled observer with Telegram opt-in. Never trades."""
-# Controlled PAPER-only forward scan marker; scan mode sends no trade alerts.
+# Controlled PAPER-only forward scan retry after a queued-run cancellation; no trade alerts.
 import argparse,json,os,sys,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
