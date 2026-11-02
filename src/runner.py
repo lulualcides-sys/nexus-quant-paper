@@ -10,6 +10,7 @@ from .leveraged_gold import process as process_leveraged
 from .daily_digest import digest as ten_bot_digest
 from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20
 from .experimental_h1 import process as process_h1, diagnostics as h1_diagnostics
+from .h4_entry_audit import audit as audit_h4_entries, telegram_summary as h4_telegram_summary
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -107,8 +108,23 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
         msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed,mtf=mtf_book,mtf_error=mtf_error,shadow=shadow_book)
+        # Read-only supervisory stage: an audit failure must not block the daily
+        # recap or change existing positions, state schema, or entry rules.
+        h4_observation=None
+        try:
+            h4_observation=audit_h4_entries(datasets["XAUUSD"],gold_book,leveraged_book,now)
+        except Exception as error:
+            print("Diagnóstico H4 indisponível (robôs preservados): "+str(error)[:160])
+        if h4_observation is not None:
+            summary_line=h4_telegram_summary(h4_observation)
+            if len(msg)+len(summary_line)+1<=4000:
+                msg+="\n"+summary_line
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
+        if h4_observation is not None:
+            entry_report=reports/"entry_audit"/f"{day}.json"
+            entry_report.parent.mkdir(parents=True,exist_ok=True)
+            entry_report.write_text(json.dumps(h4_observation,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         (reports/f"{day}.txt").write_text(msg+"\n",encoding="utf-8")
         if shadow_book is not None:
             audit_path=reports/"experimental_h1"/f"{day}.json"
