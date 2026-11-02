@@ -617,7 +617,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793642400
+      "watermark": 1793646000
     },
     "US500": {
       "signals": [
@@ -1100,10 +1100,22 @@
           "side": -1,
           "strategy": "pullback_master",
           "ts": 1793638800
+        },
+        {
+          "asset": "US500",
+          "atr": 24.26351302421991,
+          "close": 7607.25,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:breakout_pro:1793646000",
+          "side": -1,
+          "strategy": "breakout_pro",
+          "ts": 1793646000
         }
       ],
       "source": "ES=F",
-      "watermark": 1793642400
+      "watermark": 1793646000
     },
     "USDJPY": {
       "signals": [
@@ -1541,7 +1553,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793642400
+      "watermark": 1793646000
     },
     "XAUUSD": {
       "signals": [
@@ -2039,7 +2051,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793642400
+      "watermark": 1793646000
     },
     "XTIUSD": {
       "signals": [
@@ -2455,9 +2467,9 @@
           "asset": "XTIUSD",
           "atr": 1.0047493250982855,
           "close": 97.6500015258789,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 1.11471,
+          "eval": "favoravel",
+          "evaluated_at": 1793646000,
           "id": "XTIUSD:breakout_pro:1793624400",
           "side": -1,
           "strategy": "breakout_pro",
@@ -2467,9 +2479,9 @@
           "asset": "XTIUSD",
           "atr": 1.0047493250982855,
           "close": 97.6500015258789,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 1.11471,
+          "eval": "favoravel",
+          "evaluated_at": 1793646000,
           "id": "XTIUSD:momentum_x:1793624400",
           "side": -1,
           "strategy": "momentum_x",
@@ -2489,7 +2501,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1793642400
+      "watermark": 1793646000
     }
   },
   "schema": 4
