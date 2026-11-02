@@ -11,6 +11,7 @@ from .daily_digest import digest as ten_bot_digest
 from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20
 from .experimental_h1 import process as process_h1, diagnostics as h1_diagnostics
 from .h4_entry_audit import audit as audit_h4_entries, telegram_summary as h4_telegram_summary
+from .momentum60_shadow import process as process_momentum60, daily_line as momentum60_daily_line
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -84,6 +85,15 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     gold_book=process_gold(datasets["XAUUSD"])
     leveraged_book=process_leveraged(datasets["XAUUSD"])
 
+    # Isolated, experimental forward-only book; never impacts the 26 existing
+    # models, their risk, balances, or their daily reporting if unavailable.
+    momentum60_book=None
+    try:
+        momentum60_book=process_momentum60(datasets["XAUUSD"])
+        print("Momentum60 virtual H4: "+str(len(momentum60_book["entries"]))+" entradas observadas.")
+    except Exception as error:
+        print("Momentum60 experimental indisponível, demais robôs preservados: "+str(error)[:150])
+
     mtf_book=None;mtf_error=None
     try:
 
@@ -119,6 +129,10 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
             summary_line=h4_telegram_summary(h4_observation)
             if len(msg)+len(summary_line)+1<=4000:
                 msg+="\n"+summary_line
+        if momentum60_book is not None:
+            extra_line=momentum60_daily_line(momentum60_book,day)
+            if len(msg)+len(extra_line)+1<=4000:
+                msg+="\n"+extra_line
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         if h4_observation is not None:
