@@ -11,7 +11,8 @@ from .daily_digest import digest as ten_bot_digest
 from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb20
 from .experimental_h1 import process as process_h1, diagnostics as h1_diagnostics
 from .h4_entry_audit import audit as audit_h4_entries, telegram_summary as h4_telegram_summary
-from .momentum60_shadow import process as process_momentum60, daily_line as momentum60_daily_line
+from .momentum60_shadow import process as process_momentum60
+from .all_robots_audit import build as audit_all_27, telegram_line as audit_27_line
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -87,11 +88,12 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
 
     # Isolated, experimental forward-only book; never impacts the 26 existing
     # models, their risk, balances, or their daily reporting if unavailable.
-    momentum60_book=None
+    momentum60_book=None;momentum60_error=None
     try:
         momentum60_book=process_momentum60(datasets["XAUUSD"])
         print("Momentum60 virtual H4: "+str(len(momentum60_book["entries"]))+" entradas observadas.")
     except Exception as error:
+        momentum60_error=type(error).__name__
         print("Momentum60 experimental indisponível, demais robôs preservados: "+str(error)[:150])
 
     mtf_book=None;mtf_error=None
@@ -117,24 +119,37 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     statefile.parent.mkdir(parents=True,exist_ok=True)
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
-        msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed,mtf=mtf_book,mtf_error=mtf_error,shadow=shadow_book)
+        msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed,mtf=mtf_book,mtf_error=mtf_error,shadow=shadow_book,momentum60=momentum60_book,planned_robots=27)
         # Read-only supervisory stage: an audit failure must not block the daily
         # recap or change existing positions, state schema, or entry rules.
-        h4_observation=None
+        h4_observation=None; h4_error=None
         try:
             h4_observation=audit_h4_entries(datasets["XAUUSD"],gold_book,leveraged_book,now)
         except Exception as error:
+            h4_error=type(error).__name__
             print("Diagnóstico H4 indisponível (robôs preservados): "+str(error)[:160])
-        if h4_observation is not None:
-            summary_line=h4_telegram_summary(h4_observation)
-            if len(msg)+len(summary_line)+1<=4000:
-                msg+="\n"+summary_line
-        if momentum60_book is not None:
-            extra_line=momentum60_daily_line(momentum60_book,day)
-            if len(msg)+len(extra_line)+1<=4000:
-                msg+="\n"+extra_line
+        # Aggregation observes ONLY existing states and never changes their
+        # books. In particular, unavailable cannot be reported as zero profit.
+        complete_audit=None
+        try:
+            complete_audit=audit_all_27(
+                now=now, conventional=gold_book, leveraged=leveraged_book,
+                h4_result=h4_observation, h1_state=shadow_book,
+                mtf_state=mtf_book, momentum_state=momentum60_book,
+                errors={"h4": h4_error, "h1": "sem estado H1",
+                        "mtf": type(mtf_error).__name__ if mtf_error else None,
+                        "momentum60": momentum60_error})
+            line=audit_27_line(complete_audit)
+            if len(msg)+len(line)+1<=4000:
+                msg+="\n"+line
+        except Exception as error:
+            print("Consolidação 27 indisponível; relatório tradicional mantido: "+str(error)[:160])
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
+        if complete_audit is not None:
+            full_path=reports/"robot_diagnostics"/f"{day}.json"
+            full_path.parent.mkdir(parents=True,exist_ok=True)
+            full_path.write_text(json.dumps(complete_audit,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         if h4_observation is not None:
             entry_report=reports/"entry_audit"/f"{day}.json"
             entry_report.parent.mkdir(parents=True,exist_ok=True)
