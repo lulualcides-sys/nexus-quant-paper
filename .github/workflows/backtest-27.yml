@@ -1,0 +1,52 @@
+name: Nexus Quant | backtest historico dos 27 robos
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/backtest_27.py'
+      - 'tests/test_backtest_27.py'
+      - '.github/workflows/backtest-27.yml'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'research/backtest_27.py'
+      - 'tests/test_backtest_27.py'
+      - '.github/workflows/backtest-27.yml'
+permissions:
+  contents: read
+concurrency:
+  group: nexus-quant-backtest-27
+  cancel-in-progress: false
+jobs:
+  offline-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate backtest code without data downloads
+        run: python -m unittest discover -s tests -p 'test_backtest_27.py' -v
+  historical-paper-replay:
+    needs: offline-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Replay 27 rules on historical Yahoo OHLC (no broker)
+        run: python -m research.backtest_27
+      - name: Preserve results, including unavailable-data notices
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-27-paper-backtest
+          path: |
+            research/results/backtest_27_2026-11-01.json
+            research/results/backtest_27_2026-11-01.md
+          retention-days: 30
+          if-no-files-found: warn
