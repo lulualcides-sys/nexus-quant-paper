@@ -69,14 +69,20 @@ def fetch_hourly(market):
     """Yahoo two-year 60m observations, not FBS/CFD executable quotes."""
     ticker=MARKETS[market].ticker
     errors=[]
-    for host in ("query1.finance.yahoo.com","query2.finance.yahoo.com"):
-        url=("https://"+host+"/v8/finance/chart/"+quote(ticker,safe="")+
-             "?interval=60m&range=2y")
-        try:
-            bars=parse_yahoo(_fetch_json(url),int(time.time()))
-            return _validate(bars,3600,500)
-        except Exception as error:
-            errors.append(host+":"+type(error).__name__+":"+str(error)[:80])
+    # Yahoo may not support 2y H1 for some continuous futures. Falling
+    # back to a shorter window is honest: the result records actual coverage,
+    # never extrapolates missing bars or swaps underlying instruments.
+    for window in ("2y","1y","6mo","3mo"):
+        for host in ("query1.finance.yahoo.com","query2.finance.yahoo.com"):
+            url=("https://"+host+"/v8/finance/chart/"+quote(ticker,safe="")+
+                 "?interval=60m&range="+window)
+            try:
+                bars=parse_yahoo(_fetch_json(url),int(time.time()))
+                checked=_validate(bars,3600,500)
+                print("PRICE_WINDOW",market,window,host,flush=True)
+                return checked
+            except Exception as error:
+                errors.append(window+":"+host+":"+type(error).__name__+":"+str(error)[:100])
     raise RuntimeError("; ".join(errors))
 
 
