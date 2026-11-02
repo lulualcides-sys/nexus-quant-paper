@@ -14,6 +14,8 @@ from .h4_entry_audit import audit as audit_h4_entries, telegram_summary as h4_te
 from .momentum60_shadow import process as process_momentum60
 from .all_robots_audit import build as audit_all_27, telegram_line as audit_27_line
 from .news_guard import upcoming as macro_upcoming
+from .wti_channel10_shadow import process as process_wti_filtered
+from .profit_watchlist import build as build_profit_watchlist, telegram_line as profit_watchlist_line
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -107,6 +109,19 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     except Exception as error:
         mtf_error=str(error)
         print("USD/CAD BB20 indisponível (sem preencher dados): "+mtf_error)
+    # New candidate runs in its own paper book and NEVER rewrites the 15 H1 books.
+    wti_filtered=None;wti_filtered_error=None
+    if "XTIUSD" in datasets:
+        try:
+            wti_filtered=process_wti_filtered(datasets["XTIUSD"])
+            print("WTI Channel10 filtered shadow: "+str(len(wti_filtered["book"]["entries"]))+
+                  " prospective virtual entries.")
+        except Exception as error:
+            wti_filtered_error=type(error).__name__
+            print("WTI filtered candidate unavailable: "+str(error)[:150])
+    else:
+        wti_filtered_error="no_XTIUSD_feed"
+
     shadow_book=None
     try:
 
@@ -159,12 +174,28 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                 msg+="\n"+macro_line
         except Exception as error:
             print("Resumo macro indisponível: "+type(error).__name__)
+        # Prospective three-strategy profitability check, strictly read-only.
+        # Failed/absent WTI observations never translate into false zero profit.
+        profit_observation=None
+        try:
+            profit_observation=build_profit_watchlist(
+                now=now,conventional=gold_book,wti=wti_filtered)
+            line=profit_watchlist_line(profit_observation)
+            if len(msg)+len(line)+1<=4000:
+                msg+="\n"+line
+        except Exception as error:
+            print("Watchlist de lucro prospectivo indisponível: "+
+                  type(error).__name__+" "+str(error)[:100])
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         if complete_audit is not None:
             full_path=reports/"robot_diagnostics"/f"{day}.json"
             full_path.parent.mkdir(parents=True,exist_ok=True)
             full_path.write_text(json.dumps(complete_audit,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        if profit_observation is not None:
+            profit_report=reports/"profit_watchlist"/f"{day}.json"
+            profit_report.parent.mkdir(parents=True,exist_ok=True)
+            profit_report.write_text(json.dumps(profit_observation,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         if h4_observation is not None:
             entry_report=reports/"entry_audit"/f"{day}.json"
             entry_report.parent.mkdir(parents=True,exist_ok=True)
