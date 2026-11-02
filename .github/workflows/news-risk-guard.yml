@@ -1,0 +1,44 @@
+name: Nexus Quant | filtro macro 27 robos (apenas paper)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/news_guard.py'
+      - 'src/gold_forward.py'
+      - 'src/leveraged_gold.py'
+      - 'src/experimental_h1.py'
+      - 'src/bb_rebound_mtf.py'
+      - 'src/momentum60_shadow.py'
+      - 'tests/test_news_guard_27.py'
+      - 'research/news_calendar_2026_11.json'
+      - '.github/workflows/news-risk-guard.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '15 10 * * 1' # weekly freshness watchdog; no Telegram
+permissions:
+  contents: read
+jobs:
+  news-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: News guard offline unit tests (no secrets or price API)
+        run: python -m unittest discover -s tests -p 'test_news_guard_27.py' -v
+      - name: Validate official event manifest structure and freshness
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from src.news_guard import load, upcoming
+          import json
+          c = load()
+          now = datetime.now(timezone.utc).timestamp()
+          status = upcoming(now)
+          print("OFFICIAL_EVENT_CENSUS",len(c["intervals"]),
+                "calendar_state",status["status"])
+          if status["status"] != "known":
+              raise SystemExit("CALENDAR_EXPIRED: new PAPER entries fail closed when guard enabled")
+          PY
