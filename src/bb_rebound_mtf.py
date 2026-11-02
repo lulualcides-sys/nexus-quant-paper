@@ -16,6 +16,7 @@ from pathlib import Path
 from statistics import mean, pstdev
 
 from src.strategies import make_indicators
+from src.news_guard import entry_permission
 
 FILE = Path("state/bb20_mtf_usdcad_v1.json")
 TICKER = "CAD=X"  # Yahoo USD/CAD reference; not FBS executable prices
@@ -288,6 +289,9 @@ def step(book, bars, i, h1, inds, m15_ind=None):
         m15_ind = make_indicators(bars)
     if not m15_sma20_pullback(bars, m15_ind, i, side):
         book["last_reason"] = "Aguardando toque e retorno na SMA20 do M15"
+        return
+    if not entry_permission("USDCAD",current["time"]):
+        book["last_reason"] = "Sem entrada: calendário macro indisponível ou notícia de impacto"
         return
     distance = max(STOP_ATR * atr, 6 * PIP)
     # Quantity is USD base units. Convert quote-currency stop loss back to USD.
