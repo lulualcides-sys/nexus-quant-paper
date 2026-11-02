@@ -128,7 +128,7 @@ class PaperH1Tests(unittest.TestCase):
         self.assertEqual(updated["watermarks"]["XTIUSD"], bad)
         self.assertEqual(updated["books"][wti_key], snapshot)
         self.assertIn("XTIUSD",updated["unavailable"])
-        self.assertIn("watermark perdido",updated["market_errors"]["XTIUSD"])
+        self.assertIn("No anchored evidence",updated["market_errors"]["XTIUSD"])
         for market in MARKETS:
             if market!="XTIUSD":
                 self.assertEqual(updated["watermarks"][market],
