@@ -151,7 +151,7 @@ def analyze(source):
                        else "flat" for v in vectors.values())
     return {
         "study":"Step-by-step 27D mathematical paper-robot vector",
-        "source_data_sha256":source["price_data"], # immutable per-market fingerprints
+        "source_price_data_fingerprints":source["price_data"],
         "created_utc":datetime.now(timezone.utc).isoformat(),
         "paper_only":True,"no_order_execution":True,
         "no_strategy_changes":True,"all_27_count":len(vectors),
@@ -197,20 +197,12 @@ def markdown(result):
         x=row["math_steps"]
         n=x["1_closed_trades"]
         expectation=x["10_expected_net_per_closed_trade_usd"]
-        lines.append(
-            f"| {key} | {n} | {x['2_wins']}/{x['3_losses']} | "
-            f"{x['7_implied_gross_before_booked_costs_usd']:+.2f} | "
-            f"{x['6_booked_costs_usd']:.2f} | {x['5_net_realized_usd']:+.2f} | "
-            f"{expectation:+.3f}" if False else ""
-        )
-        lines[-1]=(f"| {key} | {n} | {x['2_wins']}/{x['3_losses']} | "
-                   f"{x['7_implied_gross_before_booked_costs_usd']:+.2f} | "
-                   f"{x['6_booked_costs_usd']:.2f} | {x['5_net_realized_usd']:+.2f} | "
-                   f"{expectation:+.3f}" if expectation is not None else
-                   f"| {key} | {n} | {x['2_wins']}/{x['3_losses']} | "
-                   f"{x['7_implied_gross_before_booked_costs_usd']:+.2f} | "
-                   f"{x['6_booked_costs_usd']:.2f} | {x['5_net_realized_usd']:+.2f} | —")
-        lines[-1]+=f" | {x['11_double_cost_replay_net_usd']:+.2f} | {x['13_drawdown_closed_only_pct']:.2f}% |"
+        expectation_text=f"{expectation:+.3f}" if expectation is not None else "—"
+        lines.append(f"| {key} | {n} | {x['2_wins']}/{x['3_losses']} | "
+                     f"{x['7_implied_gross_before_booked_costs_usd']:+.2f} | "
+                     f"{x['6_booked_costs_usd']:.2f} | {x['5_net_realized_usd']:+.2f} | "
+                     f"{expectation_text} | {x['11_double_cost_replay_net_usd']:+.2f} | "
+                     f"{x['13_drawdown_closed_only_pct']:.2f}% |")
     lines += ["", "## Decomposição por grupo (não é carteira sincronizada)","",
               "| Grupo | Robôs | Fechadas | Bruto US$ | Custos US$ | Líquido US$ | Stress US$ |",
               "|---|---:|---:|---:|---:|---:|---:|"]
