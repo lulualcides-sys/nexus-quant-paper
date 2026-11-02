@@ -85,8 +85,10 @@ def validate(payload):
         if len(scope)!=len(set(scope)):
             raise ValueError("Duplicate market scope")
         source=raw.get("source")
-        host=urlparse(source).hostname if isinstance(source,str) else None
-        if urlparse(source).scheme!="https" or host not in TRUSTED_DOMAINS:
+        if not isinstance(source,str):
+            raise ValueError("Official-source HTTPS URL required")
+        parsed=urlparse(source)
+        if parsed.scheme!="https" or parsed.hostname not in TRUSTED_DOMAINS:
             raise ValueError("Official-source URL required")
         try:
             day=date.fromisoformat(raw["date"])
