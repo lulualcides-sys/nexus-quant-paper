@@ -103,7 +103,7 @@ def _close(b, market, bar, price, why):
     b["position"] = None
 
 
-def step(b, market, strategy, bars, ind, i):
+def step(b, market, strategy, bars, ind, i, *, signal_fn=None):
     """Stop checks before trailing; do not enter and exit on same candle."""
     row = bars[i]
     previous = bars[i - 1]
@@ -141,7 +141,7 @@ def step(b, market, strategy, bars, ind, i):
         b["diagnostics"]["cooldown"] += 1
         b["last_reason"] = "Sem entrada: proteção após saída"
         return
-    side = setup(strategy, bars, ind, i - 1)
+    side = (setup if signal_fn is None else signal_fn)(strategy, bars, ind, i - 1)
     if not side:
         b["diagnostics"]["no_setup"] += 1
         b["last_reason"] = "Aguardando setup H1 com candle fechado"
