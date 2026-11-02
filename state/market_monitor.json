@@ -569,7 +569,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793592000
+      "watermark": 1793595600
     },
     "US500": {
       "signals": [
@@ -1019,7 +1019,7 @@
         }
       ],
       "source": "ES=F",
-      "watermark": 1793584800
+      "watermark": 1793595600
     },
     "USDJPY": {
       "signals": [
@@ -1409,7 +1409,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793592000
+      "watermark": 1793595600
     },
     "XAUUSD": {
       "signals": [
@@ -1859,7 +1859,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793584800
+      "watermark": 1793595600
     },
     "XTIUSD": {
       "signals": [
@@ -2239,17 +2239,29 @@
           "asset": "XTIUSD",
           "atr": 1.053226830298159,
           "close": 102.30000305175781,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 1.68055,
+          "eval": "favoravel",
+          "evaluated_at": 1793595600,
           "id": "XTIUSD:breakout_pro:1793574000",
           "side": -1,
           "strategy": "breakout_pro",
           "ts": 1793574000
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 0.7860482734209292,
+          "close": 100.52999877929688,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:breakout_pro:1793595600",
+          "side": -1,
+          "strategy": "breakout_pro",
+          "ts": 1793595600
         }
       ],
       "source": "CL=F",
-      "watermark": 1793584800
+      "watermark": 1793595600
     }
   },
   "schema": 4
