@@ -176,6 +176,9 @@ class PaperH1Tests(unittest.TestCase):
         oldmark=s["watermarks"]["XTIUSD"]
         broken=oldmark+2631
         times=[bar["time"] for bar in self.data["XTIUSD"]]
+        # The malformed mark must precede a genuinely observed later H1 candle;
+        # otherwise feed freshness fails before journal-evidence validation.
+        times.append(oldmark+3600)
         with self.assertRaisesRegex(ValueError,"No anchored evidence"):
             reconcile_subhour_watermark(s,"XTIUSD",times,broken)
         s["books"]["XTIUSD:channel10"]["entries"].append({
