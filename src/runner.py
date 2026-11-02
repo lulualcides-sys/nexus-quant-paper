@@ -13,6 +13,7 @@ from .experimental_h1 import process as process_h1, diagnostics as h1_diagnostic
 from .h4_entry_audit import audit as audit_h4_entries, telegram_summary as h4_telegram_summary
 from .momentum60_shadow import process as process_momentum60
 from .all_robots_audit import build as audit_all_27, telegram_line as audit_27_line
+from .news_guard import upcoming as macro_upcoming
 
 STATE=Path("state/market_monitor.json")
 REPORTS=Path("reports")
@@ -144,6 +145,20 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                 msg+="\n"+line
         except Exception as error:
             print("Consolidação 27 indisponível; relatório tradicional mantido: "+str(error)[:160])
+        try:
+            macro=macro_upcoming(now)
+            active=os.environ.get("NEXUS_NEWS_GUARD_ENABLED","0").strip()=="1"
+            if macro["status"]=="known":
+                event_count=len(macro["next"])
+                macro_line=(f"📰 Agenda macro oficial: {event_count} evento(s) nos próximos 7 dias"
+                            f" | bloqueio de novas entradas: {'ON' if active else 'OFF (teste)'}")
+            else:
+                macro_line=(f"📰 Agenda macro: desatualizada/indisponível"
+                            f" | bloqueio de novas entradas: {'ON, fail-closed' if active else 'OFF'}")
+            if len(msg)+len(macro_line)+1<=4000:
+                msg+="\\n"+macro_line
+        except Exception as error:
+            print("Resumo macro indisponível: "+type(error).__name__)
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         if complete_audit is not None:
