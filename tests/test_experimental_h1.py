@@ -140,8 +140,8 @@ class PaperH1Tests(unittest.TestCase):
         oldmark=s["watermarks"]["XTIUSD"]
         key="XTIUSD:channel10"
         oldentry={
-            "side":1,"entry":105.0,"start":oldmark,"qty":1.0,
-            "stop":300.0,"initial_r":2.0,"best_close":105.0,
+            "side":1,"entry":505.0,"start":oldmark,"qty":1.0,
+            "stop":506.0,"initial_r":2.0,"best_close":505.0,
             "stop_updates":0,"held_bars":0}
         s["books"][key]["position"]=deepcopy(oldentry)
         s["books"][key]["entries"]=[{"entry_ts":oldmark,
