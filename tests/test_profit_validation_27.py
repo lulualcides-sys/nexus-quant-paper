@@ -70,7 +70,7 @@ class ProfitValidation27Tests(unittest.TestCase):
         markets={name:hourly(shift=100*i) for i,name in enumerate(bt.MARKETS)}
         m15=quarter()
         before=deepcopy(markets),deepcopy(m15)
-        with patch.object(bt,"HIST_START",T0+240*3600), \
+        with patch.object(bt,"HIST_START",T0), \
              patch.object(bt,"HIST_END",T0+2400*3600), \
              patch.dict(os.environ,{"NEXUS_NEWS_GUARD_ENABLED":"1"}):
             report=pv.run(markets,m15)
