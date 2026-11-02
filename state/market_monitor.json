@@ -605,7 +605,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793620800
+      "watermark": 1793624400
     },
     "US500": {
       "signals": [
@@ -1057,9 +1057,9 @@
           "asset": "US500",
           "atr": 17.792957034419064,
           "close": 7643.25,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -0.42152,
+          "eval": "contrario",
+          "evaluated_at": 1793624400,
           "id": "US500:pullback_master:1793602800",
           "side": -1,
           "strategy": "pullback_master",
@@ -1079,7 +1079,7 @@
         }
       ],
       "source": "ES=F",
-      "watermark": 1793620800
+      "watermark": 1793624400
     },
     "USDJPY": {
       "signals": [
@@ -1493,7 +1493,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793620800
+      "watermark": 1793624400
     },
     "XAUUSD": {
       "signals": [
@@ -1943,7 +1943,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793620800
+      "watermark": 1793624400
     },
     "XTIUSD": {
       "signals": [
@@ -2354,10 +2354,34 @@
           "side": -1,
           "strategy": "breakout_pro",
           "ts": 1793610000
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 1.0047493250982855,
+          "close": 97.6500015258789,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:breakout_pro:1793624400",
+          "side": -1,
+          "strategy": "breakout_pro",
+          "ts": 1793624400
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 1.0047493250982855,
+          "close": 97.6500015258789,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:momentum_x:1793624400",
+          "side": -1,
+          "strategy": "momentum_x",
+          "ts": 1793624400
         }
       ],
       "source": "CL=F",
-      "watermark": 1793620800
+      "watermark": 1793624400
     }
   },
   "schema": 4
