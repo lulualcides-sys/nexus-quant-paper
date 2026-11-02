@@ -95,6 +95,7 @@ class NewsGuardTests(unittest.TestCase):
     def test_source_id_time_and_market_validation(self):
         cases=[]
         bad=deepcopy(self.raw);bad["events"][0]["source"]="http://trading.example.com";cases.append(bad)
+        bad=deepcopy(self.raw);bad["events"][0]["source"]=None;cases.append(bad)
         bad=deepcopy(self.raw);bad["events"].append(deepcopy(bad["events"][0]));cases.append(bad)
         bad=deepcopy(self.raw);bad["events"][0]["time_et"]="25:99";cases.append(bad)
         bad=deepcopy(self.raw);bad["events"][0]["affected_markets"]=["UNKNOWN"];cases.append(bad)
@@ -184,6 +185,59 @@ class NewsGuardTests(unittest.TestCase):
             mom.step(shadow,h4,momind,i)
         self.assertEqual(len(shadow["entries"]),0)
         self.assertIsNone(shadow["position"])
+
+
+    def test_simultaneous_bea_gdp_and_pce_block_together(self):
+        stamp=epoch("2026-11-25T13:30:00Z")
+        # Snapshot fresh only through Nov 16. Model a new audited snapshot
+        # (NOT a historical backfill) to test the future multi-event overlap.
+        audited=deepcopy(self.raw)
+        audited["fresh_until_utc"]="2026-11-27T00:00:00Z"
+        result=guard.evaluate("USDCAD",stamp,calendar=audited)
+        self.assertEqual(result["status"],"blocked_high_impact")
+        self.assertEqual(set(result["event_ids"]),
+                         {"bea-gdp-2026-11-25","bea-pce-2026-11-25"})
+
+    def test_each_market_covered_and_planned_bot_census_is_27(self):
+        from research.backtest_27 import all_ids
+        ids=all_ids()
+        self.assertEqual(len(ids),27)
+        for _,(_,market) in ids.items():
+            self.assertIn("USDCAD" if market=="USDCAD" else market,
+                          guard.MARKETS)
+
+    def test_existing_m15_stop_still_exits_when_news_is_blocked(self):
+        rows=quarter()
+        hourly_bars=m15.to_h1(rows)
+        h1ind=make_indicators(hourly_bars)
+        m15ind=make_indicators(rows)
+        i=275
+        price=rows[i]["open"]
+        b=m15.initial(rows)
+        b["position"]={"side":1,"entry":price+0.003,
+                       "entry_ts":rows[i]["time"]-900,
+                       "qty_usd":1000,"stop":price+0.001,
+                       "initial_r":0.002,"stop_policy":"legacy_fixed",
+                       "target":price+0.01,"best_close":price+0.003}
+        with patch.object(m15,"entry_permission",return_value=False):
+            m15.step(b,rows,i,hourly_bars,h1ind,m15ind)
+        self.assertIsNone(b["position"])
+        self.assertEqual(len(b["closed"]),1)
+
+    def test_existing_momentum60_stop_still_exits_when_news_is_blocked(self):
+        h4=aggregate_hourly_to_h4(hourly())
+        ind=make_indicators(h4)
+        i=len(h4)-2
+        price=h4[i]["open"]
+        b=mom.fresh(h4)
+        b["position"]={"side":1,"entry":price+3,
+                       "start":h4[i]["time"]-14400,"qty":1,
+                       "stop":price+1,"target":price+40,
+                       "held_bars":2}
+        with patch.object(mom,"entry_permission",return_value=False):
+            mom.step(b,h4,ind,i)
+        self.assertIsNone(b["position"])
+        self.assertEqual(len(b["closed"]),1)
 
     def test_off_by_default_regression_for_old_backtests(self):
         with patch.dict(os.environ,{},clear=True):
