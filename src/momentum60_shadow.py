@@ -14,6 +14,7 @@ from research.backtest_year import COST_BPS
 from research.entry_frequency_lab import candidate_signal
 from src.gold_forward import day_of
 from src.strategies import make_indicators
+from src.news_guard import entry_permission
 
 FILE = Path("state/momentum60_shadow_v1.json")
 CAPITAL = 5000.0
@@ -85,6 +86,8 @@ def step(book, bars, indicators, i):
         raise ValueError("Invalid candidate direction")
     if not current or current == previous:
         return
+    if not entry_permission("XAUUSD",row["time"]):
+        return  # existing virtual position exits above are unaffected
     atr = indicators[i - 1]["atr"]
     if not isfinite(atr) or atr <= 0 or not isfinite(opened) or opened <= 0:
         return
