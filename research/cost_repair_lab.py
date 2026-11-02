@@ -32,7 +32,7 @@ MIN_H4_CLOSED_TO_REVIEW = 12
 GROUPS_CHANGED = ("experimental_h1","leveraged_h4")
 
 
-def h1_gate_signal(rule, bars, indicators, i, market, original=None, *, cost_mult=1.):
+def h1_gate_signal(rule, bars, indicators, i, market, original=None, *, base_cost_bps=None):
     """Time-causal candidate; returns zero when estimated edge is too small.
 
     All indicator values and closing price are from i or earlier.
@@ -51,7 +51,7 @@ def h1_gate_signal(rule, bars, indicators, i, market, original=None, *, cost_mul
     atr = p["atr"]
     if price <= 0 or atr <= 0:
         return 0
-    fee_bps = h1.COST_BPS[market] * cost_mult
+    fee_bps = h1.COST_BPS[market] if base_cost_bps is None else base_cost_bps
     atr_bps = 10_000. * atr / price
     trend_atr = abs(p["e50"]-p["e200"]) / atr
     if atr_bps < COVERAGE_MULTIPLE * fee_bps:
@@ -67,11 +67,12 @@ def h1_gate_signal(rule, bars, indicators, i, market, original=None, *, cost_mul
 
 def h1_candidate(market, bars, *, stress=1.):
     base_setup = h1.setup
-    # NOTE _h1_replay will double its own fee during stress.
-    # Here the filter deliberately checks the ORIGINAL expected base fee;
-    # stress affects fills, not selection, ensuring same signals/cost stress.
+    base_cost_bps = h1.COST_BPS[market]
+    # Hold entry-filter inputs FIXED; _h1_replay doubles execution costs
+    # internally under stress, never the filter threshold.
     def filtered(rule, candles, indicators, i):
-        return h1_gate_signal(rule,candles,indicators,i,market,base_setup)
+        return h1_gate_signal(rule,candles,indicators,i,market,base_setup,
+                              base_cost_bps=base_cost_bps)
     with patch.object(h1,"setup",filtered):
         return bt._h1_replay(market,bars,stress=stress)
 
