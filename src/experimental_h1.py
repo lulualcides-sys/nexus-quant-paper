@@ -104,7 +104,7 @@ def _close(b, market, bar, price, why):
     b["position"] = None
 
 
-def step(b, market, strategy, bars, ind, i, *, signal_fn=None):
+def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=True):
     """Stop checks before trailing; do not enter and exit on same candle."""
     row = bars[i]
     previous = bars[i - 1]
@@ -131,6 +131,10 @@ def step(b, market, strategy, bars, ind, i, *, signal_fn=None):
                 p["stop"] = tightened
                 p["stop_updates"] += 1
         b["last_reason"] = "Posição virtual aberta; stop acompanhado"
+        return
+
+    if not allow_new_entry:
+        b["last_reason"] = "Reconciliação somente saídas virtuais; nenhuma entrada retroativa"
         return
 
     # No new entry across a holiday/weekend or incomplete hourly interval.
@@ -176,6 +180,40 @@ def step(b, market, strategy, bars, ind, i, *, signal_fn=None):
     # No claim of actual executable brokerage fills.
 
 
+def reconcile_subhour_watermark(state,market,stamps,mark):
+    """Guarded one-time reconciliation of a malformed intra-hour paper mark.
+
+    A noncanonical timestamp can be normalized only when the observed
+    signal journal independently proves the previous exact H1 candle has
+    already been consumed. This does NOT assert any broker fills.
+    """
+    if (market not in MARKETS or not isinstance(mark,int) or
+            mark%3600==0 or not stamps or mark>stamps[-1]):
+        raise ValueError("watermark not eligible for automatic reconciliation")
+    anchor=mark-(mark%3600)
+    if anchor not in stamps:
+        raise ValueError("anchor candle absent: remain quarantined")
+    books=[state["books"].get(bot_key(market,s)) for s in STRATEGIES]
+    if not all(isinstance(b,dict) for b in books):
+        raise ValueError("Incomplete market journal: remain quarantined")
+    events=[]
+    for b in books:
+        for e in b.get("entries",[]):
+            events.append(e.get("entry_ts"))
+        for e in b.get("closed",[]):
+            events.extend((e.get("entry_ts"),e.get("exit_ts")))
+        p=b.get("position")
+        if p is not None:
+            events.append(p.get("start"))
+        if b.get("last_exit_ts") is not None:
+            events.append(b["last_exit_ts"])
+    if (not events or any(not isinstance(ts,(int,float)) or
+                          not isfinite(ts) for ts in events) or
+            any(ts>anchor for ts in events) or anchor not in events):
+        raise ValueError("No anchored evidence of consumed H1 candle")
+    return anchor
+
+
 def update(state, datasets, *, isolate_errors=False):
     """Advance independent H1 markets without sacrificing other books.
 
@@ -196,6 +234,7 @@ def update(state, datasets, *, isolate_errors=False):
         # positions, closed trades, equity and watermark, even if some
         # earlier candles in this batch were processed before failing.
         prior_stamp = state["watermarks"].get(market)
+        prior_repairs = deepcopy(state.get("watermark_repairs")) if isolate_errors else None
         prior_books = ({bot_key(market,s): deepcopy(state["books"].get(bot_key(market,s)))
                         for s in STRATEGIES} if isolate_errors else None)
         try:
@@ -213,13 +252,23 @@ def update(state, datasets, *, isolate_errors=False):
                 if isolate_errors:
                     raise ValueError(f"{market}: preços atrasados em relação ao estado")
                 continue  # old strict-mode behavior: never roll back
+            repairing = False
             if mark not in stamps:
-                raise ValueError(f"{market}: watermark perdido; não inventar entradas")
+                if not isolate_errors:
+                    raise ValueError(f"{market}: watermark perdido; não inventar entradas")
+                anchor = reconcile_subhour_watermark(state,market,stamps,mark)
+                repairing = True
+                state.setdefault("watermark_repairs",[]).append({
+                    "market":market,"from_ts":mark,"anchored_closed_bar_ts":anchor,
+                    "warning":"Yahoo OHLC estimate only; old position exits reconciled retrospectively, no retroactive new trades",
+                })
+                mark = anchor
             ind = make_indicators(bars)
             start = stamps.index(mark) + 1
             for i in range(max(start, WARMUP + 1), len(bars)):
                 for strat in STRATEGIES:
-                    step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i)
+                    step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i,
+                         allow_new_entry=not repairing)
                 state["watermarks"][market] = stamps[i]
         except (ValueError, KeyError, TypeError, IndexError, ArithmeticError) as exc:
             if not isolate_errors:
@@ -235,6 +284,10 @@ def update(state, datasets, *, isolate_errors=False):
                     state["books"].pop(key,None)
                 else:
                     state["books"][key] = prior
+            if prior_repairs is None:
+                state.pop("watermark_repairs",None)
+            else:
+                state["watermark_repairs"] = prior_repairs
             state["unavailable"].append(market)
             state.setdefault("market_errors",{})[market] = (
                 type(exc).__name__ + ": " + str(exc))[:180]
