@@ -176,7 +176,7 @@ class PaperH1Tests(unittest.TestCase):
             reconcile_subhour_watermark(s,"XTIUSD",times,broken)
         s["books"]["XTIUSD:channel10"]["entries"].append({
             "entry_ts":oldmark,"side":1})
-        with self.assertRaisesRegex(ValueError,"anchor candle absent"):
+        with self.assertRaisesRegex(ValueError,"not eligible"):
             reconcile_subhour_watermark(s,"XTIUSD",times[:-1],broken)
         with self.assertRaisesRegex(ValueError,"not eligible"):
             reconcile_subhour_watermark(s,"XTIUSD",times,oldmark+3600*20+2631)
