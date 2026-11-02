@@ -363,19 +363,11 @@ def markdown(result):
             continue
         vd=f"{value['wins']}/{value['losses']}"
         stress=value.get("double_cost_net_usd")
+        stressed = f"{stress:+.2f}" if stress is not None else "—"
         lines.append(f"| {value['strategy']} | {value['group']} | {value['start_utc']} a {value['end_utc']} | "
                      f"{value['entries_observed']} | {value['closed_trades']} | {vd} | "
-                     f"{value['net_realized_usd']:+.2f} | "
-                     f"{stress:+.2f}" if False else "")
-        # Replace the construction above with a single deterministic row.
-        lines[-1]=(f"| {value['strategy']} | {value['group']} | {value['start_utc']} a {value['end_utc']} | "
-                   f"{value['entries_observed']} | {value['closed_trades']} | {vd} | "
-                   f"{value['net_realized_usd']:+.2f} | "
-                   f"{stress:+.2f}" if stress is not None else
-                   f"| {value['strategy']} | {value['group']} | {value['start_utc']} a {value['end_utc']} | "
-                   f"{value['entries_observed']} | {value['closed_trades']} | {vd} | "
-                   f"{value['net_realized_usd']:+.2f} | —")
-        lines[-1]+=f" | {value['closed_only_drawdown_pct']:.2f}% |"
+                     f"{value['net_realized_usd']:+.2f} | {stressed} | "
+                     f"{value['closed_only_drawdown_pct']:.2f}% |")
     lines += ["","## Dados e limitações"]
     for market,meta in result["price_data"].items():
         lines.append(f"- {market}: {meta['bars']} candles; {meta['first']} a {meta['last']}; SHA-256 \x60{meta['sha256']}\x60")
