@@ -42,8 +42,16 @@ class DailyOnlyTelegramTests(unittest.TestCase):
                        statefile=s, reports=reports)
             runner.run("report", now=now, fetch=fake_fetch, send=sender,
                        statefile=s, reports=reports)
-            self.assertEqual(sent, ["RESUMO DIÁRIO VIRTUAL"])
+            self.assertEqual(len(sent), 1)  # still only the DAILY message
+            self.assertTrue(sent[0].startswith("RESUMO DIÁRIO VIRTUAL"))
+            self.assertIn("27 previstos", sent[0])
             self.assertTrue((reports / "2026-10-30.txt").exists())
+            detail = reports / "robot_diagnostics" / "2026-10-30.json"
+            self.assertTrue(detail.exists())
+            import json
+            audit = json.loads(detail.read_text(encoding="utf-8"))
+            self.assertEqual(audit["planned_robots"], 27)
+            self.assertEqual(len(audit["robots"]), 27)
 
     def test_schedule_does_not_run_hourly_telegram_check(self):
         yaml = Path(".github/workflows/monitor.yml").read_text(encoding="utf-8")
