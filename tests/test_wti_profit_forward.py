@@ -135,7 +135,7 @@ class WtiForwardProfitTests(unittest.TestCase):
         for item in view["watchlist"].values():
             self.assertIsNone(item["net_usd"])
             self.assertEqual(item["status"],"unavailable")
-        self.assertIn("FIXED",view["stress_warning"])
+        self.assertIn("SAME logged fills",view["stress_warning"])
 
     def test_fee_stress_uses_only_transaction_cost_and_never_promotes(self):
         c=watch.CUTOFF_TS+7200
