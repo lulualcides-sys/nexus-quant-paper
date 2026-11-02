@@ -4,26 +4,16 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793653200,
-    "USDJPY": 1793653200,
+    "EURUSD": 1793656800,
+    "USDJPY": 1793656800,
     "XAUUSD": 1793653200,
     "US500": 1793653200,
     "XTIUSD": 1793653200
   },
   "books": {
     "EURUSD:ema20_retest": {
-      "equity": 1002.8390942607157,
-      "position": {
-        "side": 1,
-        "entry": 1.1206992864608765,
-        "start": 1793638800,
-        "qty": 894.8333476927976,
-        "stop": 1.1186269307696273,
-        "initial_r": 0.0020723556912491795,
-        "best_close": 1.1206992864608765,
-        "stop_updates": 0,
-        "held_bars": 4
-      },
+      "equity": 1000.2958973953839,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793584800,
@@ -33,6 +23,16 @@
           "exit": 1.1207011,
           "net_usd": 2.83909,
           "cost_usd": 0.30047,
+          "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793638800,
+          "exit_ts": 1793656800,
+          "side": 1,
+          "entry": 1.1206993,
+          "exit": 1.118193,
+          "net_usd": -2.5432,
+          "cost_usd": 0.30052,
           "exit_type": "STOP"
         }
       ],
@@ -52,17 +52,17 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.54 com custos estimados",
       "diagnostics": {
         "no_setup": 15,
         "gap": 1,
         "cooldown": 1,
-        "in_position": 12,
+        "in_position": 13,
         "entered": 2,
-        "exited": 1,
+        "exited": 2,
         "invalid": 0
       },
-      "last_exit_ts": 1793613600
+      "last_exit_ts": 1793656800
     },
     "EURUSD:channel10": {
       "equity": 1002.1667974457258,
@@ -90,7 +90,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 23,
+        "no_setup": 24,
         "gap": 1,
         "cooldown": 1,
         "in_position": 5,
@@ -101,18 +101,8 @@
       "last_exit_ts": 1793613600
     },
     "EURUSD:rsi50": {
-      "equity": 1002.8390942607157,
-      "position": {
-        "side": 1,
-        "entry": 1.1206992864608765,
-        "start": 1793638800,
-        "qty": 894.8333476927976,
-        "stop": 1.1186269307696273,
-        "initial_r": 0.0020723556912491795,
-        "best_close": 1.1206992864608765,
-        "stop_updates": 0,
-        "held_bars": 4
-      },
+      "equity": 1000.2958973953839,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793584800,
@@ -122,6 +112,16 @@
           "exit": 1.1207011,
           "net_usd": 2.83909,
           "cost_usd": 0.30047,
+          "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793638800,
+          "exit_ts": 1793656800,
+          "side": 1,
+          "entry": 1.1206993,
+          "exit": 1.118193,
+          "net_usd": -2.5432,
+          "cost_usd": 0.30052,
           "exit_type": "STOP"
         }
       ],
@@ -141,17 +141,17 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.54 com custos estimados",
       "diagnostics": {
         "no_setup": 15,
         "gap": 1,
         "cooldown": 1,
-        "in_position": 12,
+        "in_position": 13,
         "entered": 2,
-        "exited": 1,
+        "exited": 2,
         "invalid": 0
       },
-      "last_exit_ts": 1793613600
+      "last_exit_ts": 1793656800
     },
     "USDJPY:ema20_retest": {
       "equity": 994.9013425922701,
@@ -164,7 +164,7 @@
         "initial_r": 0.2707179374576204,
         "best_close": 157.93099975585938,
         "stop_updates": 0,
-        "held_bars": 2
+        "held_bars": 3
       },
       "closed": [
         {
@@ -216,7 +216,7 @@
         "no_setup": 13,
         "gap": 0,
         "cooldown": 2,
-        "in_position": 12,
+        "in_position": 13,
         "entered": 3,
         "exited": 2,
         "invalid": 0
@@ -230,7 +230,7 @@
       "entries": [],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 29,
+        "no_setup": 30,
         "gap": 1,
         "cooldown": 0,
         "in_position": 0,
@@ -283,7 +283,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 19,
+        "no_setup": 20,
         "gap": 0,
         "cooldown": 2,
         "in_position": 7,
