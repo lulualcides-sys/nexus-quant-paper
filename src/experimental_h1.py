@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 from src.feed import MARKETS
 from src.strategies import make_indicators
 from research.backtest_year import COST_BPS
+from src.news_guard import entry_permission
 
 FILE = Path("state/experimental_h1_v1.json")
 STRATEGIES = {
@@ -144,6 +145,9 @@ def step(b, market, strategy, bars, ind, i):
     if not side:
         b["diagnostics"]["no_setup"] += 1
         b["last_reason"] = "Aguardando setup H1 com candle fechado"
+        return
+    if not entry_permission(market,row["time"]):
+        b["last_reason"] = "Sem entrada: calendário de notícias oficial indisponível ou evento de alto impacto"
         return
     price, atr = row["open"], ind[i - 1]["atr"]
     if not isfinite(atr) or atr <= 0 or price <= 0 or b["equity"] <= 0:
