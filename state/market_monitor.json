@@ -617,7 +617,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793635200
+      "watermark": 1793638800
     },
     "US500": {
       "signals": [
@@ -1088,10 +1088,22 @@
           "side": -1,
           "strategy": "pullback_master",
           "ts": 1793620800
+        },
+        {
+          "asset": "US500",
+          "atr": 21.266416846274147,
+          "close": 7637.5,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:pullback_master:1793638800",
+          "side": -1,
+          "strategy": "pullback_master",
+          "ts": 1793638800
         }
       ],
       "source": "ES=F",
-      "watermark": 1793635200
+      "watermark": 1793638800
     },
     "USDJPY": {
       "signals": [
@@ -1529,7 +1541,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793635200
+      "watermark": 1793638800
     },
     "XAUUSD": {
       "signals": [
@@ -2015,7 +2027,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793635200
+      "watermark": 1793638800
     },
     "XTIUSD": {
       "signals": [
@@ -2465,7 +2477,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1793635200
+      "watermark": 1793638800
     }
   },
   "schema": 4
