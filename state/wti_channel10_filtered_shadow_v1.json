@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "paper_only": true,
+  "experimental_only": true,
+  "source": "Yahoo CL=F H1 proxy, not FBS fills",
+  "policy": "channel10_h1_cost_atr_4x_ema50_ema200_1p5atr",
+  "market": "XTIUSD",
+  "strategy": "channel10",
+  "h1_watermark": 1793606400,
+  "book": {
+    "equity": 1000.0,
+    "position": null,
+    "closed": [],
+    "entries": [],
+    "last_reason": "Iniciado sem operações retroativas",
+    "diagnostics": {
+      "no_setup": 0,
+      "gap": 0,
+      "cooldown": 0,
+      "in_position": 0,
+      "entered": 0,
+      "exited": 0,
+      "invalid": 0
+    },
+    "last_exit_ts": null
+  },
+  "first_observation_ts": 1793606400,
+  "no_historical_backfill": true,
+  "last_run_reason": "Inicializado a partir do candle observado: ZERO entradas retroativas"
+}
