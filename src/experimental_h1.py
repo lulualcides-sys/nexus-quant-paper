@@ -267,8 +267,11 @@ def update(state, datasets, *, isolate_errors=False):
             start = stamps.index(mark) + 1
             for i in range(max(start, WARMUP + 1), len(bars)):
                 for strat in STRATEGIES:
-                    step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i,
-                         allow_new_entry=not repairing)
+                    if repairing:
+                        step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i,
+                             allow_new_entry=False)
+                    else:
+                        step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i)
                 state["watermarks"][market] = stamps[i]
         except (ValueError, KeyError, TypeError, IndexError, ArithmeticError) as exc:
             if not isolate_errors:
