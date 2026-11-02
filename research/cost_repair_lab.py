@@ -23,6 +23,7 @@ import json
 from research import backtest_27 as bt
 from src import experimental_h1 as h1
 from src import leveraged_gold as lev
+from src.cost_aware_gate import allow_signal
 
 OUTPUT = Path("research/results/profit_repair_27_2026-11-01")
 COVERAGE_MULTIPLE = 4.0  # ATR in bps must cover round-trip fee ×4
@@ -46,23 +47,8 @@ def h1_gate_signal(rule, bars, indicators, i, market, original=None, *, base_cos
         return 0
     if i < h1.WARMUP:
         return 0
-    p = indicators[i]
-    price = bars[i]["close"]
-    atr = p["atr"]
-    if price <= 0 or atr <= 0:
-        return 0
     fee_bps = h1.COST_BPS[market] if base_cost_bps is None else base_cost_bps
-    atr_bps = 10_000. * atr / price
-    trend_atr = abs(p["e50"]-p["e200"]) / atr
-    if atr_bps < COVERAGE_MULTIPLE * fee_bps:
-        return 0
-    if trend_atr < TREND_SEPARATION_ATR:
-        return 0
-    if raw == 1 and p["e50"] <= p["e200"]:
-        return 0
-    if raw == -1 and p["e50"] >= p["e200"]:
-        return 0
-    return raw
+    return allow_signal(raw,bars,indicators,i,fee_bps=fee_bps)
 
 
 def h1_candidate(market, bars, *, stress=1.):
