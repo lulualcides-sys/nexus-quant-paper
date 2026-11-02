@@ -1,0 +1,31 @@
+name: Nexus Quant | WTI forward-only e lucro prospectivo
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/wti_channel10_shadow.py'
+      - 'src/profit_watchlist.py'
+      - 'src/cost_aware_gate.py'
+      - 'src/experimental_h1.py'
+      - 'src/runner.py'
+      - 'research/cost_repair_lab.py'
+      - 'tests/test_wti_profit_forward.py'
+      - '.github/workflows/wti-forward-profit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused no-backfill / closed-bar / costs / existing-state tests
+        run: python -m unittest discover -s tests -p 'test_wti_profit_forward.py' -v
+      - name: Install encrypted-chat test dependency
+        run: python -m pip install cryptography
+      - name: Full regression suite, no API orders
+        run: python -m unittest discover -s tests -v

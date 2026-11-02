@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo
 from src.strategies import make_indicators
 from research.screen_v2 import aggregate_hourly_to_h4,sign,CAPITAL,ATR_STOP,ATR_TARGET,MAX_HOLD
 from research.backtest_year import COST_BPS
+from src.news_guard import entry_permission
 
 FILE=Path("state/selected_gold_v2.json")
 STUDY=("rsi_trend","channel20","pullback20","momentum100","channel55")
@@ -62,6 +63,8 @@ def evaluate_bar(book,key,bars,ind,i):
     signal_now=sign(key,bars,ind,i-1)
     signal_prev=sign(key,bars,ind,i-2)
     if signal_now and signal_now!=signal_prev:
+        if not entry_permission("XAUUSD",t):
+            return  # no NEW paper position during official macro blackout
         atr=ind[i-1]["atr"]
         if atr>0 and book["equity"]>0 and open_price>0:
             qty=min(book["equity"]*RISK/(ATR_STOP*atr),

@@ -4,6 +4,7 @@ No brokerage connection, no historical backfill, no guaranteed fills or profits.
 These rules are UNVALIDATED; results must not be combined with approved bots.
 """
 from __future__ import annotations
+from copy import deepcopy
 import json
 from datetime import datetime, timezone
 from math import isfinite
@@ -12,6 +13,7 @@ from zoneinfo import ZoneInfo
 from src.feed import MARKETS
 from src.strategies import make_indicators
 from research.backtest_year import COST_BPS
+from src.news_guard import entry_permission
 
 FILE = Path("state/experimental_h1_v1.json")
 STRATEGIES = {
@@ -102,7 +104,7 @@ def _close(b, market, bar, price, why):
     b["position"] = None
 
 
-def step(b, market, strategy, bars, ind, i):
+def step(b, market, strategy, bars, ind, i, *, signal_fn=None):
     """Stop checks before trailing; do not enter and exit on same candle."""
     row = bars[i]
     previous = bars[i - 1]
@@ -140,10 +142,13 @@ def step(b, market, strategy, bars, ind, i):
         b["diagnostics"]["cooldown"] += 1
         b["last_reason"] = "Sem entrada: proteção após saída"
         return
-    side = setup(strategy, bars, ind, i - 1)
+    side = (setup if signal_fn is None else signal_fn)(strategy, bars, ind, i - 1)
     if not side:
         b["diagnostics"]["no_setup"] += 1
         b["last_reason"] = "Aguardando setup H1 com candle fechado"
+        return
+    if not entry_permission(market,row["time"]):
+        b["last_reason"] = "Sem entrada: calendário de notícias oficial indisponível ou evento de alto impacto"
         return
     price, atr = row["open"], ind[i - 1]["atr"]
     if not isfinite(atr) or atr <= 0 or price <= 0 or b["equity"] <= 0:
@@ -171,44 +176,75 @@ def step(b, market, strategy, bars, ind, i):
     # No claim of actual executable brokerage fills.
 
 
-def update(state, datasets):
+def update(state, datasets, *, isolate_errors=False):
+    """Advance independent H1 markets without sacrificing other books.
+
+    Strict/default API retains old validation errors for tests and research.
+    The scheduled paper runner opts in to market-isolation: invalid WTI
+    timestamps quarantine WTI ONLY; no backfill/rewind/cancel of its position.
+    """
     state = state if state is not None else fresh()
     if state.get("schema") != 1 or not state.get("paper_only") or not state.get("experimental_only"):
         raise ValueError("Estado H1 experimental incompatível; preservar histórico")
-    missing = [m for m in MARKETS if m not in datasets]
-    state["unavailable"] = missing
+    state["unavailable"] = [m for m in MARKETS if m not in datasets]
+    if isolate_errors:
+        state.pop("market_errors", None)
     for market in MARKETS:
         if market not in datasets:
             continue
-        bars = datasets[market]
-        stamps = [int(x["time"]) for x in bars]
-        if len(bars) <= WARMUP + 2 or stamps != sorted(set(stamps)):
-            raise ValueError(f"{market}: histórico H1 inválido")
-        if market not in state["watermarks"]:
-            state["watermarks"][market] = stamps[-1]
-            for strat in STRATEGIES:
-                state["books"][bot_key(market, strat)] = book()
-            continue  # prohibit retroactive fills on the first observation
-        mark = state["watermarks"][market]
-        if mark > stamps[-1]:
-            continue  # lagging feed; never roll back
-        if mark not in stamps:
-            raise ValueError(f"{market}: watermark perdido; não inventar entradas")
-        ind = make_indicators(bars)
-        start = stamps.index(mark) + 1
-        for i in range(max(start, WARMUP + 1), len(bars)):
-            for strat in STRATEGIES:
-                step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i)
-            state["watermarks"][market] = stamps[i]
-        if start > WARMUP and start >= len(bars):
-            continue
+        # Snapshot this market only; on failure restore ALL its original
+        # positions, closed trades, equity and watermark, even if some
+        # earlier candles in this batch were processed before failing.
+        prior_stamp = state["watermarks"].get(market)
+        prior_books = ({bot_key(market,s): deepcopy(state["books"].get(bot_key(market,s)))
+                        for s in STRATEGIES} if isolate_errors else None)
+        try:
+            bars = datasets[market]
+            stamps = [int(x["time"]) for x in bars]
+            if len(bars) <= WARMUP + 2 or stamps != sorted(set(stamps)):
+                raise ValueError(f"{market}: histórico H1 inválido")
+            if market not in state["watermarks"]:
+                state["watermarks"][market] = stamps[-1]
+                for strat in STRATEGIES:
+                    state["books"][bot_key(market, strat)] = book()
+                continue  # prohibit retroactive fills on the first observation
+            mark = state["watermarks"][market]
+            if mark > stamps[-1]:
+                if isolate_errors:
+                    raise ValueError(f"{market}: preços atrasados em relação ao estado")
+                continue  # old strict-mode behavior: never roll back
+            if mark not in stamps:
+                raise ValueError(f"{market}: watermark perdido; não inventar entradas")
+            ind = make_indicators(bars)
+            start = stamps.index(mark) + 1
+            for i in range(max(start, WARMUP + 1), len(bars)):
+                for strat in STRATEGIES:
+                    step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i)
+                state["watermarks"][market] = stamps[i]
+        except (ValueError, KeyError, TypeError, IndexError, ArithmeticError) as exc:
+            if not isolate_errors:
+                raise
+            # Fail closed ONLY for the corrupted market. No fabricated exit
+            # of an existing position, no automatic reset or stale price fill.
+            if prior_stamp is None:
+                state["watermarks"].pop(market,None)
+            else:
+                state["watermarks"][market] = prior_stamp
+            for key, prior in prior_books.items():
+                if prior is None:
+                    state["books"].pop(key,None)
+                else:
+                    state["books"][key] = prior
+            state["unavailable"].append(market)
+            state.setdefault("market_errors",{})[market] = (
+                type(exc).__name__ + ": " + str(exc))[:180]
     return state
 
 
 def process(datasets, path=FILE):
     path = Path(path)
     state = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
-    result = update(state, datasets)
+    result = update(state, datasets, isolate_errors=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return result

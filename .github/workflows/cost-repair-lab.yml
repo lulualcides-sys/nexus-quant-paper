@@ -1,0 +1,46 @@
+name: Nexus Quant | custo e risco dos 27 (laboratorio)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/cost_repair_lab.py'
+      - 'tests/test_cost_repair_lab.py'
+      - '.github/workflows/cost-repair-lab.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-quant-cost-repair-lab
+  cancel-in-progress: false
+jobs:
+  deterministic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify unchanged 27 original engines and causal filters
+        run: python -m unittest discover -s tests -p 'test_cost_repair_lab.py' -v
+  compare-on-identical-historical-feeds:
+    needs: deterministic-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Historical same-feeds comparison (virtual only, no orders)
+        run: python -m research.cost_repair_lab
+      - name: Archive results without touching trading states
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-profit-repair-laboratory
+          path: |
+            research/results/profit_repair_27_2026-11-01.json
+            research/results/profit_repair_27_2026-11-01.md
+          retention-days: 30
+          if-no-files-found: warn

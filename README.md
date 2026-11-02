@@ -11,6 +11,15 @@
 
 # Nexus Quant Paper — monitor gratuito
 
+## Vetor matemático dos 27 robôs — 01/11/2026
+
+[Relatório das 19 etapas matemáticas por robô](research/results/vector_math_27_2026-11-01.md) · [Código auditável](research/vector_math_27.py) · [Suíte de validação](tests/test_vector_math_27.py). Total de **513 etapas explicitadas** (27 × 19). A auditoria calcula P&L líquido, bruto implícito, custos, resultado por operação, PF, payoff aproximado, intervalo amostral Wilson, drawdown apenas realizado e sensibilidade a custos dobrados. Não modifica estratégias, envia ordens nem declara rentabilidade futura. Os dados dos grupos H4/H1/M15 abrangem **janelas diferentes**.
+
+## Monitoramento dos 27 robôs planejados — 01/11/2026
+
+[Diagnóstico consolidado e salvaguardas](docs/AUDITORIA-27-ROBOS-2026-11-01.md): 10 Ouro H4, 15 H1 experimentais, 1 USD/CAD H1/M15 e 1 Momentum60 H4 **em integração experimental**. Relatório diário `reports/robot_diagnostics/AAAA-MM-DD.json` identifica todos os 27, separando **sem dados** de retorno zero. Não modifica estratégias nem cria entradas artificiais. Cripto permanece em projeto paralelo. **O 27º depende da integração da PR #9; 27 previstos não significa 27 já ativos.**
+
+
 ## Robô 11 — BB20 Pullback H1/M15 no USD/CAD (26/10/2026)
 
 **Status:** experimento prospectivo em conta virtual, sem execução na FBS. É **um único novo robô**, separado dos dez robôs H4 no ouro. Não é estratégia validada para dinheiro real.

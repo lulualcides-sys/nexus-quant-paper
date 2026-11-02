@@ -49,6 +49,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           SCHEDULE_EXPR: ${{ github.event.schedule }}
           MANUAL_MODE: ${{ inputs.mode }}
+          NEXUS_NEWS_GUARD_ENABLED: ${{ vars.NEXUS_NEWS_GUARD_ENABLED || '0' }}
         shell: bash
         run: |
           MODE=scan

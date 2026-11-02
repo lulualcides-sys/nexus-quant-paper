@@ -13,6 +13,7 @@ from src.gold_forward import day_of
 from research.screen_v2 import aggregate_hourly_to_h4, sign
 from research.backtest_year import COST_BPS
 from src.green_stop import MODES, check_mode, update_after_close
+from src.news_guard import entry_permission
 
 FILE=Path("state/leveraged_gold_v1.json")
 CAPITAL=5000.0
@@ -114,6 +115,8 @@ def one_bar(book,name,h4,ind,i,*,mode="fixed"):
     prior=sign(rule,h4,ind,i-2)
     if not current or current==prior:
         return
+    if not entry_permission("XAUUSD",ts):
+        return  # existing position handling above remains active
     atr=ind[i-1]["atr"]
     if not atr or atr<=0 or opening<=0:
         return

@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-11-02T02:58:31Z",
+  "fresh_until_utc": "2026-11-16T00:00:00Z",
+  "coverage_start_utc": "2026-11-02T02:58:31Z",
+  "coverage_end_utc": "2026-12-31T23:59:59Z",
+  "timezone": "America/New_York",
+  "paper_only": true,
+  "source_type": "official_release_calendar_snapshot",
+  "notes": "Manual snapshot of official BLS/BEA/Fed schedules checked 2026-11-01 in America/Sao_Paulo. Dates may change; do not claim point-in-time historic availability, and do not use this snapshot to backtest decisions before its observed_at timestamp. After fresh_until, new entries must fail closed when the optional guard is enabled. The FOMC source specifies meeting dates, not a decision time; block the full local decision day.",
+  "events": [
+    {
+      "id": "bls-jolts-2026-11-03",
+      "title": "JOLTS",
+      "date": "2026-11-03",
+      "time_et": "10:00",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    },
+    {
+      "id": "bls-nfp-2026-11-06",
+      "title": "Employment Situation (NFP)",
+      "date": "2026-11-06",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "id": "bls-cpi-2026-11-10",
+      "title": "Consumer Price Index (CPI)",
+      "date": "2026-11-10",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "id": "bls-ppi-2026-11-13",
+      "title": "Producer Price Index (PPI)",
+      "date": "2026-11-13",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/2026/11_sched_list.htm"
+    },
+    {
+      "id": "bea-gdp-2026-11-25",
+      "title": "GDP Second Estimate",
+      "date": "2026-11-25",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "id": "bea-pce-2026-11-25",
+      "title": "Personal Income and Outlays (PCE)",
+      "date": "2026-11-25",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "id": "bls-jolts-2026-12-01",
+      "title": "JOLTS",
+      "date": "2026-12-01",
+      "time_et": "10:00",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/2026/12_sched_list.htm"
+    },
+    {
+      "id": "bls-nfp-2026-12-04",
+      "title": "Employment Situation (NFP)",
+      "date": "2026-12-04",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "id": "bls-cpi-2026-12-10",
+      "title": "Consumer Price Index (CPI)",
+      "date": "2026-12-10",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "id": "bls-ppi-2026-12-15",
+      "title": "Producer Price Index (PPI)",
+      "date": "2026-12-15",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bls.gov/schedule/2026/12_sched_list.htm"
+    },
+    {
+      "id": "bea-gdp-2026-12-23",
+      "title": "GDP Third Estimate",
+      "date": "2026-12-23",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "id": "bea-pce-2026-12-23",
+      "title": "Personal Income and Outlays (PCE)",
+      "date": "2026-12-23",
+      "time_et": "08:30",
+      "timing_precision": "minute",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "id": "fed-fomc-2026-12-09",
+      "title": "Federal Open Market Committee decision day",
+      "date": "2026-12-09",
+      "timing_precision": "day",
+      "impact": "high",
+      "affected_markets": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "US500",
+        "XTIUSD",
+        "USDCAD"
+      ],
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+name: Nexus Quant | validade do lucro em 27 robos (3 periodos)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/profit_validation_27.py'
+      - 'tests/test_profit_validation_27.py'
+      - 'research/backtest_27.py'
+      - 'research/cost_repair_lab.py'
+      - '.github/workflows/profit-validation-27.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-quant-profit-validation-27
+  cancel-in-progress: false
+jobs:
+  guardrail-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Chronological folds, zero lookahead, 27 engines and risk limits
+        run: python -m unittest discover -s tests -p test_profit_validation_27.py -v
+  three-fold-historical-profit:
+    needs: guardrail-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Replay 27 paper bots in 3 disjoint windows with normal and 2x costs
+        run: python -m research.profit_validation_27
+      - name: Archive per-bot and per-fold profitability, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-27-three-fold-profit
+          path: |
+            research/results/profit_validation_27_2026-11-02.json
+            research/results/profit_validation_27_2026-11-02.md
+          retention-days: 30
+          if-no-files-found: warn
