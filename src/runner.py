@@ -156,7 +156,7 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                 macro_line=(f"📰 Agenda macro: desatualizada/indisponível"
                             f" | bloqueio de novas entradas: {'ON, fail-closed' if active else 'OFF'}")
             if len(msg)+len(macro_line)+1<=4000:
-                msg+="\\n"+macro_line
+                msg+="\n"+macro_line
         except Exception as error:
             print("Resumo macro indisponível: "+type(error).__name__)
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
