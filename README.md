@@ -11,6 +11,11 @@
 
 # Nexus Quant Paper — monitor gratuito
 
+## Monitoramento dos 27 robôs planejados — 01/11/2026
+
+[Diagnóstico consolidado e salvaguardas](docs/AUDITORIA-27-ROBOS-2026-11-01.md): 10 Ouro H4, 15 H1 experimentais, 1 USD/CAD H1/M15 e 1 Momentum60 H4 **em integração experimental**. Relatório diário `reports/robot_diagnostics/AAAA-MM-DD.json` identifica todos os 27, separando **sem dados** de retorno zero. Não modifica estratégias nem cria entradas artificiais. Cripto permanece em projeto paralelo. **O 27º depende da integração da PR #9; 27 previstos não significa 27 já ativos.**
+
+
 ## Robô 11 — BB20 Pullback H1/M15 no USD/CAD (26/10/2026)
 
 **Status:** experimento prospectivo em conta virtual, sem execução na FBS. É **um único novo robô**, separado dos dez robôs H4 no ouro. Não é estratégia validada para dinheiro real.
