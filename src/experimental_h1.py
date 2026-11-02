@@ -268,8 +268,12 @@ def update(state, datasets, *, isolate_errors=False):
             for i in range(max(start, WARMUP + 1), len(bars)):
                 for strat in STRATEGIES:
                     if repairing:
-                        step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i,
+                        book_to_reconcile = state["books"][bot_key(market, strat)]
+                        previous_closed = len(book_to_reconcile["closed"])
+                        step(book_to_reconcile, market, strat, bars, ind, i,
                              allow_new_entry=False)
+                        for trade in book_to_reconcile["closed"][previous_closed:]:
+                            trade["reconciled_from_feed_gap"] = True
                     else:
                         step(state["books"][bot_key(market, strat)], market, strat, bars, ind, i)
                 state["watermarks"][market] = stamps[i]
@@ -324,7 +328,8 @@ def digest(state, day):
             lines.append(f"{market}: SEM DADOS FRESCOS / aguardando inicialização")
             continue
         entries = sum(sum(local_day(e["entry_ts"]) == day for e in b["entries"]) for b in items)
-        exits = [t for b in items for t in b["closed"] if local_day(t["exit_ts"]) == day]
+        exits = [t for b in items for t in b["closed"]
+                 if local_day(t["exit_ts"]) == day and not t.get("reconciled_from_feed_gap")]
         opened = sum(b["position"] is not None for b in items)
         net = sum(t["net_usd"] for t in exits)
         total_entries += entries
