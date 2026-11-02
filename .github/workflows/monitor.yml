@@ -1,4 +1,5 @@
 name: Nexus Quant | 26 paper bots / Five markets
+# Controlled one-off post-merge PAPER scan; no Telegram entry/exit alerts.
 on:
   pull_request:
     branches: [main]
