@@ -15,7 +15,7 @@ from src.gold_forward import CAPITAL as GOLD_CAPITAL
 from src.experimental_h1 import CAPITAL as H1_CAPITAL
 
 # Forward-evidence cutoff deliberately later than the research selection.
-CUTOFF_TS=int(datetime(2026,11,2,3,30,tzinfo=timezone.utc).timestamp())
+CUTOFF_TS=int(datetime(2026,11,2,6,30,tzinfo=timezone.utc).timestamp())
 WATCH={"gold_h4:channel20":("Channel 20 H4","gold_h4",GOLD_CAPITAL),
        "gold_h4:channel55":("Channel 55 H4","gold_h4",GOLD_CAPITAL),
        "wti_filtered:channel10":("WTI Channel10 H1 filtrado","wti_filtered",H1_CAPITAL)}
