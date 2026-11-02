@@ -109,6 +109,78 @@ class PaperH1Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "watermark perdido"):
             update(s, dict(self.data, EURUSD=rows(WARMUP + 80, start=T0 + 400*3600)))
 
+    def test_isolation_quarantines_bad_wti_watermark_without_resetting_position(self):
+        s = update(None, self.data)
+        wti_key = "XTIUSD:channel10"
+        old_wti_book = s["books"][wti_key]
+        old_wti_book["position"] = {
+            "side": 1, "entry": 105.0, "start": self.data["XTIUSD"][-1]["time"],
+            "qty": 1.0, "stop": 103.0, "initial_r": 2.0,
+            "best_close": 105.0, "stop_updates": 0, "held_bars": 0}
+        # Production state has an odd timestamp with non-zero minutes.
+        bad = s["watermarks"]["XTIUSD"] + 2631
+        s["watermarks"]["XTIUSD"] = bad
+        snapshot = deepcopy(s["books"][wti_key])
+        expanded = {m: rows(121, shift=100*j)
+                    for j,m in enumerate(MARKETS)}
+        with patch("src.experimental_h1.setup",return_value=0):
+            updated = update(s, expanded, isolate_errors=True)
+        self.assertEqual(updated["watermarks"]["XTIUSD"], bad)
+        self.assertEqual(updated["books"][wti_key], snapshot)
+        self.assertIn("XTIUSD",updated["unavailable"])
+        self.assertIn("watermark perdido",updated["market_errors"]["XTIUSD"])
+        for market in MARKETS:
+            if market!="XTIUSD":
+                self.assertEqual(updated["watermarks"][market],
+                                 expanded[market][-1]["time"])
+                self.assertNotIn(market,updated["unavailable"])
+
+    def test_isolated_market_failure_rolls_back_entire_market_and_rest_recovers(self):
+        s = update(None,self.data)
+        old = deepcopy(s["books"]["XAUUSD:channel10"])
+        old_mark = s["watermarks"]["XAUUSD"]
+        expanded = {m: rows(122, shift=100*j)
+                    for j,m in enumerate(MARKETS)}
+        # Raise only on the second candle after one successful virtual update.
+        calls = {"XAUUSD":0}
+        real_step = step
+        def maybe_fails(book,market,strategy,bars,ind,index,*,signal_fn=None):
+            if market=="XAUUSD":
+                calls["XAUUSD"]+=1
+                if calls["XAUUSD"]>=4:
+                    raise ValueError("synthetic fatal market candle")
+            return real_step(book,market,strategy,bars,ind,index,signal_fn=signal_fn)
+        with patch("src.experimental_h1.step",side_effect=maybe_fails):
+            updated=update(s,expanded,isolate_errors=True)
+        self.assertEqual(updated["watermarks"]["XAUUSD"],old_mark)
+        self.assertEqual(updated["books"]["XAUUSD:channel10"],old)
+        self.assertIn("XAUUSD",updated["unavailable"])
+        for market in MARKETS:
+            if market!="XAUUSD":
+                self.assertEqual(updated["watermarks"][market],expanded[market][-1]["time"])
+        # Next healthy scan can resume without a reset and clears quarantine.
+        with patch("src.experimental_h1.setup",return_value=0):
+            resumed=update(s,expanded,isolate_errors=True)
+        self.assertEqual(resumed["watermarks"]["XAUUSD"],expanded["XAUUSD"][-1]["time"])
+        self.assertNotIn("market_errors",resumed)
+        self.assertEqual(resumed["unavailable"],[])
+
+    def test_scheduled_process_writes_isolated_healthy_states_even_if_wti_is_corrupt(self):
+        with TemporaryDirectory() as td:
+            file=Path(td)/"h1.json"
+            current=process(self.data,path=file)
+            prior=deepcopy(current["books"]["XTIUSD:channel10"])
+            current["watermarks"]["XTIUSD"]+=2631
+            file.write_text(__import__("json").dumps(current),encoding="utf-8")
+            new={m:rows(121,shift=100*j) for j,m in enumerate(MARKETS)}
+            with patch("src.experimental_h1.setup",return_value=0):
+                saved=process(new,path=file)
+            self.assertEqual(saved["books"]["XTIUSD:channel10"],prior)
+            self.assertIn("XTIUSD",saved["unavailable"])
+            self.assertEqual(saved["watermarks"]["EURUSD"],new["EURUSD"][-1]["time"])
+            self.assertEqual(__import__("json").loads(file.read_text())["watermarks"],
+                             saved["watermarks"])
+
     def test_partial_feed_keeps_other_markets_and_lists_unavailable(self):
         s = update(None, {"EURUSD": self.data["EURUSD"]})
         self.assertEqual(len(s["books"]), 3)
