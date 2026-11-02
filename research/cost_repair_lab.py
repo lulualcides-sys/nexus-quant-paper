@@ -77,13 +77,13 @@ def h1_candidate(market, bars, *, stress=1.):
         return bt._h1_replay(market,bars,stress=stress)
 
 
-def h4_deleveraged_candidate(bars, *, stress=1.):
+def h4_deleveraged_candidate(bars, *, stress=1., min_selected_bars=250):
     """Research-only 1x notional scenario; all 11 H4 books replay, but only
     leveraged five differ from baseline. No existing positions altered."""
     with ExitStack() as stack:
         stack.enter_context(patch.object(lev,"TARGET_NOTIONAL_LEVERAGE",1.0))
         stack.enter_context(patch.object(lev,"RISK_FRACTION",0.0075))
-        return bt._h4_replay(bars,stress=stress)
+        return bt._h4_replay(bars,stress=stress,min_selected_bars=min_selected_bars)
 
 
 def assessment(baseline, candidate, stressed, group):
