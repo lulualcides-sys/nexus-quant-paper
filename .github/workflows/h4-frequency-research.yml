@@ -1,0 +1,45 @@
+name: Nexus Quant | historical H4 frequency research (paper only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'research/entry_frequency_lab.py'
+      - '.github/workflows/h4-frequency-research.yml'
+permissions:
+  contents: write
+concurrency:
+  group: nexus-quant-frequency-research
+  cancel-in-progress: false
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline unit tests — no API keys
+        run: python -m unittest discover -s tests -p test_entry_frequency_lab.py -v
+      - name: Historical public-data comparison — no broker, no Telegram
+        run: python -m research.entry_frequency_lab
+      - name: Upload reproducible research results
+        uses: actions/upload-artifact@v4
+        with:
+          name: h4-frequency-research-results
+          path: |
+            research/results/entry_frequency_h4_2026-11-01.json
+            research/results/entry_frequency_h4_2026-11-01.md
+          retention-days: 30
+      - name: Publish only research metrics (never states or secrets)
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/results/entry_frequency_h4_2026-11-01.json research/results/entry_frequency_h4_2026-11-01.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'research: record H4 frequency comparison [skip ci]'
+            git pull --rebase
+            git push
+          fi

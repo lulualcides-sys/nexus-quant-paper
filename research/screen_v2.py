@@ -96,7 +96,10 @@ def sign(strategy,b,ind,i):
         if bull and c>p["upper55"] and p["e20"]>p["e50"]:return 1
     return 0
 
-def evaluate(bars,inds,strategy,market,start,end,cost_multiplier=1.):
+def evaluate(bars,inds,strategy,market,start,end,cost_multiplier=1.,signal_function=None):
+    # Optional research-only hook. Production paper engines are unchanged.
+    # Caller must pass a deterministic signal using completed bars only.
+    strategy_signal = sign if signal_function is None else signal_function
     # Closed positions are force-liquidated at boundary, so no train data PnL
     # crosses the cutoff.
     balance=CAPITAL;peak=CAPITAL;dd=0.;pos=None;trades=[];monthly=defaultdict(float)
@@ -131,8 +134,8 @@ def evaluate(bars,inds,strategy,market,start,end,cost_multiplier=1.):
                  "pnl":round(pnl-fee,4),"fee":round(fee,4),"reason":reason})
                 pos=None
         if pos is None and time>=start and time<end:
-            s=sign(strategy,bars,inds,i-1)
-            previous=sign(strategy,bars,inds,i-2)
+            s=strategy_signal(strategy,bars,inds,i-1)
+            previous=strategy_signal(strategy,bars,inds,i-2)
             # Prevent continuous-signal churn: only a fresh crossing triggers.
             if s and s!=previous:
                 atr=inds[i-1]["atr"]
