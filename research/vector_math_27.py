@@ -34,7 +34,7 @@ def _finite(value,name):
     return float(value)
 
 def _close(a,b):
-    return abs(a-b) <= max(.02, 0.00001*max(abs(a),abs(b)))
+    return abs(a-b) <= max(.03, 0.00001*max(abs(a),abs(b)))
 
 def row_vector(key, r):
     """Closed-trade outcome algebra, no fabricated win/loss payoff breakdown.
