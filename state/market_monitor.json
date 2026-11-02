@@ -554,10 +554,22 @@
           "side": 1,
           "strategy": "reversal_ai",
           "ts": 1793372400
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.001097709238344459,
+          "close": 1.1169440746307373,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:pullback_master:1793584800",
+          "side": -1,
+          "strategy": "pullback_master",
+          "ts": 1793584800
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793581200
+      "watermark": 1793584800
     },
     "US500": {
       "signals": [
@@ -997,9 +1009,9 @@
           "asset": "US500",
           "atr": 46.781209323594716,
           "close": 7612.75,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.72144,
+          "eval": "favoravel",
+          "evaluated_at": 1793584800,
           "id": "US500:reversal_ai:1793386800",
           "side": 1,
           "strategy": "reversal_ai",
@@ -1007,7 +1019,7 @@
         }
       ],
       "source": "ES=F",
-      "watermark": 1793581200
+      "watermark": 1793584800
     },
     "USDJPY": {
       "signals": [
@@ -1370,10 +1382,22 @@
           "side": 1,
           "strategy": "breakout_pro",
           "ts": 1793577600
+        },
+        {
+          "asset": "USDJPY",
+          "atr": 0.22788409909349938,
+          "close": 157.88600158691406,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "USDJPY:breakout_pro:1793584800",
+          "side": 1,
+          "strategy": "breakout_pro",
+          "ts": 1793584800
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793581200
+      "watermark": 1793584800
     },
     "XAUUSD": {
       "signals": [
@@ -1823,7 +1847,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793581200
+      "watermark": 1793584800
     },
     "XTIUSD": {
       "signals": [
@@ -2213,7 +2237,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1793581200
+      "watermark": 1793584800
     }
   },
   "schema": 4
