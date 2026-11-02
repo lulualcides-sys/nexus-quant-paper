@@ -157,6 +157,10 @@ class PaperH1Tests(unittest.TestCase):
         self.assertEqual(result["books"][key]["entries"][0]["entry_ts"],oldmark)
         self.assertEqual(len(result["books"][key]["closed"]),1)
         self.assertEqual(result["books"][key]["closed"][0]["entry_ts"],oldmark)
+        self.assertTrue(result["books"][key]["closed"][0]["reconciled_from_feed_gap"])
+        from src.experimental_h1 import local_day
+        closed_day=local_day(result["books"][key]["closed"][0]["exit_ts"])
+        self.assertIn("XTIUSD: 0 entradas | 0 saídas", "\\n".join(digest(result,closed_day)))
         self.assertIsNone(result["books"][key]["position"])
         self.assertEqual(result["watermark_repairs"][0]["from_ts"],oldmark+2631)
         self.assertEqual(result["watermark_repairs"][0]["anchored_closed_bar_ts"],oldmark)
