@@ -118,13 +118,13 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
         if h4_observation is not None:
             summary_line=h4_telegram_summary(h4_observation)
             if len(msg)+len(summary_line)+1<=4000:
-                msg+="\\n"+summary_line
+                msg+="\n"+summary_line
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
         if h4_observation is not None:
             entry_report=reports/"entry_audit"/f"{day}.json"
             entry_report.parent.mkdir(parents=True,exist_ok=True)
-            entry_report.write_text(json.dumps(h4_observation,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+            entry_report.write_text(json.dumps(h4_observation,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         (reports/f"{day}.txt").write_text(msg+"\n",encoding="utf-8")
         if shadow_book is not None:
             audit_path=reports/"experimental_h1"/f"{day}.json"
