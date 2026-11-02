@@ -114,7 +114,7 @@ class PaperH1Tests(unittest.TestCase):
         wti_key = "XTIUSD:channel10"
         old_wti_book = s["books"][wti_key]
         old_wti_book["position"] = {
-            "side": 1, "entry": 105.0, "start": self.data["XTIUSD"][-1]["time"],
+            "side": 1, "entry": 105.0, "start": self.data["XTIUSD"][-2]["time"],
             "qty": 1.0, "stop": 103.0, "initial_r": 2.0,
             "best_close": 105.0, "stop_updates": 0, "held_bars": 0}
         # Production state has an odd timestamp with non-zero minutes.
@@ -128,12 +128,65 @@ class PaperH1Tests(unittest.TestCase):
         self.assertEqual(updated["watermarks"]["XTIUSD"], bad)
         self.assertEqual(updated["books"][wti_key], snapshot)
         self.assertIn("XTIUSD",updated["unavailable"])
-        self.assertIn("watermark perdido",updated["market_errors"]["XTIUSD"])
+        self.assertIn("No anchored evidence",updated["market_errors"]["XTIUSD"])
         for market in MARKETS:
             if market!="XTIUSD":
                 self.assertEqual(updated["watermarks"][market],
                                  expanded[market][-1]["time"])
                 self.assertNotIn(market,updated["unavailable"])
+
+    def test_proven_wti_subhour_mark_resumes_only_existing_exits(self):
+        s=update(None,self.data)
+        oldmark=s["watermarks"]["XTIUSD"]
+        key="XTIUSD:channel10"
+        oldentry={
+            "side":1,"entry":505.0,"start":oldmark,"qty":1.0,
+            "stop":506.0,"initial_r":2.0,"best_close":505.0,
+            "stop_updates":0,"held_bars":0}
+        s["books"][key]["position"]=deepcopy(oldentry)
+        s["books"][key]["entries"]=[{"entry_ts":oldmark,
+                                     "side":1,"entry":105.0,"reason":"channel10",
+                                     "risk_fraction":RISK_FRACTION}]
+        s["watermarks"]["XTIUSD"]=oldmark+2631
+        new={m:rows(124,shift=100*j) for j,m in enumerate(MARKETS)}
+        with patch("src.experimental_h1.setup",return_value=1):
+            result=update(s,new,isolate_errors=True)
+        self.assertNotIn("XTIUSD",result["unavailable"])
+        self.assertEqual(result["watermarks"]["XTIUSD"],new["XTIUSD"][-1]["time"])
+        self.assertEqual(len(result["books"][key]["entries"]),1)
+        self.assertEqual(result["books"][key]["entries"][0]["entry_ts"],oldmark)
+        self.assertEqual(len(result["books"][key]["closed"]),1)
+        self.assertEqual(result["books"][key]["closed"][0]["entry_ts"],oldmark)
+        self.assertTrue(result["books"][key]["closed"][0]["reconciled_from_feed_gap"])
+        from src.experimental_h1 import local_day
+        closed_day=local_day(result["books"][key]["closed"][0]["exit_ts"])
+        self.assertIn("0 saídas", next(line for line in digest(result,closed_day) if line.startswith("XTIUSD:")))
+        self.assertIsNone(result["books"][key]["position"])
+        self.assertEqual(result["watermark_repairs"][0]["from_ts"],oldmark+2631)
+        self.assertEqual(result["watermark_repairs"][0]["anchored_closed_bar_ts"],oldmark)
+        # Next genuinely fresh H1 candle is eligible for a new signal.
+        next_rows={m:rows(125,shift=100*j) for j,m in enumerate(MARKETS)}
+        # cooldown may intentionally block next bar; nevertheless no re-repair.
+        update(result,next_rows,isolate_errors=True)
+        self.assertEqual(len(result["watermark_repairs"]),1)
+
+    def test_missing_proven_anchor_and_invalid_feed_stays_quarantined(self):
+        from src.experimental_h1 import reconcile_subhour_watermark
+        s=update(None,self.data)
+        oldmark=s["watermarks"]["XTIUSD"]
+        broken=oldmark+2631
+        times=[bar["time"] for bar in self.data["XTIUSD"]]
+        # The malformed mark must precede a genuinely observed later H1 candle;
+        # otherwise feed freshness fails before journal-evidence validation.
+        times.append(oldmark+3600)
+        with self.assertRaisesRegex(ValueError,"No anchored evidence"):
+            reconcile_subhour_watermark(s,"XTIUSD",times,broken)
+        s["books"]["XTIUSD:channel10"]["entries"].append({
+            "entry_ts":oldmark,"side":1})
+        with self.assertRaisesRegex(ValueError,"not eligible"):
+            reconcile_subhour_watermark(s,"XTIUSD",times[:-1],broken)
+        with self.assertRaisesRegex(ValueError,"not eligible"):
+            reconcile_subhour_watermark(s,"XTIUSD",times,oldmark+3600*20+2631)
 
     def test_isolated_market_failure_rolls_back_entire_market_and_rest_recovers(self):
         s = update(None,self.data)
