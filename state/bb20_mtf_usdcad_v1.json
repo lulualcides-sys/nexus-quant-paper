@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793661300,
+  "watermark_m15": 1793664000,
   "equity": 998.645620092701,
   "position": {
     "side": -1,
@@ -94,5 +94,5 @@
     }
   ],
   "last_entry_h1": 1793635200,
-  "last_reason": "Entrada virtual VENDA"
+  "last_reason": "Lacuna M15 identificada; candle ausente não será inventado"
 }
