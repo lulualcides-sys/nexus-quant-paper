@@ -4,8 +4,8 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793674800,
-    "USDJPY": 1793674800,
+    "EURUSD": 1793678400,
+    "USDJPY": 1793678400,
     "XAUUSD": 1793674800,
     "US500": 1793674800,
     "XTIUSD": 1793674800
@@ -54,7 +54,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 19,
+        "no_setup": 20,
         "gap": 1,
         "cooldown": 2,
         "in_position": 13,
@@ -90,7 +90,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 29,
+        "no_setup": 30,
         "gap": 1,
         "cooldown": 1,
         "in_position": 5,
@@ -143,7 +143,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 19,
+        "no_setup": 20,
         "gap": 1,
         "cooldown": 2,
         "in_position": 13,
@@ -164,7 +164,7 @@
         "initial_r": 0.2707179374576204,
         "best_close": 157.94200134277344,
         "stop_updates": 0,
-        "held_bars": 8
+        "held_bars": 9
       },
       "closed": [
         {
@@ -216,7 +216,7 @@
         "no_setup": 13,
         "gap": 0,
         "cooldown": 2,
-        "in_position": 18,
+        "in_position": 19,
         "entered": 3,
         "exited": 2,
         "invalid": 0
@@ -230,7 +230,7 @@
       "entries": [],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 35,
+        "no_setup": 36,
         "gap": 1,
         "cooldown": 0,
         "in_position": 0,
@@ -283,7 +283,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 25,
+        "no_setup": 26,
         "gap": 0,
         "cooldown": 2,
         "in_position": 7,
