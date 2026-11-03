@@ -73,7 +73,7 @@ def digest(day, conventional, leveraged, datasets=None, unavailable=None,
         stats = scorecard(book)
         entries = _entry_info(book, day)
         lines.append(f"• <b>{escape(str(DISPLAY[key]))}</b>  |  hoje <b>US$ {today:+.2f}</b>")
-        detail = (f"  E/S {entries}/{closed} · acum. US$ {stats['pnl']:+.2f}"
+        detail = (f"  {entries} entradas / {closed} fech. · acum. US$ {stats['pnl']:+.2f}"
                   f" · V/D {stats['wins']}/{stats['losses']}")
         if book.get("position") is None:
             lines.append(detail + " · ⚪ livre")
@@ -92,7 +92,7 @@ def digest(day, conventional, leveraged, datasets=None, unavailable=None,
         closed, today = _daily(book["closed"], day)
         entries = _entry_info(book, day)
         lines.append(f"• <b>{escape(str(LEV_CONFIG[key][1]))}</b>  |  hoje <b>US$ {today:+.2f}</b>")
-        detail = (f"  E/S {entries}/{closed} · acum. US$ {stats['pnl_usd']:+.2f}"
+        detail = (f"  {entries} entradas / {closed} fech. · acum. US$ {stats['pnl_usd']:+.2f}"
                   f" · V/D {stats['wins']}/{stats['losses']}")
         if stats["frozen"]:
             lines.append(detail + " · ⏸ PAUSADO")
@@ -107,7 +107,7 @@ def digest(day, conventional, leveraged, datasets=None, unavailable=None,
 
     lines.extend([
         "",
-        f"📥 Entradas virtuais abertas hoje: <b>{entries_today}</b> nos dez robôs de ouro.",
+        f"📥 Entradas virtuais abertas hoje: {entries_today} nos dez robôs de ouro.",
     ])
     if extra:
         lines.append("")
@@ -155,7 +155,7 @@ def digest(day, conventional, leveraged, datasets=None, unavailable=None,
         lines.append("⚠️ Sem dados confirmados hoje: " + escape(", ".join(map(str, unavailable))))
     lines.extend([
         "⚠️ Risco maior pode ampliar perdas; financiamento estimado.",
-        "⛔ Dados/custos aproximados; sem ganhos reais de corretora.",
+        "⛔ Sem operações reais ou ganhos de corretora. Dados e custos aproximados.",
     ])
     message = "\n".join(lines)
     if len(message) > 4000:
