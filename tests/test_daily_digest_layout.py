@@ -43,7 +43,9 @@ class DailyLayoutTests(unittest.TestCase):
         self.assertIn("🟨 11º ROBÔ", msg)
         self.assertIn("&lt;fornecedor&gt;", msg)
         self.assertIn("ouro &amp; H1", msg)
-        self.assertEqual(msg.count("E/S 0/0"), 10)
+        self.assertEqual(msg.count("0 entradas / 0 fech."), 10)
+        self.assertIn("Sem operações reais", msg)
+        self.assertIn("Entradas virtuais abertas hoje: 0", msg)
         self.assertLessEqual(len(msg), 4000)
 
     def test_html_only_on_daily_quant_digest(self):
