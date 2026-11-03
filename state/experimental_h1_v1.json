@@ -4,8 +4,8 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793739600,
-    "USDJPY": 1793739600,
+    "EURUSD": 1793743200,
+    "USDJPY": 1793743200,
     "XAUUSD": 1793739600,
     "US500": 1793739600,
     "XTIUSD": 1793739600
@@ -22,7 +22,7 @@
         "initial_r": 0.0016115584227204135,
         "best_close": 1.1198208332061768,
         "stop_updates": 0,
-        "held_bars": 7
+        "held_bars": 8
       },
       "closed": [
         {
@@ -91,7 +91,7 @@
         "no_setup": 22,
         "gap": 1,
         "cooldown": 3,
-        "in_position": 25,
+        "in_position": 26,
         "entered": 4,
         "exited": 3,
         "invalid": 0
@@ -141,7 +141,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 43,
+        "no_setup": 44,
         "gap": 1,
         "cooldown": 2,
         "in_position": 7,
@@ -162,7 +162,7 @@
         "initial_r": 0.0016115584227204135,
         "best_close": 1.1198208332061768,
         "stop_updates": 0,
-        "held_bars": 7
+        "held_bars": 8
       },
       "closed": [
         {
@@ -231,7 +231,7 @@
         "no_setup": 22,
         "gap": 1,
         "cooldown": 3,
-        "in_position": 25,
+        "in_position": 26,
         "entered": 4,
         "exited": 3,
         "invalid": 0
@@ -298,7 +298,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 20,
+        "no_setup": 21,
         "gap": 0,
         "cooldown": 3,
         "in_position": 28,
@@ -315,11 +315,11 @@
         "entry": 158.4499969482422,
         "start": 1793721600,
         "qty": 1000.2174473670402,
-        "stop": 158.51954748481688,
+        "stop": 158.52954389602098,
         "initial_r": 0.2682586830410815,
         "best_close": 158.72500610351562,
-        "stop_updates": 3,
-        "held_bars": 5
+        "stop_updates": 4,
+        "held_bars": 6
       },
       "closed": [
         {
@@ -354,7 +354,7 @@
         "no_setup": 41,
         "gap": 1,
         "cooldown": 1,
-        "in_position": 9,
+        "in_position": 10,
         "entered": 2,
         "exited": 1,
         "invalid": 0
@@ -421,7 +421,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 37,
+        "no_setup": 38,
         "gap": 0,
         "cooldown": 3,
         "in_position": 11,
