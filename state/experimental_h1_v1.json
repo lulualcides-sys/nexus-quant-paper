@@ -4,16 +4,26 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793710800,
-    "USDJPY": 1793710800,
-    "XAUUSD": 1793710800,
-    "US500": 1793710800,
-    "XTIUSD": 1793710800
+    "EURUSD": 1793714400,
+    "USDJPY": 1793714400,
+    "XAUUSD": 1793714400,
+    "US500": 1793714400,
+    "XTIUSD": 1793714400
   },
   "books": {
     "EURUSD:ema20_retest": {
       "equity": 998.7422716449722,
-      "position": null,
+      "position": {
+        "side": 1,
+        "entry": 1.1191942691802979,
+        "start": 1793714400,
+        "qty": 892.3761487596383,
+        "stop": 1.1175827107575775,
+        "initial_r": 0.0016115584227204135,
+        "best_close": 1.1191942691802979,
+        "stop_updates": 0,
+        "held_bars": 0
+      },
       "closed": [
         {
           "entry_ts": 1793584800,
@@ -67,15 +77,22 @@
           "entry": 1.1196954250335693,
           "reason": "ema20_retest",
           "risk_fraction": 0.0025
+        },
+        {
+          "entry_ts": 1793714400,
+          "side": 1,
+          "entry": 1.1191942691802979,
+          "reason": "ema20_retest",
+          "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Aguardando setup H1 com candle fechado",
+      "last_reason": "Entrada experimental COMPRA",
       "diagnostics": {
         "no_setup": 22,
         "gap": 1,
         "cooldown": 3,
         "in_position": 18,
-        "entered": 3,
+        "entered": 4,
         "exited": 3,
         "invalid": 0
       },
@@ -124,7 +141,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 35,
+        "no_setup": 36,
         "gap": 1,
         "cooldown": 2,
         "in_position": 7,
@@ -136,7 +153,17 @@
     },
     "EURUSD:rsi50": {
       "equity": 998.7422716449722,
-      "position": null,
+      "position": {
+        "side": 1,
+        "entry": 1.1191942691802979,
+        "start": 1793714400,
+        "qty": 892.3761487596383,
+        "stop": 1.1175827107575775,
+        "initial_r": 0.0016115584227204135,
+        "best_close": 1.1191942691802979,
+        "stop_updates": 0,
+        "held_bars": 0
+      },
       "closed": [
         {
           "entry_ts": 1793584800,
@@ -190,15 +217,22 @@
           "entry": 1.1196954250335693,
           "reason": "rsi50",
           "risk_fraction": 0.0025
+        },
+        {
+          "entry_ts": 1793714400,
+          "side": 1,
+          "entry": 1.1191942691802979,
+          "reason": "rsi50",
+          "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Aguardando setup H1 com candle fechado",
+      "last_reason": "Entrada experimental COMPRA",
       "diagnostics": {
         "no_setup": 22,
         "gap": 1,
         "cooldown": 3,
         "in_position": 18,
-        "entered": 3,
+        "entered": 4,
         "exited": 3,
         "invalid": 0
       },
@@ -262,11 +296,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ +0.75 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 13,
         "gap": 0,
-        "cooldown": 2,
+        "cooldown": 3,
         "in_position": 28,
         "entered": 3,
         "exited": 3,
@@ -298,11 +332,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ +0.22 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 40,
         "gap": 1,
-        "cooldown": 0,
+        "cooldown": 1,
         "in_position": 4,
         "entered": 1,
         "exited": 1,
@@ -368,11 +402,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ +0.22 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 30,
         "gap": 0,
-        "cooldown": 2,
+        "cooldown": 3,
         "in_position": 11,
         "entered": 3,
         "exited": 3,
@@ -387,7 +421,7 @@
       "entries": [],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 42,
+        "no_setup": 43,
         "gap": 3,
         "cooldown": 0,
         "in_position": 0,
@@ -438,9 +472,9 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: proteção após saída",
+      "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 23,
+        "no_setup": 24,
         "gap": 2,
         "cooldown": 2,
         "in_position": 16,
@@ -476,7 +510,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 34,
+        "no_setup": 35,
         "gap": 3,
         "cooldown": 1,
         "in_position": 6,
@@ -527,11 +561,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ +4.29 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 8,
         "gap": 0,
-        "cooldown": 1,
+        "cooldown": 2,
         "in_position": 35,
         "entered": 2,
         "exited": 2,
@@ -580,11 +614,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ +1.67 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 25,
         "gap": 1,
-        "cooldown": 1,
+        "cooldown": 2,
         "in_position": 17,
         "entered": 2,
         "exited": 2,
@@ -633,11 +667,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ +4.28 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 18,
         "gap": 1,
-        "cooldown": 1,
+        "cooldown": 2,
         "in_position": 24,
         "entered": 2,
         "exited": 2,
@@ -647,7 +681,17 @@
     },
     "XTIUSD:ema20_retest": {
       "equity": 997.3026216132649,
-      "position": null,
+      "position": {
+        "side": -1,
+        "entry": 94.56999969482422,
+        "start": 1793714400,
+        "qty": 1.1613527794423908,
+        "stop": 96.71685515353356,
+        "initial_r": 2.1468554587093416,
+        "best_close": 94.56999969482422,
+        "stop_updates": 0,
+        "held_bars": 0
+      },
       "closed": [
         {
           "entry_ts": 1793700000,
@@ -667,15 +711,22 @@
           "entry": 97.36000061035156,
           "reason": "ema20_retest",
           "risk_fraction": 0.0025
+        },
+        {
+          "entry_ts": 1793714400,
+          "side": -1,
+          "entry": 94.56999969482422,
+          "reason": "ema20_retest",
+          "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: proteção após saída",
+      "last_reason": "Entrada experimental VENDA",
       "diagnostics": {
         "no_setup": 24,
         "gap": 3,
         "cooldown": 1,
         "in_position": 2,
-        "entered": 1,
+        "entered": 2,
         "exited": 1,
         "invalid": 0
       },
@@ -683,7 +734,17 @@
     },
     "XTIUSD:channel10": {
       "equity": 998.0328829002673,
-      "position": null,
+      "position": {
+        "side": -1,
+        "entry": 94.56999969482422,
+        "start": 1793714400,
+        "qty": 1.1622031642273092,
+        "stop": 96.71685515353356,
+        "initial_r": 2.1468554587093416,
+        "best_close": 94.56999969482422,
+        "stop_updates": 0,
+        "held_bars": 0
+      },
       "closed": [
         {
           "entry_ts": 1793379600,
@@ -721,15 +782,22 @@
           "entry": 97.66000366210938,
           "reason": "channel10",
           "risk_fraction": 0.0025
+        },
+        {
+          "entry_ts": 1793714400,
+          "side": -1,
+          "entry": 94.56999969482422,
+          "reason": "channel10",
+          "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Aguardando setup H1 com candle fechado",
+      "last_reason": "Entrada experimental VENDA",
       "diagnostics": {
         "no_setup": 14,
         "gap": 0,
         "cooldown": 1,
         "in_position": 16,
-        "entered": 2,
+        "entered": 3,
         "exited": 2,
         "invalid": 0
       },
@@ -759,9 +827,9 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: proteção após saída",
+      "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 24,
+        "no_setup": 25,
         "gap": 3,
         "cooldown": 1,
         "in_position": 2,
