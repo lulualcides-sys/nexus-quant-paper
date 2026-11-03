@@ -2,23 +2,9 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793705400,
-  "equity": 996.8350535455776,
-  "position": {
-    "side": -1,
-    "entry": 1.3961999416351318,
-    "entry_ts": 1793698200,
-    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 996.8350535455776,
-    "stop": 1.3969164597189934,
-    "initial_r": 0.0017264591849356695,
-    "best_close": 1.3951900005340576,
-    "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 4,
-    "green_protected": false,
-    "target": null,
-    "confirm_h1": 1793692800
-  },
+  "watermark_m15": 1793708100,
+  "equity": 996.2167090522369,
+  "position": null,
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -103,8 +89,20 @@
       "exit_type": "STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.399597503104639
+    },
+    {
+      "entry_ts": 1793698200,
+      "exit_ts": 1793708100,
+      "entry": 1.3961999416351318,
+      "exit": 1.3969164597189934,
+      "side": -1,
+      "net_usd": -0.61834,
+      "cost_usd": 0.10704,
+      "exit_type": "TRAIL_STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.3969164597189934
     }
   ],
   "last_entry_h1": 1793692800,
-  "last_reason": "Stop móvel desceu"
+  "last_reason": "Saída virtual TRAIL_STOP"
 }
