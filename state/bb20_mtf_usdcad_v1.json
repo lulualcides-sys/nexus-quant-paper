@@ -2,9 +2,23 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793691000,
+  "watermark_m15": 1793700900,
   "equity": 996.8350535455776,
-  "position": null,
+  "position": {
+    "side": -1,
+    "entry": 1.3961999416351318,
+    "entry_ts": 1793698200,
+    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
+    "qty_usd": 996.8350535455776,
+    "stop": 1.3979264008200676,
+    "initial_r": 0.0017264591849356695,
+    "best_close": 1.3961999416351318,
+    "stop_policy": "close_trailing_no_tp_v1",
+    "stop_updates": 0,
+    "green_protected": false,
+    "target": null,
+    "confirm_h1": 1793692800
+  },
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -91,6 +105,6 @@
       "final_stop": 1.399597503104639
     }
   ],
-  "last_entry_h1": 1793635200,
-  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
+  "last_entry_h1": 1793692800,
+  "last_reason": "Entrada virtual VENDA"
 }
