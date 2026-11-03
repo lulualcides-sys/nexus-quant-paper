@@ -78,7 +78,7 @@ def digest(day, conventional, leveraged, datasets=None, unavailable=None,
         if book.get("position") is None:
             lines.append(detail + " · ⚪ livre")
         else:
-            lines.extend([detail, f"  ↳ 🔴 {escape(_position_info(book))}"])
+            lines.extend([detail, f"  ↳ {'🔵' if book['position']['side'] > 0 else '🔴'} {escape(_position_info(book))}"])
 
     lines.extend([
         "",
