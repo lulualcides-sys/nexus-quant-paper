@@ -1,6 +1,7 @@
 """Scheduled observer with Telegram opt-in. Never trades."""
 # Controlled PAPER-only forward scan retry after a queued-run cancellation; no trade alerts.
 import argparse,json,os,sys,urllib.request
+from html import escape
 from datetime import datetime,timezone
 from pathlib import Path
 from .feed import MARKETS,get_bars
@@ -48,7 +49,10 @@ def telegram(message):
     if not chat:
         print("Nenhuma conversa /start única; configure TELEGRAM_CHAT_ID no GitHub.")
         return False
-    data=json.dumps({"chat_id":chat,"text":message},ensure_ascii=False).encode("utf-8")
+    payload = {"chat_id": chat, "text": message}
+    if message.startswith("<b>📊 NEXUS QUANT"):
+        payload["parse_mode"] = "HTML"
+    data=json.dumps(payload,ensure_ascii=False).encode("utf-8")
     req=urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage",
             data=data,headers={"Content-Type":"application/json"},method="POST")
     try:
@@ -158,7 +162,7 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                         "momentum60": momentum60_error})
             line=audit_27_line(complete_audit)
             if len(msg)+len(line)+1<=4000:
-                msg+="\n"+line
+                msg+="\n"+escape(str(line))
         except Exception as error:
             print("Consolidação 27 indisponível; relatório tradicional mantido: "+str(error)[:160])
         try:
@@ -172,7 +176,7 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                 macro_line=(f"📰 Agenda macro: desatualizada/indisponível"
                             f" | bloqueio de novas entradas: {'ON, fail-closed' if active else 'OFF'}")
             if len(msg)+len(macro_line)+1<=4000:
-                msg+="\n"+macro_line
+                msg+="\n"+escape(macro_line)
         except Exception as error:
             print("Resumo macro indisponível: "+type(error).__name__)
         # Prospective three-strategy profitability check, strictly read-only.
@@ -183,7 +187,7 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                 now=now,conventional=gold_book,wti=wti_filtered)
             line=profit_watchlist_line(profit_observation)
             if len(msg)+len(line)+1<=4000:
-                msg+="\n"+line
+                msg+="\n"+escape(str(line))
         except Exception as error:
             print("Watchlist de lucro prospectivo indisponível: "+
                   type(error).__name__+" "+str(error)[:100])
