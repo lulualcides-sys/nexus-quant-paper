@@ -2,23 +2,9 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793670300,
-  "equity": 998.645620092701,
-  "position": {
-    "side": -1,
-    "entry": 1.3972100019454956,
-    "entry_ts": 1793639700,
-    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 998.645620092701,
-    "stop": 1.399597503104639,
-    "initial_r": 0.002387501159143507,
-    "best_close": 1.3972100019454956,
-    "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 0,
-    "green_protected": false,
-    "target": null,
-    "confirm_h1": 1793635200
-  },
+  "watermark_m15": 1793672100,
+  "equity": 996.8350535455776,
+  "position": null,
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -91,8 +77,20 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.3969545931767697
+    },
+    {
+      "entry_ts": 1793639700,
+      "exit_ts": 1793672100,
+      "entry": 1.3972100019454956,
+      "exit": 1.399597503104639,
+      "side": -1,
+      "net_usd": -1.81057,
+      "cost_usd": 0.10703,
+      "exit_type": "STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.399597503104639
     }
   ],
   "last_entry_h1": 1793635200,
-  "last_reason": "Lacuna M15 identificada; candle ausente não será inventado"
+  "last_reason": "Saída virtual STOP"
 }
