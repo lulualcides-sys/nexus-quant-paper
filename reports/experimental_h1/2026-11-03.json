@@ -1,0 +1,399 @@
+{
+  "day": "2026-11-03",
+  "status": "experimental-unvalidated",
+  "paper_only": true,
+  "source": "Yahoo H1 proxies (not executable FBS)",
+  "market_data_unavailable": [],
+  "robots": {
+    "EURUSD:ema20_retest": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 22,
+        "gap": 1,
+        "cooldown": 3,
+        "in_position": 25,
+        "entered": 4,
+        "exited": 3,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 4,
+        "closed": 3,
+        "open": true,
+        "wins": 1,
+        "losses": 2,
+        "net_usd": -1.25773,
+        "fees_usd": 0.90089,
+        "profit_factor": 0.693,
+        "win_rate_pct": 33.33,
+        "max_closed_drawdown_pct": 0.409,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "EURUSD:channel10": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 43,
+        "gap": 1,
+        "cooldown": 2,
+        "in_position": 7,
+        "entered": 2,
+        "exited": 2,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 2,
+        "closed": 2,
+        "open": false,
+        "wins": 1,
+        "losses": 1,
+        "net_usd": 0.49849,
+        "fees_usd": 0.60081,
+        "profit_factor": 1.299,
+        "win_rate_pct": 50.0,
+        "max_closed_drawdown_pct": 0.166,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "EURUSD:rsi50": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 22,
+        "gap": 1,
+        "cooldown": 3,
+        "in_position": 25,
+        "entered": 4,
+        "exited": 3,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 4,
+        "closed": 3,
+        "open": true,
+        "wins": 1,
+        "losses": 2,
+        "net_usd": -1.25773,
+        "fees_usd": 0.90089,
+        "profit_factor": 0.693,
+        "win_rate_pct": 33.33,
+        "max_closed_drawdown_pct": 0.409,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "USDJPY:ema20_retest": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 20,
+        "gap": 0,
+        "cooldown": 3,
+        "in_position": 28,
+        "entered": 3,
+        "exited": 3,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 3,
+        "closed": 3,
+        "open": false,
+        "wins": 1,
+        "losses": 2,
+        "net_usd": -4.3535,
+        "fees_usd": 0.8733,
+        "profit_factor": 0.146,
+        "win_rate_pct": 33.33,
+        "max_closed_drawdown_pct": 0.51,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "USDJPY:channel10": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 41,
+        "gap": 1,
+        "cooldown": 1,
+        "in_position": 9,
+        "entered": 2,
+        "exited": 1,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 2,
+        "closed": 1,
+        "open": true,
+        "wins": 1,
+        "losses": 0,
+        "net_usd": 0.21745,
+        "fees_usd": 0.29992,
+        "profit_factor": null,
+        "win_rate_pct": 100.0,
+        "max_closed_drawdown_pct": 0.0,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "USDJPY:rsi50": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 37,
+        "gap": 0,
+        "cooldown": 3,
+        "in_position": 11,
+        "entered": 3,
+        "exited": 3,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 3,
+        "closed": 3,
+        "open": false,
+        "wins": 1,
+        "losses": 2,
+        "net_usd": -4.82502,
+        "fees_usd": 0.89754,
+        "profit_factor": 0.043,
+        "win_rate_pct": 33.33,
+        "max_closed_drawdown_pct": 0.504,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "XAUUSD:ema20_retest": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 45,
+        "gap": 3,
+        "cooldown": 0,
+        "in_position": 4,
+        "entered": 1,
+        "exited": 0,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 1,
+        "closed": 0,
+        "open": true,
+        "wins": 0,
+        "losses": 0,
+        "net_usd": 0.0,
+        "fees_usd": 0,
+        "profit_factor": null,
+        "win_rate_pct": null,
+        "max_closed_drawdown_pct": 0.0,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "XAUUSD:channel10": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 31,
+        "gap": 2,
+        "cooldown": 2,
+        "in_position": 16,
+        "entered": 2,
+        "exited": 2,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 2,
+        "closed": 2,
+        "open": false,
+        "wins": 2,
+        "losses": 0,
+        "net_usd": 4.54666,
+        "fees_usd": 0.58115,
+        "profit_factor": null,
+        "win_rate_pct": 100.0,
+        "max_closed_drawdown_pct": 0.0,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "XAUUSD:rsi50": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 37,
+        "gap": 3,
+        "cooldown": 1,
+        "in_position": 10,
+        "entered": 2,
+        "exited": 1,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 2,
+        "closed": 1,
+        "open": true,
+        "wins": 0,
+        "losses": 1,
+        "net_usd": -2.78394,
+        "fees_usd": 0.28394,
+        "profit_factor": 0.0,
+        "win_rate_pct": 0.0,
+        "max_closed_drawdown_pct": 0.278,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "US500:ema20_retest": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 13,
+        "gap": 0,
+        "cooldown": 2,
+        "in_position": 36,
+        "entered": 3,
+        "exited": 2,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 3,
+        "closed": 2,
+        "open": true,
+        "wins": 1,
+        "losses": 1,
+        "net_usd": 1.64895,
+        "fees_usd": 0.43348,
+        "profit_factor": 1.626,
+        "win_rate_pct": 50.0,
+        "max_closed_drawdown_pct": 0.264,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "US500:channel10": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 32,
+        "gap": 1,
+        "cooldown": 2,
+        "in_position": 17,
+        "entered": 2,
+        "exited": 2,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 2,
+        "closed": 2,
+        "open": false,
+        "wins": 1,
+        "losses": 1,
+        "net_usd": -9.48151,
+        "fees_usd": 0.55469,
+        "profit_factor": 0.15,
+        "win_rate_pct": 50.0,
+        "max_closed_drawdown_pct": 1.115,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "US500:rsi50": {
+      "reason": "Posição virtual aberta; stop acompanhado",
+      "diagnostics": {
+        "no_setup": 23,
+        "gap": 1,
+        "cooldown": 2,
+        "in_position": 25,
+        "entered": 3,
+        "exited": 2,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 3,
+        "closed": 2,
+        "open": true,
+        "wins": 1,
+        "losses": 1,
+        "net_usd": 1.4257,
+        "fees_usd": 0.65572,
+        "profit_factor": 1.499,
+        "win_rate_pct": 50.0,
+        "max_closed_drawdown_pct": 0.286,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "XTIUSD:ema20_retest": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 29,
+        "gap": 3,
+        "cooldown": 2,
+        "in_position": 3,
+        "entered": 2,
+        "exited": 2,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 2,
+        "closed": 2,
+        "open": false,
+        "wins": 0,
+        "losses": 2,
+        "net_usd": -5.30171,
+        "fees_usd": 0.30846,
+        "profit_factor": 0.0,
+        "win_rate_pct": 0.0,
+        "max_closed_drawdown_pct": 0.53,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "XTIUSD:channel10": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 19,
+        "gap": 0,
+        "cooldown": 2,
+        "in_position": 17,
+        "entered": 3,
+        "exited": 3,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 3,
+        "closed": 3,
+        "open": false,
+        "wins": 1,
+        "losses": 2,
+        "net_usd": -4.57336,
+        "fees_usd": 0.486,
+        "profit_factor": 0.14,
+        "win_rate_pct": 33.33,
+        "max_closed_drawdown_pct": 0.457,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    },
+    "XTIUSD:rsi50": {
+      "reason": "Aguardando setup H1 com candle fechado",
+      "diagnostics": {
+        "no_setup": 32,
+        "gap": 3,
+        "cooldown": 1,
+        "in_position": 2,
+        "entered": 1,
+        "exited": 1,
+        "invalid": 0
+      },
+      "scorecard": {
+        "entries": 1,
+        "closed": 1,
+        "open": false,
+        "wins": 0,
+        "losses": 1,
+        "net_usd": -2.69738,
+        "fees_usd": 0.19738,
+        "profit_factor": 0.0,
+        "win_rate_pct": 0.0,
+        "max_closed_drawdown_pct": 0.27,
+        "validated": false,
+        "sample_sufficient_for_review": false
+      }
+    }
+  }
+}
