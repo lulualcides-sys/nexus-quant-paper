@@ -25,7 +25,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: nexus-quant-paper
+  group: nexus-quant-crypto
   cancel-in-progress: false
 jobs:
   crypto-paper:
