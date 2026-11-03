@@ -6,9 +6,9 @@
   "watermarks": {
     "EURUSD": 1793656800,
     "USDJPY": 1793656800,
-    "XAUUSD": 1793653200,
-    "US500": 1793653200,
-    "XTIUSD": 1793653200
+    "XAUUSD": 1793664000,
+    "US500": 1793664000,
+    "XTIUSD": 1793664000
   },
   "books": {
     "EURUSD:ema20_retest": {
@@ -300,8 +300,8 @@
       "entries": [],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 30,
-        "gap": 1,
+        "no_setup": 31,
+        "gap": 2,
         "cooldown": 0,
         "in_position": 0,
         "entered": 0,
@@ -336,8 +336,8 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 19,
-        "gap": 0,
+        "no_setup": 20,
+        "gap": 1,
         "cooldown": 1,
         "in_position": 10,
         "entered": 1,
@@ -372,8 +372,8 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 22,
-        "gap": 1,
+        "no_setup": 23,
+        "gap": 2,
         "cooldown": 1,
         "in_position": 6,
         "entered": 1,
@@ -389,11 +389,11 @@
         "entry": 7637.5,
         "start": 1793642400,
         "qty": 0.07816422994840849,
-        "stop": 7615.2022261198945,
+        "stop": 7611.524116507831,
         "initial_r": 31.89962526941122,
         "best_close": 7576.25,
-        "stop_updates": 2,
-        "held_bars": 3
+        "stop_updates": 4,
+        "held_bars": 5
       },
       "closed": [
         {
@@ -428,7 +428,7 @@
         "no_setup": 8,
         "gap": 0,
         "cooldown": 1,
-        "in_position": 21,
+        "in_position": 23,
         "entered": 2,
         "exited": 1,
         "invalid": 0
@@ -444,9 +444,9 @@
         "qty": 0.06792427789209333,
         "stop": 7643.64526953633,
         "initial_r": 36.39526953632986,
-        "best_close": 7587.0,
+        "best_close": 7582.0,
         "stop_updates": 0,
-        "held_bars": 1
+        "held_bars": 3
       },
       "closed": [
         {
@@ -481,7 +481,7 @@
         "no_setup": 25,
         "gap": 1,
         "cooldown": 1,
-        "in_position": 3,
+        "in_position": 5,
         "entered": 2,
         "exited": 1,
         "invalid": 0
@@ -495,11 +495,11 @@
         "entry": 7637.5,
         "start": 1793642400,
         "qty": 0.07814680820631975,
-        "stop": 7615.2022261198945,
+        "stop": 7611.524116507831,
         "initial_r": 31.89962526941122,
         "best_close": 7576.25,
-        "stop_updates": 2,
-        "held_bars": 3
+        "stop_updates": 4,
+        "held_bars": 5
       },
       "closed": [
         {
@@ -534,7 +534,7 @@
         "no_setup": 18,
         "gap": 1,
         "cooldown": 1,
-        "in_position": 10,
+        "in_position": 12,
         "entered": 2,
         "exited": 1,
         "invalid": 0
@@ -548,8 +548,8 @@
       "entries": [],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 16,
-        "gap": 1,
+        "no_setup": 17,
+        "gap": 2,
         "cooldown": 0,
         "in_position": 0,
         "entered": 0,
@@ -565,11 +565,11 @@
         "entry": 97.66000366210938,
         "start": 1793628000,
         "qty": 1.6542870276542871,
-        "stop": 97.38797473770671,
+        "stop": 97.23357804497732,
         "initial_r": 1.5071239876474283,
         "best_close": 95.87000274658203,
-        "stop_updates": 3,
-        "held_bars": 7
+        "stop_updates": 4,
+        "held_bars": 9
       },
       "closed": [
         {
@@ -605,7 +605,7 @@
         "no_setup": 7,
         "gap": 0,
         "cooldown": 0,
-        "in_position": 10,
+        "in_position": 12,
         "entered": 2,
         "exited": 1,
         "invalid": 0
@@ -619,8 +619,8 @@
       "entries": [],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 16,
-        "gap": 1,
+        "no_setup": 17,
+        "gap": 2,
         "cooldown": 0,
         "in_position": 0,
         "entered": 0,
@@ -630,7 +630,10 @@
       "last_exit_ts": null
     }
   },
-  "unavailable": [],
+  "unavailable": [
+    "EURUSD",
+    "USDJPY"
+  ],
   "watermark_repairs": [
     {
       "market": "XTIUSD",
@@ -638,5 +641,9 @@
       "anchored_closed_bar_ts": 1793379600,
       "warning": "Yahoo OHLC estimate only; old position exits reconciled retrospectively, no retroactive new trades"
     }
-  ]
+  ],
+  "market_errors": {
+    "EURUSD": "ValueError: watermark not eligible for automatic reconciliation",
+    "USDJPY": "ValueError: watermark not eligible for automatic reconciliation"
+  }
 }

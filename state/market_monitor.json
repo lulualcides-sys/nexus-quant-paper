@@ -617,7 +617,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793656800
+      "watermark": 1793664000
     },
     "US500": {
       "signals": [
@@ -1093,9 +1093,9 @@
           "asset": "US500",
           "atr": 21.266416846274147,
           "close": 7637.5,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 2.60975,
+          "eval": "favoravel",
+          "evaluated_at": 1793664000,
           "id": "US500:pullback_master:1793638800",
           "side": -1,
           "strategy": "pullback_master",
@@ -1127,7 +1127,7 @@
         }
       ],
       "source": "ES=F",
-      "watermark": 1793653200
+      "watermark": 1793664000
     },
     "USDJPY": {
       "signals": [
@@ -1565,7 +1565,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793656800
+      "watermark": 1793664000
     },
     "XAUUSD": {
       "signals": [
@@ -2041,9 +2041,9 @@
           "asset": "XAUUSD",
           "atr": 18.778448862052418,
           "close": 3976.89990234375,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -1.03842,
+          "eval": "contrario",
+          "evaluated_at": 1793660400,
           "id": "XAUUSD:breakout_pro:1793635200",
           "side": 1,
           "strategy": "breakout_pro",
@@ -2063,7 +2063,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793653200
+      "watermark": 1793664000
     },
     "XTIUSD": {
       "signals": [
@@ -2503,17 +2503,29 @@
           "asset": "XTIUSD",
           "atr": 1.0478737708781005,
           "close": 96.4800033569336,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.04772,
+          "eval": "neutro",
+          "evaluated_at": 1793660400,
           "id": "XTIUSD:breakout_pro:1793635200",
           "side": -1,
           "strategy": "breakout_pro",
           "ts": 1793635200
+        },
+        {
+          "asset": "XTIUSD",
+          "atr": 0.9090501989301959,
+          "close": 96.43000030517578,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XTIUSD:reversal_ai:1793660400",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1793660400
         }
       ],
       "source": "CL=F",
-      "watermark": 1793653200
+      "watermark": 1793664000
     }
   },
   "schema": 4
