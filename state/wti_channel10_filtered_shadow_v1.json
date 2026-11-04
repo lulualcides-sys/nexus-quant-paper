@@ -6,19 +6,37 @@
   "policy": "channel10_h1_cost_atr_4x_ema50_ema200_1p5atr",
   "market": "XTIUSD",
   "strategy": "channel10",
-  "h1_watermark": 1793757600,
+  "h1_watermark": 1793764800,
   "book": {
     "equity": 1000.0,
-    "position": null,
+    "position": {
+      "side": -1,
+      "entry": 95.1500015258789,
+      "start": 1793761200,
+      "qty": 1.7339153290417915,
+      "stop": 96.59182510176342,
+      "initial_r": 1.4418235758845086,
+      "best_close": 95.1500015258789,
+      "stop_updates": 0,
+      "held_bars": 1
+    },
     "closed": [],
-    "entries": [],
-    "last_reason": "Aguardando setup H1 com candle fechado",
+    "entries": [
+      {
+        "entry_ts": 1793761200,
+        "side": -1,
+        "entry": 95.1500015258789,
+        "reason": "channel10",
+        "risk_fraction": 0.0025
+      }
+    ],
+    "last_reason": "Posição virtual aberta; stop acompanhado",
     "diagnostics": {
       "no_setup": 36,
       "gap": 3,
       "cooldown": 0,
-      "in_position": 0,
-      "entered": 0,
+      "in_position": 1,
+      "entered": 1,
       "exited": 0,
       "invalid": 0
     },
@@ -26,5 +44,5 @@
   },
   "first_observation_ts": 1793606400,
   "no_historical_backfill": true,
-  "last_run_reason": "Aguardando setup H1 com candle fechado"
+  "last_run_reason": "Posição virtual aberta; stop acompanhado"
 }
