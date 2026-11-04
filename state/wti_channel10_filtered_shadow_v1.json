@@ -6,7 +6,7 @@
   "policy": "channel10_h1_cost_atr_4x_ema50_ema200_1p5atr",
   "market": "XTIUSD",
   "strategy": "channel10",
-  "h1_watermark": 1793772000,
+  "h1_watermark": 1793775600,
   "book": {
     "equity": 997.3337679537959,
     "position": null,
@@ -31,9 +31,9 @@
         "risk_fraction": 0.0025
       }
     ],
-    "last_reason": "Sem entrada: proteção após saída",
+    "last_reason": "Aguardando setup H1 com candle fechado",
     "diagnostics": {
-      "no_setup": 36,
+      "no_setup": 37,
       "gap": 3,
       "cooldown": 1,
       "in_position": 2,
@@ -45,5 +45,5 @@
   },
   "first_observation_ts": 1793606400,
   "no_historical_backfill": true,
-  "last_run_reason": "Sem entrada: proteção após saída"
+  "last_run_reason": "Aguardando setup H1 com candle fechado"
 }

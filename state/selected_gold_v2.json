@@ -1,21 +1,12 @@
 {
   "schema": 1,
   "market": "XAUUSD",
-  "h4_watermark": 1793750400,
+  "h4_watermark": 1793764800,
   "paper_only": true,
   "books": {
     "rsi_trend": {
-      "equity": 5063.881440540055,
-      "position": {
-        "side": -1,
-        "entry": 3935.5,
-        "start": 1793678400,
-        "i": 326,
-        "held_bars": 4,
-        "qty": 0.511750363702187,
-        "stop": 4009.714135441538,
-        "target": 3805.6252629773085
-      },
+      "equity": 5024.479241557779,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793260800,
@@ -26,6 +17,16 @@
           "net_usd": 63.88144,
           "cost_usd": 1.74356,
           "exit_type": "TARGET"
+        },
+        {
+          "entry_ts": 1793678400,
+          "exit_ts": 1793764800,
+          "side": -1,
+          "entry": 3935.5,
+          "exit": 4009.714135,
+          "net_usd": -39.4022,
+          "cost_usd": 1.42309,
+          "exit_type": "STOP"
         }
       ]
     },
@@ -36,7 +37,7 @@
         "entry": 3984.300048828125,
         "start": 1793347200,
         "i": 326,
-        "held_bars": 13,
+        "held_bars": 14,
         "qty": 0.6121172972692744,
         "stop": 4045.5628168748567,
         "target": 3877.090204746344
@@ -82,7 +83,7 @@
         "entry": 3984.300048828125,
         "start": 1793347200,
         "i": 326,
-        "held_bars": 13,
+        "held_bars": 14,
         "qty": 0.6121172972692744,
         "stop": 4045.5628168748567,
         "target": 3877.090204746344
