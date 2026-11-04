@@ -4,8 +4,8 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793757600,
-    "USDJPY": 1793757600,
+    "EURUSD": 1793761200,
+    "USDJPY": 1793761200,
     "XAUUSD": 1793757600,
     "US500": 1793757600,
     "XTIUSD": 1793757600
@@ -22,7 +22,7 @@
         "initial_r": 0.0016115584227204135,
         "best_close": 1.1256190538406372,
         "stop_updates": 4,
-        "held_bars": 12
+        "held_bars": 13
       },
       "closed": [
         {
@@ -91,7 +91,7 @@
         "no_setup": 22,
         "gap": 1,
         "cooldown": 3,
-        "in_position": 30,
+        "in_position": 31,
         "entered": 4,
         "exited": 3,
         "invalid": 0
@@ -109,7 +109,7 @@
         "initial_r": 0.0015944830906307725,
         "best_close": 1.1256190538406372,
         "stop_updates": 2,
-        "held_bars": 2
+        "held_bars": 3
       },
       "closed": [
         {
@@ -161,7 +161,7 @@
         "no_setup": 45,
         "gap": 1,
         "cooldown": 2,
-        "in_position": 9,
+        "in_position": 10,
         "entered": 3,
         "exited": 2,
         "invalid": 0
@@ -179,7 +179,7 @@
         "initial_r": 0.0016115584227204135,
         "best_close": 1.1256190538406372,
         "stop_updates": 4,
-        "held_bars": 12
+        "held_bars": 13
       },
       "closed": [
         {
@@ -248,7 +248,7 @@
         "no_setup": 22,
         "gap": 1,
         "cooldown": 3,
-        "in_position": 30,
+        "in_position": 31,
         "entered": 4,
         "exited": 3,
         "invalid": 0
@@ -330,11 +330,11 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Saída STOP: US$ -5.75 com custos estimados",
+      "last_reason": "Sem entrada: proteção após saída",
       "diagnostics": {
         "no_setup": 23,
         "gap": 0,
-        "cooldown": 3,
+        "cooldown": 4,
         "in_position": 29,
         "entered": 4,
         "exited": 4,
@@ -385,7 +385,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 43,
+        "no_setup": 44,
         "gap": 1,
         "cooldown": 2,
         "in_position": 11,
@@ -455,7 +455,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 42,
+        "no_setup": 43,
         "gap": 0,
         "cooldown": 3,
         "in_position": 11,
@@ -1046,7 +1046,11 @@
       "last_exit_ts": 1793707200
     }
   },
-  "unavailable": [],
+  "unavailable": [
+    "XAUUSD",
+    "US500",
+    "XTIUSD"
+  ],
   "watermark_repairs": [
     {
       "market": "XTIUSD",
@@ -1054,5 +1058,10 @@
       "anchored_closed_bar_ts": 1793379600,
       "warning": "Yahoo OHLC estimate only; old position exits reconciled retrospectively, no retroactive new trades"
     }
-  ]
+  ],
+  "market_errors": {
+    "XAUUSD": "ValueError: XAUUSD: preços atrasados em relação ao estado",
+    "US500": "ValueError: US500: preços atrasados em relação ao estado",
+    "XTIUSD": "ValueError: XTIUSD: preços atrasados em relação ao estado"
+  }
 }

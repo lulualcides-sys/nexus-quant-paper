@@ -689,7 +689,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793757600
+      "watermark": 1793761200
     },
     "US500": {
       "signals": [
@@ -1889,7 +1889,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793757600
+      "watermark": 1793761200
     },
     "XAUUSD": {
       "signals": [
