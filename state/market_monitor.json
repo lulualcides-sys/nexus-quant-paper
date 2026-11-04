@@ -674,10 +674,22 @@
           "side": 1,
           "strategy": "trend_hunter",
           "ts": 1793754000
+        },
+        {
+          "asset": "EURUSD",
+          "atr": 0.0017895186356206886,
+          "close": 1.1256190538406372,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "EURUSD:momentum_x:1793757600",
+          "side": 1,
+          "strategy": "momentum_x",
+          "ts": 1793757600
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793754000
+      "watermark": 1793757600
     },
     "US500": {
       "signals": [
@@ -1237,9 +1249,9 @@
           "asset": "US500",
           "atr": 21.554310251162676,
           "close": 7590.75,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 3.87394,
+          "eval": "favoravel",
+          "evaluated_at": 1793757600,
           "id": "US500:momentum_x:1793732400",
           "side": -1,
           "strategy": "momentum_x",
@@ -1249,9 +1261,9 @@
           "asset": "US500",
           "atr": 21.554310251162676,
           "close": 7590.75,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 3.87394,
+          "eval": "favoravel",
+          "evaluated_at": 1793757600,
           "id": "US500:pullback_master:1793732400",
           "side": -1,
           "strategy": "pullback_master",
@@ -1304,10 +1316,22 @@
           "side": -1,
           "strategy": "breakout_pro",
           "ts": 1793754000
+        },
+        {
+          "asset": "US500",
+          "atr": 32.4619928852986,
+          "close": 7507.25,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:momentum_x:1793757600",
+          "side": -1,
+          "strategy": "momentum_x",
+          "ts": 1793757600
         }
       ],
       "source": "ES=F",
-      "watermark": 1793754000
+      "watermark": 1793757600
     },
     "USDJPY": {
       "signals": [
@@ -1865,7 +1889,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793754000
+      "watermark": 1793757600
     },
     "XAUUSD": {
       "signals": [
@@ -2435,7 +2459,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793754000
+      "watermark": 1793757600
     },
     "XTIUSD": {
       "signals": [
@@ -3029,7 +3053,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1793754000
+      "watermark": 1793757600
     }
   },
   "schema": 4
