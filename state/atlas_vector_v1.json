@@ -8,12 +8,12 @@
   "validated": false,
   "signal_model": "independent_sweep_wick_relative_volume_v1",
   "source": "Yahoo GC=F proxy, not FBS or B3 broker executions",
-  "h4_watermark": 1793880000,
+  "h4_watermark": 1793894400,
   "equity": 5000.0,
   "pending": null,
   "position": null,
   "entries": [],
   "closed": [],
   "cancelled": [],
-  "last_reason": "initial_observation_no_backfill"
+  "last_reason": "no_confirmed_signal"
 }
