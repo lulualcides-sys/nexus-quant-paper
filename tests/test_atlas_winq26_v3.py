@@ -87,9 +87,11 @@ class AtlasWinq26ResearchTests(unittest.TestCase):
         self.assertEqual(TF,{"M1":60,"M5":300,"M15":900,"M30":1800,"H1":3600})
         from research.win_price_data import TZ
         import datetime as dt
-        start=int(dt.datetime(2026,6,1,tzinfo=TZ).timestamp())
-        bars=[{"time":start+i*60} for i in range(600)]
-        self.assertEqual(len(_period(bars,"2026-06-01","2026-07-01")),540)
+        start=int(dt.datetime(2026,6,1,9,10,tzinfo=TZ).timestamp())
+        # 60 complete historical bars prior to the first June tradeable bar.
+        bars=[{"time":start-86400-60*(60-i)} for i in range(60)]
+        bars += [{"time":start+i*60} for i in range(540)]
+        self.assertEqual(len(_period(bars,"2026-06-01","2026-07-01")),600)
 
 
 if __name__=="__main__":
