@@ -9,7 +9,7 @@ import unittest
 
 from research.atlas_winq26_public import canonicalize, SYMBOL, SOURCE_BLOB
 from research.atlas_confluence_v3 import v3_signal, VARIANTS, confirmed_pivots
-from research.atlas_winq26_validation import _period, TF
+from research.atlas_winq26_validation import _period, TF, approval_gate
 
 
 def sample_raw(path, *, duplicated=False):
@@ -81,6 +81,27 @@ class AtlasWinq26ResearchTests(unittest.TestCase):
             prior.append({"high":val,"low":-val})
         self.assertEqual(confirmed_pivots(prior,"high"),[9,8])
         self.assertEqual(confirmed_pivots(prior,"low"),[-9,-8])
+
+    def test_approval_gate_rejects_short_term_wins_and_never_autopromotes(self):
+        good={"closed":40,"net_brl":120,"profit_factor":1.4,
+              "max_realized_drawdown_pct":3.2}
+        bad={"closed":10,"net_brl":12,"profit_factor":1.3,
+             "max_realized_drawdown_pct":1.0}
+        scenarios_good={"1":good,"2":good}
+        scenario_short={"1":bad,"2":bad}
+        data={"results":{"M1":{
+            "train_2026_06":{"variants":{v:scenarios_good for v in VARIANTS}},
+            "holdout_2026_07":{"variants":{v:scenario_short for v in VARIANTS}},
+        }}}
+        rejected=approval_gate(data)
+        self.assertEqual(rejected["passed_retrospective_gates"],0)
+        self.assertFalse(rejected["approved_for_production"])
+        data["results"]["M1"]["holdout_2026_07"]["variants"]={
+            v:scenarios_good for v in VARIANTS}
+        eligible=approval_gate(data)
+        self.assertEqual(eligible["passed_retrospective_gates"],len(VARIANTS))
+        self.assertFalse(eligible["approved_to_autopromote_paper"])
+        self.assertFalse(eligible["approved_for_production"])
 
     def test_models_fixed_and_preperiod_60bar_warmup(self):
         self.assertEqual(len(VARIANTS),5)
