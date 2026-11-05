@@ -36,6 +36,10 @@ def fetch(path, *, download=True):
         payload = resp.read(12_000_000)
     if not payload or len(payload) >= 12_000_000:
         raise ValueError("WINQ26 raw file missing/oversized")
+    # Pin the public Git *blob content*, not a mutable URL.
+    blob_sha1=hashlib.sha1(b"blob " + str(len(payload)).encode() + b"\\x00" + payload).hexdigest()
+    if blob_sha1 != SOURCE_BLOB:
+        raise ValueError("WINQ26 public dataset changed: pinned Git blob SHA1 mismatch")
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(payload)
