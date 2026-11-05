@@ -1,0 +1,35 @@
+name: ATLAS V6 | Explore noon veto without claiming validation
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_v6_noon_probe.py'
+      - 'tests/test_atlas_v6_noon_probe.py'
+      - '.github/workflows/atlas-v6-noon.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test noon window, directions and future-free signals
+        run: python -m unittest discover -s tests -p 'test_atlas_v6_noon_probe.py' -v
+      - name: Existing V5 loss-study regressions
+        run: python -m unittest discover -s tests -p 'test_atlas_v5_loss_ranking.py' -v
+      - name: Compare baseline and exploratory noon veto on pinned real-contract M5
+        run: python -m research.atlas_v6_noon_probe
+      - name: Upload research ledgers
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-v6-noon-m5-research-only
+          path: |
+            research/results/atlas_v6_noon_exploratory.json
+            research/results/atlas_v6_noon_exploratory.md
+          retention-days: 30
