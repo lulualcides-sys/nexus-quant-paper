@@ -14,6 +14,7 @@ from .bb_rebound_mtf import fetch_15m as fetch_usdcad_m15, process as process_bb
 from .experimental_h1 import process as process_h1, diagnostics as h1_diagnostics
 from .h4_entry_audit import audit as audit_h4_entries, telegram_summary as h4_telegram_summary
 from .momentum60_shadow import process as process_momentum60
+from .atlas_vector import process as process_atlas, daily_line as atlas_daily_line, scorecard as atlas_scorecard
 from .all_robots_audit import build as audit_all_27, telegram_line as audit_27_line
 from .news_guard import upcoming as macro_upcoming
 from .wti_channel10_shadow import process as process_wti_filtered
@@ -104,6 +105,15 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
         momentum60_error=type(error).__name__
         print("Momentum60 experimental indisponível, demais robôs preservados: "+str(error)[:150])
 
+    # ATLAS is robot #28: own paper state; errors NEVER affect the existing 27.
+    atlas_book=None;atlas_error=None
+    try:
+        atlas_book=process_atlas(datasets["XAUUSD"])
+        print("ATLAS #28 H4 virtual: "+str(len(atlas_book["entries"]))+" observed entries.")
+    except Exception as error:
+        atlas_error=type(error).__name__
+        print("ATLAS indisponível; 27 robôs preservados: "+str(error)[:150])
+
     mtf_book=None;mtf_error=None
     try:
 
@@ -141,6 +151,13 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
     statefile.write_text(json.dumps(state,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     if mode=="report" and state["last_report_day"]!=day:
         msg=ten_bot_digest(day,gold_book,leveraged_book,datasets,unavailable=failed,mtf=mtf_book,mtf_error=mtf_error,shadow=shadow_book,momentum60=momentum60_book,planned_robots=27)
+        # ATLAS #28 is separate from the immutable 27-robot audit/cohort.
+        # It reports only observed PAPER results; no invented win rate.
+        atlas_line=atlas_daily_line(atlas_book,day)
+        if atlas_book is None:
+            atlas_line += " | erro: "+str(atlas_error or "sem dados")
+        if len(msg)+len(atlas_line)+1<=4000:
+            msg+="\n"+escape(atlas_line)
         # Read-only supervisory stage: an audit failure must not block the daily
         # recap or change existing positions, state schema, or entry rules.
         h4_observation=None; h4_error=None
@@ -193,6 +210,17 @@ def run(mode="scan",*,statefile=STATE,reports=REPORTS,fetch=get_bars,send=telegr
                   type(error).__name__+" "+str(error)[:100])
         if len(msg)>4000:raise RuntimeError("Telegram: relatório excede o limite de mensagem")
         reports.mkdir(parents=True,exist_ok=True)
+        atlas_path=reports/"atlas"/f"{day}.json"
+        atlas_path.parent.mkdir(parents=True,exist_ok=True)
+        atlas_report=({
+            "date": day, "bot": "ATLAS", "slot": 28, "paper_only": True,
+            "status": "available" if atlas_book is not None else "unavailable",
+            "metrics": atlas_scorecard(atlas_book) if atlas_book is not None else None,
+            "error_type": atlas_error if atlas_book is None else None,
+            "signal_model": "independent_sweep_wick_relative_volume_v1",
+            "notes": "Not proprietary Tracker; no real fills; winrate is net of estimated costs",
+        })
+        atlas_path.write_text(json.dumps(atlas_report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         if complete_audit is not None:
             full_path=reports/"robot_diagnostics"/f"{day}.json"
             full_path.parent.mkdir(parents=True,exist_ok=True)
