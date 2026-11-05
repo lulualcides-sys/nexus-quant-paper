@@ -1,0 +1,40 @@
+name: ATLAS V5 | Worst-to-best M5 cost-stress study
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_v5_cost_aware.py'
+      - 'research/atlas_v5_loss_ranking.py'
+      - 'tests/test_atlas_v5_loss_ranking.py'
+      - '.github/workflows/atlas-v5-ranking.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fixed-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: V5 unit tests — cost guard, chronology, ranking and loss attribution
+        run: python -m unittest discover -s tests -p 'test_atlas_v5_loss_ranking.py' -v
+      - name: Existing V4 regression tests
+        run: python -m unittest discover -s tests -p 'test_atlas_v4_filters.py' -v
+      - name: Previous WINM26 import validation
+        run: python -m unittest discover -s tests -p 'test_atlas_winm26_v4_transfer.py' -v
+      - name: Cross-contract and equal-risk M5 comparison (pinned sources)
+        env:
+          NEXUS_NEWS_GUARD_ENABLED: '0'
+        run: python -m research.atlas_v5_loss_ranking
+      - name: Publish research-only result ledgers
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-v5-m5-loss-rank-20261105
+          path: |
+            research/results/atlas_v5_worst_to_best_latest.json
+            research/results/atlas_v5_worst_to_best_latest.md
+          retention-days: 30
