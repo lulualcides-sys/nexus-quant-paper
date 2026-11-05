@@ -177,5 +177,14 @@ def parse_b3_trades_streaming(path):
     provenance["surviving_minutes"]=len(bars)
     provenance["market_day"]=DATE
     provenance["symbol"]=SYMBOL
-    provenance["member"]=next((_open_text(path)[2],),path.name)
+    from zipfile import ZipFile, is_zipfile
+    if is_zipfile(path):
+        with ZipFile(path) as zf:
+            provenance["member"] = next(
+                (i.filename for i in zf.infolist()
+                 if not i.is_dir() and i.filename.lower().endswith((".csv", ".txt"))),
+                path.name,
+            )
+    else:
+        provenance["member"] = path.name
     return bars,provenance
