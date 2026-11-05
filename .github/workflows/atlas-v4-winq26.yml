@@ -1,0 +1,46 @@
+name: ATLAS V4 | Preregistered WIN M1 filter study
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_v4_filters.py'
+      - 'research/atlas_v4_study.py'
+      - 'tests/test_atlas_v4_filters.py'
+      - 'research/atlas_winm26_v4_transfer.py'
+      - 'tests/test_atlas_winm26_v4_transfer.py'
+      - '.github/workflows/atlas-v4-winq26.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cost-aware-study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test independent signals and future-free logic
+        run: python -m unittest discover -s tests -p 'test_atlas_v4_filters.py' -v
+      - name: Recheck WINQ26 source importer regressions
+        run: python -m unittest discover -s tests -p 'test_atlas_winq26_v3.py' -v
+      - name: Evaluate six fixed models on actual WINQ26 with 0,1,2 ticks each-way slippage
+        env:
+          NEXUS_NEWS_GUARD_ENABLED: '0'
+        run: python -m research.atlas_v4_study
+      - name: Test independent WINM26 M5 importer
+        run: python -m unittest discover -s tests -p 'test_atlas_winm26_v4_transfer.py' -v
+      - name: Compare SAME frozen V4 variants on WINM26 M5 (different contract)
+        run: python -m research.atlas_winm26_v4_transfer
+      - name: Upload research report and full ledger
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-v4-winq26-may-june-july-costs
+          path: |
+            research/results/atlas_v4_study_latest.json
+            research/results/atlas_v4_study_latest.md
+            research/results/atlas_v4_winm26_cross_contract.json
+            research/results/atlas_v4_winm26_cross_contract.md
+          retention-days: 30
