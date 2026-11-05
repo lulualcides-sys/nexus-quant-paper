@@ -1,0 +1,46 @@
+name: ATLAS | Tracker v2 evidence + WIN CSV validation
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_tracker_v2.py'
+      - 'research/atlas_win_backtest.py'
+      - 'research/win_price_data.py'
+      - 'tests/test_atlas_tracker_v2.py'
+      - '.github/workflows/atlas-tracker-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test isolated ATLAS v2 and WIN data-quality checks
+        run: python -m unittest discover -s tests -p 'test_atlas_tracker_v2.py' -v
+      - name: Run retrospective hypotheses on actual GC=F M5 through H1
+        env:
+          NEXUS_NEWS_GUARD_ENABLED: '0'
+        run: python -m research.atlas_tracker_v2
+      - name: Verify B3 WIN data availability without guessing
+        shell: bash
+        run: |
+          if [[ -f research/data/WINFUT_M1.csv ]]; then
+            python -m research.atlas_win_backtest --win-csv research/data/WINFUT_M1.csv
+          else
+            echo 'WIN_NOT_TESTED: no independently sourced WIN M1 CSV is present.'
+            echo 'No WIN winrate or profit has been calculated.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: atlas-tracker-v2-research
+          path: |
+            research/results/atlas_tracker_v2_gold_latest.json
+            research/results/atlas_tracker_v2_gold_latest.md
+            research/results/atlas_win_latest.json
+          retention-days: 14
