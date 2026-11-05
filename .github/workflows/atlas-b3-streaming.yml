@@ -1,0 +1,32 @@
+name: ATLAS | B3 bounded-memory replay validation
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_b3_streaming.py'
+      - 'research/atlas_b3_ticks_oct13.py'
+      - 'tests/test_atlas_b3_streaming.py'
+      - 'research/results/ATLAS-B3-STREAMING-AUDIT.md'
+      - '.github/workflows/atlas-b3-streaming.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  memory-safe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify 20k synthetic trades, SQLite uniqueness and cancellation
+        run: python -m unittest discover -s tests -p 'test_atlas_b3_streaming.py' -v
+      - name: Previous raw B3 M1 tests
+        run: python -m unittest discover -s tests -p 'test_atlas_b3_ticks_oct13.py' -v
+      - name: Previous coverage/matching tests
+        run: python -m unittest discover -s tests -p 'test_atlas_tracker_observability.py' -v
+      - name: Previous WINV26 Profit tests
+        run: python -m unittest discover -s tests -p 'test_atlas_win_oct13.py' -v
+      - name: Explicitly forbid using artificial rows as trading returns
+        run: echo 'No live B3 file provided; only synthetic test fixtures.'
