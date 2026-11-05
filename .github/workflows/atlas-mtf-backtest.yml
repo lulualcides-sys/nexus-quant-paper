@@ -1,0 +1,34 @@
+name: ATLAS | Compare M5 M15 M30 H1 (experimental)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_mtf_comparison.py'
+      - 'tests/test_atlas_mtf_comparison.py'
+      - '.github/workflows/atlas-mtf-backtest.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests for comparative backtest
+        run: python -m unittest discover -s tests -p 'test_atlas_mtf_comparison.py' -v
+      - name: Download actual GC=F five-minute candles and compare all frames
+        run: python -m research.atlas_mtf_comparison
+        env:
+          NEXUS_NEWS_GUARD_ENABLED: '0'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: atlas-m5-m15-m30-h1-research
+          path: |
+            research/results/atlas_m5_h1_latest.json
+            research/results/atlas_m5_h1_latest.md
+          retention-days: 14
