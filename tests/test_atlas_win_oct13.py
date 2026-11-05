@@ -7,7 +7,7 @@ import unittest
 from research.atlas_win_oct13 import analyze,convert_profit,labels_from_csv
 
 
-def fixture(path,n=420,offtick=False,symbol="WINV26",duplicate=False):
+def fixture(path,n=500,offtick=False,symbol="WINV26",duplicate=False):
     start=datetime(2026,10,13,9,10)
     with path.open("w",encoding="utf-8",newline="") as fp:
         w=csv.writer(fp,delimiter=";")
@@ -30,7 +30,8 @@ class TrackerOctoberTests(unittest.TestCase):
             file=Path(td)/"profit.csv";fixture(file)
             report=analyze(file)
             self.assertEqual(report["contract"],"WINV26")
-            self.assertEqual(report["target_day_m1_candles"],420)
+            self.assertEqual(report["target_day_m1_candles"],500)
+            self.assertTrue(report["session_complete"])
             self.assertEqual(report["status"],"awaiting_verified_video_labels")
             self.assertEqual(report["verified_video_labels"],0)
             self.assertIsNone(report["comparisons"])
@@ -54,6 +55,16 @@ class TrackerOctoberTests(unittest.TestCase):
                     file=Path(td)/"profit.csv";fixture(file,**opts)
                     with self.assertRaisesRegex(ValueError,error):
                         convert_profit(file,Path(td)/"normalized.csv")
+
+    def test_420_candles_are_not_a_complete_session(self):
+        with TemporaryDirectory() as td:
+            file=Path(td)/"profit.csv";fixture(file,n=420)
+            result=analyze(file)
+            self.assertEqual(result["target_day_m1_candles"],420)
+            self.assertEqual(result["missing_session_minutes"],80)
+            self.assertEqual(result["status"],"incomplete_session_no_signal_replay")
+            self.assertFalse(result["session_complete"])
+            self.assertIsNone(result["comparisons"])
 
     def test_partial_day_does_not_claim_winrate(self):
         with TemporaryDirectory() as td:

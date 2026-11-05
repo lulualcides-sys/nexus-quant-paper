@@ -14,6 +14,8 @@ from research.atlas_confluence_v3 import VARIANTS, v3_signal
 SYMBOL = "WINV26"
 DATE = "2026-10-13"
 MIN_CANDLES = 400
+SESSION_START = 550
+SESSION_END = 1050
 
 def parse_time(d, t):
     for f in ("%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M"):
@@ -78,14 +80,27 @@ def analyze(input_path, label_path=None):
     candles=bars["bars"]
     day=[b for b in candles if datetime.fromtimestamp(
         b["time"],timezone.utc).astimezone(TZ).date().isoformat()==DATE]
+    expected=set(range(SESSION_START,SESSION_END))
+    actual=set()
+    for b in day:
+        dt=datetime.fromtimestamp(b["time"],timezone.utc).astimezone(TZ)
+        minute=dt.hour*60+dt.minute
+        if SESSION_START<=minute<SESSION_END: actual.add(minute)
+    missing=sorted(expected-actual)
     labels=labels_from_csv(label_path)
     result={"contract":SYMBOL,"date":DATE,"source":prov,
             "target_day_m1_candles":len(day),"minimum_expected_candles":MIN_CANDLES,
+            "session_expected_m1":len(expected),"session_observed_m1":len(actual),
+            "missing_session_minutes":len(missing),
+            "missing_first_20":[f"{m//60:02d}:{m%60:02d}" for m in missing[:20]],
+            "session_complete":not bool(missing),
             "claimed_27_signals_not_necessarily_trades":True,
             "verified_video_labels":len(labels),"tracker_formula_known":False,
             "financial_performance_validated":False,"comparisons":None}
     if len(day)<MIN_CANDLES:
         result["status"]="insufficient_m1_data";return result
+    if missing:
+        result["status"]="incomplete_session_no_signal_replay";return result
     if not labels:
         result["status"]="awaiting_verified_video_labels";return result
     lookup={x["time"]:i for i,x in enumerate(candles)}
