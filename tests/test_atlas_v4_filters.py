@@ -2,7 +2,7 @@
 import unittest
 from datetime import datetime,timedelta,timezone
 from research.atlas_v4_filters import candidate,CANDIDATES
-from research.atlas_v4_study import selected_month,coverage,PERIODS
+from research.atlas_v4_study import selected_month,coverage,PERIODS,approval_gate
 from research.win_price_data import TZ
 
 def bars(n=150,start=None):
@@ -64,6 +64,22 @@ class AtlasV4Tests(unittest.TestCase):
         a=bars()
         self.assertEqual(selected_month(a,"2026-05-01","2026-06-01")[0],None)
         self.assertEqual(coverage(a,"2026-05-01","2026-06-01")["session_days"],1)
+
+    def test_v4_gate_rejects_few_trades_and_never_autopromotes(self):
+        little={"closed":7,"net_brl":100,"profit_factor":1.5,
+                "open_at_end":False,"pending_at_end":False}
+        plenty={**little,"closed":35}
+        def record(d):
+            return {"status":"BACKTESTED","variants":{
+                var:{"1":d,"2":d} for var in CANDIDATES}}
+        result={"periods":{name:record(little) for name,_,_ in PERIODS}}
+        fail=approval_gate(result)
+        self.assertEqual(fail["passed"],0)
+        self.assertFalse(fail["auto_promote"])
+        result={"periods":{name:record(plenty) for name,_,_ in PERIODS}}
+        passed=approval_gate(result)
+        self.assertEqual(passed["passed"],len(CANDIDATES))
+        self.assertFalse(passed["auto_promote"])
 
     def test_unsafe_variants_not_accepted(self):
         with self.assertRaisesRegex(ValueError,"Unregistered"):
