@@ -6,6 +6,8 @@ on:
       - 'research/atlas_v4_filters.py'
       - 'research/atlas_v4_study.py'
       - 'tests/test_atlas_v4_filters.py'
+      - 'research/atlas_winm26_v4_transfer.py'
+      - 'tests/test_atlas_winm26_v4_transfer.py'
       - '.github/workflows/atlas-v4-winq26.yml'
   workflow_dispatch:
 permissions:
@@ -27,6 +29,10 @@ jobs:
         env:
           NEXUS_NEWS_GUARD_ENABLED: '0'
         run: python -m research.atlas_v4_study
+      - name: Test independent WINM26 M5 importer
+        run: python -m unittest discover -s tests -p 'test_atlas_winm26_v4_transfer.py' -v
+      - name: Compare SAME frozen V4 variants on WINM26 M5 (different contract)
+        run: python -m research.atlas_winm26_v4_transfer
       - name: Upload research report and full ledger
         if: success()
         uses: actions/upload-artifact@v4
@@ -35,4 +41,6 @@ jobs:
           path: |
             research/results/atlas_v4_study_latest.json
             research/results/atlas_v4_study_latest.md
+            research/results/atlas_v4_winm26_cross_contract.json
+            research/results/atlas_v4_winm26_cross_contract.md
           retention-days: 30
