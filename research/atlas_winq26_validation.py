@@ -103,6 +103,36 @@ def compare(imported, provenance=None):
     return result
 
 
+def approval_gate(data):
+    """Predeclared retrospective gates. Never auto-promote a strategy."""
+    statuses={}
+    for tf,periods in data["results"].items():
+        for variant in VARIANTS:
+            train=periods["train_2026_06"]["variants"][variant]
+            holdout=periods["holdout_2026_07"]["variants"][variant]
+            reasons=[]
+            for name,scenarios in (("train",train),("holdout",holdout)):
+                base=scenarios["1"]
+                stress=scenarios["2"]
+                if (base.get("closed") or 0)<30:
+                    reasons.append(name+"_under_30_closed_trades")
+                if (base.get("net_brl") is None or base.get("net_brl")<=0
+                        or stress.get("net_brl") is None or stress.get("net_brl")<=0):
+                    reasons.append(name+"_nonpositive_under_cost_stress")
+                if (base.get("profit_factor") or 0)<1.2:
+                    reasons.append(name+"_profit_factor_below_1.2")
+                if (base.get("max_realized_drawdown_pct") is None
+                        or base["max_realized_drawdown_pct"]>8):
+                    reasons.append(name+"_drawdown_above_8pct")
+            statuses[tf+":"+variant]={"passes":not bool(reasons),
+                "reasons":reasons,"autopromote":False}
+    return {"approved_for_production":False,
+            "approved_to_autopromote_paper":False,
+            "passed_retrospective_gates":sum(x["passes"] for x in statuses.values()),
+            "evaluated":len(statuses),"models":statuses,
+            "note":"Even a backtest pass requires independent prospective validation"}
+
+
 def summarize(data):
     lines=[
       "# ATLAS — WINQ26 contrato real: validação em junho e julho/2026",
@@ -145,6 +175,9 @@ def summarize(data):
                 numbers=["N/D" if scenarios[str(k)].get("net_brl") is None
                          else str(scenarios[str(k)]["net_brl"]) for k in SLIPPAGE_TICKS]
                 lines.append("| "+ " | ".join([tf,pname,var]+numbers)+" |")
+    gate=data.get("approval_gate")
+    if gate:
+        lines+=["",f"## Aprovação quantitativa: {gate['passed_retrospective_gates']}/{gate['evaluated']} modelos passaram (nenhuma promoção automática)",""]
     lines+=["","## Critérios para avançar","",
       "- Não premiar winrate elevado sem amostra suficiente; operações em julho são validação retrospectiva, não forward.",
       "- Só considerar estratégias que mantêm expectativa líquida positiva após taxas/slippage, PF sustentado e drawdown aceitável em vários períodos e contratos, inclusive meses posteriores.",
@@ -166,6 +199,7 @@ def main():
         imported=read_win_csv(normalized,expected_symbol=SYMBOL)
         report=compare(imported,provenance)
         report["quality"]["raw"]=quality
+        report["approval_gate"]=approval_gate(report)
     text=summarize(report)
     print("ATLAS_WINQ26_REPORT_START")
     print(text,flush=True)
