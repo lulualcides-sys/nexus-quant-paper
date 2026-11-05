@@ -138,12 +138,19 @@ class AtlasVectorTests(unittest.TestCase):
 
     def test_volume_is_optional_not_synthesized_in_yahoo_parser(self):
         ts = 1791000000
-        quotes = {"open": [100], "high": [102], "low": [98], "close": [100], "volume": [153]}
-        payload = {"chart": {"result": [{"timestamp": [ts], "indicators": {"quote": [quotes]}}]}}
-        result = parse_yahoo(payload, ts + 7200)
+        n = 245  # The real feed requires >=245 fully closed hourly bars.
+        quotes = {"open": [100] * n, "high": [102] * n, "low": [98] * n,
+                  "close": [100] * n, "volume": [153] * n}
+        payload = {"chart": {"result": [{
+            "timestamp": [ts + 3600 * i for i in range(n)],
+            "indicators": {"quote": [quotes]}}]}}
+        now = ts + (n + 1) * 3600
+        result = parse_yahoo(payload, now)
+        self.assertEqual(len(result), n)
         self.assertEqual(result[0]["volume"], 153)
         quotes.pop("volume")
-        result = parse_yahoo(payload, ts + 7200)
+        result = parse_yahoo(payload, now)
+        self.assertEqual(len(result), n)
         self.assertNotIn("volume", result[0])
 
 
