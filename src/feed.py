@@ -42,6 +42,16 @@ def parse_yahoo(data, now):
             continue
         if values["high"] < max(values["open"],values["close"]) or values["low"]>min(values["open"],values["close"]):
             continue
+        # Optional *observed* Yahoo volume. Existing OHLC users stay unchanged;
+        # missing, invalid or absent volume is never replaced with a guess.
+        volume_series = quote0.get("volume") or []
+        if i < len(volume_series) and volume_series[i] is not None:
+            try:
+                volume = float(volume_series[i])
+                if isfinite(volume) and volume >= 0:
+                    values["volume"] = volume
+            except (ValueError, TypeError):
+                pass
         rows[int(ts)]={"time":int(ts),**values}
     out=[rows[k] for k in sorted(rows)]
     if len(out)<245:
