@@ -50,19 +50,24 @@ class AtlasB3TicksTests(unittest.TestCase):
                 ("WINZ26", "0", "202000,000", "3", "100000000", "10", "1"),
             ])
             bars, src = parse_b3_trades(path)
-            self.assertEqual(len(bars), 3)
-            first, second, third = bars
+            # Distinct 1-minute bars: 09:00, 09:01, 09:04, 09:10, 09:14, 18:24.
+            # The upstream five-minute example collapses these but ATLAS must not.
+            self.assertEqual(len(bars), 6)
             self.assertEqual(
-                (first["open"], first["high"], first["low"], first["close"],
-                 first["volume"], first["trade_count"]),
-                (200000, 200100, 199900, 200050, 38, 4)
+                [(b["open"], b["high"], b["low"], b["close"],
+                  b["volume"], b["trade_count"]) for b in bars],
+                [
+                    (200000, 200000, 200000, 200000, 30, 1),
+                    (200100, 200100, 199900, 199900, 3, 2),
+                    (200050, 200050, 200050, 200050, 5, 1),
+                    (200200, 200200, 200200, 200200, 4, 1),
+                    (200150, 200150, 200150, 200150, 1, 1),
+                    (200500, 200500, 200500, 200500, 3, 1),
+                ]
             )
-            self.assertEqual(
-                (second["open"], second["high"], second["low"], second["close"],
-                 second["volume"], second["trade_count"]),
-                (200200, 200200, 200150, 200150, 5, 2)
-            )
-            self.assertEqual(third["volume"], 3)
+            from research.win_price_data import resample
+            self.assertEqual(resample(bars, 300, base_seconds=60), [],
+                             "M5 must not be created from missing M1 candles")
             self.assertEqual(src["surviving_trades"], 7)
             self.assertEqual(src["counters"]["cancellation_records"], 1)
             self.assertTrue(src["sha256"])
