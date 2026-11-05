@@ -117,6 +117,8 @@ def summarize(data):
       "## Cobertura da fonte",
     ]
     for k,v in data["quality"].items():
+        if not k.startswith("2026-"):
+            continue  # source-wide metadata is not a calendar-month coverage row
         lines.append(f"- {k}: {v['trading_days']} pregões; {v['total_session_candles']} candles M1 "
                      f"na janela de estudo; mediana {v['median_session_candles']} por pregão; "
                      f"{v['days_with_300_candles']} pregões com >=300 candles.")
