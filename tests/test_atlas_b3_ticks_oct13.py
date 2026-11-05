@@ -100,6 +100,21 @@ class AtlasB3TicksTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate trade ID"):
                 parse_b3_trades(path)
 
+    def test_later_cancellation_outside_regular_session_invalidates_earlier_trade(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "drv.txt"
+            sample_file(path, [
+                ("WINV26", "0", "200050,000", "7", "091000000", "10", "1"),
+                ("WINV26", "0", "201000,000", "1", "091100000", "60", "1"),
+                # Cancellation logged after the close must remove the 09:11 high.
+                ("WINV26", "2", "201000,000", "1", "183100000", "60", "6"),
+            ])
+            bars, provenance = parse_b3_trades(path)
+            self.assertEqual(len(bars), 1)
+            self.assertEqual(bars[0]["high"], 200050)
+            self.assertEqual(bars[0]["volume"], 7)
+            self.assertEqual(provenance["counters"]["cancellation_records"], 1)
+
     def test_orphan_cancellation_or_unknown_action_fail_closed(self):
         with tempfile.TemporaryDirectory() as td:
             path = Path(td) / "drv.txt"
