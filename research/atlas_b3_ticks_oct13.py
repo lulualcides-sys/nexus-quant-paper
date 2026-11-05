@@ -98,7 +98,8 @@ def parse_b3_trades(path):
         reader = csv.DictReader(stream, delimiter=";")
         if not reader.fieldnames:
             raise ValueError("Empty B3 header")
-        names = {s.strip().lstrip("\ufeff") for s in reader.fieldnames}
+        reader.fieldnames = [s.strip().lstrip("\ufeff") for s in reader.fieldnames]
+        names = set(reader.fieldnames)
         if not REQUIRED.issubset(names):
             raise ValueError("Missing B3 deal fields: " + ",".join(sorted(REQUIRED-names)))
         for line, record in enumerate(reader, 2):
@@ -108,19 +109,14 @@ def parse_b3_trades(path):
             if record.get("DataNegocio", "").strip() != DATE:
                 continue
             counters["matched_contract_rows"] += 1
-            if record.get("TipoSessaoPregao", "").strip() != "1":
-                counters["non_regular_session"] += 1
-                continue
-            dt = _trade_time(DATE, record["HoraFechamento"])
-            if dt is None:
-                counters["outside_session"] += 1
-                continue
             ident = str(record.get("CodigoIdentificadorNegocio") or "").strip()
             if not ident or not ident.isdecimal():
                 raise ValueError(f"Line {line}: invalid trade ID")
             key = int(ident)
             action = str(record["AcaoAtualizacao"]).strip()
             if action == "2":
+                # A later cancellation may be timestamped outside the regular
+                # session. It still invalidates the original regular trade.
                 if key in cancelled:
                     raise ValueError(f"Line {line}: duplicate cancellation {key}")
                 cancelled.add(key)
@@ -128,6 +124,13 @@ def parse_b3_trades(path):
                 continue
             if action != "0":
                 raise ValueError(f"Line {line}: unsupported trade action {action}")
+            if record.get("TipoSessaoPregao", "").strip() != "1":
+                counters["non_regular_session"] += 1
+                continue
+            dt = _trade_time(DATE, record["HoraFechamento"])
+            if dt is None:
+                counters["outside_session"] += 1
+                continue
             price = _number(record["PrecoNegocio"])
             quantity = _number(record["QuantidadeNegociada"])
             _tick_check(price)
