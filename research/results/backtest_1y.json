@@ -21,35 +21,35 @@
   "assets": {
     "EURUSD": {
       "ticker": "EURUSD=X",
-      "candles_total": 12197,
+      "candles_total": 12112,
       "candles_test": 6140,
       "first": "2025-10-24T00:00:00+00:00",
       "last": "2026-10-23T21:00:00+00:00"
     },
     "USDJPY": {
       "ticker": "JPY=X",
-      "candles_total": 12129,
+      "candles_total": 12046,
       "candles_test": 6108,
       "first": "2025-10-24T00:00:00+00:00",
       "last": "2026-10-23T20:00:00+00:00"
     },
     "XAUUSD": {
       "ticker": "GC=F",
-      "candles_total": 11340,
+      "candles_total": 11262,
       "candles_test": 5701,
       "first": "2025-10-24T00:00:00+00:00",
       "last": "2026-10-23T20:00:00+00:00"
     },
     "US500": {
       "ticker": "ES=F",
-      "candles_total": 11313,
+      "candles_total": 11235,
       "candles_test": 5704,
       "first": "2025-10-24T00:00:00+00:00",
       "last": "2026-10-23T21:00:00+00:00"
     },
     "XTIUSD": {
       "ticker": "CL=F",
-      "candles_total": 11212,
+      "candles_total": 11134,
       "candles_test": 5693,
       "first": "2025-10-24T00:00:00+00:00",
       "last": "2026-10-23T20:00:00+00:00"
