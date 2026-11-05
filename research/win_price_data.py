@@ -27,7 +27,7 @@ def _number(value):
         raise ValueError("valor numérico vazio")
     if "," in v:
         v = v.replace(".", "").replace(",", ".")
-    elif re.fullmatch(r"\\d{1,3}(\\.\\d{3})+", v):
+    elif re.fullmatch(r"[0-9]{1,3}([.][0-9]{3})+", v):
         v = v.replace(".", "")  # Brazilian thousands grouping, e.g. 141.000
     result = float(v)
     if not isfinite(result):
