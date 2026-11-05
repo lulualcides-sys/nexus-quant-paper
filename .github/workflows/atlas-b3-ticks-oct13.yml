@@ -1,0 +1,26 @@
+name: ATLAS | B3 manual tick data validation
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_b3_ticks_oct13.py'
+      - 'tests/test_atlas_b3_ticks_oct13.py'
+      - 'research/results/ATLAS-B3-WINV26-OCT13-REPLAY.md'
+      - '.github/workflows/atlas-b3-ticks-oct13.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tick-import-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate B3 tick construction on artificial reference fixtures
+        run: python -m unittest discover -s tests -p 'test_atlas_b3_ticks_oct13.py' -v
+      - name: Make missing genuine data explicit
+        run: |
+          echo 'No B3 market file is bundled. No financial performance or Tracker winrate is inferred.'
