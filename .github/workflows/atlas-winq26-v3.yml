@@ -1,0 +1,37 @@
+name: ATLAS | Genuine WINQ26 research & confluence v3
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_winq26_public.py'
+      - 'research/atlas_confluence_v3.py'
+      - 'research/atlas_winq26_validation.py'
+      - 'tests/test_atlas_winq26_v3.py'
+      - '.github/workflows/atlas-winq26-v3.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test genuine WIN importer, future-free signals, and timeframe slicing
+        run: python -m unittest discover -s tests -p 'test_atlas_winq26_v3.py' -v
+      - name: Compare frozen ATLAS models on pinned WINQ26 M1 June/July 2026
+        env:
+          NEXUS_NEWS_GUARD_ENABLED: '0'
+        run: python -m research.atlas_winq26_validation
+      - name: Upload raw-independent audit outputs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-winq26-june-july-2026-validation
+          path: |
+            research/results/atlas_winq26_v3_latest.json
+            research/results/atlas_winq26_v3_latest.md
+          retention-days: 30
