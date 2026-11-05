@@ -73,7 +73,7 @@ def examine(imported,provenance):
     for name,start,end in PERIODS:
         sample,_=selected_month(bars,start,end)
         quality=coverage(bars,start,end)
-        p={"data_quality":quality,"variants":{},"status":"not_run"}
+        p={"data_quality":quality,"variants":{},"diagnostics":{},"status":"not_run"}
         out["periods"][name]=p
         if not sample or quality["days_with_300_min"]<8:
             p["status"]="INSUFFICIENT_LIQUID_M1_MONTH";continue
@@ -92,7 +92,43 @@ def examine(imported,provenance):
                     for k in COST_TICKS
                 }
             p["variants"][var]=simulations
+            baseline=simulations["1"]
+            p["diagnostics"][var]={
+                "signal_buys":sum(s==1 for s in signals),
+                "signal_sells":sum(s==-1 for s in signals),
+                "entry_orders_filled":baseline.get("entries"),
+                "orders_cancelled_or_unfilled":baseline.get("unfilled_or_cancelled"),
+                "open_at_month_end":baseline.get("open_at_end"),
+                "same_bar_ambiguous_exits":baseline.get("uncertain_same_bar_exits"),
+            }
+    out["approval_gate"]=approval_gate(out)
     return out
+
+def approval_gate(out):
+    """Conservative study gate: no automatic deployment or strategy selection."""
+    result={}
+    for model in CANDIDATES:
+        reasons=[]
+        for name,_,_ in PERIODS:
+            period=out["periods"][name]
+            if period["status"]!="BACKTESTED":
+                reasons.append(name+"_unavailable");continue
+            sims=period["variants"][model]
+            base,stress=sims["1"],sims["2"]
+            if (base.get("closed") or 0)<30:
+                reasons.append(name+"_under_30_trades")
+            if (base.get("net_brl") or 0)<=0 or (stress.get("net_brl") or 0)<=0:
+                reasons.append(name+"_net_negative_or_flat_under_costs")
+            if (base.get("profit_factor") or 0)<1.2:
+                reasons.append(name+"_pf_below_1.2")
+            if base.get("open_at_end") or base.get("pending_at_end"):
+                reasons.append(name+"_unresolved_position_or_order")
+        result[model]={"passes":not reasons,"reasons":reasons}
+    return {
+        "passed":sum(z["passes"] for z in result.values()),
+        "total":len(result),"auto_promote":False,"models":result,
+        "note":"Even a retrospective gate pass requires new-contract prospective validation",
+    }
 
 def tabulate(out):
     lines=[
@@ -130,7 +166,18 @@ def tabulate(out):
     for period,p in out["periods"].items():
         for model,sc in p["variants"].items():
             lines.append("| "+" | ".join([period,model]+[str(sc[str(k)]["net_brl"]) for k in COST_TICKS])+" |")
-    lines+=["","## Aprovação",
+    lines+=["","## Diagnóstico — sinais emitidos vs entradas executadas", "",
+            "| Período | Modelo | Sinais compra | Sinais venda | Entradas | Ordens canceladas |",
+            "|---|---|---:|---:|---:|---:|"]
+    for period,p in out["periods"].items():
+        for model,d in p["diagnostics"].items():
+            lines.append("| "+" | ".join([
+                period,model,str(d["signal_buys"]),str(d["signal_sells"]),
+                str(d["entry_orders_filled"]),str(d["orders_cancelled_or_unfilled"])])+" |")
+    gate=out["approval_gate"]
+    lines+=["",f"## Gate quantitativo: {gate['passed']}/{gate['total']} modelos aprovados","",
+            "Nenhuma aprovação causa promoção automática.",
+            "A ausência de trades não é evidência de lucro.", "", "## Aprovação",
         "Nenhuma estratégia será promovida sem lucro líquido sob 2 ticks por lado em mais de um período e vencimento, amostra adequada e teste prospectivo.",
         "Não premiar 0 trades (sinalizar nada não é edge). V4 é pesquisa; nenhum código operacional foi alterado.",
         "Se o estudo permanecer negativo, registrar o insucesso e priorizar dados novos em vez de procurar 100 filtros no mesmo mês.",
