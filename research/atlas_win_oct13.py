@@ -74,7 +74,7 @@ def labels_from_csv(path):
     if len(set(t for t,s in out))!=len(out): raise ValueError("Ambiguous duplicate labels")
     return out
 
-def analyze(input_path, label_path=None):
+def analyze(input_path, label_path=None, coverage_path=None):
     with TemporaryDirectory() as d:
         bars,prov=convert_profit(input_path,Path(d)/"normalized.csv")
     candles=bars["bars"]
@@ -101,6 +101,14 @@ def analyze(input_path, label_path=None):
         result["status"]="insufficient_m1_data";return result
     if missing:
         result["status"]="incomplete_session_no_signal_replay";return result
+    if coverage_path is not None:
+        from research.atlas_tracker_observability import (
+            parse_coverage_csv, score_observable_intervals,
+        )
+        result["observable_alignment"]=score_observable_intervals(
+            candles,labels,parse_coverage_csv(coverage_path))
+        result["status"]="conditional_full_observation_metrics_not_live"
+        return result
     if not labels:
         result["status"]="awaiting_verified_video_labels";return result
     lookup={x["time"]:i for i,x in enumerate(candles)}
@@ -120,9 +128,10 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--winv26-csv",required=True)
     ap.add_argument("--verified-labels")
+    ap.add_argument("--observed-windows",help="Continuous fully annotated Tracker recording CSV")
     ap.add_argument("--out",default="research/results/atlas_win_oct13.json")
     a=ap.parse_args()
-    result=analyze(a.winv26_csv,a.verified_labels)
+    result=analyze(a.winv26_csv,a.verified_labels,a.observed_windows)
     out=Path(a.out);out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps({"status":result["status"],"label_count":result["verified_video_labels"],

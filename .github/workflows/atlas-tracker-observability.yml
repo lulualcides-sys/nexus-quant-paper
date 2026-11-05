@@ -1,0 +1,33 @@
+name: ATLAS | Tracker full-coverage signal matching
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_tracker_observability.py'
+      - 'research/atlas_b3_ticks_oct13.py'
+      - 'research/atlas_win_oct13.py'
+      - 'tests/test_atlas_tracker_observability.py'
+      - 'research/results/ATLAS-TRACKER-SIGNAL-OBSERVABILITY.md'
+      - '.github/workflows/atlas-tracker-observability.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  observability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify observable windows and rejection of promotional shortcuts
+        run: python -m unittest discover -s tests -p 'test_atlas_tracker_observability.py' -v
+      - name: Regression test B3 exchange-deal M1 parser
+        run: python -m unittest discover -s tests -p 'test_atlas_b3_ticks_oct13.py' -v
+      - name: Regression test Profit WINV26 M1 parser
+        run: python -m unittest discover -s tests -p 'test_atlas_win_oct13.py' -v
+      - name: Regression test WINQ26 historical research
+        run: python -m unittest discover -s tests -p 'test_atlas_winq26_v3.py' -v
+      - name: No real trading, no synthetic market backtest
+        run: echo 'Only deterministic unit-test fixtures; 2026-10-13 market data still missing.'

@@ -177,7 +177,7 @@ def parse_b3_trades(path):
     return bars, provenance
 
 
-def match_signals(bars, provenance, evidence_csv=None):
+def match_signals(bars, provenance, evidence_csv=None, coverage_csv=None):
     """Alignment study only, never a fake 27-trade brokerage backtest."""
     labels = labels_from_csv(evidence_csv)
     regular = [b for b in bars if 9 * 60 + 10 <= (
@@ -197,6 +197,17 @@ def match_signals(bars, provenance, evidence_csv=None):
     }
     if len(regular) < MIN_CANDLES:
         report["status"] = "insufficient_win_v26_m1_coverage"
+        return report
+    if coverage_csv is not None:
+        from research.atlas_tracker_observability import (
+            parse_coverage_csv, score_observable_intervals,
+        )
+        # A complete continuous recording MAY genuinely show zero Tracker
+        # arrows. Its user-supplied coverage claim is not independently proven.
+        report["observable_alignment"] = score_observable_intervals(
+            bars, labels, parse_coverage_csv(coverage_csv)
+        )
+        report["status"] = "conditional_full_observation_metrics_not_live"
         return report
     if not labels:
         report["status"] = "awaiting_verified_tracker_labels"
@@ -223,10 +234,12 @@ def main():
     parser = argparse.ArgumentParser(description="Offline B3 manually obtained tick data, WINV26 Oct13")
     parser.add_argument("--b3-file", required=True)
     parser.add_argument("--tracker-labels", default=None)
+    parser.add_argument("--observed-windows", default=None,
+                        help="CSV attesting continuous complete Tracker signal recording")
     parser.add_argument("--out", default="research/results/atlas_b3_oct13_replay.json")
     args = parser.parse_args()
     bars, source = parse_b3_trades(args.b3_file)
-    report = match_signals(bars, source, args.tracker_labels)
+    report = match_signals(bars, source, args.tracker_labels, args.observed_windows)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
