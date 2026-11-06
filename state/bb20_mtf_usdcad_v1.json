@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1793920500,
+  "watermark_m15": 1793925000,
   "equity": 996.6936743120234,
   "position": null,
   "closed": [
@@ -128,5 +128,5 @@
     }
   ],
   "last_entry_h1": 1793818800,
-  "last_reason": "H1 sem tendência EMA50/EMA200 alinhada"
+  "last_reason": "Confirmação H1 expirada"
 }
