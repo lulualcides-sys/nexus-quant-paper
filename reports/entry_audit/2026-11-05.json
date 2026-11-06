@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "paper_only": true,
+  "read_only": true,
+  "source": "Yahoo GC=F H1 proxy agregado em H4; sem preço executável FBS",
+  "as_of_utc": "2026-11-06T02:25:44+00:00",
+  "last_h4_open_ts": 1793894400,
+  "last_h4_close_ts": 1793908800,
+  "data_age_seconds": 23144,
+  "stale_or_closed": false,
+  "candidates_are_orders": false,
+  "counts": {
+    "in_position": 0,
+    "frozen_drawdown": 0,
+    "daily_loss_limit": 0,
+    "invalid_equity": 0,
+    "feed_stale": 0,
+    "candidate_next_bar": 0,
+    "persistent_signal": 0,
+    "no_new_signal": 10
+  },
+  "robots": {
+    "rsi_trend": {
+      "group": "conventional",
+      "label": "RSI Trend",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793678400
+    },
+    "channel20": {
+      "group": "conventional",
+      "label": "Channel 20",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793347200
+    },
+    "pullback20": {
+      "group": "conventional",
+      "label": "Pullback 20",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793246400
+    },
+    "momentum100": {
+      "group": "conventional",
+      "label": "Momentum 100",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793246400
+    },
+    "channel55": {
+      "group": "conventional",
+      "label": "Channel 55",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793347200
+    },
+    "lev_channel20": {
+      "group": "leveraged",
+      "label": "Channel 20 L",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793347200
+    },
+    "lev_momentum100": {
+      "group": "leveraged",
+      "label": "Momentum 100 L",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793246400
+    },
+    "lev_channel55": {
+      "group": "leveraged",
+      "label": "Channel 55 L",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": 1793347200
+    },
+    "lev_momentum40": {
+      "group": "leveraged",
+      "label": "Momentum 40 L",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": null
+    },
+    "lev_trend_long": {
+      "group": "leveraged",
+      "label": "Trend Long L",
+      "status": "no_new_signal",
+      "explanation": "sem novo setup",
+      "preview_direction": 0,
+      "last_virtual_entry_ts": null
+    }
+  }
+}

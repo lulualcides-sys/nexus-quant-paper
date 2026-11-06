@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-05",
+  "bot": "ATLAS",
+  "slot": 28,
+  "paper_only": true,
+  "status": "available",
+  "metrics": {
+    "name": "ATLAS",
+    "wins": 0,
+    "losses": 0,
+    "closed": 0,
+    "winrate_pct": null,
+    "net_usd": 0.0,
+    "max_closed_drawdown_pct": 0.0,
+    "open": false,
+    "pending": false,
+    "sample_sufficient_for_review": false,
+    "validated": false
+  },
+  "error_type": null,
+  "signal_model": "independent_sweep_wick_relative_volume_v1",
+  "notes": "Not proprietary Tracker; no real fills; winrate is net of estimated costs"
+}
