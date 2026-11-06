@@ -4,11 +4,11 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793962800,
-    "USDJPY": 1793962800,
-    "XAUUSD": 1793962800,
-    "US500": 1793962800,
-    "XTIUSD": 1793962800
+    "EURUSD": 1793970000,
+    "USDJPY": 1793970000,
+    "XAUUSD": 1793970000,
+    "US500": 1793970000,
+    "XTIUSD": 1793970000
   },
   "books": {
     "EURUSD:ema20_retest": {
@@ -139,7 +139,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 47,
+        "no_setup": 49,
         "gap": 2,
         "cooldown": 7,
         "in_position": 53,
@@ -156,11 +156,11 @@
         "entry": 1.1212018728256226,
         "start": 1793930400,
         "qty": 891.780968414336,
-        "stop": 1.1188966373986553,
+        "stop": 1.116727157665768,
         "initial_r": 0.001788090307523383,
-        "best_close": 1.1173185110092163,
-        "stop_updates": 5,
-        "held_bars": 9
+        "best_close": 1.1148271560668945,
+        "stop_updates": 7,
+        "held_bars": 11
       },
       "closed": [
         {
@@ -246,7 +246,7 @@
         "no_setup": 75,
         "gap": 2,
         "cooldown": 4,
-        "in_position": 30,
+        "in_position": 32,
         "entered": 5,
         "exited": 4,
         "invalid": 0
@@ -364,7 +364,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 54,
+        "no_setup": 56,
         "gap": 1,
         "cooldown": 6,
         "in_position": 49,
@@ -485,7 +485,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 48,
+        "no_setup": 50,
         "gap": 1,
         "cooldown": 6,
         "in_position": 54,
@@ -538,7 +538,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 98,
+        "no_setup": 100,
         "gap": 2,
         "cooldown": 2,
         "in_position": 11,
@@ -642,7 +642,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 56,
+        "no_setup": 58,
         "gap": 1,
         "cooldown": 5,
         "in_position": 48,
@@ -653,18 +653,8 @@
       "last_exit_ts": 1793955600
     },
     "XAUUSD:ema20_retest": {
-      "equity": 994.5865111407924,
-      "position": {
-        "side": 1,
-        "entry": 4085.800048828125,
-        "start": 1793955600,
-        "qty": 0.07838062571284075,
-        "stop": 4054.077078320572,
-        "initial_r": 31.722970507552787,
-        "best_close": 4085.800048828125,
-        "stop_updates": 0,
-        "held_bars": 2
-      },
+      "equity": 991.8767418310823,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793725200,
@@ -684,6 +674,16 @@
           "exit": 4097.3371945,
           "net_usd": -2.67251,
           "cost_usd": 0.17936,
+          "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793955600,
+          "exit_ts": 1793970000,
+          "side": 1,
+          "entry": 4085.8000488,
+          "exit": 4054.0770783,
+          "net_usd": -2.70977,
+          "cost_usd": 0.2233,
           "exit_type": "STOP"
         }
       ],
@@ -710,17 +710,17 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.71 com custos estimados",
       "diagnostics": {
         "no_setup": 88,
         "gap": 6,
         "cooldown": 1,
-        "in_position": 13,
+        "in_position": 15,
         "entered": 3,
-        "exited": 2,
+        "exited": 3,
         "invalid": 0
       },
-      "last_exit_ts": 1793912400
+      "last_exit_ts": 1793970000
     },
     "XAUUSD:channel10": {
       "equity": 1011.8723174608514,
@@ -782,7 +782,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 62,
+        "no_setup": 64,
         "gap": 5,
         "cooldown": 3,
         "in_position": 38,
@@ -793,18 +793,8 @@
       "last_exit_ts": 1793854800
     },
     "XAUUSD:rsi50": {
-      "equity": 991.8176445721725,
-      "position": {
-        "side": 1,
-        "entry": 4085.800048828125,
-        "start": 1793955600,
-        "qty": 0.07816241895884521,
-        "stop": 4054.077078320572,
-        "initial_r": 31.722970507552787,
-        "best_close": 4085.800048828125,
-        "stop_updates": 0,
-        "held_bars": 2
-      },
+      "equity": 989.1154190905421,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793602800,
@@ -834,6 +824,16 @@
           "exit": 4097.3371945,
           "net_usd": -2.66507,
           "cost_usd": 0.17886,
+          "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793955600,
+          "exit_ts": 1793970000,
+          "side": 1,
+          "entry": 4085.8000488,
+          "exit": 4054.0770783,
+          "net_usd": -2.70223,
+          "cost_usd": 0.22268,
           "exit_type": "STOP"
         }
       ],
@@ -867,17 +867,17 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.70 com custos estimados",
       "diagnostics": {
         "no_setup": 80,
         "gap": 6,
         "cooldown": 2,
-        "in_position": 19,
+        "in_position": 21,
         "entered": 4,
-        "exited": 3,
+        "exited": 4,
         "invalid": 0
       },
-      "last_exit_ts": 1793912400
+      "last_exit_ts": 1793970000
     },
     "US500:ema20_retest": {
       "equity": 997.3860748019117,
@@ -973,7 +973,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 51,
+        "no_setup": 53,
         "gap": 3,
         "cooldown": 5,
         "in_position": 48,
@@ -994,7 +994,7 @@
         "initial_r": 87.32537728370963,
         "best_close": 7350.25,
         "stop_updates": 0,
-        "held_bars": 12
+        "held_bars": 14
       },
       "closed": [
         {
@@ -1080,7 +1080,7 @@
         "no_setup": 45,
         "gap": 2,
         "cooldown": 4,
-        "in_position": 56,
+        "in_position": 58,
         "entered": 5,
         "exited": 4,
         "invalid": 0
@@ -1181,7 +1181,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 61,
+        "no_setup": 63,
         "gap": 4,
         "cooldown": 5,
         "in_position": 37,
@@ -1192,18 +1192,8 @@
       "last_exit_ts": 1793887200
     },
     "XTIUSD:ema20_retest": {
-      "equity": 1009.5609688202242,
-      "position": {
-        "side": -1,
-        "entry": 89.9800033569336,
-        "start": 1793955600,
-        "qty": 1.9352852103279932,
-        "stop": 91.284153468029,
-        "initial_r": 1.3041501110954121,
-        "best_close": 89.9800033569336,
-        "stop_updates": 0,
-        "held_bars": 2
-      },
+      "equity": 1006.8616674772406,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793700000,
@@ -1244,6 +1234,16 @@
           "net_usd": 14.76788,
           "cost_usd": 0.16878,
           "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793955600,
+          "exit_ts": 1793970000,
+          "side": -1,
+          "entry": 89.9800034,
+          "exit": 91.2841535,
+          "net_usd": -2.6993,
+          "cost_usd": 0.1754,
+          "exit_type": "STOP"
         }
       ],
       "entries": [
@@ -1283,31 +1283,21 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.70 com custos estimados",
       "diagnostics": {
         "no_setup": 50,
         "gap": 6,
         "cooldown": 4,
-        "in_position": 32,
+        "in_position": 34,
         "entered": 5,
-        "exited": 4,
+        "exited": 5,
         "invalid": 0
       },
-      "last_exit_ts": 1793862000
+      "last_exit_ts": 1793970000
     },
     "XTIUSD:channel10": {
-      "equity": 1003.9859262299385,
-      "position": {
-        "side": -1,
-        "entry": 89.9800033569336,
-        "start": 1793955600,
-        "qty": 1.9245980920605974,
-        "stop": 91.284153468029,
-        "initial_r": 1.3041501110954121,
-        "best_close": 89.9800033569336,
-        "stop_updates": 0,
-        "held_bars": 2
-      },
+      "equity": 1001.3015310891715,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793379600,
@@ -1359,6 +1349,16 @@
           "net_usd": 11.21332,
           "cost_usd": 0.1578,
           "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793955600,
+          "exit_ts": 1793970000,
+          "side": -1,
+          "entry": 89.9800034,
+          "exit": 91.2841535,
+          "net_usd": -2.6844,
+          "cost_usd": 0.17443,
+          "exit_type": "STOP"
         }
       ],
       "entries": [
@@ -1405,31 +1405,21 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.68 com custos estimados",
       "diagnostics": {
         "no_setup": 48,
         "gap": 3,
         "cooldown": 4,
-        "in_position": 38,
+        "in_position": 40,
         "entered": 6,
-        "exited": 5,
+        "exited": 6,
         "invalid": 0
       },
-      "last_exit_ts": 1793862000
+      "last_exit_ts": 1793970000
     },
     "XTIUSD:rsi50": {
-      "equity": 1009.352813878833,
-      "position": {
-        "side": -1,
-        "entry": 89.9800033569336,
-        "start": 1793955600,
-        "qty": 1.9348861862056543,
-        "stop": 91.284153468029,
-        "initial_r": 1.3041501110954121,
-        "best_close": 89.9800033569336,
-        "stop_updates": 0,
-        "held_bars": 2
-      },
+      "equity": 1006.6540690875885,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793700000,
@@ -1449,6 +1439,16 @@
           "exit": 88.0015267,
           "net_usd": 12.05019,
           "cost_usd": 0.15084,
+          "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1793955600,
+          "exit_ts": 1793970000,
+          "side": -1,
+          "entry": 89.9800034,
+          "exit": 91.2841535,
+          "net_usd": -2.69874,
+          "cost_usd": 0.17536,
           "exit_type": "STOP"
         }
       ],
@@ -1475,17 +1475,17 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Posição virtual aberta; stop acompanhado",
+      "last_reason": "Saída STOP: US$ -2.70 com custos estimados",
       "diagnostics": {
         "no_setup": 54,
         "gap": 6,
         "cooldown": 2,
-        "in_position": 32,
+        "in_position": 34,
         "entered": 3,
-        "exited": 2,
+        "exited": 3,
         "invalid": 0
       },
-      "last_exit_ts": 1793862000
+      "last_exit_ts": 1793970000
     }
   },
   "unavailable": [],
