@@ -4,11 +4,11 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1793988000,
-    "USDJPY": 1793988000,
-    "XAUUSD": 1793988000,
-    "US500": 1793988000,
-    "XTIUSD": 1793988000
+    "EURUSD": 1793991600,
+    "USDJPY": 1793991600,
+    "XAUUSD": 1793991600,
+    "US500": 1793991600,
+    "XTIUSD": 1793991600
   },
   "books": {
     "EURUSD:ema20_retest": {
@@ -139,7 +139,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 54,
+        "no_setup": 55,
         "gap": 2,
         "cooldown": 7,
         "in_position": 53,
@@ -156,11 +156,11 @@
         "entry": 1.1212018728256226,
         "start": 1793930400,
         "qty": 891.780968414336,
-        "stop": 1.1164676111252985,
+        "stop": 1.1159094313585392,
         "initial_r": 0.001788090307523383,
-        "best_close": 1.1147029399871826,
-        "stop_updates": 8,
-        "held_bars": 16
+        "best_close": 1.1142061948776245,
+        "stop_updates": 9,
+        "held_bars": 17
       },
       "closed": [
         {
@@ -246,7 +246,7 @@
         "no_setup": 75,
         "gap": 2,
         "cooldown": 4,
-        "in_position": 37,
+        "in_position": 38,
         "entered": 5,
         "exited": 4,
         "invalid": 0
@@ -364,7 +364,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 61,
+        "no_setup": 62,
         "gap": 1,
         "cooldown": 6,
         "in_position": 49,
@@ -383,9 +383,9 @@
         "qty": 984.4371136542312,
         "stop": 157.89734304911522,
         "initial_r": 0.3746601247129035,
-        "best_close": 158.27200317382812,
+        "best_close": 158.48800659179688,
         "stop_updates": 0,
-        "held_bars": 0
+        "held_bars": 1
       },
       "closed": [
         {
@@ -500,12 +500,12 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Entrada experimental COMPRA",
+      "last_reason": "Posição virtual aberta; stop acompanhado",
       "diagnostics": {
         "no_setup": 54,
         "gap": 1,
         "cooldown": 6,
-        "in_position": 54,
+        "in_position": 55,
         "entered": 7,
         "exited": 6,
         "invalid": 0
@@ -570,9 +570,9 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: proteção após saída",
+      "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 100,
+        "no_setup": 101,
         "gap": 2,
         "cooldown": 3,
         "in_position": 14,
@@ -676,7 +676,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 63,
+        "no_setup": 64,
         "gap": 1,
         "cooldown": 5,
         "in_position": 48,
@@ -697,7 +697,7 @@
         "initial_r": 28.045263789598803,
         "best_close": 4087.39990234375,
         "stop_updates": 0,
-        "held_bars": 1
+        "held_bars": 2
       },
       "closed": [
         {
@@ -766,7 +766,7 @@
         "no_setup": 90,
         "gap": 6,
         "cooldown": 2,
-        "in_position": 16,
+        "in_position": 17,
         "entered": 4,
         "exited": 3,
         "invalid": 0
@@ -833,7 +833,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 69,
+        "no_setup": 70,
         "gap": 5,
         "cooldown": 3,
         "in_position": 38,
@@ -854,7 +854,7 @@
         "initial_r": 28.045263789598803,
         "best_close": 4087.39990234375,
         "stop_updates": 0,
-        "held_bars": 1
+        "held_bars": 2
       },
       "closed": [
         {
@@ -940,7 +940,7 @@
         "no_setup": 82,
         "gap": 6,
         "cooldown": 3,
-        "in_position": 22,
+        "in_position": 23,
         "entered": 5,
         "exited": 4,
         "invalid": 0
@@ -958,7 +958,7 @@
         "initial_r": 59.82075617642897,
         "best_close": 7417.5,
         "stop_updates": 0,
-        "held_bars": 0
+        "held_bars": 1
       },
       "closed": [
         {
@@ -1056,12 +1056,12 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Entrada experimental VENDA",
+      "last_reason": "Posição virtual aberta; stop acompanhado",
       "diagnostics": {
         "no_setup": 57,
         "gap": 3,
         "cooldown": 5,
-        "in_position": 48,
+        "in_position": 49,
         "entered": 6,
         "exited": 5,
         "invalid": 0
@@ -1162,7 +1162,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 48,
+        "no_setup": 49,
         "gap": 2,
         "cooldown": 5,
         "in_position": 59,
@@ -1183,7 +1183,7 @@
         "initial_r": 59.82075617642897,
         "best_close": 7417.5,
         "stop_updates": 0,
-        "held_bars": 0
+        "held_bars": 1
       },
       "closed": [
         {
@@ -1281,12 +1281,12 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Entrada experimental VENDA",
+      "last_reason": "Posição virtual aberta; stop acompanhado",
       "diagnostics": {
         "no_setup": 67,
         "gap": 4,
         "cooldown": 5,
-        "in_position": 37,
+        "in_position": 38,
         "entered": 6,
         "exited": 5,
         "invalid": 0
@@ -1304,7 +1304,7 @@
         "initial_r": 1.577418645989629,
         "best_close": 90.05999755859375,
         "stop_updates": 0,
-        "held_bars": 3
+        "held_bars": 4
       },
       "closed": [
         {
@@ -1407,7 +1407,7 @@
         "no_setup": 50,
         "gap": 6,
         "cooldown": 5,
-        "in_position": 37,
+        "in_position": 38,
         "entered": 6,
         "exited": 5,
         "invalid": 0
@@ -1526,7 +1526,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 52,
+        "no_setup": 53,
         "gap": 3,
         "cooldown": 5,
         "in_position": 40,
@@ -1547,7 +1547,7 @@
         "initial_r": 1.577418645989629,
         "best_close": 90.05999755859375,
         "stop_updates": 0,
-        "held_bars": 3
+        "held_bars": 4
       },
       "closed": [
         {
@@ -1616,7 +1616,7 @@
         "no_setup": 54,
         "gap": 6,
         "cooldown": 3,
-        "in_position": 37,
+        "in_position": 38,
         "entered": 4,
         "exited": 3,
         "invalid": 0

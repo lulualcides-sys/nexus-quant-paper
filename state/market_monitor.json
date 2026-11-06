@@ -859,9 +859,9 @@
           "asset": "EURUSD",
           "atr": 0.001266667732582338,
           "close": 1.1148271560668945,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.49023,
+          "eval": "favoravel",
+          "evaluated_at": 1793991600,
           "id": "EURUSD:breakout_pro:1793970000",
           "side": -1,
           "strategy": "breakout_pro",
@@ -871,9 +871,9 @@
           "asset": "EURUSD",
           "atr": 0.001266667732582338,
           "close": 1.1148271560668945,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.49023,
+          "eval": "favoravel",
+          "evaluated_at": 1793991600,
           "id": "EURUSD:momentum_x:1793970000",
           "side": -1,
           "strategy": "momentum_x",
@@ -881,7 +881,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1793988000
+      "watermark": 1793991600
     },
     "US500": {
       "signals": [
@@ -1748,10 +1748,22 @@
           "side": -1,
           "strategy": "pullback_master",
           "ts": 1793984400
+        },
+        {
+          "asset": "US500",
+          "atr": 36.1827989749736,
+          "close": 7426.25,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:pullback_master:1793991600",
+          "side": -1,
+          "strategy": "pullback_master",
+          "ts": 1793991600
         }
       ],
       "source": "ES=F",
-      "watermark": 1793988000
+      "watermark": 1793991600
     },
     "USDJPY": {
       "signals": [
@@ -2443,9 +2455,9 @@
           "asset": "USDJPY",
           "atr": 0.2503470463584228,
           "close": 158.4219970703125,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.26367,
+          "eval": "neutro",
+          "evaluated_at": 1793991600,
           "id": "USDJPY:breakout_pro:1793970000",
           "side": 1,
           "strategy": "breakout_pro",
@@ -2477,7 +2489,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1793988000
+      "watermark": 1793991600
     },
     "XAUUSD": {
       "signals": [
@@ -3311,7 +3323,7 @@
         }
       ],
       "source": "GC=F",
-      "watermark": 1793988000
+      "watermark": 1793991600
     },
     "XTIUSD": {
       "signals": [
@@ -4025,7 +4037,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1793988000
+      "watermark": 1793991600
     }
   },
   "schema": 4
