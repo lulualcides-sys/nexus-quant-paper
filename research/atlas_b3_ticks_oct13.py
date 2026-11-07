@@ -98,8 +98,29 @@ def match_signals(bars, provenance, evidence_csv=None, coverage_csv=None):
         "trades_executed": False, "winrate": None, "net_brl": None,
         "matches": None,
     }
-    if len(regular) < MIN_CANDLES:
+    # A count threshold alone does NOT establish continuous M1 coverage:
+    # 400+ real trades can still omit a decisive market minute. Mirror the
+    # strict session gate used by the Profit importer; do not synthesize bars.
+    from research.atlas_win_oct13 import SESSION_START, SESSION_END
+    minutes = set()
+    for bar in regular:
+        clock = datetime.fromtimestamp(bar["time"], timezone.utc).astimezone(TZ)
+        if clock.date().isoformat() == DATE:
+            minute = clock.hour * 60 + clock.minute
+            if SESSION_START <= minute < SESSION_END:
+                minutes.add(minute)
+    expected = set(range(SESSION_START, SESSION_END))
+    missing = sorted(expected - minutes)
+    report["session_expected_m1"] = len(expected)
+    report["session_observed_m1"] = len(minutes)
+    report["missing_session_minutes"] = len(missing)
+    report["missing_first_20"] = [f"{m//60:02d}:{m%60:02d}" for m in missing[:20]]
+    report["session_complete"] = not missing
+    if len(minutes) < MIN_CANDLES:
         report["status"] = "insufficient_win_v26_m1_coverage"
+        return report
+    if missing:
+        report["status"] = "incomplete_session_no_signal_replay"
         return report
     if coverage_csv is not None:
         from research.atlas_tracker_observability import (
