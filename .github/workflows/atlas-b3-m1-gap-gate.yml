@@ -1,0 +1,30 @@
+name: ATLAS WINV26 B3 M1 coverage gate
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/atlas_b3_ticks_oct13.py'
+      - 'tests/test_atlas_b3_m1_gap_gate.py'
+      - '.github/workflows/atlas-b3-m1-gap-gate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Gap-gate synthetic regression
+        run: python -m unittest discover -s tests -p 'test_atlas_b3_m1_gap_gate.py' -v
+      - name: B3 tick and Profit October regression
+        run: |
+          python -m unittest discover -s tests -p 'test_atlas_b3_ticks_oct13.py' -v
+          python -m unittest discover -s tests -p 'test_atlas_win_oct13.py' -v
+      - name: B3 streaming and Tracker coverage regression
+        run: |
+          python -m unittest discover -s tests -p 'test_atlas_b3_streaming.py' -v
+          python -m unittest discover -s tests -p 'test_atlas_tracker_observability.py' -v
