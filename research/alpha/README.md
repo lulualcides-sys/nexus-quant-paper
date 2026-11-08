@@ -30,7 +30,7 @@ Branch: `research/alpha-10-m1m5-20261108`. This laboratory does not import `src.
 ## Reproduction
 
 ```sh
-python -m unittest tests/test_alpha_lab.py -v
+python -m unittest discover -s tests -p "test_alpha_lab.py" -v
 python -m research.alpha.run --out artifacts/alpha
 ```
 

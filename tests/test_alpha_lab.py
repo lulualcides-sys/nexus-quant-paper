@@ -48,7 +48,7 @@ class LabIntegrity(unittest.TestCase):
 
     def test_next_open_and_intrabar_stop_first(self):
         b=bars(260)
-        b[223]["high"]=104.;b[223]["low"]=96.
+        b[223]["high"]=107.;b[223]["low"]=96.
         run=backtest(b,OneSignal,1,221,250,5.)
         self.assertTrue(run["ledger"])
         first=run["ledger"][0]
