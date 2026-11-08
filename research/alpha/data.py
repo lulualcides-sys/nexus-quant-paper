@@ -30,7 +30,7 @@ def month_seconds(s):
     return start,stop
 
 def parse_archive(data,symbol,month):
-    if symbol not in SYMBOLS or month not in (*MONTHS,"2026-07"):
+    if symbol not in SYMBOLS or month not in (*MONTHS,"2026-05","2026-06","2026-07"):
         raise ValueError("unapproved market or month")
     start,end=month_seconds(month)
     rows=[]
