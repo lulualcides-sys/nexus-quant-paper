@@ -99,6 +99,32 @@ def signal(strategy, bars, ind, i):
     raise KeyError(strategy)
 
 
+def signal_block_reason(strategy, bars, ind, i):
+    """Explicação somente diagnóstica. Não altera a regra de entrada."""
+    if i < WARMUP:
+        return "Histórico H1 insuficiente"
+    x = ind[i]
+    if x["e50"] <= x["e200"]:
+        return "Tendência H1 sem alta: EMA50 <= EMA200"
+    if bars[i]["close"] <= x["e50"]:
+        return "Fechamento H1 abaixo da EMA50"
+    if strategy == "ema_pullback":
+        if bars[i-1]["close"] > ind[i-1]["e20"]:
+            return "Sem toque/retorno à EMA20"
+        if bars[i]["close"] <= x["e20"]:
+            return "Sem recuperação da EMA20"
+        if not 45 <= x["rsi"] <= 75:
+            return "RSI fora da faixa 45-75"
+        return "Sem setup H1 confirmado"
+    if strategy == "channel20":
+        if bars[i]["close"] <= max(b["high"] for b in bars[i-20:i]):
+            return "Sem rompimento do canal de 20 candles"
+        if x["rsi"] >= 85:
+            return "RSI >= 85; entrada bloqueada"
+        return "Sem setup H1 confirmado"
+    return "Estratégia desconhecida"
+
+
 def close_position(b, candle, fill, why):
     p = b["position"]
     sell_price = fill * (1 - SLIPPAGE)
@@ -134,7 +160,7 @@ def step(b, strategy, bars, ind, i):
             p["stop"] = max(p["stop"], p["best_close"] - TRAIL_ATR * ind[i]["atr"])
         return
     if not signal(strategy, bars, ind, i-1):
-        b["last_reason"] = "Sem setup H1 confirmado"
+        b["last_reason"] = signal_block_reason(strategy, bars, ind, i-1)
         return
     open_price = candle["open"]
     entry = open_price * (1 + SLIPPAGE)
