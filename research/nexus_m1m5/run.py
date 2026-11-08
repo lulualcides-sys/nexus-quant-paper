@@ -17,7 +17,7 @@ from .engine import buy_hold, replay
 from .strategies import SPECS, build_features
 
 SYMBOLS = ("BTCUSDT", "ETHUSDT")
-SCENARIOS = ("base", "double_fee", "adverse")
+SCENARIOS = ("base", "double_cost", "adverse")
 
 
 def month_indices(bars, months):
@@ -150,7 +150,7 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
                     final = r["folds"]["final_intocado_primeiro_uso"]
                     wf = [r["folds"][f"walkforward_{i}"]["base"] for i in range(1, 4)]
                     r["decision"], r["decision_reason"] = judgement(
-                        final["base"], final["double_fee"], final["adverse"], wf)
+                        final["base"], final["double_cost"], final["adverse"], wf)
                 results[key] = r
         # Discard raw symbol arrays before loading next market.
         del m1, m5, m1f, m5f, h15, h15f
@@ -169,7 +169,7 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
             "entry": "next REAL available candle open + modeled execution deviation",
             "fee_per_side_regular_spot": .001,
             "base_slippage_per_side": .0002, "adverse_execution_deviation_per_side": .0011,
-            "double_fee_per_side": .002,
+            "double_cost_fee_per_side": .002, "double_cost_slippage_per_side": .0004,
             "daily_loss_lock": .02, "drawdown_circuit_breaker": .10,
             "M1_planned_stop_risk": .0025, "M5_planned_stop_risk": .005,
             "spread_extra_fee": 0,
@@ -190,31 +190,31 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
     ranked = []
     for key, r in results.items():
         f = r["folds"].get("final_intocado_primeiro_uso", {}).get("base")
-        stressed = r["folds"].get("final_intocado_primeiro_uso", {}).get("double_fee")
+        stressed = r["folds"].get("final_intocado_primeiro_uso", {}).get("double_cost")
         adverse = r["folds"].get("final_intocado_primeiro_uso", {}).get("adverse")
         ranked.append({
             "candidate": key, "decision": r["decision"], "why": r["decision_reason"],
             "final_net_usd": f["net_usd"] if f else None,
             "final_profit_factor": f["profit_factor"] if f else None,
             "final_trades": f["trades_closed"] if f else None,
-            "double_fee_net_usd": stressed["net_usd"] if stressed else None,
+            "double_cost_net_usd": stressed["net_usd"] if stressed else None,
             "adverse_net_usd": adverse["net_usd"] if adverse else None,
         })
     ranked.sort(key=lambda x: (
         x["decision"] != "APTO PARA PAPER FORWARD",
-        -(min(x["final_net_usd"], x["double_fee_net_usd"], x["adverse_net_usd"])
+        -(min(x["final_net_usd"], x["double_cost_net_usd"], x["adverse_net_usd"])
           if x["final_net_usd"] is not None else float("-inf"))))
     table = [
         "# NEXUS M1/M5 — relatório auditável, não é lucro real",
         "",
         f"- Fonte: Binance spot {', '.join(symbols)}; meses: {month_list[0]} até {month_list[-1]} UTC.",
         "- Critérios definidos antes dos resultados; sem parâmetros otimizados pelo P&L.",
-        "- Taxas de 0,10% por lado, custo dobrado 0,20%, e cenário adverso com execução pior.",
+        "- Taxas de 0,10% por lado, custo dobrado 0,20% de taxa e 0,04% de slippage, e cenário adverso com execução pior.",
         "- Todos candidatos desativados; nenhuma estratégia promovida automaticamente.",
         f"- CSV de operações SHA256: {ledger_sha}",
         "- Observação: a primeira execução completa consome o holdout final; não reutilizá-lo para ajuste.",
         "",
-        "| Candidato | Decisão | Trades final | Líquido final US$ | PF final | Taxa dobrada US$ | Adverso US$ |",
+        "| Candidato | Decisão | Trades final | Líquido final US$ | PF final | Custo dobrado US$ | Adverso US$ |",
         "|---|---|---:|---:|---:|---:|---:|",
     ]
     for x in ranked:
@@ -222,7 +222,7 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
         table.append("| " + " | ".join([
             x["candidate"], x["decision"], fmt(x["final_trades"]),
             fmt(x["final_net_usd"]), fmt(x["final_profit_factor"]),
-            fmt(x["double_fee_net_usd"]), fmt(x["adverse_net_usd"])]) + " |")
+            fmt(x["double_cost_net_usd"]), fmt(x["adverse_net_usd"])]) + " |")
     table += ["", "## Motivos", ""]
     for x in ranked:
         table.append(f"- **{x['candidate']}**: {x['why']}.")
