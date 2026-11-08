@@ -148,7 +148,7 @@ def _regime(bars, f, i):
 
 def replay(bars, f, name, scenario="base", *, start=210, stop=None,
            higher=None, higher_features=None, higher_closes=None,
-           breakout_mode="immediate", simple=False):
+           breakout_mode="immediate", simple=False, sensitivity=1.0):
     if scenario not in SCENARIOS:
         raise ValueError("Unknown cost scenario")
     if stop is None:
@@ -275,7 +275,7 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
                 sig = signal(name, bars, f, i, higher=higher,
                              higher_features=higher_features,
                              breakout_mode=breakout_mode,
-                             higher_closes=higher_closes)
+                             higher_closes=higher_closes, strength=sensitivity)
             if sig is not None:
                 signals += 1
                 pending = sig, i
