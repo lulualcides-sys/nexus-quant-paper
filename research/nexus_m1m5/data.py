@@ -118,6 +118,13 @@ def get_month(symbol: str, interval: str, month: str, cache: Path):
         with z.open(names[0]) as content:
             rows = parse_rows(csv.reader(io.TextIOWrapper(content, encoding="utf-8-sig")),
                               interval, expected_month=month)
+    # Published MONTHLY archives must cover the full UTC calendar month.
+    y, m = map(int, month.split("-"))
+    start_utc = int(datetime(y, m, 1, tzinfo=timezone.utc).timestamp() * 1000)
+    ny, nm = (y + 1, 1) if m == 12 else (y, m + 1)
+    end_utc = int(datetime(ny, nm, 1, tzinfo=timezone.utc).timestamp() * 1000)
+    if rows[0].t != start_utc or rows[-1].t + INTERVAL_MS[interval] != end_utc:
+        raise ValueError(f"Incomplete calendar month: {filename}")
     return rows, {"url": url, "sha256": digest, "candles": len(rows),
                   "first_open_utc_ms": rows[0].t, "last_open_utc_ms": rows[-1].t}
 
