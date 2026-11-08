@@ -85,7 +85,7 @@ def build_features(bars):
         atr.append(a)
         sma20.append(mid)
         std20.append(sd)
-        vol20.append((vol_sum - b.v) / 20 if i >= 20 else 0.0)
+        vol20.append((vol_sum - b.v + bars[i - 20].v) / 20 if i >= 20 else 0.0)
         high20.append(max(x.h for x in bars[i - 20:i]) if i >= 20 else float("inf"))
         low20.append(min(x.l for x in bars[i - 20:i]) if i >= 20 else 0.0)
         vwap48.append(dollar48 / volume48 if volume48 > 0 else b.c)
