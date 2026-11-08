@@ -27,6 +27,7 @@ MAX_DAILY_LOSS = .02
 MAX_DRAWDOWN = .10
 MAX_POSITIONS = 2
 MAX_SHARED_NOTIONAL = .60
+MAX_CORRELATED_CRYPTO_NOTIONAL = .40
 
 
 def local_date(t_ms):
@@ -45,7 +46,13 @@ class PortfolioGate:
             return False
         if any(p[0] == symbol for p in self.positions.values()):
             return False
-        return (sum(p[1] for p in self.positions.values()) + notional) <= MAX_SHARED_NOTIONAL * equity
+        total = sum(p[1] for p in self.positions.values()) + notional
+        if symbol in ("BTCUSDT", "ETHUSDT"):
+            crypto = sum(p[1] for p in self.positions.values()
+                         if p[0] in ("BTCUSDT", "ETHUSDT")) + notional
+            if crypto > MAX_CORRELATED_CRYPTO_NOTIONAL * equity:
+                return False
+        return total <= MAX_SHARED_NOTIONAL * equity
 
     def opened(self, key, symbol, notional, equity, **checks):
         if not self.can_open(key, symbol, notional, equity, **checks):
@@ -183,7 +190,12 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
                     structure = max(0, slip_entry - sig.structure_low + .10 * atr)
                     distance = max(sig.stop_atr * atr, min(2.5 * atr, structure))
                     if distance > 0 and distance / slip_entry >= .0003:
-                        units_risk = (cash * risk) / distance
+                        # Size against the FULL modeled stop loss, including both
+                        # commissions and exit execution deviation (not just ATR).
+                        stop_fill = (slip_entry - distance) * (1 - dev)
+                        per_unit_stop_loss = (slip_entry * (1 + fee_rate)
+                                              - stop_fill * (1 - fee_rate))
+                        units_risk = (cash * risk) / per_unit_stop_loss
                         units_cash = cash / (slip_entry * (1 + fee_rate))
                         units = min(units_risk, units_cash)
                         if units > 0:
