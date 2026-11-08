@@ -23,6 +23,12 @@ class V5Tests(unittest.TestCase):
         self.assertEqual(H4_SLOPE_LAG,12)
         self.assertEqual(H4_WARMUP,60)
 
+    def test_partial_h4_never_used_for_signals(self):
+        raw=historical(240*15+119)
+        model=ConfirmedRegime("alpha02_breakout_retest",raw)
+        self.assertEqual(len(model.h4),15)
+        self.assertEqual(model.last_closed_h4(len(model.bars)-1),14)
+
     def test_future_append_invariance_in_h1_h4(self):
         source=historical(60*260)
         prefix=source[:60*254]

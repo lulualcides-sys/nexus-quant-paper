@@ -67,7 +67,7 @@ def month(symbol,period):
                      precision_is_historical_tick_proof=False)
 
 def aggregate(bars,minutes):
-    if minutes not in (5,60):raise ValueError("unsupported aggregation")
+    if minutes not in (5,60,240):raise ValueError("unsupported aggregation")
     if len(bars)%minutes:raise ValueError("partial MTF candle")
     result=[]
     for i in range(0,len(bars),minutes):

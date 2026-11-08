@@ -14,7 +14,7 @@ H4_SLOPE_LAG=12
 class ConfirmedRegime(MultiTimeframe):
     def __init__(self,name,m1):
         super().__init__(name,m1)
-        self.h4=aggregate(m1,240)
+        self.h4=aggregate(m1[:len(m1)//240*240],240)  # discard any still-forming H4
         self.h4_features=build(self.h4)
 
     def last_closed_h4(self,i):
