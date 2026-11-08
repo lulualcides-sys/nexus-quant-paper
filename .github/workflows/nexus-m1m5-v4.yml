@@ -59,7 +59,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-  independent-backfill-2023-2024:
+  independent-backfill-2024:
     needs: offline-regression
     runs-on: ubuntu-latest
     timeout-minutes: 150
@@ -68,12 +68,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Cache independently verified Binance spot M5 2023-24 archives
+      - name: Cache independently verified Binance spot M5 2024 archives
         uses: actions/cache@v4
         with:
           path: .cache/nexus_v4_backfill/
-          key: nexus-v4-independent-2023-2024-m5-official-first-use
-      - name: Replay identical frozen V4 parameters on untouched older market history
+          key: nexus-v4-independent-2024-m5-official-first-use
+      - name: Replay identical frozen V4 parameters on unexamined 2024 data, excluding anomalous 2023
         run: python -m research.nexus_m1m5.v4_backfill --out artifacts/nexus-v4-backfill
       - name: Upload complete independent historical backfill ledger
         if: always()
