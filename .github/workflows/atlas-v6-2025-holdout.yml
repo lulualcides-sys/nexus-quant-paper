@@ -1,0 +1,38 @@
+name: ATLAS V6 backward holdout 2025 - research only
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - research/atlas_v6_2025_holdout.py
+      - tests/test_atlas_v6_2025_holdout.py
+      - .github/workflows/atlas-v6-2025-holdout.yml
+      - research/results/ATLAS-V6-2025-BACKWARD-HOLDOUT.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: New source, chronology and guard tests
+        run: python -m unittest discover -s tests -p 'test_atlas_v6_2025_holdout.py' -v
+      - name: Existing V6 and V5 regression tests
+        run: |
+          python -m unittest discover -s tests -p 'test_atlas_v6_noon_probe.py' -v
+          python -m unittest discover -s tests -p 'test_atlas_v5_loss_ranking.py' -v
+      - name: Run fixed models on independent 2025 continuous WINFUT M5
+        run: python -m research.atlas_v6_2025_holdout
+      - name: Store evidence and full cost sensitivity
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-v6-2025-backward-holdout
+          path: |
+            research/results/atlas_v6_2025_backward_holdout.json
+            research/results/atlas_v6_2025_backward_holdout.md
+          retention-days: 30
