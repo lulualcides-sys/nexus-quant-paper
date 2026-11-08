@@ -6,6 +6,7 @@ Never place orders; never read Telegram secrets or existing project state.
 from __future__ import annotations
 
 from collections import defaultdict
+from dataclasses import replace
 from datetime import datetime, timezone
 from math import sqrt
 from random import Random
@@ -148,7 +149,8 @@ def _regime(bars, f, i):
 
 def replay(bars, f, name, scenario="base", *, start=210, stop=None,
            higher=None, higher_features=None, higher_closes=None,
-           breakout_mode="immediate", simple=False, sensitivity=1.0):
+           breakout_mode="immediate", simple=False, sensitivity=1.0,
+           research_policy=None):
     if scenario not in SCENARIOS:
         raise ValueError("Unknown cost scenario")
     if stop is None:
@@ -158,7 +160,8 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
     cost = SCENARIOS[scenario]
     fee_rate, dev = cost["fee"], cost["slip"] + cost["impact"]
     risk = .0025 if name in ("sweep", "vwap") else .005
-    max_hold = 90 if name in ("sweep", "vwap") else 72
+    max_hold = (research_policy["max_hold"] if research_policy else
+                (90 if name in ("sweep", "vwap") else 72))
     cash = CAPITAL
     position = None
     pending = None
@@ -170,7 +173,7 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
     this_day = None
     day_start = CAPITAL
     day_closes = []
-    rejected = signals = 0
+    rejected = signals = gate_vetoes = 0
     # At start, no earlier signal is backfilled into this fold.
     for i in range(start, stop):
         b = bars[i]
@@ -276,6 +279,23 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
                              higher_features=higher_features,
                              breakout_mode=breakout_mode,
                              higher_closes=higher_closes, strength=sensitivity)
+            if sig is not None and research_policy is not None:
+                # A deliberately *counterfactual* research filter using only
+                # closed-bar volatility, predeclared costs and trend. No future.
+                from .v2_policy import approve_closed_signal
+                permitted = approve_closed_signal(
+                    name, sig, bars, f, i,
+                    cost=cost,
+                    reward_to_cost=research_policy["reward_to_cost"],
+                    trend_gate=research_policy["trend_gate"],
+                    target_r=research_policy["target_r"],
+                )
+                if permitted:
+                    sig = replace(sig, target_r=research_policy["target_r"],
+                                  reason=sig.reason + "|cost_aware_v2")
+                else:
+                    gate_vetoes += 1
+                    sig = None
             if sig is not None:
                 signals += 1
                 pending = sig, i
@@ -284,6 +304,8 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
     report = _summary(trades, equity=cash, max_dd=max_dd, daily=day_closes,
                       rejected=rejected, signals=signals, breaker=breaker,
                       scenario=scenario)
+    report["gate_vetoes"] = gate_vetoes
+    report["research_policy"] = research_policy
     report["ending_equity_usd"] = round(cash, 4)
     report["start_utc_ms"] = bars[start].t
     report["end_utc_ms"] = bars[stop - 1].t
