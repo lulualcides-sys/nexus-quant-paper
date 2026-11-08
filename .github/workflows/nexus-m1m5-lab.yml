@@ -1,0 +1,65 @@
+name: "NEXUS QUANT | M1 M5 six-robot research"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/nexus_m1m5/**"
+      - "tests/test_nexus_m1m5_lab.py"
+      - "docs/NEXUS-M1M5-LAB.md"
+      - ".github/workflows/nexus-m1m5-lab.yml"
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "Full 22-month period (2025-01 to 2026-10) or 12-month repeat for diagnostics only"
+        type: choice
+        required: true
+        default: "22"
+        options: ["22", "12"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nexus-m1m5-lab-\${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Six-robot regression tests, no network and no broker API
+        run: python -m unittest discover -s tests -p "test_nexus_m1m5_lab.py" -v
+      - name: Python compile checks
+        run: python -m compileall -q research/nexus_m1m5 tests/test_nexus_m1m5_lab.py
+
+  historical-replay:
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Full Binance historical replay with checksum validation and cost stress
+        env:
+          EVENT_NAME: \${{ github.event_name }}
+          MONTHS_REQUESTED: \${{ inputs.months }}
+        run: |
+          set -euo pipefail
+          # First PR evaluation uses all 22 published months, not a favorable subset.
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then MONTHS=22; else MONTHS="\${MONTHS_REQUESTED:-22}"; fi
+          python -m research.nexus_m1m5.run --end 2026-10 --months "$MONTHS" --out artifacts/nexus-m1m5
+      - name: Attach honest report, each trade and data provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-m1m5-research-ledger-\${{ github.run_id }}
+          path: artifacts/nexus-m1m5/
+          if-no-files-found: warn
+          retention-days: 30
