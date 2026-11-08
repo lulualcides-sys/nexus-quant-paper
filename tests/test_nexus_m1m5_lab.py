@@ -124,6 +124,32 @@ class StrategiesTests(unittest.TestCase):
                         higher_closes=[x.t + 900_000 for x in changed])
         self.assertEqual(original, result)
 
+    def test_sensitivity_is_bounded_and_stability_guard_fail_closed(self):
+        bars = sample(n=240)
+        f = build_features(bars)
+        with self.assertRaises(ValueError):
+            signal("flow", bars, f, 220, strength=1.20)
+        self.assertEqual(signal("flow", bars, f, 220, strength=1.0),
+                         signal("flow", bars, f, 220, strength=0.90))
+
+    def test_no_promotion_without_stability_on_validation(self):
+        base = {
+            "trades_closed": 100, "net_usd": 200,
+            "effective_n_lag1_approx": 90,
+            "ci95_expectancy_day_bootstrap_usd": [.1, 4],
+            "profit_factor": 1.5,
+            "max_drawdown_pct_mark_to_market": 3,
+            "circuit_breaker_tripped": False,
+            "concentration_top3_of_positive_pnl": .20,
+        }
+        costs = {"net_usd": 50}
+        wf = [{"net_usd": 10} for _ in range(3)]
+        from research.nexus_m1m5.run import judgement
+        self.assertEqual(judgement(base, costs, costs, wf)[0], "INCONCLUSIVO")
+        stable = {"looser_0.90": {"net_usd": 10, "trades_closed": 20},
+                  "tighter_1.10": {"net_usd": -1, "trades_closed": 20}}
+        self.assertEqual(judgement(base, costs, costs, wf, stable)[0], "INCONCLUSIVO")
+
     def test_unknown_breakout_mode_rejected(self):
         bars = sample(n=240)
         with self.assertRaises(ValueError):
