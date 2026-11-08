@@ -285,7 +285,7 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
                 from .v2_policy import approve_closed_signal
                 permitted = approve_closed_signal(
                     name, sig, bars, f, i,
-                    cost=cost,
+                    cost=SCENARIOS["base"],  # freeze gate across cost stresses
                     reward_to_cost=research_policy["reward_to_cost"],
                     trend_gate=research_policy["trend_gate"],
                     target_r=research_policy["target_r"],
