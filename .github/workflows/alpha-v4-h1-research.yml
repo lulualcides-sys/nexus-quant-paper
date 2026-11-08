@@ -1,0 +1,44 @@
+name: ALPHA V4 H1 trend confirmation — isolated
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/alpha/**'
+      - 'research/alpha_v4/**'
+      - 'tests/test_alpha_v4.py'
+      - '.github/workflows/alpha-v4-h1-research.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Tests MTF no lookahead, stop risk, fill accounting and data validation
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_v4.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_lab.py' -v
+  independent_market_test:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Real unmodified spot SHA256 verified candles, ten original entries with H1 filter
+        run: python -m research.alpha_v4.run --out artifacts/alpha-v4
+      - name: Preserve raw source hashes, PnL reports and ledgers even if market is invalid
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v4-research-${{ github.run_id }}
+          path: artifacts/alpha-v4
+          retention-days: 30
+          if-no-files-found: warn
