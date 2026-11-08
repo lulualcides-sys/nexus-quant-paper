@@ -36,9 +36,10 @@ def run(mode="scan", now=None, get=fetch_klines, send=telegram,
     message = digest(state, day)
     reports.mkdir(parents=True, exist_ok=True)
     (reports / (day + ".txt")).write_text(message + "\n", encoding="utf8")
-    if send(message):
-        marker.parent.mkdir(parents=True, exist_ok=True)
-        marker.write_text(json.dumps({"day": day}, indent=2) + "\n", encoding="utf8")
+    if not send(message):
+        raise RuntimeError("Telegram não confirmou fechamento cripto; manter marcador para recuperação")
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    marker.write_text(json.dumps({"day": day}, indent=2) + "\n", encoding="utf8")
     return state
 
 
