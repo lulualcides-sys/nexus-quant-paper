@@ -56,7 +56,12 @@ jobs:
           MODE=scan
           if [[ "$SCHEDULE_EXPR" == '5,20,35,50 * * * 1-5' || "$MANUAL_MODE" == 'mtf' ]]; then MODE=mtf; fi
           if [[ "$SCHEDULE_EXPR" == '30 22 * * 1-5' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
-          python -m src.runner --mode "$MODE"
+          if [[ "$MODE" == 'report' ]]; then
+            # Fechamento não deve depender de feed do ouro após o pregão.
+            python -m src.scheduled_closing
+          else
+            python -m src.runner --mode "$MODE"
+          fi
       - name: Store signal journal
         if: "success() && github.event_name != 'pull_request' && (github.event_name != 'push' || startsWith(github.event.head_commit.message, 'test: run forward monitor scan'))"
         shell: bash
