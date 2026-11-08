@@ -150,7 +150,8 @@ def _regime(bars, f, i):
 def replay(bars, f, name, scenario="base", *, start=210, stop=None,
            higher=None, higher_features=None, higher_closes=None,
            breakout_mode="immediate", simple=False, sensitivity=1.0,
-           research_policy=None):
+           research_policy=None, macro=None, macro_features=None,
+           macro_closes=None):
     if scenario not in SCENARIOS:
         raise ValueError("Unknown cost scenario")
     if stop is None:
@@ -192,6 +193,11 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
                 if abs(b.o - bars[sign_i].c) <= 1.5 * atr:
                     structure = max(0, slip_entry - sig.structure_low + .10 * atr)
                     distance = max(sig.stop_atr * atr, min(2.5 * atr, structure))
+                    if research_policy is not None and research_policy.get("mode") == "v3":
+                        from .v3_policy import extra_stop_distance
+                        distance = max(distance, extra_stop_distance(
+                            bars, sign_i, macro, macro_features, macro_closes,
+                            research_policy, slip_entry))
                     if distance > 0 and distance / slip_entry >= .0003:
                         # Size against the FULL modeled stop loss, including both
                         # commissions and exit execution deviation (not just ATR).
@@ -280,19 +286,24 @@ def replay(bars, f, name, scenario="base", *, start=210, stop=None,
                              breakout_mode=breakout_mode,
                              higher_closes=higher_closes, strength=sensitivity)
             if sig is not None and research_policy is not None:
-                # A deliberately *counterfactual* research filter using only
-                # closed-bar volatility, predeclared costs and trend. No future.
-                from .v2_policy import approve_closed_signal
-                permitted = approve_closed_signal(
-                    name, sig, bars, f, i,
-                    cost=SCENARIOS["base"],  # freeze gate across cost stresses
-                    reward_to_cost=research_policy["reward_to_cost"],
-                    trend_gate=research_policy["trend_gate"],
-                    target_r=research_policy["target_r"],
-                )
+                if research_policy.get("mode") == "v3":
+                    from .v3_policy import approve_macro_signal
+                    permitted = approve_macro_signal(
+                        bars, i, macro, macro_features, macro_closes,
+                        research_policy)
+                    tag = "|hourly_macro_v3"
+                else:
+                    # V2 unchanged; freeze signal selection across cost stresses.
+                    from .v2_policy import approve_closed_signal
+                    permitted = approve_closed_signal(
+                        name, sig, bars, f, i, cost=SCENARIOS["base"],
+                        reward_to_cost=research_policy["reward_to_cost"],
+                        trend_gate=research_policy["trend_gate"],
+                        target_r=research_policy["target_r"])
+                    tag = "|cost_aware_v2"
                 if permitted:
                     sig = replace(sig, target_r=research_policy["target_r"],
-                                  reason=sig.reason + "|cost_aware_v2")
+                                  reason=sig.reason + tag)
                 else:
                     gate_vetoes += 1
                     sig = None
