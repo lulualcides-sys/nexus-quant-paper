@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: nexus-m1m5-lab-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   offline-tests:
