@@ -44,6 +44,13 @@ Sem ajustar parâmetros ao P&L, particionamento cronológico por mês:
 - **APTO PARA PAPER FORWARD** apenas quando: lucro líquido positivo nas três estruturas de custos em final; PF>1,20; >=80 trades e n efetivo>=60; intervalo bootstrap com limite inferior positivo; DD<10%; sem circuit breaker; pelo menos duas janelas de três positivas; sem concentração >50% dos ganhos brutos positivos em apenas três operações. Qualquer perda líquida de final/stress => REPROVADO. Amostra insuficiente ou estatística fraca => INCONCLUSIVO.
 - Regras de aprovação são gates **iniciais de pesquisa**, não inferência de lucratividade futura ou controle formal de multiplicidade dos seis modelos e dois mercados. Mesmo aprovados precisariam paper forward independente de 30–60 dias, validação de custos e latência antes de qualquer consideração de promoção.
 
+
+### Primeiro teste já consumiu o holdout
+
+**Evidência histórica inaugural:** [Actions run 42488027943](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42488027943), 22 meses com SHA256, 21 testes offline, 14 combinações todas reprovadas no teste final. **O período julho–outubro/2026 já foi revelado.** Reexecuções após patches de correção são **rechecks de holdout exposto**, não novos OOS intactos; portanto qualquer versão posteriormente positiva requer período posterior jamais inspecionado antes de elegibilidade. Os resultados negativos originais não podem ser apagados nem selecionados apenas os replays positivos.
+
+Os limites de gatilho são ainda perturbados em ±10% **somente na janela de validação anterior ao período final** (0,90 e 1,10 na severidade de filtros). Um candidato somente passaria os critérios prospectivos se ambos cenários também registrassem resultado líquido positivo com amostra de operações suficiente. Essa sensibilidade simples não substitui estudo sistemático de estabilidade com novas janelas nem correção para múltiplas hipóteses.
+
 ## Reproduzir
 
 Executar testes offline (somente standard library Python 3.11+):
