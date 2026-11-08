@@ -17,6 +17,11 @@ from research.alpha_v4.engine import backtest
 SLIPPAGE=(0.,5.,10.)
 MAIN_SCENARIO="5"
 
+def _aggregate_net(values):
+    observed=[v["net_usdt"] for v in values
+              if v["trades"]>0 and v["net_usdt"] is not None]
+    return round(sum(observed),4) if observed else None
+
 def run(out):
     root=Path(out);root.mkdir(parents=True,exist_ok=True)
     records=[];manifests=[];errors={}
@@ -67,19 +72,19 @@ def run(out):
                 ranking.append(dict(robot=name,market=symbol,status="NOT_VALIDATED",
                                     months_valid=len(by_month),net_usdt=None))
                 continue
-            net=round(sum(x["net_usdt"] or 0. for x in by_month.values()),4) if trades else None
             trades=sum(x["trades"] for x in by_month.values())
+            net=_aggregate_net(by_month.values())
             monthly=[{**dict(month=m),**by_month[m]} for m in MONTHS]
             positive=sum(x["net_usdt"] is not None and x["net_usdt"]>0
                          for x in by_month.values())
-            stress={str(int(s)):round(sum(c["scenarios"][str(int(s))]["net_usdt"] or 0.
-                         for c in cases),4) for s in SLIPPAGE}
+            stress={str(int(s)):(round(sum(c["scenarios"][str(int(s))]["net_usdt"] or 0.
+                         for c in cases),4) if trades else None) for s in SLIPPAGE}
             # Technical approval strictly forbidden without genuine forward OOS.
             ranking.append(dict(robot=name,market=symbol,
                                 months_valid=len(by_month),positive_months=positive,
-                                closed_trades=trades,net_usdt=round(net,4),
+                                closed_trades=trades,net_usdt=net,
                                 stress_net_usdt=stress,monthly=monthly,
-                                status=("REJECTED" if trades>=100 and net<=0 else
+                                status=("REJECTED" if trades>=100 and net is not None and net<=0 else
                                         "INCONCLUSIVE_REQUIRES_FORWARD")))
     ranking.sort(key=lambda r:(r["net_usdt"] is None,-(r["net_usdt"] or 0)))
     summary=dict(protocol="ALPHA-V4-H1-M1-M5-FROZEN-2026-11-08",

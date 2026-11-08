@@ -74,6 +74,12 @@ class V4Causality(unittest.TestCase):
         b[8]["time"]+=60
         with self.assertRaises(ValueError):aggregate(b,5)
 
+    def test_aggregate_does_not_fabricate_zero_no_trade(self):
+        from research.alpha_v4.run import _aggregate_net
+        self.assertIsNone(_aggregate_net([dict(trades=0,net_usdt=None)]))
+        self.assertEqual(_aggregate_net([dict(trades=0,net_usdt=None),
+                                         dict(trades=2,net_usdt=-12.35)]),-12.35)
+
     def test_scope(self):
         self.assertEqual(SYMBOLS,("BTCUSDT","ETHUSDT","SOLUSDT"))
         self.assertEqual(len(BOTS),10)
