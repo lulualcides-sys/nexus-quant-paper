@@ -149,6 +149,11 @@ class StrategiesTests(unittest.TestCase):
         stable = {"looser_0.90": {"net_usd": 10, "trades_closed": 20},
                   "tighter_1.10": {"net_usd": -1, "trades_closed": 20}}
         self.assertEqual(judgement(base, costs, costs, wf, stable)[0], "INCONCLUSIVO")
+        stable["tighter_1.10"]["net_usd"] = 11
+        decision, reason = judgement(base, costs, costs, wf, stable)
+        self.assertEqual(decision, "INCONCLUSIVO")
+        self.assertIn("exposed", reason)
+
 
     def test_unknown_breakout_mode_rejected(self):
         bars = sample(n=240)
