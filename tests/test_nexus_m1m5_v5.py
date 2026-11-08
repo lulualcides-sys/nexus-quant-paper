@@ -99,15 +99,10 @@ class V5Regression(unittest.TestCase):
         bars=bullish_bars()
         f=bullish_features(len(bars))
         ends=[x.t+H4_MS for x in bars]
-        self.assertEqual(h4_rejection_reason(entry_open_ms=ends[260]-1,
-            entry_ref_price=bars[259].c,
-            h4=bars,features=f,h4_closes=ends,policy=H4_POLICIES[0]),
-            "h4_trend_not_aligned" if False else
-            h4_rejection_reason(entry_open_ms=ends[260]-1,
-            entry_ref_price=bars[259].c,
-            h4=bars,features=f,h4_closes=ends,policy=H4_POLICIES[0]))
-        # At exact H4 close this H4 can be read; just before, it cannot.
-        self.assertEqual(last_closed_h4_index(ends[260]-1,ends),259)
+        # A signal inside the H4 window may see only h=259.
+        self.assertEqual(last_closed_h4_index(ends[260]-1, ends), 259)
+        # Exactly at close the h=260 candle becomes available.
+        self.assertEqual(last_closed_h4_index(ends[260], ends), 260)
 
     def test_no_data_fails_closed(self):
         self.assertEqual(h4_rejection_reason(entry_open_ms=H4_MS,
