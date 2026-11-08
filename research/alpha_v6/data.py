@@ -13,13 +13,14 @@ from zipfile import ZipFile
 from research.alpha.data import month_seconds,retrieve
 
 MARKETS=("SOLUSDT","BNBUSDT","XRPUSDT")
+V7_MARKETS=("ADAUSDT","DOGEUSDT")
 MONTHS=tuple(f"{year}-{mo:02d}" for year,last in ((2025,12),(2026,10))
              for mo in range(1,last+1))
 BASE="https://data.binance.vision/data/spot/monthly/klines"
 DECIMALS=Decimal("0.00000001")
 
 def load_month(symbol,period):
-    if symbol not in MARKETS or period not in MONTHS:
+    if symbol not in (*MARKETS,*V7_MARKETS) or period not in MONTHS:
         raise ValueError("research source not approved")
     file=f"{symbol}-1m-{period}.zip"
     url=f"{BASE}/{symbol}/1m/{file}"
