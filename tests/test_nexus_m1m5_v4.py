@@ -244,5 +244,17 @@ class V4ProofTests(unittest.TestCase):
 
 
 
+    def test_legacy_month_source_rejects_invalid_close_timestamp(self):
+        from research.nexus_m1m5.data import parse_rows
+        # Legacy 2023 timestamps are milliseconds, not 2025+ microseconds.
+        bad = ["1672531200000", "100", "101", "99", "100", "5",
+               "1672531500000", "500", "1", "2", "200", "0"]
+        with self.assertRaisesRegex(
+            ValueError, r"month=2023-01 row=1.*expected_ct=1672531499999"
+        ):
+            parse_rows([bad], "5m", expected_month="2023-01")
+
+
+
 if __name__ == "__main__":
     unittest.main()
