@@ -111,7 +111,7 @@ def _breakout_at(bars, f, i):
             0 < b.c - threshold <= 0.45 * f.atr[i])
 
 
-def signal(name, bars, f, i, higher=None, higher_features=None, *, breakout_mode="immediate"):
+def signal(name, bars, f, i, higher=None, higher_features=None, *, breakout_mode="immediate", higher_closes=None):
     """Return signal after bar i CLOSE, never a retroactive fill."""
     if name not in SPECS:
         raise ValueError("Unknown robot")
@@ -145,7 +145,7 @@ def signal(name, bars, f, i, higher=None, higher_features=None, *, breakout_mode
         close_ms = b.t + 300_000
         # Higher timeframe features may be precomputed but ONLY an M15 whose
         # closing timestamp is <= this M5 signal's close can be referenced.
-        h15 = bisect_right([x.t + 900_000 for x in higher], close_ms) - 1
+        h15 = bisect_right(higher_closes if higher_closes is not None else [x.t + 900_000 for x in higher], close_ms) - 1
         if h15 < 205:
             return None
         h = higher[h15]
