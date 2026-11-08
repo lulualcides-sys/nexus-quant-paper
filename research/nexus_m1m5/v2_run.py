@@ -37,14 +37,17 @@ def judge(result):
                   if k.startswith("retrospective_validation")]
     development = [v for k, v in result["quarters"].items()
                    if k.startswith("development")]
+    # A small sample must never conceal an actual observed net loss:
+    # reject loss-makers first; leave empty or nonnegative sparse books inconclusive.
+    for period in validation:
+        if (period["base"]["trades_closed"] > 0 and
+            any(period[sc]["net_usd"] <= 0 for sc in SCENARIOS)):
+            return "REPROVADO", "Net loss/zero after costs in a validation quarter"
+        if period["base"]["max_drawdown_pct_mark_to_market"] >= 10:
+            return "REPROVADO", "Excessive marked-to-market drawdown"
     for period in validation + development:
         if period["base"]["trades_closed"] < 20:
             return "INCONCLUSIVO", "Fewer than 20 trades in at least one quarter"
-    for period in validation:
-        if any(period[sc]["net_usd"] <= 0 for sc in SCENARIOS):
-            return "REPROVADO", "Nonpositive net in retrospective validation under one cost scenario"
-        if period["base"]["max_drawdown_pct_mark_to_market"] >= 10:
-            return "REPROVADO", "Excessive marked-to-market drawdown"
     if sum(p["base"]["net_usd"] > 0 for p in development) < 3:
         return "REPROVADO", "Fewer than 3 positive development quarters"
     return ("INCONCLUSIVO",
