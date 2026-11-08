@@ -20,7 +20,7 @@ SCENARIOS = {
     # Binance regular spot 10 bps per side. Execution deviation already
     # represents spread/slippage; spread is NOT charged a second time.
     "base": {"fee": .001, "slip": .0002, "impact": 0.0},
-    "double_fee": {"fee": .002, "slip": .0002, "impact": 0.0},
+    "double_cost": {"fee": .002, "slip": .0004, "impact": 0.0},
     "adverse": {"fee": .001, "slip": .0008, "impact": .0003},
 }
 MAX_DAILY_LOSS = .02
