@@ -69,7 +69,7 @@ def parse_archive(data,symbol,month):
     return rows
 
 def download_month(symbol,month):
-    if symbol not in SYMBOLS or month not in (*MONTHS,"2026-07"):
+    if symbol not in SYMBOLS or month not in (*MONTHS,"2026-05","2026-06","2026-07"):
         raise ValueError("unapproved market or month")
     name=f"{symbol}-1m-{month}.zip"
     url=f"{SOURCE}/{symbol}/1m/{name}"

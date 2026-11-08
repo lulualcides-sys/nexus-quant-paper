@@ -33,6 +33,15 @@ class SwingTests(unittest.TestCase):
         second=m.signal(History(a[:285],285),build(a[:285]),284)
         self.assertEqual(first,second)
 
+    def test_new_holdout_months_reach_fetch_not_rejected_as_unapproved(self):
+        from unittest.mock import patch
+        from research.alpha.data import download_month
+        for month in ("2026-05","2026-06"):
+            with patch("research.alpha.data.retrieve",
+                       side_effect=RuntimeError("network_stub")):
+                with self.assertRaisesRegex(RuntimeError,"network_stub"):
+                    download_month("BTCUSDT",month)
+
     def test_no_free_last_close_fill(self):
         a=bars(260);r=test_engine(a,OneSignal(),1,5.)
         self.assertEqual(r["orders_filled"],1)
