@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: nexus-m1m5-lab-\${{ github.ref }}
+  group: nexus-m1m5-lab-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -48,18 +48,18 @@ jobs:
           python-version: "3.11"
       - name: Full Binance historical replay with checksum validation and cost stress
         env:
-          EVENT_NAME: \${{ github.event_name }}
-          MONTHS_REQUESTED: \${{ inputs.months }}
+          EVENT_NAME: ${{ github.event_name }}
+          MONTHS_REQUESTED: ${{ inputs.months }}
         run: |
           set -euo pipefail
           # First PR evaluation uses all 22 published months, not a favorable subset.
-          if [[ "$EVENT_NAME" == "pull_request" ]]; then MONTHS=22; else MONTHS="\${MONTHS_REQUESTED:-22}"; fi
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then MONTHS=22; else MONTHS="${MONTHS_REQUESTED:-22}"; fi
           python -m research.nexus_m1m5.run --end 2026-10 --months "$MONTHS" --out artifacts/nexus-m1m5
       - name: Attach honest report, each trade and data provenance
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nexus-m1m5-research-ledger-\${{ github.run_id }}
+          name: nexus-m1m5-research-ledger-${{ github.run_id }}
           path: artifacts/nexus-m1m5/
           if-no-files-found: warn
           retention-days: 30
