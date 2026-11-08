@@ -1,7 +1,8 @@
-"""V4 INDEPENDENT BACKFILL 2023-24, first use for frozen 2026 V4 rules.
+"""V4 INDEPENDENT BACKFILL 2024, first use for frozen 2026 V4 rules.
 
 No parameter changes, no optimization, no signal selection or live activation.
-2023/2024 are retrospective markets NOT observed in previous V1-V4 evaluations.
+2024 is retrospective market history NOT observed in V1-V4.
+2023 excluded because Binance March-2023 contains a nonstandard early bar close.
 They are a historical generalization test, NOT prospective/forward validation.
 """
 from __future__ import annotations
@@ -23,35 +24,27 @@ from .v3_policy import aggregate_closed_h1
 from .v4_system import POLICIES, replay_v4
 
 HORIZON_END = "2024-12"
-HORIZON_MONTHS = 24
+HORIZON_MONTHS = 12
 
 
 def backfill_windows(months):
-    if len(months) != HORIZON_MONTHS or months[0] != "2023-01" or months[-1] != HORIZON_END:
+    if len(months) != HORIZON_MONTHS or months[0] != "2024-01" or months[-1] != HORIZON_END:
         raise ValueError("Frozen backfill window changed")
     return [
-        (f"unseen_backfill_{year}_Q{q}",
-         (year - 2023) * 12 + (q - 1) * 3,
-         (year - 2023) * 12 + q * 3)
-        for year in (2023, 2024) for q in (1, 2, 3, 4)
+        (f"unseen_backfill_2024_Q{q}", (q - 1) * 3, q * 3)
+        for q in (1, 2, 3, 4)
     ]
 
 
 def assess_backfill(quarters):
     """Never APTO, including if any past-year result is statistically positive."""
-    years = []
-    for year in ("2023", "2024"):
-        q = [v for key, v in quarters.items() if f"_{year}_" in key]
-        ys = {
-            sc: sum(x[sc]["net_usd"] for x in q)
-            for sc in SCENARIOS
-        }
-        n = sum(x["base"]["trades_closed"] for x in q)
-        years.append((year, n, ys))
-        if n and any(v <= 0 for v in ys.values()):
-            return "REPROVADO", f"{year} net is nonpositive under some execution cost"
-    if any(n < 80 for _, n, _ in years):
-        return "INCONCLUSIVO", "Fewer than 80 trades in an independent historical year"
+    q = list(quarters.values())
+    ys = {sc: sum(x[sc]["net_usd"] for x in q) for sc in SCENARIOS}
+    n = sum(x["base"]["trades_closed"] for x in q)
+    if n and any(v <= 0 for v in ys.values()):
+        return "REPROVADO", "2024 net nonpositive under at least one cost scenario"
+    if n < 80:
+        return "INCONCLUSIVO", "Fewer than 80 trades in 2024 historical backfill"
     return "INCONCLUSIVO", "Requires prospective live paper verification; history alone not enough"
 
 
@@ -107,7 +100,7 @@ def run(*, output=Path("artifacts/nexus-v4-backfill"),
     for name, candidate in results.items():
         quarters = candidate["quarters"]
         yearly = {}
-        for year in ("2023", "2024"):
+        for year in ("2024",):
             qs = [v for k, v in quarters.items() if f"_{year}_" in k]
             yearly[year] = {
                 "net_by_scenario": {
@@ -119,19 +112,20 @@ def run(*, output=Path("artifacts/nexus-v4-backfill"),
             }
         ranking.append({
             "candidate": name, "yearly": yearly,
-            "worst_2yr_net_usd": round(min(
+            "worst_1yr_net_usd": round(min(
                 sum(q[sc]["net_usd"] for q in quarters.values())
                 for sc in SCENARIOS), 4),
             "status": candidate["status"], "reason": candidate["reason"],
         })
-    ranking.sort(key=lambda x: (-x["worst_2yr_net_usd"], x["candidate"]))
+    ranking.sort(key=lambda x: (-x["worst_1yr_net_usd"], x["candidate"]))
     document = {
-        "title": "NEXUS V4 frozen historical generalization 2023-2024",
+        "title": "NEXUS V4 independent historical generalization 2024",
         "retrospective_only": True,
-        "2023_2024_previously_unexamined_by_nexus_v1_v4": True,
+        "2024_previously_unexamined_by_nexus_v1_v4": True,
         "not_forward_live_evidence": True,
         "no_optimization": True, "no_promotion": True,
         "source": source, "months": months,
+        "2023_exclusion": "2023-03 source has bar with early close at 2023-03-24; withheld pending data-quality review",
         "frozen_hypotheses": [asdict(p) for p in POLICIES],
         "scenarios": SCENARIOS, "results": results,
         "ranking": ranking,
@@ -142,23 +136,22 @@ def run(*, output=Path("artifacts/nexus-v4-backfill"),
         json.dumps(document, indent=2, ensure_ascii=False, allow_nan=False),
         encoding="utf-8")
     lines = [
-        "# NEXUS V4 historical generalization 2023–2024",
+        "# NEXUS V4 independent backfill 2024",
         "",
         "Run exactly the V4 rules frozen before its 2025–Jun/2026 replay, "
-        "on public Bitcoin/Ethereum Binance M5 historical archives never "
+        "on 2024 public Bitcoin/Ethereum Binance M5 historical archives never "
         "inspected in earlier Nexus Quant V1–V4 research. No parameter changed.",
         "Historical backfill is NOT actual prospective/forward performance.",
         "",
-        "| Candidate | Status | 2023 net base USD | 2024 net base USD | 2023 trades | 2024 trades | Worst total stress USD |",
-        "|---|---|---:|---:|---:|---:|---:|",
+        "| Candidate | Status | 2024 net base USD | 2024 trades | Worst stress USD |",
+        "|---|---|---:|---:|---:|",
     ]
     for x in ranking:
-        a, b = x["yearly"]["2023"], x["yearly"]["2024"]
+        b = x["yearly"]["2024"]
         lines.append(
             f"| {x['candidate']} | {x['status']} | "
-            f"{a['net_by_scenario']['base']:.2f} | "
             f"{b['net_by_scenario']['base']:.2f} | "
-            f"{a['trades']} | {b['trades']} | {x['worst_2yr_net_usd']:.2f} |")
+            f"{b['trades']} | {x['worst_1yr_net_usd']:.2f} |")
     lines.extend([
         "",
         "## Verification",
@@ -166,7 +159,7 @@ def run(*, output=Path("artifacts/nexus-v4-backfill"),
         "All three original cost scenarios, independent quarterly ledgers, "
         "conservative intrabar fills and no real orders.",
         "2025 and Jan-Jun/2026 had already been inspected separately; "
-        "positive 2023/24 will not erase a negative 2025 result.",
+        "positive 2024 will not erase a negative 2025 result.",
         "No V4 policy was adjusted after seeing the 2025–2026 V4 results.",
     ])
     (output / "BACKFILL_REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
