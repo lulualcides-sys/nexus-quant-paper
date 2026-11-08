@@ -80,6 +80,40 @@ def parse_profit_continuous(raw):
         raise ValueError("Duplicate M5 timestamps")
     return rows
 
+def audit_tick_grid(raw):
+    """Count native trade-tick violations before ANY financial simulation.
+
+    Replacing bad prices with rounded prices would manufacture market data.
+    In that case decline the source and keep the prior simulator unchanged.
+    """
+    failures = []
+    n_rows = n_bad_rows = n_bad_prices = 0
+    with Path(raw).open("r", encoding="latin-1", newline="") as stream:
+        for line_number, fields in enumerate(csv.reader(stream, delimiter=";"), 1):
+            if not fields or fields[0].strip().lower() == "ativo":
+                continue
+            n_rows += 1
+            if len(fields) != 9 or fields[0].strip().upper() != "WINFUT":
+                raise ValueError(f"source schema/symbol mismatch at {line_number}")
+            invalid = []
+            for column, value in zip(("open", "high", "low", "close"), fields[3:7]):
+                price = _number(value)
+                if price <= 0 or abs(price / 5 - round(price / 5)) > 1e-7:
+                    invalid.append((column, price))
+            if invalid:
+                n_bad_rows += 1
+                n_bad_prices += len(invalid)
+                if len(failures) < 12:
+                    failures.append({
+                        "line": line_number, "market_date": fields[1],
+                        "market_time": fields[2], "off_tick": invalid
+                    })
+    return {
+        "scanned_rows": n_rows, "off_tick_rows": n_bad_rows,
+        "off_tick_price_fields": n_bad_prices, "first_12": failures,
+        "rejected": bool(n_bad_rows)
+    }
+
 def normalize(raw, normalized):
     rows = parse_profit_continuous(raw)
     if len(rows) < 10000:
@@ -232,9 +266,32 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         raw, normalized = Path(td)/"source.csv", Path(td)/"normalized.csv"
         provenance = _fetch_pinned(SOURCE_URL, SOURCE_BLOB, raw)
-        imported = normalize(raw, normalized)
-        result = run_study(imported, provenance)
-    report = render(result)
+        grid = audit_tick_grid(raw)
+        if grid["rejected"]:
+            result = {
+                "status": "SOURCE_REJECTED_OFF_TICK_CONTINUOUS_WIN",
+                "source": provenance, "tick_grid_audit": grid,
+                "source_ticker": "WINFUT", "periods_attempted": [x[0] for x in PERIODS],
+                "contract_identity_unknown": True, "winv26_m1_verified": False,
+                "financial_backtest_executed": False, "net_brl": None,
+                "winrate_pct": None, "tracker_matched": False,
+                "approved_for_paper_or_live": False,
+                "decision": "REJECT_SOURCE_NO_PRICE_CORRECTION"
+            }
+            report = (
+                "# ATLAS V6: fonte de 2025 REJEITADA por preços fora da grade WIN\n\n"
+                "Backtest financeiro NÃO executado. Sem interpolar, arredondar nem trocar por candle sintético.\n\n"
+                f"Arquivo {SOURCE_PATH}, Git blob verificado {SOURCE_BLOB}.\n\n"
+                f"Linhas examinadas: {grid['scanned_rows']}; linhas com pelo menos um preço inválido: "
+                f"{grid['off_tick_rows']}; campos de preço inválidos: {grid['off_tick_price_fields']}.\n\n"
+                f"Primeiros exemplos (data/hora do mercado): {json.dumps(grid['first_12'], ensure_ascii=False)}\n\n"
+                "WINFUT contínuo não identifica vencimento por candle e possui gaps de rolagem; "
+                "sem reconstrução e auditoria do contrato real, rejeitar promoção.\n"
+            )
+        else:
+            imported = normalize(raw, normalized)
+            result = run_study(imported, provenance)
+            report = render(result)
     folder = Path("research/results")
     folder.mkdir(parents=True, exist_ok=True)
     (folder/"atlas_v6_2025_backward_holdout.json").write_text(
