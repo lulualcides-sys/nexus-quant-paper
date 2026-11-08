@@ -162,6 +162,21 @@ class ExecutionTests(unittest.TestCase):
         self.assertLess(stats[2]["net_usd"], stats[0]["net_usd"])
         self.assertEqual(SCENARIOS["base"]["fee"], .001)
 
+    def test_planned_stop_risk_includes_round_trip_execution_cost(self):
+        bars = sample()
+        bars[211] = Bar(211 * 60_000, 100, 102, 98, 100, 100, 60)
+        feat = build_features(bars)
+        with patch("research.nexus_m1m5.engine.signal", side_effect=self.deterministic_signal):
+            r, trades = replay(bars, feat, "sweep", start=210, stop=230)
+        self.assertLessEqual(-trades[0]["pnl_usd"], 25.001)
+        self.assertEqual(trades[0]["exit_reason"], "stop")
+
+    def test_relative_volume_reference_excludes_current_bar(self):
+        bars = sample()
+        bars[220] = Bar(220 * 60_000, 100, 100.1, 99.9, 100, 10000, 6000)
+        f = build_features(bars)
+        self.assertAlmostEqual(f.vol20[220], 100, places=9)
+
     def test_gap_down_cannot_fill_at_old_stop(self):
         bars = sample()
         bars[212] = Bar(212 * 60_000, 97, 98, 96, 97, 100, 60)
@@ -195,6 +210,7 @@ class ExecutionTests(unittest.TestCase):
         self.assertFalse(g.can_open("z", "BTCUSDT", 500, 10000))
         g.closed("x")
         self.assertEqual(len(g.positions), 1)
+        self.assertFalse(g.can_open("z", "BTCUSDT", 2500, 10000))
 
     def test_no_lookahead_on_fold_boundary(self):
         bars = sample()
