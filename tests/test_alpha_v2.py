@@ -31,6 +31,9 @@ class V2FilterTests(unittest.TestCase):
 
     def test_cost_filter_rejects_tiny_range_regardless_of_trend(self):
         b=example(up=0.01)
+        for candle in b:
+            candle["high"]=candle["open"]+0.02
+            candle["low"]=candle["open"]-0.02
         f=build(b);bot=Filtered("alpha01_volume_exhaustion")
         bot.base=Always()
         self.assertEqual(bot.diagnose(History(b,300),f,299),"cost_to_target")
