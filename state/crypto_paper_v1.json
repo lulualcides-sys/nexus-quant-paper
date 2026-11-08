@@ -4,8 +4,8 @@
   "spot_only": true,
   "source": "Binance SPOT USDT H1; indicative paper fills",
   "watermarks": {
-    "BTCUSDT": 1794128400,
-    "ETHUSDT": 1794128400
+    "BTCUSDT": 1794153600,
+    "ETHUSDT": 1794153600
   },
   "books": {
     "BTCUSDT:ema_pullback": {
@@ -13,28 +13,28 @@
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Sem setup H1 confirmado"
+      "last_reason": "Tendência H1 sem alta: EMA50 <= EMA200"
     },
     "BTCUSDT:channel20": {
       "equity": 1000.0,
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Sem setup H1 confirmado"
+      "last_reason": "Tendência H1 sem alta: EMA50 <= EMA200"
     },
     "ETHUSDT:ema_pullback": {
       "equity": 1000.0,
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Sem setup H1 confirmado"
+      "last_reason": "Tendência H1 sem alta: EMA50 <= EMA200"
     },
     "ETHUSDT:channel20": {
       "equity": 1000.0,
       "position": null,
       "closed": [],
       "entries": 0,
-      "last_reason": "Sem setup H1 confirmado"
+      "last_reason": "Tendência H1 sem alta: EMA50 <= EMA200"
     }
   },
   "unavailable": []
