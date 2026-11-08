@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from research.atlas_v6_2025_holdout import (
-    parse_profit_continuous, run_study, PERIODS, SOURCE_BLOB, SOURCE_COMMIT
+    parse_profit_continuous, audit_tick_grid, run_study, PERIODS, SOURCE_BLOB, SOURCE_COMMIT
 )
 from research.win_price_data import TZ
 
@@ -55,6 +55,21 @@ class HoldoutTests(unittest.TestCase):
                     fixture(f,**options)
                     with self.assertRaisesRegex(ValueError,expected):
                         parse_profit_continuous(f)
+
+    def test_audit_rejects_invalid_prices_without_rescaling(self):
+        with tempfile.TemporaryDirectory() as td:
+            f=Path(td)/"synthetic.csv"
+            fixture(f,offgrid=True)
+            audit=audit_tick_grid(f)
+            self.assertEqual(audit["scanned_rows"],102)
+            self.assertEqual(audit["off_tick_rows"],1)
+            self.assertEqual(audit["off_tick_price_fields"],1)
+            self.assertEqual(audit["first_12"][0]["off_tick"],[("open",168501.0)])
+            self.assertTrue(audit["rejected"])
+            fixture(f)
+            valid=audit_tick_grid(f)
+            self.assertFalse(valid["rejected"])
+            self.assertEqual(valid["off_tick_rows"],0)
 
     def test_empty_month_does_not_fabricate_performance(self):
         time=int(datetime(2024,1,3,9,10,tzinfo=TZ).astimezone(timezone.utc).timestamp())
