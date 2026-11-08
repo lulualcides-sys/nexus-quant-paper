@@ -204,5 +204,45 @@ class V4ProofTests(unittest.TestCase):
         self.assertEqual({x.exit_mode for x in POLICIES}, {"fixed", "trail"})
 
 
+    def test_independent_backfill_window_is_only_2023_2024(self):
+        from research.nexus_m1m5.data import month_range
+        from research.nexus_m1m5.v4_backfill import backfill_windows
+        months = list(month_range("2024-12", 24))
+        windows = backfill_windows(months)
+        self.assertEqual(months[0], "2023-01")
+        self.assertEqual(months[-1], "2024-12")
+        self.assertEqual(len(windows), 8)
+        self.assertEqual(sum(b - a for _, a, b in windows), 24)
+        with self.assertRaises(ValueError):
+            backfill_windows(list(month_range("2025-12", 24)))
+
+    def test_backfill_even_if_2023_and_2024_win_cannot_be_apt(self):
+        from research.nexus_m1m5.v4_backfill import assess_backfill
+        q = {}
+        for year in (2023, 2024):
+            for quarter in range(1, 5):
+                q[f"unseen_backfill_{year}_Q{quarter}"] = {
+                    sc: {"net_usd": 100, "trades_closed": 35}
+                    for sc in SCENARIOS
+                }
+        status, _ = assess_backfill(q)
+        self.assertEqual(status, "INCONCLUSIVO")
+
+    def test_backfill_stress_negative_year_is_rejected(self):
+        from research.nexus_m1m5.v4_backfill import assess_backfill
+        q = {}
+        for year in (2023, 2024):
+            for quarter in range(1, 5):
+                q[f"unseen_backfill_{year}_Q{quarter}"] = {
+                    sc: {"net_usd": 10, "trades_closed": 35}
+                    for sc in SCENARIOS
+                }
+        for quarter in range(1, 5):
+            q[f"unseen_backfill_2023_Q{quarter}"]["double_cost"]["net_usd"] = -20
+        status, _ = assess_backfill(q)
+        self.assertEqual(status, "REPROVADO")
+
+
+
 if __name__ == "__main__":
     unittest.main()
