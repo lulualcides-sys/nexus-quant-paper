@@ -79,7 +79,9 @@ def judgement(main, double, adverse, wf, sensitivity=None):
         for v in sensitivity.values()
     ):
         return "INCONCLUSIVO", "Signal threshold stability on validation window not established"
-    return "APTO PARA PAPER FORWARD", "Initial research gates passed; never live approval"
+    # This repository's 2026-07..10 holdout was already inspected in its first PR run.
+    # Never promote on an exposed final window even if a subsequent patch turns positive.
+    return "INCONCLUSIVO", "2026-07..10 final holdout has already been exposed; require genuinely unseen future candles"
 
 
 def _ledger(outfile, rows):
