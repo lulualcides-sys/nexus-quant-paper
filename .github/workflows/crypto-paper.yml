@@ -14,7 +14,8 @@ on:
       - '.github/workflows/crypto-paper.yml'
   schedule:
     - cron: '34 * * * *' # research H1 candle scan, all seven days
-    - cron: '27 22 * * *' # daily crypto digest ~19:27 America/Sao_Paulo
+    - cron: '30 22 * * *' # daily crypto digest 19:30 America/Sao_Paulo (UTC-3)
+    - cron: '0 23 * * *' # recuperação 20:00 se não houver marcador de entrega
   workflow_dispatch:
     inputs:
       mode:
@@ -40,6 +41,9 @@ jobs:
         run: python -m pip install cryptography
       - name: Offline regression suite
         run: python -m unittest discover -s tests -v
+      - name: Limpar efeitos colaterais de testes no checkout temporário
+        if: "github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'"
+        run: git restore --worktree -- .
       - name: Scan paper crypto or send daily-only digest
         if: "github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'"
         env:
@@ -50,7 +54,7 @@ jobs:
         shell: bash
         run: |
           MODE=scan
-          if [[ "$SCHEDULE_EXPR" == '27 22 * * *' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
+          if [[ "$SCHEDULE_EXPR" == '30 22 * * *' || "$SCHEDULE_EXPR" == '0 23 * * *' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
           python -m src.crypto_runner --mode "$MODE"
       - name: Persist crypto paper state without touching existing gold bots
         if: "success() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')"
@@ -63,6 +67,9 @@ jobs:
           if [[ -d reports/crypto ]]; then git add -A reports/crypto; fi
           if ! git diff --cached --quiet; then
             git commit -m 'chore: crypto paper observations [skip ci]'
+            # O runner e testes podem deixar arquivos tracked fora do conjunto persistido.
+            # Após o commit dos resultados permitidos, limpar só o checkout descartável.
+            git reset --hard HEAD
             git pull --rebase
             git push
           fi

@@ -57,7 +57,9 @@ class DailyOnlyTelegramTests(unittest.TestCase):
         yaml = Path(".github/workflows/monitor.yml").read_text(encoding="utf-8")
         self.assertNotIn("python -m src.telegram_check", yaml)
         self.assertNotIn("'2 * * * *'", yaml)
-        self.assertIn("'15 22 * * 1-5'", yaml)
+        self.assertIn("'30 22 * * 1-5'", yaml)
+        self.assertIn("'0 23 * * 1-5'", yaml)
+        self.assertIn("python -m src.scheduled_closing", yaml)
 
 
 if __name__ == "__main__":
