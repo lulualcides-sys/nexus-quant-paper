@@ -53,7 +53,7 @@ def split_folds(months):
     return folds, (pre, count)
 
 
-def judgement(main, double, adverse, wf):
+def judgement(main, double, adverse, wf, sensitivity=None):
     if main is None:
         return "INCONCLUSIVO", "No independent final holdout"
     n = main["trades_closed"]
@@ -74,7 +74,12 @@ def judgement(main, double, adverse, wf):
         return "REPROVADO", "Fewer than 2/3 positive walk-forward windows"
     if (main["concentration_top3_of_positive_pnl"] or 1) > .50:
         return "INCONCLUSIVO", "Profit excessively concentrated in three trades"
-    return "APTO PARA PAPER FORWARD", "Passed initial research gates, not live approval"
+    if sensitivity is None or any(
+        v.get("net_usd", 0) <= 0 or v.get("trades_closed", 0) < 10
+        for v in sensitivity.values()
+    ):
+        return "INCONCLUSIVO", "Signal threshold stability on validation window not established"
+    return "APTO PARA PAPER FORWARD", "Initial research gates passed; never live approval"
 
 
 def _ledger(outfile, rows):
@@ -144,13 +149,36 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
                                 "fold": label, "scenario": scenario, **trade,
                             } for trade in trades)
                     r["folds"][label] = stats
+
+                # Diagnose threshold fragility ONLY on prior validation bars;
+                # avoid experimenting on the already-inspected final holdout.
+                r["signal_sensitivity_validation"] = {}
+                if final_window is not None:
+                    vstart, vend = folds["validation"]
+                    for variant_label, multiplier in (("looser_0.90", 0.9), ("tighter_1.10", 1.1)):
+                        perturb, _ = replay(
+                            bars, features, name, "base",
+                            start=max(210, indices[vstart]), stop=indices[vend],
+                            higher=h15 if tf == "5m" else None,
+                            higher_features=h15f if tf == "5m" else None,
+                            higher_closes=h15closes if tf == "5m" else None,
+                            breakout_mode=variant if name == "breakout" else "immediate",
+                            sensitivity=multiplier,
+                        )
+                        r["signal_sensitivity_validation"][variant_label] = {
+                            "net_usd": perturb["net_usd"],
+                            "trades_closed": perturb["trades_closed"],
+                            "profit_factor": perturb["profit_factor"],
+                            "max_dd_pct": perturb["max_drawdown_pct_mark_to_market"],
+                        }
                 if final_window is None:
                     r["decision"], r["decision_reason"] = "INCONCLUSIVO", "Smoke data; no final holdout"
                 else:
                     final = r["folds"]["final_intocado_primeiro_uso"]
                     wf = [r["folds"][f"walkforward_{i}"]["base"] for i in range(1, 4)]
                     r["decision"], r["decision_reason"] = judgement(
-                        final["base"], final["double_cost"], final["adverse"], wf)
+                        final["base"], final["double_cost"], final["adverse"], wf,
+                        r["signal_sensitivity_validation"])
                 results[key] = r
         # Discard raw symbol arrays before loading next market.
         del m1, m5, m1f, m5f, h15, h15f
@@ -159,6 +187,11 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
     artifact = {
         "project": "NEXUS M1/M5 six independent hypotheses (spot, long-only)",
         "research_only": True, "no_forward_execution": True, "no_live_orders": True,
+        "holdout_integrity_note": (
+            "The original 2026-07..10 holdout was first evaluated in Actions "
+            "run 42488027943; subsequent commits/tests recheck that exposed period. "
+            "Do NOT claim a new untouched holdout or promote a positive recheck."
+        ),
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "source": "Binance public monthly spot klines with verified SHA256 checksums",
         "units": "UTC milliseconds, normalized from post-2025 spot microseconds",
@@ -176,6 +209,8 @@ def execute(end="2026-10", months=22, out=Path("research/results/nexus_m1m5"),
             "intrabar_ambiguity": "stop before target, same-candle exits allowed",
             "M15": "strict closed M15 from aligned 3x M5",
             "holdout_consumed_once": bool(final_window),
+            "first_holdout_read_action_run": 42488027943,
+            "all_subsequent_replays": "RECHECK of exposed final holdout; never label virgin OOS",
             "final_is_untouched_only_BEFORE_first_run": True,
             "no_parameters_fitted_to_heldout": True,
         },
