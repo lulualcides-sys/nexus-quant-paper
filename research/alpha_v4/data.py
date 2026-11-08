@@ -15,12 +15,13 @@ from research.alpha.data import retrieve, month_seconds
 SYMBOLS=("BTCUSDT","ETHUSDT","SOLUSDT")
 MONTHS=("2026-07","2026-08","2026-09","2026-10")
 TRANSFER_MONTHS=("2026-01","2026-02","2026-03","2026-04","2026-05","2026-06")
+V5_BLIND_SOL_MONTHS=tuple(f"2025-{n:02d}" for n in range(1,13))  # unseen retrospective SOL stress
 PRECISION={"BTCUSDT":Decimal("0.01"),"ETHUSDT":Decimal("0.01"),
            "SOLUSDT":Decimal("0.001")}
 SOURCE="https://data.binance.vision/data/spot/monthly/klines"
 
 def month(symbol,period):
-    if symbol not in SYMBOLS or period not in (*MONTHS,*TRANSFER_MONTHS):
+    if symbol not in SYMBOLS or period not in (*MONTHS,*TRANSFER_MONTHS,*V5_BLIND_SOL_MONTHS):
         raise ValueError("not an approved SPOT dataset")
     filename=f"{symbol}-1m-{period}.zip"
     url=f"{SOURCE}/{symbol}/1m/{filename}"
@@ -66,7 +67,7 @@ def month(symbol,period):
                      precision_is_historical_tick_proof=False)
 
 def aggregate(bars,minutes):
-    if minutes not in (5,60):raise ValueError("unsupported aggregation")
+    if minutes not in (5,60,240):raise ValueError("unsupported aggregation")
     if len(bars)%minutes:raise ValueError("partial MTF candle")
     result=[]
     for i in range(0,len(bars),minutes):

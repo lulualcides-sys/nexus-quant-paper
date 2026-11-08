@@ -1,0 +1,46 @@
+name: ALPHA V5 H4 entry guard — isolated research
+on:
+  pull_request:
+    branches:
+      - research/alpha-v4-h1-filter-20261108
+    paths:
+      - 'research/alpha_v5/**'
+      - 'research/alpha_v4/data.py'
+      - 'tests/test_alpha_v5.py'
+      - '.github/workflows/alpha-v5-h4-guard.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check V5 H4 closed-candle safety and V4 regressions
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_v5.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v4.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_lab.py' -v
+  replay:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: SHA256 checked 2025 SOL blind backward and 2026 exposed paired replay
+        run: python -m research.alpha_v5.run --out artifacts/alpha-v5
+      - name: Publish manifest and 10 bots paired ledgers; keep artifacts if failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v5-h4-research-${{ github.run_id }}
+          path: artifacts/alpha-v5
+          if-no-files-found: warn
+          retention-days: 30
