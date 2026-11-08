@@ -59,7 +59,7 @@ def parse_rows(rows, interval: str, *, expected_month: str | None = None):
         if expected_month and datetime.fromtimestamp(t / 1000, timezone.utc).strftime("%Y-%m") != expected_month:
             raise ValueError(f"Candle outside requested month, row {n}")
         if t % step or ct != t + step - 1:
-            raise ValueError(f"Misaligned candle open/close time at row {n}")
+            raise ValueError(f"Misaligned candle at month={expected_month} row={n} t={t} ct={ct} expected_ct={t + step - 1} step={step} time_scale={factor}")
         o, h, l, c, v = [float(row[i]) for i in (1, 2, 3, 4, 5)]
         qv, taker = float(row[7]), float(row[9])
         trades = int(row[8])
