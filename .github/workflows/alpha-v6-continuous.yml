@@ -1,0 +1,45 @@
+name: ALPHA V6 continuous protective stop — external market test
+on:
+  pull_request:
+    branches:
+      - research/alpha-v5-h4-entry-20261108
+    paths:
+      - 'research/alpha_v6/**'
+      - 'tests/test_alpha_v6.py'
+      - '.github/workflows/alpha-v6-continuous.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Protect stop first and move next bar only; V5 intact
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_v6.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v5.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_lab.py' -v
+  full_market_replay:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 66 Binance spot official SHA256 checked M1 monthly ZIPs continuous replay
+        run: python -m research.alpha_v6.run --out artifacts/alpha-v6
+      - name: Preserve all source files SHA, ledgers and financial reports on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v6-continuous-${{ github.run_id }}
+          path: artifacts/alpha-v6
+          if-no-files-found: warn
+          retention-days: 30
