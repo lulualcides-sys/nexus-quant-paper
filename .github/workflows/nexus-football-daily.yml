@@ -1,10 +1,11 @@
 name: "NEXUS Futebol | relatório diário Telegram existente"
 on:
   schedule:
-    # 00h01 Brasilia é a primeira tentativa. 00h21/00h41/01h01 recuperam atrasos.
-    # O marcador idempotente evita duplicar mensagem mesmo com execuções atrasadas.
-    - cron: "1,21,41 3 * * *"
-    - cron: "1 4 * * *"
+    # Primeira tentativa: 00h00 America/Sao_Paulo (03h00 UTC).
+    # Tentativas de recuperação: 00h20, 00h40 e 01h00; o marcador impede duplicação.
+    # GitHub Actions pode iniciar tarde: cron não garante entrega no minuto exato.
+    - cron: "0,20,40 3 * * *"
+    - cron: "0 4 * * *"
   workflow_dispatch:
 permissions:
   contents: write
