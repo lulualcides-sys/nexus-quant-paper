@@ -6,12 +6,13 @@ Closed bars only; no trading, state mutations, Telegram or broker connections.
 """
 from __future__ import annotations
 import argparse,csv,json
+from datetime import datetime,timezone
 from collections import Counter
 from pathlib import Path
 from importlib import import_module
 from research.alpha.data import SYMBOLS,load_symbol,download_month,aggregate_5m
 from research.alpha.engine import (
-    History,build,backtest,check_candles,split_months,stats,START_USDT)
+    History,build,backtest,check_candles,stats,START_USDT)
 from research.alpha.run import BOTS,daily_block_ci,write_ledger
 from research.alpha_v2.daily import load_week
 from research.alpha_v2.filters import Filtered,ROUNDTRIP_BPS,COST_MULTIPLIER
@@ -44,7 +45,7 @@ def assemble(symbol):
     segments={}
     for key in ("2026-07","2026-08","2026-09","2026-10","2026-11"):
         segment=[row for row in rows if
-                 __import__("datetime").datetime.fromtimestamp(row["time"],__import__("datetime").timezone.utc).strftime("%Y-%m")==key]
+                 datetime.fromtimestamp(row["time"],timezone.utc).strftime("%Y-%m")==key]
         if segment:
             segments[key]=segment
     # Validate each segment alone. All inserted data is previously verified.
