@@ -208,6 +208,10 @@ def digest(state, day):
         if symbol in state["unavailable"] or symbol not in state["watermarks"]:
             lines.append(symbol + ": DADOS INDISPONIVEIS; resultados nao atualizados.")
             continue
+        last_hour = state["watermarks"].get(symbol)
+        if isinstance(last_hour, int) and last_hour > 0:
+            observation = datetime.fromtimestamp(last_hour, timezone.utc).astimezone(TZ)
+            lines.append(symbol + ": último H1 observado " + observation.strftime("%d/%m %H:%M") + " BRT")
         for strategy in STRATEGIES:
             b = state["books"][key(symbol, strategy)]
             todays = [t for t in b["closed"] if local_day(t["exit_ts"]) == day]
@@ -218,5 +222,7 @@ def digest(state, day):
                           sum(t["net_usd"] for t in todays),
                           b["equity"] - CAPITAL, wins, losses,
                           "posicao virtual aberta" if b["position"] else "sem posicao"))
+            lines.append("  Entradas acumuladas: %d | %s" %
+                         (b["entries"], b.get("last_reason", "estado sem diagnóstico")))
     lines.append("⚠️ P&L de referencia; nao executa na Binance/FBS. Sem lucro garantido.")
     return "\n".join(lines)
