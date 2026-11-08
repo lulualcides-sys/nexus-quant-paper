@@ -70,8 +70,13 @@ def backtest(bars,signals,minutes,start,end,slip_bps=5.,capital=START_USDT,featu
                 stop=entry-dist
                 target=entry+1.8*dist
                 if stop>0 and dist>0 and equity>0:
-                    qty=min(equity*RISK_FRACTION/dist,
-                            equity*0.98/(entry*(1+TAKER_FEE_BPS/10000)))
+                    # Size on STOP LOSS INCLUDING both modeled fills and both fees.
+                    # 0.75% is the complete theoretical stop loss if no adverse gap.
+                    exit_at_stop=stop*(1-(HALF_SPREAD_BPS+slip_bps)/10000)
+                    fee_rate=TAKER_FEE_BPS/10000
+                    risk_unit=(entry-exit_at_stop)+fee_rate*(entry+exit_at_stop)
+                    qty=min(equity*RISK_FRACTION/risk_unit,
+                            equity*0.98/(entry*(1+fee_rate)))
                     if qty>0:
                         opens+=1
                         pending=dict(entry_ts=bar["time"],signal_ts=prev["time"]+minutes*60,

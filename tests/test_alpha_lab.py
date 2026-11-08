@@ -58,6 +58,14 @@ class LabIntegrity(unittest.TestCase):
         self.assertLess(first["net_usdt"],0)
         self.assertGreater(first["costs_usdt"],0)
 
+    def test_stop_risk_cap_includes_round_trip_fees_and_spread(self):
+        b=bars(260)
+        b[223]["low"]=96.
+        trade=backtest(b,OneSignal,1,221,250,10.)
+        loss=-trade["ledger"][0]["net_usdt"]
+        self.assertGreater(loss,0)
+        self.assertLessEqual(loss,5000*.0075+0.02)
+
     def test_signal_seen_without_fill_not_trade(self):
         b=bars(225)
         run=backtest(b,OneSignal,1,221,225)
