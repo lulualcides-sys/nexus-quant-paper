@@ -207,7 +207,34 @@ def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None):
             day_start = cash + (position["qty"] * b.o if position else 0)
             current_date, day_lock, entries_per_day = d, False, 0
 
-        # Every existing position gets conservatively evaluated FIRST.
+        # Decide at the OPEN of the first M5 bar after an H1 close.
+        # Do not observe this bar's high/low/close before deciding to enter.
+        open_equity = cash + (position["qty"] * b.o if position else 0)
+        if open_equity <= day_start * (1 - MAX_DAILY_LOSS):
+            day_lock = True
+        if peak > 0 and 1 - open_equity / peak >= MAX_DRAWDOWN:
+            breaker = True
+        h = aligned_closed_hour_at_entry(b, hour_ends)
+        if h >= MIN_CLOSED_HOURS and i != stop - 1:
+            sig = detect_closed_hour(hours, f, h, policy)
+            if sig is not None:
+                signals += 1
+                if (position is None and not breaker and not day_lock
+                    and entries_per_day == 0 and i - last_entry_index > COOLDOWN_BARS):
+                    new_position = _entry_signal(sig, policy, b, cash, fee, dev)
+                    if new_position is not None:
+                        position = new_position
+                        cash -= position["spent"]
+                        last_entry_index = i
+                        entries_per_day += 1
+                        executions += 1
+                    else:
+                        vetoes += 1
+                else:
+                    vetoes += 1
+
+        # Conservative INTRABAR execution also applies to a position
+        # just opened at b.o. Stop is prioritized over target on b.h/b.l.
         if position is not None:
             p = position
             why, refexit = None, None
@@ -248,26 +275,6 @@ def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None):
         if max_dd >= MAX_DRAWDOWN:
             breaker = True
         prior_equity = equity
-
-        # Only trade once/day. H1 closes exactly at next aligned M5 OPEN.
-        h = aligned_closed_hour_at_entry(b, hour_ends)
-        if h >= MIN_CLOSED_HOURS and i != stop - 1:
-            sig = detect_closed_hour(hours, f, h, policy)
-            if sig is not None:
-                signals += 1
-                if (position is None and not breaker and not day_lock
-                    and entries_per_day == 0 and i-last_entry_index > COOLDOWN_BARS):
-                    new_position = _entry_signal(sig, policy, b, cash, fee, dev)
-                    if new_position is not None:
-                        position = new_position
-                        cash -= position["spent"]
-                        last_entry_index = i
-                        entries_per_day += 1
-                        executions += 1
-                    else:
-                        vetoes += 1
-                else:
-                    vetoes += 1
 
     if position is not None:
         # Cannot create a free option by leaving an open position uncounted.
