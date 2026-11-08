@@ -8,17 +8,28 @@ from __future__ import annotations
 from collections import defaultdict
 from datetime import datetime,timezone
 from pathlib import Path
-import argparse,json
+import argparse,json,csv
 from research.alpha_v6.data import continuous,MARKETS,MONTHS
 from research.alpha_v5.strategy import ConfirmedRegime
 from research.alpha_v6.engine import replay,PROTECT_ACTIVATE_ATR,TRAIL_FROM_CLOSE_ATR
 from research.alpha.engine import stats,START_USDT
-from research.alpha.run import write_ledger,daily_block_ci
+from research.alpha.run import daily_block_ci
 
 BOT="alpha02_breakout_retest"
 SLIPPAGE=(0.,5.,10.)
 SEEN_MARKET="SOLUSDT"
 NEW_MARKETS=("BNBUSDT","XRPUSDT")
+LEDGER_FIELDS=("signal_ts_utc","entry_ts_utc","exit_ts_utc","side","entry_raw",
+               "entry","exit_raw","exit","qty","gross_usdt","costs_usdt",
+               "net_usdt","reason","slippage_bps_per_side",
+               "stop_protect_activated")
+
+def write_v6_ledger(path,rows):
+    path.parent.mkdir(parents=True,exist_ok=True)
+    with path.open("w",newline="",encoding="utf8") as file:
+        writer=csv.DictWriter(file,fieldnames=LEDGER_FIELDS,extrasaction="raise")
+        writer.writeheader()
+        writer.writerows(rows)
 assert set(NEW_MARKETS)|{SEEN_MARKET}==set(MARKETS)
 
 def _monthly_breakdown(ledger):
@@ -68,7 +79,7 @@ def run(out):
                              bootstrap_daily_block_ci_95_usdt=daily_block_ci(r["ledger"]),
                              month_by_exit=_monthly_breakdown(r["ledger"]))
                     fname=f"ledgers/{symbol}_{variant}_{int(slip)}bps.csv"
-                    write_ledger(dest/fname,r["ledger"])
+                    write_v6_ledger(dest/fname,r["ledger"])
                     s["ledger"]=fname
                     runs[str(int(slip))]=s
                 cases[variant]=runs

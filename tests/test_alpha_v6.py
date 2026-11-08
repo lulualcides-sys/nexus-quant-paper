@@ -23,6 +23,20 @@ class OneEntry:
     def h1_exiting(self,i):return False
 
 class V6Safety(unittest.TestCase):
+    def test_audit_csv_keeps_protection_activation_column(self):
+        import csv,tempfile
+        from pathlib import Path
+        from research.alpha_v6.run import write_v6_ledger,LEDGER_FIELDS
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/"audit.csv"
+            row={key:0 for key in LEDGER_FIELDS}
+            row["stop_protect_activated"]=True
+            write_v6_ledger(path,[row])
+            with path.open() as file:
+                observed=list(csv.DictReader(file))
+            self.assertEqual(observed[0]["stop_protect_activated"],"True")
+            self.assertEqual(len(observed[0]),len(LEDGER_FIELDS))
+
     def test_prices_and_broker_lookups_remain_disallowed(self):
         self.assertEqual(BOT,"alpha02_breakout_retest")
         self.assertEqual(MARKETS,("SOLUSDT","BNBUSDT","XRPUSDT"))
