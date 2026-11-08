@@ -170,10 +170,17 @@ def _close(p, b, refexit, reason, fee, dev):
     }
 
 
-def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None):
+def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None,
+              h4=None, h4_features=None, h4_closes=None, entry_gate=None):
     """Independent spot account, predeclared H1 signal at next H1 M5 open."""
     if policy not in POLICIES:
         raise ValueError("Unregistered V4 policy")
+    if entry_gate is not None:
+        from .v5_policy import H4_POLICIES
+        if entry_gate not in H4_POLICIES:
+            raise ValueError("Unregistered V5 macro policy")
+        if not (h4 and h4_features and h4_closes):
+            raise ValueError("V5 requires complete H4 data and closed-time index")
     if scenario not in SCENARIOS:
         raise ValueError("Unsupported fee model")
     if stop is None:
@@ -192,6 +199,7 @@ def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None):
     last_entry_index = -COOLDOWN_BARS - 1
     entries_per_day = 0
     signals, vetoes, executions = 0, 0, 0
+    macro_rejections = {}
     prior_equity = CAPITAL
     daily = []
     for i in range(start, stop):
@@ -219,7 +227,17 @@ def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None):
             sig = detect_closed_hour(hours, f, h, policy)
             if sig is not None:
                 signals += 1
-                if (position is None and not breaker and not day_lock
+                rejection = None
+                if entry_gate is not None:
+                    from .v5_policy import h4_rejection_reason
+                    rejection = h4_rejection_reason(
+                        entry_open_ms=b.t, entry_ref_price=b.o,
+                        h4=h4, features=h4_features, h4_closes=h4_closes,
+                        policy=entry_gate)
+                    if rejection is not None:
+                        macro_rejections[rejection] = macro_rejections.get(rejection, 0) + 1
+                if (rejection is None and position is None
+                    and not breaker and not day_lock
                     and entries_per_day == 0 and i - last_entry_index > COOLDOWN_BARS):
                     new_position = _entry_signal(sig, policy, b, cash, fee, dev)
                     if new_position is not None:
@@ -295,5 +313,7 @@ def replay_v4(m5, hours, f, policy, scenario="base", *, start=0, stop=None):
         "signals": signals, "entries": executions, "vetoes": vetoes,
         "start_t": m5[start].t, "end_t": m5[stop - 1].t,
         "policy": asdict(policy), "notional_cap_fraction": MAX_NOTIONAL_FRACTION,
+        "h4_veto_counts": dict(sorted(macro_rejections.items())),
+        "entry_gate": asdict(entry_gate) if entry_gate else None,
     })
     return metrics, ledger
