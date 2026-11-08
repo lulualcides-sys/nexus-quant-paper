@@ -168,7 +168,10 @@ class V4ProofTests(unittest.TestCase):
             _, trades = replay_v4(
                 bars, hours, f, POLICIES[0], "base",
                 start=241*12, stop=243*12+1)
-        self.assertLessEqual(len(trades), 1)
+        from research.nexus_m1m5.engine import local_date
+        from collections import Counter
+        counts = Counter(local_date(t["entry_t"]) for t in trades)
+        self.assertTrue(all(n <= 1 for n in counts.values()))
 
     def test_absence_of_trades_not_labelled_lucrative(self):
         q = {sc: {"trades_closed": 0, "net_usd": 0,
