@@ -44,6 +44,9 @@ jobs:
         run: python -m pip install cryptography
       - name: Tests
         run: python -m unittest discover -s tests -v
+      - name: Restaurar checkout descartável após a suíte de testes
+        if: "github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'"
+        run: git restore --worktree -- .
       - name: Observe public market prices
         if: "github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'test: run forward monitor scan'))"
         env:
@@ -73,6 +76,7 @@ jobs:
           if [[ -d reports ]]; then git add -A reports; fi
           if ! git diff --cached --quiet; then
             git commit -m 'chore: record public observations [skip ci]'
+            git reset --hard HEAD  # descartar só mudanças não persistidas do runner efêmero
             git pull --rebase
             git push
           fi
