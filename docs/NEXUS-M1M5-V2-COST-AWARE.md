@@ -27,7 +27,7 @@ Taxa Binance spot regular: **0,10% por lado** (<https://www.binance.com/en/fee/t
 
 ## Critérios de rejeição
 
-Reprovar resultados líquidos não positivos em qualquer cenário na validação retrospectiva, drawdown >=10%, ou menos de 3 dos 4 trimestres de desenvolvimento com retorno positivo. Amostras com menos de 20 operações por trimestre são **INCONCLUSIVAS**, não lucrativas. Mesmo resultados positivos são classificados INCONCLUSIVOS por falta de dados novos independentes.
+Reprovar resultados líquidos não positivos em qualquer cenário na validação retrospectiva, drawdown >=10%, ou menos de 3 dos 4 trimestres de desenvolvimento com retorno positivo. Prejuízo líquido efetivamente observado em qualquer cenário de um trimestre de validação é **REPROVADO** mesmo com amostra pequena; ausência de operações e amostras com menos de 20 operações por trimestre **sem prejuízo observado** são **INCONCLUSIVAS**, não lucrativas. Mesmo resultados positivos são classificados INCONCLUSIVOS por falta de dados novos independentes.
 
 Em caso de regressão do motor V1, falha de checksum, timestamps, dados ausentes ou erro de execução, **bloquear qualquer classificação financeira** e corrigir a simulação primeiro.
 
