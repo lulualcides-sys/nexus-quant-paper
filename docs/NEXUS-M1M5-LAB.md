@@ -27,7 +27,7 @@ O M15 é derivado apenas de três candles M5 íntegros e alinhados; a decisão M
 
 ## Execução conservadora e custos
 
-- Taxa regular spot **0,10% por lado** e slippage modelado de **0,02% por lado** no cenário base. Cenário dobrado: **0,20% por lado** + mesmo slippage. Cenário adverso: taxa 0,10%/lado e desvio de execução total **0,11% por lado** (0,08% slippage + 0,03% impacto). Como usamos OHLC de trades como referência, **não cobramos spread adicional** para não contar duas vezes a mesma aproximação de execução.
+- Taxa regular spot **0,10% por lado** e slippage modelado de **0,02% por lado** no cenário base. Cenário de custo dobrado: **0,20% de taxa + 0,04% de slippage por lado**. Cenário adverso: taxa 0,10%/lado e desvio de execução total **0,11% por lado** (0,08% slippage + 0,03% impacto). Como usamos OHLC de trades como referência, **não cobramos spread adicional** para não contar duas vezes a mesma aproximação de execução.
 - Entradas à abertura do próximo candle realmente existente; candles faltantes bloqueiam dataset; gaps grandes de entrada (>1,5 ATR) cancelam entrada.
 - Stop/alvo simultâneos no mesmo candle => stop primeiro. Gap abaixo do stop => execução pelo preço aberto piorado por slippage. Alvos e stops presumem preenchimento OHLC, sujeito a incerteza; não equivale a ticks ou cotações executáveis.
 - Risco nominal por entrada M1 0,25% e M5 0,50% de capital corrente; quantidade limitada ao caixa disponível após comissão, sem exposição nocional acima de 1× no livro individual.
