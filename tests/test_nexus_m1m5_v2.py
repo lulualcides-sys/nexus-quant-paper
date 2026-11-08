@@ -127,6 +127,16 @@ class V2PolicyTests(unittest.TestCase):
         quarters["retrospective_validation_Q1_2026"]["adverse"]["net_usd"] = -1
         self.assertEqual(judge({"quarters": quarters})[0], "REPROVADO")
 
+    def test_small_sample_with_observed_net_loss_is_still_rejected(self):
+        quarters = {}
+        for name, _, _ in QUARTERS:
+            quarters[name] = {sc: {
+                "net_usd": 12, "trades_closed": 5,
+                "max_drawdown_pct_mark_to_market": 1,
+            } for sc in SCENARIOS}
+        quarters["retrospective_validation_Q1_2026"]["base"]["net_usd"] = -0.5
+        self.assertEqual(judge({"quarters": quarters})[0], "REPROVADO")
+
     def test_inconclusive_when_there_are_no_signals(self):
         quarters = {}
         for name, _, _ in QUARTERS:
