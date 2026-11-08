@@ -15,6 +15,7 @@ on:
   schedule:
     - cron: '34 * * * *' # research H1 candle scan, all seven days
     - cron: '30 22 * * *' # daily crypto digest 19:30 America/Sao_Paulo (UTC-3)
+    - cron: '0 23 * * *' # recuperação 20:00 se não houver marcador de entrega
   workflow_dispatch:
     inputs:
       mode:
@@ -53,7 +54,7 @@ jobs:
         shell: bash
         run: |
           MODE=scan
-          if [[ "$SCHEDULE_EXPR" == '30 22 * * *' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
+          if [[ "$SCHEDULE_EXPR" == '30 22 * * *' || "$SCHEDULE_EXPR" == '0 23 * * *' || "$MANUAL_MODE" == 'report' ]]; then MODE=report; fi
           python -m src.crypto_runner --mode "$MODE"
       - name: Persist crypto paper state without touching existing gold bots
         if: "success() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')"
