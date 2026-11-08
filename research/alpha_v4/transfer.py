@@ -109,7 +109,7 @@ if __name__=="__main__":
     a.add_argument("--out",default="artifacts/alpha-v4-transfer")
     opts=a.parse_args()
     result=run(opts.out)
-    if any(r["month"] not in TRANSFER_MONTHS for r in result["source_manifest"]):
+    if any(r["period_utc"] not in TRANSFER_MONTHS for r in result["source_manifest"]):
         raise SystemExit("unexpected month")
     if len(result["source_manifest"])!=len(TRANSFER_MONTHS):
         raise SystemExit("transfer source incomplete: NO financial validation")

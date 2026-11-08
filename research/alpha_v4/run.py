@@ -67,7 +67,7 @@ def run(out):
                 ranking.append(dict(robot=name,market=symbol,status="NOT_VALIDATED",
                                     months_valid=len(by_month),net_usdt=None))
                 continue
-            net=sum(x["net_usdt"] or 0. for x in by_month.values())
+            net=round(sum(x["net_usdt"] or 0. for x in by_month.values()),4) if trades else None
             trades=sum(x["trades"] for x in by_month.values())
             monthly=[{**dict(month=m),**by_month[m]} for m in MONTHS]
             positive=sum(x["net_usdt"] is not None and x["net_usdt"]>0

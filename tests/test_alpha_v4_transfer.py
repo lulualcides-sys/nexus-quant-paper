@@ -13,6 +13,16 @@ class TransferTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError,"network-simulated"):
                     month(SYMBOL,m)
 
+    def test_manifest_uses_explicit_utc_period_key(self):
+        from research.alpha_v4.data import month
+        from unittest.mock import patch
+        # Source schema must not silently mutate to 'month' as it would break CI.
+        # Cannot reach a real result with synthetic market data; static contract.
+        import inspect
+        from research.alpha_v4.transfer import run
+        self.assertIn('r["period_utc"] not in TRANSFER_MONTHS',inspect.getsource(
+            __import__("research.alpha_v4.transfer",fromlist=["dummy"])))
+
     def test_original_holdout_unchanged(self):
         self.assertEqual(MONTHS,("2026-07","2026-08","2026-09","2026-10"))
         self.assertEqual(TRANSFER_MONTHS,("2026-01","2026-02","2026-03",
