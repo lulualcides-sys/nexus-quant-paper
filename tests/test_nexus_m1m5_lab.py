@@ -149,11 +149,11 @@ class ExecutionTests(unittest.TestCase):
         self.assertEqual(records[0]["exit_reason"], "stop")
         self.assertLess(records[0]["pnl_usd"], 0)
 
-    def test_double_fee_and_adverse_are_not_cheaper(self):
+    def test_double_cost_and_adverse_are_not_cheaper(self):
         bars, feat = sample(), None
         feat = build_features(bars)
         stats = []
-        for scenario in ("base", "double_fee", "adverse"):
+        for scenario in ("base", "double_cost", "adverse"):
             with patch("research.nexus_m1m5.engine.signal", side_effect=self.deterministic_signal):
                 r, trades = replay(bars, feat, "sweep", scenario, start=210, stop=230)
             self.assertEqual(len(trades), 1)
