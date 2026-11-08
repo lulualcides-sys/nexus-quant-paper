@@ -1,0 +1,46 @@
+name: ALPHA V8 retest structure — blind market transfer
+on:
+  pull_request:
+    branches:
+      - research/alpha-v7-breakout-quality-20261108
+    paths:
+      - 'research/alpha_v6/data.py'
+      - 'research/alpha_v8/**'
+      - 'tests/test_alpha_v8.py'
+      - '.github/workflows/alpha-v8-structure-only.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Causal M5 entry quality and regression of previous exit
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_v8.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v7.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v6.py' -v
+  replay:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Binance SPOT verified 66 ZIPs compare full and simple quality filters
+        run: python -m research.alpha_v8.run --out artifacts/alpha-v8
+      - name: Attach SHA256 manifests, month diagnostics and trade ledgers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v8-transfer-${{ github.run_id }}
+          path: artifacts/alpha-v8
+          retention-days: 30
+          if-no-files-found: warn
