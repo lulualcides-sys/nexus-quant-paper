@@ -39,7 +39,7 @@ def check_candles(bars,minutes):
 def iso(ts):
     return datetime.fromtimestamp(ts,timezone.utc).isoformat()
 
-def backtest(bars,signals,minutes,start,end,slip_bps=5.,capital=START_USDT):
+def backtest(bars,signals,minutes,start,end,slip_bps=5.,capital=START_USDT,features=None):
     """start/end are indices; each segment is a fresh independent virtual book.
     Uses only closed bar i-1 to decide an entry at i.open. Exit checks on bar i.
     No overlapping positions. Stops take precedence over targets inside one bar.
@@ -47,7 +47,7 @@ def backtest(bars,signals,minutes,start,end,slip_bps=5.,capital=START_USDT):
     check_candles(bars,minutes)
     if not (WARMUP<start<end<=len(bars)):
         raise ValueError("bad chronological split or warmup")
-    feat=build(bars)
+    feat=features if features is not None else build(bars)
     equity=capital
     peak=capital
     max_drawdown=0.
