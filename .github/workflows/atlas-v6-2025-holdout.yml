@@ -25,9 +25,9 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_atlas_v6_noon_probe.py' -v
           python -m unittest discover -s tests -p 'test_atlas_v5_loss_ranking.py' -v
-      - name: Run fixed models on independent 2025 continuous WINFUT M5
+      - name: Audit 2025 continuous source; backtest only if prices and contract valid
         run: python -m research.atlas_v6_2025_holdout
-      - name: Store evidence and full cost sensitivity
+      - name: Store source rejection or backtest cost evidence
         if: success()
         uses: actions/upload-artifact@v4
         with:
