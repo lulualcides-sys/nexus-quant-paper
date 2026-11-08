@@ -14,7 +14,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .data import load_history, month_range
+from .data import aggregate_closed_m15, load_history, month_range
 from .engine import SCENARIOS, replay
 from .run import month_indices
 from .strategies import SPECS, build_features
@@ -35,11 +35,15 @@ def run(*, output=Path("artifacts/nexus-m1m5-v3"),
         m1, s1 = load_history(symbol, "1m", months, cache)
         m5, s5 = load_history(symbol, "5m", months, cache)
         h1 = aggregate_closed_h1(m5)
+        m15 = aggregate_closed_m15(m5)
         if len(h1) < 240 or h1[0].t != m5[0].t:
             raise ValueError("Hourly series incomplete or misaligned")
         f1, f5, fh1 = build_features(m1), build_features(m5), build_features(h1)
+        f15 = build_features(m15)
+        m15_closes = [b.t + 900_000 for b in m15]
         h1_closes = [b.t + 3_600_000 for b in h1]
-        sources[symbol] = {"1m": s1, "5m": s5, "h1_count": len(h1)}
+        sources[symbol] = {"1m": s1, "5m": s5, "h1_count": len(h1),
+                           "m15_count": len(m15)}
         for robot, variant in SETUPS:
             tf = SPECS[robot]["tf"]
             bars, features = (m1, f1) if tf == "1m" else (m5, f5)
@@ -57,6 +61,9 @@ def run(*, output=Path("artifacts/nexus-m1m5-v3"),
                         summary, trades = replay(
                             bars, features, robot, sc, start=start, stop=stop,
                             breakout_mode=variant,
+                            higher=m15 if robot == "trend" else None,
+                            higher_features=f15 if robot == "trend" else None,
+                            higher_closes=m15_closes if robot == "trend" else None,
                             research_policy=asdict(policy), macro=h1,
                             macro_features=fh1, macro_closes=h1_closes)
                         scenarios[sc] = summary
@@ -67,7 +74,7 @@ def run(*, output=Path("artifacts/nexus-m1m5-v3"),
                     candidate["quarters"][label] = scenarios
                 candidate["decision"], candidate["reason"] = judge(candidate)
                 results[name] = candidate
-        del m1, m5, h1, f1, f5, fh1
+        del m1, m5, h1, m15, f1, f5, fh1, f15
 
     headers = ["candidate", "symbol", "robot", "quarter", "scenario",
                "signal_t", "entry_t", "exit_t", "entry", "exit", "qty",
