@@ -16,9 +16,9 @@ def historical(n):
 class V5Tests(unittest.TestCase):
     def test_completed_h4_index(self):
         h=ConfirmedRegime("alpha02_breakout_retest",historical(240*15))
-        self.assertEqual(h.last_closed_h4(47),-1)
-        self.assertEqual(h.last_closed_h4(48),0)
-        self.assertEqual(h.last_closed_h4(95),0)
+        self.assertEqual(h.last_closed_h4(46),-1)
+        self.assertEqual(h.last_closed_h4(47),0)
+        self.assertEqual(h.last_closed_h4(95),1)
         self.assertEqual(h.last_closed_h4(96),1)
         self.assertEqual(H4_SLOPE_LAG,12)
         self.assertEqual(H4_WARMUP,60)
@@ -34,7 +34,7 @@ class V5Tests(unittest.TestCase):
         prefix=source[:60*254]
         earlier=ConfirmedRegime("alpha04_ema_atr_pullback",prefix)
         later=ConfirmedRegime("alpha04_ema_atr_pullback",source)
-        for i in (60*249+7,60*250+59,60*253-1):
+        for i in ((60*249)//5+7,(60*250)//5+11,(60*253)//5-1):
             self.assertEqual(earlier.filter(i),later.filter(i))
 
     def test_same_underlying_alphas_and_exit_engine(self):
@@ -44,8 +44,8 @@ class V5Tests(unittest.TestCase):
             new=ConfirmedRegime(name,b)
             self.assertIs(old.original,new.original)
             self.assertEqual(old.minutes,new.minutes)
-            self.assertEqual(old.h1_exiting(60*251-1),
-                             new.h1_exiting(60*251-1))
+            self.assertEqual(old.h1_exiting((60*251)//old.minutes-1),
+                             new.h1_exiting((60*251)//new.minutes-1))
 
     def test_no_synthetic_zero_on_no_trades(self):
         self.assertIsNone(_monthly_summary([dict(trades=0,net_usdt=None)]).get("net_usdt"))
