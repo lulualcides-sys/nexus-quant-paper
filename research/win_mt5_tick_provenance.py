@@ -28,7 +28,7 @@ from zoneinfo import ZoneInfo
 
 SP=ZoneInfo("America/Sao_Paulo")
 WIN=re.compile(r"WIN[GJMQVZ]\d{2}\Z", re.ASCII)
-FLAG_LAST=4
+FLAG_LAST=8  # MQL5 TICK_FLAG_LAST: real last-trade price update (ASK flag is 4)
 FLAG_VOLUME=16
 FLAG_BUY=32
 FLAG_SELL=64
