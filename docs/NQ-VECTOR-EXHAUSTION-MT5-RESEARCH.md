@@ -8,7 +8,7 @@
 - Loja oficial: https://lojadagreenhouse.com.br/ descreve a geometria pública de entrada 50%, alvo 200% e stop -100%, com 0% a 100% no candle que foi sinalizado após fechar.
 - A empresa menciona fluxo, exaustão, manipulação e volume. **A fórmula completa para decidir qual candle recebe seta não está na página aberta.** Não podemos demonstrar equivalência dos nossos sinais com os sinais proprietários.
 - A oferta mostra preço de acesso (na última consulta R$87,99/5 semanas, com renovação manual). O site público não concede acesso gratuito ao indicador original nem fornece sua fonte MQL5/NTSL. Não acessar área de membros protegida ou usar o checkout para obter arquivos sem licença.
-- O usuário mencionou autorização para inspeção com REA. Nesta execução, a instalação direta do REA não ficou disponível no ambiente (registro NPM inacessível por falha de DNS). Por isso, a análise usou inspeção legítima da página pública e documentação. **Não afirmar que REA foi executado.**
+- **Atualização REA 09/11/2026:** a instalação local falhou anteriormente por DNS, mas conseguimos executar o **REA 6.8.0 no GitHub Actions** tanto no JavaScript público (exit code 0) quanto na página aberta em Chromium (exit code 0). Foram inspecionados 108 quadros amostrados de seis vídeos públicos, além de decodificados os 43 registros publicitários de 03–04/11. **O código recuperado é apenas o frontend/demonstrador da loja, NÃO o código licenciado que determina os sinais do Tracker.** Ver [relatório completo de evidências](GREENHOUSE_TRACKER_PUBLIC_REA_AUDIT_2026-11-09.md).
 
 ## Núcleo matemático dos vetores
 
