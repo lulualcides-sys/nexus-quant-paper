@@ -3,3 +3,4 @@ __pycache__/
 .env
 .venv/
 /private_mt5/
+/.mt5_win_venv/
