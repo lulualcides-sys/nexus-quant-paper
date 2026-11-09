@@ -1,0 +1,75 @@
+name: Tracker Public Site | REA Browser Runtime Trace
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - .github/workflows/tracker-rea-browser-public.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser_trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify public browser availability and synthesize safe REA read-only scenario
+        shell: bash
+        run: |
+          which google-chrome || which chromium || which chromium-browser
+          python - <<'PY'
+          import json,shutil
+          chrome=(shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser"))
+          if not chrome: raise SystemExit("No browser installed in runner")
+          scenario={
+            "browser":{"mode":"launch","executable_path":chrome},
+            "start_url":{"url":"https://lojadagreenhouse.com.br/ofertatracker/"},
+            "actions":[{"step_id":"public-video-page-settle","action":"wait_for_timeout","duration_ms":8000}],
+            "capture":{"at_end":["dom","accessibility","url"],"events":["network"]},
+            "command_timeout_ms":30000
+          }
+          open("tracker_public_rea_scenario.json","w").write(json.dumps(scenario,indent=2))
+          print("REA_BROWSER_START_URL",scenario["start_url"]["url"])
+          print("REA_BROWSER_PATH",chrome)
+          PY
+      - name: Run REA browser with no login and no actions that change website data
+        shell: bash
+        timeout-minutes: 8
+        run: |
+          set +e
+          timeout 420s npx -y rea-agents@latest capture-browser-scenario tracker_public_rea_scenario.json --detail summary --evidence_output "$PWD/tracker_public_rea_browser_evidence.json" --json > tracker_public_rea_summary.json 2>rea_browser_stderr.txt
+          ret=$?
+          echo "REA_BROWSER_EXIT_CODE=$ret"
+          tail -c 1800 rea_browser_stderr.txt
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("tracker_public_rea_summary.json")
+          print("REA_BROWSER_SUMMARY_BYTES",p.stat().st_size if p.exists() else 0)
+          try:
+            data=json.loads(p.read_text())
+            print("REA_BROWSER_SUMMARY_KEYS",list(data)[:30] if isinstance(data,dict) else "array")
+            print("REA_BROWSER_SUMMARY",json.dumps(data,ensure_ascii=False)[:5000])
+          except Exception as e:
+            print("REA_BROWSER_SUMMARY_PARSE_FAILURE",str(e))
+            if p.exists():print(p.read_text(errors="replace")[:1000])
+          evidence=Path("tracker_public_rea_browser_evidence.json")
+          print("REA_BROWSER_EVIDENCE_BYTES",evidence.stat().st_size if evidence.exists() else 0)
+          PY
+          exit 0
+      - name: Keep public browser capture evidence for audit, no video binaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-public-rea-browser-summary
+          path: |
+            tracker_public_rea_summary.json
+            rea_browser_stderr.txt
+          retention-days: 14
