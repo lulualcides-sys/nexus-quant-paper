@@ -6,7 +6,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Nexus Quant - original independent research"
 #property link      "https://github.com/lulualcides-sys/nexus-quant-paper"
-#property version   "0.200"
+#property version   "1.000"
 #property description "WIN M1: confirmed absorption/exhaustion against classified exchange trades"
 #property description "Independent indicator. NOT Greenhouse Tracker, not validated for trading."
 #property indicator_chart_window
