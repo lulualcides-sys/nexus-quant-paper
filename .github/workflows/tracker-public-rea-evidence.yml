@@ -1,0 +1,63 @@
+name: Tracker Public Videos | REA JS and Media Evidence Audit
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - research/greenhouse_public_media_audit.py
+      - .github/workflows/tracker-public-rea-evidence.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public_only_audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - name: Extract only public promotional page video URLs and JavaScript
+        run: |
+          python -m py_compile research/greenhouse_public_media_audit.py
+          python -m research.greenhouse_public_media_audit
+      - name: REA inspect public static JavaScript (no private content)
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          set +e
+          timeout 240s npx -y rea-agents@latest analyze-javascript-application "${GITHUB_WORKSPACE}/site-js" --json > rea_public_js_result.json 2>rea_audit_stderr.txt
+          ret=$?
+          echo "REA_ANALYSIS_EXIT_CODE=$ret"
+          echo "REA_STDERR_TAIL_BEGIN"
+          tail -c 1800 rea_audit_stderr.txt
+          echo "REA_STDERR_TAIL_END"
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          path=Path("rea_public_js_result.json")
+          if path.exists():
+            raw=path.read_text(errors="replace")
+            print("REA_STDOUT_BYTES",len(raw))
+            try:
+              d=json.loads(raw)
+              print("REA_JSON_KEYS",list(d)[:35] if isinstance(d,dict) else "list")
+              print("REA_SUMMARY",json.dumps(d,ensure_ascii=False)[:3000])
+            except Exception:
+              print("REA_STDOUT_HEAD",raw[:900])
+          PY
+          exit 0
+      - name: Archive only public URL references and analysis receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-public-evidence-rea
+          path: |
+            research/results/greenhouse_public_media_refs.json
+            rea_public_js_result.json
+            rea_audit_stderr.txt
+          retention-days: 14
