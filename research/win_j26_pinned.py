@@ -31,7 +31,12 @@ def canonicalize_payload(payload, destination, *, expect_hash=SOURCE_BLOB):
         raise ValueError("WINJ26 content changed or does not match expected pinned blob")
     if not payload or len(payload) >= MAX_SIZE:
         raise ValueError("WINJ26 payload length invalid")
-    text = payload.decode("utf-8-sig")  # refuse invalid bytes; never silently replace data
+    # Some Profit CSV exports encode Portuguese headings with Windows-1252.
+    # Decode STRICTLY: no 'errors=replace' or corrupted field bytes.
+    try:
+        text = payload.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = payload.decode("cp1252")
     rows = []
     for lineno, cells in enumerate(csv.reader(io.StringIO(text), delimiter=";"), 1):
         if not cells or all(not v.strip() for v in cells):
