@@ -14,7 +14,7 @@
 
 ## Evidência de testes
 
-- GitHub Actions Linux (10 testes da coleta com MT5 simulado): https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42666918161 . Windows (iniciador de um clique, instalação no venv e importação do pacote) tem workflow próprio: https://github.com/lulualcides-sys/nexus-quant-paper/actions/workflows/win-mt5-windows-smoke.yml ; ver conclusão da execução atual antes de afirmar validação.
+- GitHub Actions Linux (10 testes da coleta com MT5 simulado): https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42666918161 . **Windows validado em CI**: iniciador de um clique, criação de venv, instalação isolada do pacote oficial MetaTrader5 e ausência de métodos de envio de ordens passaram em https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42669479304 . Isso não testa uma conta da Rico nem demonstra que há histórico disponível no seu computador.
 - Foram executados 10 testes com dados sintéticos e API MT5 simulada, verificando sequência cronológica, timezone UTC, volume real, proteção contra duplicação, rejeição de símbolo errado, histórico indisponível, corte de candle incompleto, ausência de ordens e relatório de pesquisa sem ganhos inventados.
 - O GitHub CI Linux **não consegue conectar-se ao terminal Windows MT5 do usuário**: o teste confirma funcionamento lógico, não a compatibilidade efetiva de autenticação/feeds da Rico.
 - O teste com WINQ26 e WINJ26 de terceiros foi realizado anteriormente: https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42664956216 . Ainda não há lucro consistente ou evidência de vantagem fora da amostra.
