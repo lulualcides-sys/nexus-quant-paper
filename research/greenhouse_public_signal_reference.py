@@ -11,6 +11,7 @@ PATTERNS={
     "pub_record_time":r"\b09:0[0-9]\b",
     "public_day03":r"03[/.-]11[/.-]2026",
     "public_day04":r"04[/.-]11[/.-]2026",
+    "public_next_control_markup":r"Pr[oó]ximo\s*</button>",
     "signal_data_var":r"(?:signals|sinais|trades|signalData|trackerSignals)[\s=:]{1,12}[\[{]",
     "video_id":r"(?:ytimg\.com/vi/|youtube\.com/embed/|youtu\.be/)([A-Za-z0-9_-]{11})",
     "data_video_attrs":r"\bdata-(?:youtube|video|yt|clip)[A-Za-z0-9-]*\s*=\s*[\"'][^\"']{2,180}",
