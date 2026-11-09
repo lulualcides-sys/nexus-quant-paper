@@ -37,6 +37,13 @@ class WinTransferTests(unittest.TestCase):
             self.assertEqual(data["timeframe_seconds"],60)
             self.assertEqual(prov["quantity_column"],"Quantidade")
 
+    def test_legacy_profit_cp1252_headers_are_strictly_decoded(self):
+        raw=source_rows().replace(b"Hora;", "Horário;".encode("cp1252"), 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            data,provenance=canonicalize_payload(raw,Path(tmp)/"j26.csv",expect_hash=git_blob_hash(raw))
+            self.assertEqual(len(data["bars"]),120)
+            self.assertEqual(provenance["git_blob_sha1"],git_blob_hash(raw))
+
     def test_reject_symbol_mismatch_even_with_matching_hash(self):
         raw=source_rows(symbol="WINQ26")
         with tempfile.TemporaryDirectory() as tmp:
