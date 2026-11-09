@@ -1,0 +1,34 @@
+name: Tracker inverse mathematics | 43 public vectors and 1 WIN risk
+on:
+  push:
+    branches:
+      - research/tracker-inverse-math-risk-20261109
+    paths:
+      - research/tracker_mathematical_inverse_43.py
+      - tests/test_tracker_mathematical_inverse_43.py
+      - .github/workflows/tracker-math-inverse-risk.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  independent_math_audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate mathematics independently of any broker data
+        run: |
+          python -m py_compile research/tracker_mathematical_inverse_43.py
+          python -m unittest discover -s tests -p 'test_tracker_mathematical_inverse_43.py' -v
+      - name: Extract 43 currently public promoted vectors and calculate exact inversion plus one-WIN risk
+        run: python -m research.tracker_mathematical_inverse_43
+      - name: Preserve reproducible record without copyrighted videos, orders, logins or private brokerage data
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-43-public-inverse-vectors-budget-math
+          path: research/results/tracker_mathematical_inverse_43.json
+          retention-days: 14
