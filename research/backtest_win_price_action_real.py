@@ -123,7 +123,7 @@ def run(imported, provenance, quality):
         coverage = _coverage(bars, start, end)
         if coverage["candles_m1"] < 1000:
             raise ValueError(f"Insufficient real WINQ26 M1 candles for {period}: {coverage}")
-        result = {"coverage": coverage, "cost_scenarios": {}}
+        result = {"coverage": coverage, "cost_scenarios": {}, "economic_guard_cost_scenarios": {}}
         for slips in SLIPPAGE_TICKS:
             settings = Settings(slip_ticks_per_side=slips)
             base = simulate(bars, settings, start_local=start, end_local=end)
@@ -132,6 +132,11 @@ def run(imported, provenance, quality):
             if any(not (start <= local_day(t["entry_time"]) < end) for t in outcome["trades"]):
                 raise AssertionError("Entry escaped its period")
             result["cost_scenarios"][f"slippage_{slips}_ticks_each_way"] = outcome
+            guarded = _score(simulate(bars, Settings(slip_ticks_per_side=slips, min_net_rr=1.0),
+                                      start_local=start, end_local=end))
+            if any(not (start <= local_day(t["entry_time"]) < end) for t in guarded["trades"]):
+                raise AssertionError("Guarded entry escaped its period")
+            result["economic_guard_cost_scenarios"][f"slippage_{slips}_ticks_each_way"] = guarded
         report["periods"][period] = result
     report["total_operations_at_base_cost"] = sum(
         report["periods"][p]["cost_scenarios"]["slippage_1_ticks_each_way"]["closed"]
@@ -147,6 +152,16 @@ def run(imported, provenance, quality):
                 for k in (1,2)
             ) for p in PERIODS
         )) else "NAO_PASSA_REVIEW"
+    report["economic_guard_research_review"] = (
+        "NAO_PASSA_REVIEW" if any(
+            (report["periods"][p]["economic_guard_cost_scenarios"][f"slippage_{k}_ticks_each_way"]["closed"] < 30
+             or report["periods"][p]["economic_guard_cost_scenarios"][f"slippage_{k}_ticks_each_way"]["net_brl"] <= 0
+             or report["periods"][p]["economic_guard_cost_scenarios"][f"slippage_{k}_ticks_each_way"]["unverifiable_position_gap_exits"] > 0
+             or report["periods"][p]["economic_guard_cost_scenarios"][f"slippage_{k}_ticks_each_way"]["open_at_end"]
+             or (report["periods"][p]["economic_guard_cost_scenarios"][f"slippage_{k}_ticks_each_way"]["profit_factor"] or 0) < 1.2)
+            for p in PERIODS for k in (1,2)
+        ) else "PASSA_TRIAGEM_RETROSPECTIVA_NAO_APROVA_REAL"
+    )
     report["approved_real_money"] = False
     return report
 
@@ -182,6 +197,16 @@ def markdown(report):
                 f"{sc['net_brl']:+.2f} | {fmt(sc['profit_factor'])} | "
                 f"{sc['max_realized_drawdown_pct']}% | {sc['max_reds_consecutivos']} |"
             )
+    lines += ["","## Filtro econômico pré-definido: R/R líquido mínimo 1:1","",
+              "| Mês | Slippage/lado | Trades após filtro | Líquido (R$) | Sinais vetados por custo |",
+              "|---|---:|---:|---:|---:|"]
+    for month,item in report["periods"].items():
+        for slips in SLIPPAGE_TICKS:
+            x=item["economic_guard_cost_scenarios"][f"slippage_{slips}_ticks_each_way"]
+            lines.append(f"| {month} | {slips} | {x['closed']} | {x['net_brl']:+.2f} | "
+                         f"{x['rejected']['uneconomic_rr']} |")
+    lines += ["","Não selecionar o filtro só porque evita operações perdedoras no histórico já conhecido.",
+              "Review do filtro: "+report["economic_guard_research_review"],""]
     lines += ["","## Integridade: lacunas durante operações e exposição não encerrada","",
               "| Mês | Slippage/lado | Saídas não verificáveis por dados faltantes | Posição aberta ao fim? |",
               "|---|---:|---:|---|"]
