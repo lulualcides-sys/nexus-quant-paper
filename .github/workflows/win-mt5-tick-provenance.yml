@@ -1,0 +1,45 @@
+name: WIN MT5 | Read-Only Tick Provenance and Volume Delta Audit
+on:
+  push:
+    branches:
+      - research/mt5-win-tick-provenance-20261109
+    paths:
+      - research/win_mt5_tick_provenance.py
+      - tests/test_win_mt5_tick_provenance.py
+      - research/win_flow_public_label_comparison.py
+      - tests/test_win_flow_public_label_comparison.py
+      - .github/workflows/win-mt5-tick-provenance.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated_quality_tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate Python syntax and exact read-only APIs
+        run: |
+          python -m py_compile research/win_mt5_tick_provenance.py research/win_flow_public_label_comparison.py
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          tree=ast.parse(Path('research/win_mt5_tick_provenance.py').read_text())
+          names={n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)}
+          allowed={'initialize','terminal_info','symbol_info','symbol_select','copy_rates_range',
+                   'copy_ticks_range','last_error','shutdown'}
+          forbidden={'order_send','order_check','positions_get','account_info','login',
+                     'history_deals_get','WebRequest'}
+          assert not names & forbidden, names & forbidden
+          mt5calls={n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)
+                    and isinstance(n.value,ast.Name) and n.value.id=='mt5'}
+          assert mt5calls <= allowed|{'TIMEFRAME_M1','COPY_TICKS_TRADE'},mt5calls
+          print('No MT5 trade execution, account exposure or login methods used.')
+          PY
+      - name: Run deterministic hourly-window and 25-real-tick classifier tests
+        run: |
+          python -m unittest discover -s tests -p 'test_win_mt5_tick_provenance.py' -v
+          python -m unittest discover -s tests -p 'test_win_flow_public_label_comparison.py' -v
