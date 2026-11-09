@@ -1,0 +1,34 @@
+name: Tracker Vector Discovery | Leakage-Controlled Research
+on:
+  push:
+    branches:
+      - research/tracker-vector-discovery-20261109
+    paths:
+      - research/tracker_vector_discovery_43.py
+      - tests/test_tracker_vector_discovery.py
+      - .github/workflows/tracker-vector-discovery.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  numeric_research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit-test 50/200/-100 inverse vector and feature lookahead protections
+        run: |
+          python -m py_compile research/tracker_vector_discovery_43.py
+          python -m unittest discover -s tests -p 'test_tracker_vector_discovery.py' -v
+      - name: Compute public vector anchor errors and frozen held-day feature discrimination
+        run: python -m research.tracker_vector_discovery_43
+      - name: Save research JSON, no proprietary media or raw member data
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-public-vectors-leakage-audit
+          path: research/results/tracker_vector_research_43.json
+          retention-days: 14
