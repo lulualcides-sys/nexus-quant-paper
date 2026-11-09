@@ -20,10 +20,16 @@ UA="NexusQuantPublicPromoDatasetVerification/1.0"
 DAY=["03/11/2026","04/11/2026"]
 
 def decode_literal(html):
-    match=re.search(r"\bvar\s+D\s*=\s*\{d\s*:",html)
-    if not match:
-        raise ValueError("Public gallery compressed dataset not found")
-    start=match.end()-3
+    # Deployment may place 's' before 'd' or use const/var for D.
+    cutoff=html.find("D.d.forEach")
+    if cutoff<0:
+        raise ValueError("Public chart decoder not found")
+    matches=list(re.finditer(r"\bD\s*=\s*\{",html[:cutoff]))
+    if not matches:
+        nearby=html[max(0,cutoff-6000):cutoff]
+        raise ValueError("Public gallery D assignment not found; nearby keys: "+
+                         repr(re.findall(r"[A-Za-z_$]+\s*=",nearby)[-15:]))
+    match=matches[-1]
     # Discover balanced object by scanning, never eval any JS.
     begin=html.find("{",match.start())
     quote=None;escape=False;depth=0;end=None
