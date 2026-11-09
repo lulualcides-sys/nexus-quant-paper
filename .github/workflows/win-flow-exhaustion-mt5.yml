@@ -1,0 +1,41 @@
+name: WIN Flow Exhaustion | original MT5 research indicator
+on:
+  push:
+    branches:
+      - research/win-flow-exhaustion-mt5-20261109
+    paths:
+      - indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.mq5
+      - research/win_flow_exhaustion_reference.py
+      - tests/test_win_flow_exhaustion_reference.py
+      - .github/workflows/win-flow-exhaustion-mt5.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  focused_audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Python syntax validation and unit tests for classified flow
+        run: |
+          python -m py_compile research/win_flow_exhaustion_reference.py tests/test_win_flow_exhaustion_reference.py
+          python -m unittest discover -s tests -p 'test_win_flow_exhaustion_reference.py' -v
+      - name: Static safety audit - indicator cannot send orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.mq5')
+          m=p.read_text(encoding='utf-8')
+          assert '#property indicator_chart_window' in m
+          for k in ['CopyTicksRange','TICK_FLAG_BUY','TICK_FLAG_SELL','volume_real','BufferBuy[0]=EMPTY_VALUE']:
+              assert k in m,k
+          forbidden=['OrderSend(', 'OrderCheck(', 'CTrade ', 'WebRequest(', 'FileOpen(']
+          for name in forbidden:
+              assert name not in m, name
+          assert 'research' in m.lower()
+          print('Static MQL flow-only checks PASSED. MetaEditor compilation NOT tested by this job.')
+          PY
