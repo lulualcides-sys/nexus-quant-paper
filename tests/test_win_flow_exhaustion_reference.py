@@ -93,7 +93,7 @@ class IndependentFlowTests(unittest.TestCase):
     def test_same_bar_no_coverage_at_end_is_rejected(self):
         b=bars_buy()
         trade=ticks(b[20]["time"])
-        for x in trade:x["time_msc"]-=11000 # invalid near beginning or end, no coverage
+        for x in trade:x["time_msc"]-=17000 # end has >15 seconds with no classified trades
         self.assertIsNone(classified_flow(trade,b[20]["time"]))
 
     def test_incomplete_bar_or_next_bars_do_not_repaint_previous_signal(self):
