@@ -66,6 +66,8 @@ def _score(raw):
         }
     raw["resultado_por_setup"] = subsets
     raw["max_reds_consecutivos"] = _longest_losses(trades)
+    raw["median_planned_net_rr"] = round(median(t["planned_net_rr"] for t in trades),3) if trades else None
+    raw["trades_below_1_to_1_net_rr"] = sum(t["planned_net_rr"] < 1 for t in trades)
     raw["quantidade_stop_red"] = Counter(t["reason"] for t in trades)["STOP"]
     raw["quantidade_stop_win"] = Counter(t["reason"] for t in trades)["TARGET"]
     raw["quantidade_stop_na_entrada"] = Counter(t["reason"] for t in trades)["STOP_ENTRY_BAR"]
@@ -190,6 +192,14 @@ def markdown(report):
                          f"{'sim' if x['open_at_end'] else 'não'} |")
     lines += ["","Uma liquidação presumida após candles M1 ausentes não comprova preenchimento"
               " de ordens. Tais operações invalidam aprovação automática.", ""]
+    lines += ["","## Relação risco/retorno líquida planejada (1 tick por lado)","",
+              "| Mês | Mediana R/R líquido | Operações com R/R líquido inferior a 1 |",
+              "|---|---:|---:|"]
+    for month,item in report["periods"].items():
+        sc=item["cost_scenarios"]["slippage_1_ticks_each_way"]
+        lines.append(f"| {month} | {sc['median_planned_net_rr'] if sc['median_planned_net_rr'] is not None else 'N/D'} | "
+                     f"{sc['trades_below_1_to_1_net_rr']}/{sc['closed']} |")
+    lines += ["","Alvo bruto 2R não é payoff líquido 2R quando há taxas/slippage.",""]
     lines += ["","## Estratificação dos setups (1 tick por lado)"]
     for month,item in report["periods"].items():
         sc=item["cost_scenarios"]["slippage_1_ticks_each_way"]
