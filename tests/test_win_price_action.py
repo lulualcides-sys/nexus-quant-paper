@@ -130,6 +130,35 @@ class WinPriceActionTests(unittest.TestCase):
         self.assertEqual(result["trades"][0]["exit_time"], bars[75]["time"])
         self.assertEqual(result["max_concurrent_positions"], 1)
 
+    def test_gap_during_position_invalidates_quality_even_if_stop_not_visible(self):
+        bars = candles()
+        # Entry on M1 index 70; skip precisely one minute before 71.
+        for bar in bars[71:]:
+            bar["time"] += 60
+        setup = {"setup": "break_retest", "side": 1, "stop": 99950.0,
+                 "signal_time": bars[69]["time"]}
+        with patch("research.win_price_action.candidate",
+                   side_effect=lambda _bars, i, _cfg: setup if i == 69 else None):
+            out = simulate(bars)
+        self.assertEqual(out["closed"], 1)
+        self.assertEqual(out["trades"][0]["reason"], "UNVERIFIABLE_DATA_GAP")
+        self.assertEqual(out["unverifiable_position_gap_exits"], 1)
+        self.assertEqual(out["status"], "BACKTEST_HAS_UNVERIFIABLE_POSITION_GAPS")
+        self.assertEqual(out["net_brl"], -16.0)
+
+    def test_unrealized_trade_is_marked_separately_from_closed_pnl(self):
+        bars = candles()
+        setup = {"setup": "break_retest", "side": 1, "stop": 99950.0,
+                 "signal_time": bars[138]["time"]}
+        with patch("research.win_price_action.candidate",
+                   side_effect=lambda _bars, i, _cfg: setup if i == 138 else None):
+            out = simulate(bars)
+        self.assertEqual(out["closed"], 0)
+        self.assertTrue(out["open_at_end"])
+        self.assertEqual(out["net_brl"], 0.0)
+        self.assertEqual(out["open_position_mark_to_market_net_brl"], -6.0)
+        self.assertEqual(out["equity_including_open_mark_brl"], 1994.0)
+
     def test_no_real_trade_or_fake_profit_without_csv(self):
         bars = candles()
         result = simulate(bars)
