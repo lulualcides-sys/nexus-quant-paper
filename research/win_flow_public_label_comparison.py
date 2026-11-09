@@ -46,6 +46,9 @@ def independent_signals(quality_rows,policy=POLICY):
         "rejected_contra_delta":0,
         "candidate_signals":[]}
     for i in range(len(ordered)):
+        # Never treat a non-contiguous 20-bar history as a continuous setup.
+        if i>=policy.lookback and ordered[i]["time"]-ordered[i-policy.lookback]["time"]!=policy.lookback*60:
+            continue
         side=price_candidate(bars,i,policy)
         if side is None: continue
         stats["price_candidates"]+=1
@@ -157,6 +160,8 @@ def main():
         with urllib.request.urlopen(req,timeout=30) as r:
             markup=r.read(1_000_000).decode("utf-8-sig")
     public=public_markers_from_html(markup)
+    requested_days={x["date"] for x in audit}
+    public=[label for label in public if label["date"] in requested_days]
     signals,checks=independent_signals(rows)
     results={
         "status":"FROZEN_MODEL_LOCAL_DATA_COMPARED_WITH_PUBLIC_PROMOTIONAL_LABELS",
