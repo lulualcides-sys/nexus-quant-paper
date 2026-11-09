@@ -23,11 +23,9 @@ jobs:
       - name: Verify local one-click launcher offline smoke test
         shell: cmd
         run: call executar_WIN_MT5_somente_leitura.cmd --self-test
-      - name: Verify official MetaTrader5 package installs on Windows Python 3.11
-        shell: pwsh
-        run: |
-          python -m pip install --disable-pip-version-check --no-input MetaTrader5
-          python -c "import MetaTrader5 as mt5; print('MetaTrader5 wheel import OK:', mt5.__version__)"
+      - name: Verify launcher automatically creates isolated venv and installs official MT5 Python wheel
+        shell: cmd
+        run: call executar_WIN_MT5_somente_leitura.cmd --setup-only
       - name: Verify no trading functions or credentials are referenced
         shell: pwsh
         run: |
