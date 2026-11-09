@@ -5,6 +5,7 @@ on:
       - research/vector-exhaustion-mt5-20261109
     paths:
       - research/greenhouse_deeper_signal_forensics.py
+      - tests/test_greenhouse_public_price_forensics.py
       - research/greenhouse_public_gallery_decode.py
       - .github/workflows/tracker-deeper-signal-forensics.yml
   workflow_dispatch:
@@ -22,6 +23,7 @@ jobs:
       - name: Check price-only hypothesis versus 43 promotional label candles, plus deterministic same-day null
         run: |
           python -m py_compile research/greenhouse_deeper_signal_forensics.py
+          python -m unittest discover -s tests -p 'test_greenhouse_public_price_forensics.py' -v
           python -m research.greenhouse_deeper_signal_forensics
       - uses: actions/upload-artifact@v4
         if: success()
