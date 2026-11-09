@@ -93,6 +93,9 @@ def study(bars, provenance, quality):
             baseline=result["periods"][period]["models"][name]["1"]
             stress=result["periods"][period]["models"][name]["2"]
             if (baseline["trades"] < 30 or stress["trades"] < 30
+                    or baseline["unverifiable_position_gap_exits"] > 0
+                    or stress["unverifiable_position_gap_exits"] > 0
+                    or baseline["open_at_end"] or stress["open_at_end"]
                     or baseline["net_brl"] <= 0 or stress["net_brl"] <= 0
                     or (baseline["profit_factor"] or 0) < 1.2
                     or (stress["profit_factor"] or 0) < 1.2):
@@ -136,6 +139,17 @@ def report_md(report):
         for model in ("sweep_vwap","sweep_no_vwap"):
             x=item["models"][model]
             lines.append(f"| {pname} | {model} | {x['0']['net_brl']:+.2f} | {x['1']['net_brl']:+.2f} | {x['2']['net_brl']:+.2f} |")
+    lines += ["","## Integridade dos resultados (1 tick por lado)","",
+              "| Janela | Versão | Saídas por minutos ausentes | Tipos de saída | Posição aberta ao fim? |",
+              "|---|---|---:|---|---|"]
+    for pname,item in report["periods"].items():
+        for model in ("sweep_vwap","sweep_no_vwap"):
+            x=item["models"][model]["1"]
+            kinds=", ".join(f"{key}:{value}" for key,value in x["exit_reasons"].items())
+            lines.append(f"| {pname} | {model} | {x['unverifiable_position_gap_exits']} | "
+                         f"{kinds or 'nenhuma'} | {'sim' if x['open_at_end'] else 'não'} |")
+    lines += ["","O P&L de uma operação com lacuna é uma hipótese adversa, não um fill "
+              "verificado; qualquer lacuna com posição aberta reprova a triagem.",""]
     lines+=["","## Conclusão de avaliação",""]
     for name,value in report["retrospective_review_pass"].items():
         lines.append(f"- {name}: {'passou triagem histórica, ainda sem validação externa' if value else 'NÃO passou triagem histórica'}.")
