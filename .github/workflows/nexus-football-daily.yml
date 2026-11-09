@@ -8,6 +8,13 @@ on:
       - '.github/workflows/nexus-football-daily.yml'
       - 'src/nexus_football_daily.py'
       - 'src/nexus_football_archive.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/nexus-football-daily.yml'
+      - 'src/nexus_football_daily.py'
+      - 'src/nexus_football_archive.py'
+      - 'tests/test_nexus_football_daily.py'
   schedule:
     # Primeira tentativa: 00h00 America/Sao_Paulo (03h00 UTC).
     # Tentativas de recuperação: 00h20, 00h40 e 01h00; o marcador impede duplicação.
@@ -35,11 +42,13 @@ jobs:
       - name: Testar antes de notificar
         run: python -m unittest discover -s tests -v
       - name: Enviar UMA notificação de futebol no bot já configurado
+        if: github.event_name != 'pull_request'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python -m src.nexus_football_daily
       - name: Persistir marcador para não reenviar
+        if: github.event_name != 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
