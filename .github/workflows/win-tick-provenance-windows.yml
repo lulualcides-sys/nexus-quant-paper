@@ -1,0 +1,46 @@
+name: WIN Tracker-style Flow | Windows One-Click Smoke Test
+on:
+  push:
+    branches:
+      - research/mt5-win-tick-provenance-20261109
+    paths:
+      - executar_pesquisa_tracker_fluxo_MT5.cmd
+      - research/win_mt5_tick_provenance.py
+      - research/win_flow_public_label_comparison.py
+      - tests/test_win_mt5_tick_provenance.py
+      - tests/test_win_flow_public_label_comparison.py
+      - .github/workflows/win-tick-provenance-windows.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows_isolated:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run Windows one-click read-only offline unit tests
+        shell: cmd
+        run: call executar_pesquisa_tracker_fluxo_MT5.cmd --self-test
+      - name: Test isolated venv creation and official MetaTrader5 import
+        shell: cmd
+        run: call executar_pesquisa_tracker_fluxo_MT5.cmd --setup-only
+      - name: Verify no broker credentials or orders are requested
+        shell: pwsh
+        run: |
+          @'
+          import ast
+          from pathlib import Path
+          names=set()
+          for file in ("research/win_mt5_tick_provenance.py",
+                       "research/win_flow_public_label_comparison.py"):
+              for n in ast.walk(ast.parse(Path(file).read_text(encoding="utf-8"))):
+                  if isinstance(n,ast.Attribute): names.add(n.attr)
+          forbidden={"order_send","order_check","login","account_info","positions_get",
+                     "history_deals_get"}
+          assert names.isdisjoint(forbidden),names&forbidden
+          print("Read-only collector+comparison have no order-routing methods.")
+          '@ | python -
