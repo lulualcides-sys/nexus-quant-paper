@@ -128,11 +128,12 @@ class Mt5CollectorTests(unittest.TestCase):
 
     def test_chronological_readonly_report_never_claims_profit(self):
         bars=[]
-        for day in (9,10,11,12):
+        # All four fixture sessions must be in the actual past when CI runs.
+        for day in (2,3,4,5):
             bars.extend(sample(day=datetime(2026,11,day,12,10,tzinfo=UTC)))
         with tempfile.TemporaryDirectory() as td:
             data,_=canonicalize_mt5_rates(bars,symbol="WINZ26",
-                                           now_utc=datetime(2026,11,12,21,tzinfo=UTC),
+                                           now_utc=datetime(2026,11,6,21,tzinfo=UTC),
                                            destination=Path(td)/"WINZ26_M1.csv")
             report=run_research(data["bars"],contract="WINZ26")
         self.assertFalse(report["approved_live"])
@@ -143,7 +144,7 @@ class Mt5CollectorTests(unittest.TestCase):
             for row in window.values():
                 self.assertEqual(row["trades"],0)
                 self.assertEqual(row["net_brl"],0)
-        self.assertEqual(report["chronological_split_day"],"2026-11-11")
+        self.assertEqual(report["chronological_split_day"],"2026-11-04")
 
     def test_research_fee_is_explicit_and_bounded(self):
         with self.assertRaisesRegex(ValueError,"Need at least"):
