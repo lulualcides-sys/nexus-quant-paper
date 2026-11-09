@@ -108,6 +108,37 @@ class LiquiditySweepTests(unittest.TestCase):
         self.assertEqual(report["ledger"][0]["why"],"STOP_WIN")
         self.assertEqual(report["ledger"][0]["net_brl"],12.0)
 
+    def test_missing_candle_while_position_open_invalidates_backtest_quality(self):
+        bars = fixture()
+        # A real 1-minute data hole occurs AFTER entry, not during signal scan.
+        for b in bars[102:]:
+            b["time"] += 60
+        def fake(_bars, i, _cfg):
+            return ({"setup":"liquidity_sweep_reclaim","side":1,
+                     "stop":99950.0,"signal_time":bars[100]["time"],
+                     "swept_level":99985.0} if i==100 else None)
+        with patch("research.win_liquidity_sweep.signal", side_effect=fake):
+            result=simulate(bars)
+        self.assertEqual(result["unverifiable_position_gap_exits"], 1)
+        self.assertEqual(result["trades"], 1)
+        self.assertEqual(result["ledger"][0]["why"], "UNVERIFIABLE_DATA_GAP")
+        self.assertEqual(result["status"], "BACKTEST_HAS_UNVERIFIABLE_POSITION_GAPS")
+        self.assertEqual(result["net_brl"], -16.0)
+
+    def test_open_position_marked_but_not_fabricated_as_closed_trade(self):
+        bars=fixture()
+        def fake(_bars, i, _cfg):
+            return ({"setup":"liquidity_sweep_reclaim","side":1,
+                     "stop":99950.0,"signal_time":bars[178]["time"],
+                     "swept_level":99985.0} if i==178 else None)
+        with patch("research.win_liquidity_sweep.signal",side_effect=fake):
+            report=simulate(bars)
+        self.assertEqual(report["trades"],0)
+        self.assertTrue(report["open_at_end"])
+        self.assertEqual(report["net_brl"],0.0)
+        self.assertEqual(report["open_position_mark_to_market_net_brl"],-6.0)
+        self.assertEqual(report["equity_including_open_mark_brl"],1994.0)
+
     def test_no_fabricated_trades_and_bad_arguments(self):
         report=simulate(fixture())
         self.assertEqual(report["trades"],0)
