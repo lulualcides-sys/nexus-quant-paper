@@ -6,6 +6,8 @@ on:
     paths:
       - research/win_mt5_tick_provenance.py
       - tests/test_win_mt5_tick_provenance.py
+      - research/win_flow_public_label_comparison.py
+      - tests/test_win_flow_public_label_comparison.py
       - .github/workflows/win-mt5-tick-provenance.yml
   workflow_dispatch:
 permissions:
@@ -21,7 +23,7 @@ jobs:
           python-version: '3.11'
       - name: Validate Python syntax and exact read-only APIs
         run: |
-          python -m py_compile research/win_mt5_tick_provenance.py
+          python -m py_compile research/win_mt5_tick_provenance.py research/win_flow_public_label_comparison.py
           python - <<'PY'
           import ast
           from pathlib import Path
@@ -38,4 +40,6 @@ jobs:
           print('No MT5 trade execution, account exposure or login methods used.')
           PY
       - name: Run deterministic hourly-window and 25-real-tick classifier tests
-        run: python -m unittest discover -s tests -p 'test_win_mt5_tick_provenance.py' -v
+        run: |
+          python -m unittest discover -s tests -p 'test_win_mt5_tick_provenance.py' -v
+          python -m unittest discover -s tests -p 'test_win_flow_public_label_comparison.py' -v
