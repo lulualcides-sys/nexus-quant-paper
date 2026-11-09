@@ -30,7 +30,10 @@ class CryptoRunnerTest(unittest.TestCase):
             crypto_runner.run("report", **opts)
             crypto_runner.run("report", **opts)
             self.assertEqual(len(msgs), 1)
-            self.assertIn("4 robos", msgs[0])
+            self.assertIn("4 robôs", msgs[0])
+            self.assertIn("<b>🪙 NEXUS CRIPTO", msgs[0])
+            self.assertEqual(msgs[0].count("Entradas acumuladas:"), 1)
+            self.assertLess(len(msgs[0]), 2000)
             self.assertTrue((path/"sent.json").exists())
 
     def test_failed_market_reports_missing_not_zero(self):
@@ -44,7 +47,7 @@ class CryptoRunnerTest(unittest.TestCase):
                                     state_path=path/"state.json")
             self.assertIn("BTCUSDT", out["unavailable"])
             from src.crypto_paper import digest
-            self.assertIn("DADOS INDISPONIVEIS", digest(out,"2026-10-31"))
+            self.assertIn("Dados indisponíveis", digest(out,"2026-10-31"))
 
 
 if __name__ == "__main__":
