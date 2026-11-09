@@ -227,28 +227,70 @@ def local_day(ts):
 
 
 def digest(state, day):
-    lines = ["🪙 NEXUS CRIPTO — " + day,
-             "4 robos H1 • BTC/ETH SPOT • SOMENTE SIMULACAO",
-             "Risco 0,5%/entrada; sem alavancagem; custos estimados."]
+    """Resumo HTML compacto: apenas valores observados, sem operações inventadas."""
+    from html import escape
+    display_day = datetime.strptime(day, "%Y-%m-%d").strftime("%d/%m/%Y")
+    books = state.get("books", {})
+    unavailable = set(state.get("unavailable", []))
+    inspected = [books[key(s, strategy)] for s in SYMBOLS for strategy in STRATEGIES
+                 if key(s, strategy) in books]
+    closed_today = [t for book in inspected for t in book.get("closed", [])
+                    if local_day(t["exit_ts"]) == day]
+    pnl_today = sum(float(t["net_usd"]) for t in closed_today)
+    total_pnl = sum(float(book["equity"]) - CAPITAL for book in inspected)
+    entries = sum(int(book.get("entries", 0)) for book in inspected)
+    open_count = sum(book.get("position") is not None for book in inspected)
+    wins = sum(sum(t["net_usd"] > 0 for t in book.get("closed", [])) for book in inspected)
+    losses = sum(sum(t["net_usd"] < 0 for t in book.get("closed", [])) for book in inspected)
+    partial = bool(unavailable)
+    lines = [
+        "<b>🪙 NEXUS CRIPTO | " + display_day + "</b>",
+        "<i>4 robôs H1 • BTC/ETH SPOT • SOMENTE SIMULACAO</i>",
+        "",
+        "<b>📊 RESUMO</b>",
+        f"Hoje: <b>USDT {pnl_today:+.2f}</b> · Acumulado: <b>USDT {total_pnl:+.2f}</b>",
+        f"Entradas acumuladas: {entries} · Fechamentos hoje: {len(closed_today)}",
+        f"Vitórias/derrotas: {wins}/{losses} · Posições abertas: {open_count}",
+    ]
+    if partial:
+        lines.append("⚠️ Resultado com dados parciais: " + escape(", ".join(sorted(unavailable))))
+    labels = {"ema_pullback": "Retorno à EMA20", "channel20": "Rompimento Canal 20"}
     for symbol in SYMBOLS:
-        if symbol in state["unavailable"] or symbol not in state["watermarks"]:
-            lines.append(symbol + ": DADOS INDISPONIVEIS; resultados nao atualizados.")
+        lines.extend(["", "<b>" + escape(symbol.replace("USDT", "/USDT")) + "</b>"])
+        if symbol in unavailable or symbol not in state.get("watermarks", {}):
+            lines.append("⚠️ Dados indisponíveis; posições e P&L não atualizados.")
             continue
-        last_hour = state["watermarks"].get(symbol)
-        if isinstance(last_hour, int) and last_hour > 0:
-            observation = datetime.fromtimestamp(last_hour, timezone.utc).astimezone(TZ)
-            lines.append(symbol + ": último H1 observado " + observation.strftime("%d/%m %H:%M") + " BRT")
-        for strategy in STRATEGIES:
-            b = state["books"][key(symbol, strategy)]
-            todays = [t for t in b["closed"] if local_day(t["exit_ts"]) == day]
-            wins = sum(t["net_usd"] > 0 for t in b["closed"])
-            losses = sum(t["net_usd"] < 0 for t in b["closed"])
-            lines.append("%s %s: dia %d fech., USDT %+.2f | total USDT %+.2f | V/D %s/%s | %s" %
-                         (symbol, strategy, len(todays),
-                          sum(t["net_usd"] for t in todays),
-                          b["equity"] - CAPITAL, wins, losses,
-                          "posicao virtual aberta" if b["position"] else "sem posicao"))
-            lines.append("  Entradas acumuladas: %d | %s" %
-                         (b["entries"], b.get("last_reason", "estado sem diagnóstico")))
-    lines.append("⚠️ P&L de referencia; nao executa na Binance/FBS. Sem lucro garantido.")
-    return "\n".join(lines)
+        stamp = state["watermarks"][symbol]
+        if isinstance(stamp, int) and stamp > 0:
+            observed = datetime.fromtimestamp(stamp, timezone.utc).astimezone(TZ)
+            lines.append("<i>Última vela H1: " + observed.strftime("%d/%m %H:%M") + " BRT</i>")
+        blockers = []
+        for strat in STRATEGIES:
+            b = books.get(key(symbol, strat))
+            if not isinstance(b, dict):
+                lines.append("⚠️ " + escape(labels.get(strat, strat)) + ": estado indisponível.")
+                continue
+            closed = b.get("closed", [])
+            today = sum(t["net_usd"] for t in closed if local_day(t["exit_ts"]) == day)
+            acc = float(b["equity"]) - CAPITAL
+            position = "aberta" if b.get("position") else "livre"
+            lines.append(
+                "• <b>" + escape(labels.get(strat, strat)) + "</b>: "
+                + f"hoje {today:+.2f} · total {acc:+.2f} USDT · {position}"
+            )
+            if not b.get("position"):
+                reason = str(b.get("last_reason", "")).strip()
+                if reason and reason not in blockers:
+                    blockers.append(reason)
+        if blockers and all(not books.get(key(symbol, s), {}).get("position") for s in STRATEGIES):
+            summary = "; ".join(blockers[:2])
+            lines.append("<i>Sem sinal: " + escape(summary[:175]) + "</i>")
+    lines.extend([
+        "",
+        "<i>Risco planejado 0,5%/entrada, sem alavancagem. P&L virtual após custos estimados.</i>",
+        "<i>Nenhuma ordem enviada à Binance ou FBS; não há lucro garantido.</i>",
+    ])
+    message = "\n".join(lines)
+    if len(message) > 4096:
+        raise ValueError("Resumo cripto excedeu limite Telegram")
+    return message
