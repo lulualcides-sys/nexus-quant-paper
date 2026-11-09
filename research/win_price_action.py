@@ -160,7 +160,7 @@ def candidate(m1, i, cfg=Settings()):
     return choice
 
 
-def simulate(m1, cfg=Settings()):
+def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
     """One WIN max. A next-open entry; conservative intrabar stop priority."""
     if not 0 < cfg.risk_fraction <= 0.05:
         raise ValueError("Invalid risk fractions")
@@ -213,6 +213,9 @@ def simulate(m1, cfg=Settings()):
             continue
         if (not win_session(b["time"]) or not win_session(b["time"] + 60)
                 or local_day(m1[i - 1]["time"]) != today):
+            continue
+        if ((start_local is not None and today < start_local)
+                or (end_local is not None and today >= end_local)):
             continue
         if b["time"] - m1[i - 1]["time"] != 60:
             rejected["gap"] += 1
