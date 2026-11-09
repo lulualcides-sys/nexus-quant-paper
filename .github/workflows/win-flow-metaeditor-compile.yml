@@ -1,0 +1,64 @@
+name: WIN Flow | MetaEditor 5 compile on Windows
+on:
+  push:
+    branches:
+      - research/win-flow-exhaustion-mt5-20261109
+    paths:
+      - indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.mq5
+      - .github/workflows/win-flow-metaeditor-compile.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  metaeditor_compile:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official MetaTrader 5 platform only for local compilation; no login
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = Join-Path $env:RUNNER_TEMP "mt5setup.exe"
+          $installDir = Join-Path $env:RUNNER_TEMP "NQMetaEditor"
+          $url = "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe"
+          Invoke-WebRequest -Uri $url -OutFile $installer -MaximumRedirection 4 -TimeoutSec 90
+          $size = (Get-Item $installer).Length
+          if ($size -lt 1000000) { throw "Unexpected MT5 installer size $size" }
+          Write-Host "Official MetaQuotes setup size: $size bytes"
+          $p=Start-Process -FilePath $installer -ArgumentList @('/auto',"/path:`"$installDir`"") -Wait -PassThru
+          Write-Host "Installer exit status: $($p.ExitCode)"
+          $deadline = (Get-Date).AddSeconds(120)
+          do {
+            $editor=Get-ChildItem -Path $installDir -Filter metaeditor64.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            if ($editor) { break }
+            Start-Sleep -Seconds 3
+          } while ((Get-Date) -lt $deadline)
+          if (-not $editor) {throw "MetaEditor64 not found after official installation; no compile claims"}
+          "METAEDITOR_EXE=$editor" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host "MetaEditor located; no account login performed"
+      - name: Compile independent indicator with real MetaEditor 5 command line
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $src=(Resolve-Path ".\indicators\mt5\NQ_Win_Exaustao_Fluxo_Research.mq5").Path
+          $args=@("/compile:`"$src`"",'/log')
+          $p=Start-Process -FilePath $env:METAEDITOR_EXE -ArgumentList $args -Wait -PassThru
+          $log=[IO.Path]::ChangeExtension($src,'.log')
+          $binary=[IO.Path]::ChangeExtension($src,'.ex5')
+          if (Test-Path $log) {
+            $content=Get-Content $log -Raw
+            Write-Host $content
+            if ($content -match "(?i)\berror\b" -and $content -notmatch "(?i)\b0 errors?\b") {throw "Compiler logged an error"}
+          }
+          if (-not (Test-Path $binary)) {
+            throw "No EX5 generated: MetaEditor compilation not verified"
+          }
+          Write-Host "MQL5 compiled successfully, EX5 size: $((Get-Item $binary).Length)"
+      - name: Upload our original compiled indicator for independent visual testing
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nq-win-exaustao-fluxo-compiled-mt5
+          path: indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.ex5
+          retention-days: 14
