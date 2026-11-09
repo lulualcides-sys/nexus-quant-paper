@@ -259,8 +259,14 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
         if side * (target - entry) < 1.5 * distance:
             rejected["no_room"] += 1
             continue
+        # This is the cost-inclusive planned payoff, not the nominal 2R.
+        net_win = side * (target-entry) * POINT_VALUE_BRL - estimated_cost
+        net_loss = distance * POINT_VALUE_BRL + estimated_cost
         position = {**setup, "entry_time": b["time"], "day": today,
-                    "entry": entry, "stop": stop, "target": target}
+                    "entry": entry, "stop": stop, "target": target,
+                    "planned_net_win_brl": round(net_win, 2),
+                    "planned_net_loss_brl": round(net_loss, 2),
+                    "planned_net_rr": round(net_win/net_loss, 3)}
         # A stop reached in the entry candle is a loss; no assumed intrabar target first.
         stop_hit = b["low"] <= stop if side == 1 else b["high"] >= stop
         target_hit = b["high"] >= target if side == 1 else b["low"] <= target
