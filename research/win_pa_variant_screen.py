@@ -50,7 +50,11 @@ def candidate_variant(base_candidate, name):
         side = out["side"]
         if name == "break_strong_candle":
             rng = b["high"] - b["low"]
-            if rng <= 0 or (b["close"]-b["low"])/rng < 0.7 if side == 1 else (b["high"]-b["close"])/rng < 0.7:
+            if rng <= 0:
+                return None
+            strength = ((b["close"]-b["low"])/rng if side == 1
+                        else (b["high"]-b["close"])/rng)
+            if strength < 0.7:
                 return None
         elif name == "break_volume":
             prev = [x["volume"] for x in bars[max(0,i-20):i]]
