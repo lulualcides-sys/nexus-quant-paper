@@ -47,7 +47,7 @@ class CryptoRunnerTest(unittest.TestCase):
                                     state_path=path/"state.json")
             self.assertIn("BTCUSDT", out["unavailable"])
             from src.crypto_paper import digest
-            self.assertIn("DADOS INDISPONIVEIS", digest(out,"2026-10-31"))
+            self.assertIn("Dados indisponíveis", digest(out,"2026-10-31"))
 
 
 if __name__ == "__main__":
