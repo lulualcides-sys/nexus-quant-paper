@@ -48,3 +48,12 @@ Comandos: python -m unittest discover -s tests -p test_win_liquidity_sweep.py -v
 O replay agora registra `UNVERIFIABLE_DATA_GAP` quando existe lacuna temporal de M1 durante uma operação e a cancela no próximo preço observado com hipótese adversa. **Não há como saber se o stop, alvo ou ambos foram executados no intervalo faltante**; por isso essa saída contamina o backtest para fins de aprovação, mesmo que seja registrada com preço pessimista. Posições abertas ao fim da amostra são marcadas a mercado separadamente, sem inventar fechamento. O gate reprova lacunas e posições abertas.
 
 Resumo corrigido com 1 tick por lado: abril-maio VWAP 1 saída não verificável de 2; sem VWAP 3 de 4; junho VWAP 0 de 19; junho sem VWAP 1 de 34; julho 0 em ambos. Fonte: [CI 42659540202](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42659540202).
+
+## Teste econômico adicional: payoff líquido mínimo 1:1
+
+- [GitHub Actions: simulação e testes após filtro](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42660644963).
+- Na versão de base, abril–maio teve payoff líquido mediano 0,823:1; junho e julho tiveram 0,750:1. **Todas as 52 operações de abril a julho com VWAP ficaram abaixo de 1:1 após os custos modelados.**
+- Um filtro opcional exige alvo líquido pelo menos igual à perda líquida prevista, sem alterar a estratégia base ou a ausência de trava diária. **Resultado: zero operações em abril, maio, junho e julho sob R$4 de taxas + um tick de slippage por lado.** Zero perda não representa lucro nem vantagem demonstrada.
+- Em cenário de custos menores, o filtro pode permitir operações, mas resultados históricos não validam lucro e parâmetros não devem ser escolhidos apenas por esse cenário.
+- A configuração inicial tem risco planejado de até 1% (R$20) e custo R$6 por ciclo, limitando stop bruto a 70 pontos WIN. Com alvo bruto de 1,8R e stop bruto máximo de R$14, a melhor razão lucro/perda líquida planejada é (1,8 × 14 − 6) / (14 + 6) = 0,96:1, antes de perdas de execução adicionais. Portanto um filtro de 1:1 tende matematicamente a impedir todas as entradas nessa configuração.
+- **Decisão:** não aumentar o risco só para permitir a entrada e não considerar o filtro uma cura. A investigação requer custos reais da plataforma, desenho de alvo e stop economicamente viáveis, e novo conjunto de dados para validação.
