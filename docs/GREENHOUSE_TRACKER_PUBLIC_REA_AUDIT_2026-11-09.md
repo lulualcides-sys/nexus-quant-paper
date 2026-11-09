@@ -2,6 +2,11 @@
 
 **Escopo e limites:** análise somente das páginas comerciais públicas, do JavaScript entregue ao navegador e dos MP4 públicos apontados pelas páginas. Sem login, compra, área de membros, código proprietário do indicador ou operações financeiras. Não reproduzir materiais comerciais na distribuição do Nexus Quant.
 
+## Conferência complementar dos vídeos incorporados do YouTube
+
+- O HTML público faz referência a **cinco IDs** do YouTube: `g5Jo41A03yE`, `NiWQ5otSEIM`, `PH_j7Q0xu0U`, `WacleOhwv7Y`, `zqI2EgUgUzc`. A análise de quadros desses vídeos **não foi concluída**.
+- [Workflow de verificação de YouTube](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42679480309): a tentativa de obter metadados e assistir às fontes públicas via `yt-dlp` foi recusada pelo YouTube com exigência de autenticação. O script não recebeu cookies e **não tentou contornar a restrição**. O workflow terminou sem erro técnico, mas a inspeção desses cinco vídeos tem status **bloqueado/indisponível**, e não `analisado`.
+- A auditoria visual abaixo é restrita aos **seis vídeos MP4 efetivamente acessíveis** com 108 quadros amostrados, não ao conjunto completo das aulas do YouTube.
 ## O que foi executado (verificável)
 
 - [REA static analysis (GitHub Actions 42676958276)](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42676958276): pacote oficial REA analisou **77 scripts/arquivos JavaScript públicos** extraídos de três páginas; saída JSON com 44,9 MB e digest imutável de Evidence. Esse material é código do **site e de seu painel demonstrativo**, não o código do Tracker de Profit/BlackArrow/MT5.
