@@ -99,6 +99,28 @@ class NexusCyclesM5Tests(unittest.TestCase):
         self.assertLess(report["variants"]["A"]["holdout_2x_cost"]["net_usd"],
                         report["variants"]["A"]["holdout"]["net_usd"])
 
+    def test_simple_breakout_baseline_uses_earlier_signal(self):
+        rows = sample_session()
+        simple = run(rows, "SIMPLE")["trades"][0]
+        cycles = run(rows, "A")["trades"][0]
+        self.assertEqual(simple["signal_time"], rows[4]["time"])
+        self.assertEqual(simple["entry_time"], rows[5]["time"])
+        self.assertEqual(cycles["entry_time"], rows[6]["time"])
+        self.assertNotEqual(simple["entry_time"], cycles["entry_time"])
+
+    def test_rolling_origin_folds_are_disjoint(self):
+        rows = [bar for day in range(6, 18) for bar in sample_session(day)]
+        r = chronological_report(rows, source="SYNTHETIC - never market results")
+        self.assertEqual(len(r["rolling_origin"]), 3)
+        self.assertEqual(set(r["rolling_origin"][0]["results"]),
+                         {"A", "B", "C", "SIMPLE"})
+        previous_end = None
+        for fold in r["rolling_origin"]:
+            if previous_end:
+                self.assertEqual(fold["test_start"], previous_end)
+            previous_end = fold["test_end_exclusive"]
+        self.assertFalse(r["valid_for_profit_claim"])
+
     def test_dst_session_alignment(self):
         first = datetime(2026, 11, 2, 8, 0, tzinfo=NY)
         self.assertEqual(first.utcoffset(), timedelta(hours=-5))
