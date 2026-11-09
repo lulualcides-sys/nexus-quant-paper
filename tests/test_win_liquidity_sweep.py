@@ -142,6 +142,19 @@ class LiquiditySweepTests(unittest.TestCase):
         self.assertEqual(report["open_position_mark_to_market_net_brl"],-6.0)
         self.assertEqual(report["equity_including_open_mark_brl"],1994.0)
 
+    def test_optional_economic_guard_skips_subunit_net_rr_without_daily_lockout(self):
+        bars=fixture()
+        def fake(_bars,i,_cfg):
+            return ({"setup":"liquidity_sweep_reclaim","side":1,
+                     "stop":99950.0,"signal_time":bars[i]["time"],
+                     "swept_level":99985.0} if i==100 else None)
+        with patch("research.win_liquidity_sweep.signal",side_effect=fake):
+            report=simulate(bars, Parameters(min_net_rr=1.0))
+        self.assertEqual(report["trades"],0)
+        self.assertEqual(report["rejected"]["uneconomic_rr"],1)
+        self.assertEqual(report["minimum_net_rr_filter"],1.0)
+        self.assertTrue(report["no_daily_loss_limit"])
+
     def test_no_fabricated_trades_and_bad_arguments(self):
         report=simulate(fixture())
         self.assertEqual(report["trades"],0)
