@@ -1,0 +1,38 @@
+name: WIN Liquidity Sweep | Tests + Genuine M1 Backtest
+on:
+  push:
+    branches:
+      - research/win-liquidity-sweep-m1m5-20261109
+    paths:
+      - research/win_liquidity_sweep.py
+      - research/win_liquidity_sweep_backtest.py
+      - tests/test_win_liquidity_sweep.py
+      - .github/workflows/win-liquidity-sweep.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline_backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile new robot and real-data backtest
+        run: |
+          python -m py_compile research/win_liquidity_sweep.py research/win_liquidity_sweep_backtest.py tests/test_win_liquidity_sweep.py
+      - name: Focused tests — signal, timing, risk, no overlap, exits
+        run: python -m unittest discover -s tests -p 'test_win_liquidity_sweep.py' -v
+      - name: Pinned genuine-claimed WINQ26 M1 historical simulation
+        run: python -m research.win_liquidity_sweep_backtest
+      - name: Store full replay ledger and scorecard (not source price file)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-liquidity-sweep-m1m5-research-2026
+          path: |
+            research/results/win_liquidity_sweep_winq26.json
+            research/results/win_liquidity_sweep_winq26.md
+          retention-days: 30
