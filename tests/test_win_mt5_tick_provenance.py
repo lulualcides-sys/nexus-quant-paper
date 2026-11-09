@@ -115,6 +115,19 @@ class FlowProvenanceTests(unittest.TestCase):
         self.assertEqual(out[0]["unknown_volume"],2)
         self.assertEqual(out[0]["classified_trade_count"],24)
         self.assertFalse(out[0]["valid_flow"])
+    def test_official_last_trade_bit_eight_is_not_ask_quote_bit_four(self):
+        self.assertEqual(FLAG_LAST,8)
+        ticks=trades(0)
+        for tick in ticks:
+            tick["flags"]=8|(FLAG_BUY if tick["flags"]&FLAG_BUY else FLAG_SELL)
+        aggregate,_=aggregate_trade_ticks(ticks,START,START+timedelta(minutes=1))
+        self.assertTrue(attach_quality([rate(0)],aggregate)[0]["valid_flow"])
+        only_quote=trades(0)
+        for tick in only_quote:
+            tick["flags"]=4|(FLAG_BUY if tick["flags"]&FLAG_BUY else FLAG_SELL)
+        a,_=aggregate_trade_ticks(only_quote,START,START+timedelta(minutes=1))
+        self.assertFalse(attach_quality([rate(0)],a)[0]["valid_flow"])
+
     def test_missing_tick_minutes_are_not_filled(self):
         agg,_=aggregate_trade_ticks(trades(0),START,START+timedelta(minutes=1))
         out=attach_quality([rate(0),rate(1)],agg)
