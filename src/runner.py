@@ -51,7 +51,7 @@ def telegram(message):
         print("Nenhuma conversa /start única; configure TELEGRAM_CHAT_ID no GitHub.")
         return False
     payload = {"chat_id": chat, "text": message}
-    if message.startswith("<b>📊 NEXUS QUANT"):
+    if message.startswith(("<b>📊 NEXUS QUANT", "<b>🪙 NEXUS CRIPTO")):
         payload["parse_mode"] = "HTML"
     data=json.dumps(payload,ensure_ascii=False).encode("utf-8")
     req=urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage",
