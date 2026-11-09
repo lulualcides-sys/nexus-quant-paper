@@ -61,6 +61,8 @@ class DailyLayoutTests(unittest.TestCase):
 
         formatted = capture("<b>📊 NEXUS QUANT — hoje</b>")
         self.assertEqual(formatted["parse_mode"], "HTML")
+        crypto = capture("<b>🪙 NEXUS CRIPTO | 08/11/2026</b>")
+        self.assertEqual(crypto["parse_mode"], "HTML")
         self.assertNotIn("parse_mode", capture("Mensagem comum"))
 
 
