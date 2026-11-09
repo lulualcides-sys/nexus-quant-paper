@@ -1,0 +1,34 @@
+name: WIN Price Action | Exploratory variants on real WINQ26
+on:
+  push:
+    branches:
+      - research/win-price-action-m1m5-20261109
+    paths:
+      - research/win_pa_variant_screen.py
+      - research/win_price_action.py
+      - .github/workflows/win-pa-variant-screen.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  variant_screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check Python syntax
+        run: python -m py_compile research/win_pa_variant_screen.py
+      - name: Screen nine frozen price-action hypotheses on pinned WINQ26
+        run: python -m research.win_pa_variant_screen
+      - name: Upload exploratory report for auditing
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-pa-exploratory-variants-2026
+          path: |
+            research/results/win_pa_variant_screen_2026.md
+            research/results/win_pa_variant_screen_2026.json
+          retention-days: 30
