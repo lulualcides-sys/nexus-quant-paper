@@ -162,6 +162,18 @@ class WinPriceActionTests(unittest.TestCase):
         self.assertEqual(out["open_position_mark_to_market_net_brl"], -6.0)
         self.assertEqual(out["equity_including_open_mark_brl"], 1994.0)
 
+    def test_economic_gate_excludes_subunit_net_rr_without_daily_lockout(self):
+        bars=candles()
+        setup={"setup":"break_retest","side":1,"stop":99950.0,
+               "signal_time":bars[69]["time"]}
+        with patch("research.win_price_action.candidate",
+                   side_effect=lambda _bars,i,_cfg: setup if i==69 else None):
+            score=simulate(bars,Settings(min_net_rr=1.0))
+        self.assertEqual(score["closed"],0)
+        self.assertEqual(score["rejected"]["uneconomic_rr"],1)
+        self.assertFalse(score["daily_loss_limit_enabled"])
+        self.assertEqual(score["minimum_net_rr_filter"],1.0)
+
     def test_no_real_trade_or_fake_profit_without_csv(self):
         bars = candles()
         result = simulate(bars)
