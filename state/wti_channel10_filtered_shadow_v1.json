@@ -79,5 +79,5 @@
   },
   "first_observation_ts": 1793606400,
   "no_historical_backfill": true,
-  "last_run_reason": "Sem entrada: lacuna entre candles"
+  "last_run_reason": "Sem novo candle H1 fechado"
 }
