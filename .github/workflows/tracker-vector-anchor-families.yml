@@ -1,0 +1,34 @@
+name: Tracker Vector Anchors | 63 Predeclared Hypotheses
+on:
+  push:
+    branches:
+      - research/tracker-vector-discovery-20261109
+    paths:
+      - research/tracker_vector_anchor_families.py
+      - tests/test_tracker_vector_anchor_families.py
+      - .github/workflows/tracker-vector-anchor-families.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile and test causal geometry anchors
+        run: |
+          python -m py_compile research/tracker_vector_anchor_families.py
+          python -m unittest discover -s tests -p 'test_tracker_vector_anchor_families.py' -v
+      - name: Compare wick/body/close vectors and 100 randomized time shifts
+        run: python -m research.tracker_vector_anchor_families
+      - name: Save public demo anchor summary and research data only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-vector-63-hypotheses-no-future
+          path: research/results/tracker_vector_anchor_family_43.json
+          retention-days: 14
