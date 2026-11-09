@@ -99,6 +99,29 @@ def wilson_interval(k,n,z=1.96):
     width=z*math.sqrt(p*(1-p)/n + z*z/(4*n*n))/den
     return round(center-width,5),round(center+width,5)
 
+def flow_nonidentifiability_from_ohlc_and_volume(total_volume:float=100.0):
+    """Show two classified trade-volume decompositions with identical OHLC+V.
+
+    V=B+S does not identify delta=B-S; it is any value in [-V,+V].
+    Price OHLC contains neither the bid/ask aggressor flag nor trade times.
+    """
+    if not math.isfinite(total_volume) or total_volume<=0:
+        raise ValueError("positive real volume necessary")
+    case_a={"aggressive_buy":.8*total_volume,"aggressive_sell":.2*total_volume}
+    case_b={"aggressive_buy":.2*total_volume,"aggressive_sell":.8*total_volume}
+    for case in (case_a,case_b):
+        case["same_total_traded_volume"]=round(case["aggressive_buy"]+case["aggressive_sell"],6)
+        case["signed_delta"]=round(case["aggressive_buy"]-case["aggressive_sell"],6)
+    return {
+        "OHLC_assumed_equal_in_both_cases":True,
+        "total_volume":total_volume,
+        "case_A":case_a,"case_B":case_b,
+        "delta_interval_without_trade_flags":[-total_volume,total_volume],
+        "mathematically_unique_aggression_from_OHLCV":False,
+        "limitations":"Illustrative decompositions; not reconstructed broker trades or original Tracker logic."
+    }
+
+
 def mathematical_nonidentifiability(labels,market_minutes):
     """Build two mathematically different functions consistent with all
     PROMOTIONAL POSITIVE examples but disagreeing on one unmarked point.
@@ -151,7 +174,14 @@ def audit_data(data):
         eligible=[r for r in signals if r["economics_scenarios"][name]["planned_loss_within_budget"]]
         all_win=[r["economics_scenarios"][name]["net_win_brl"] for r in eligible if r["public_outcome_label"]=="w"]
         all_loss=[r["economics_scenarios"][name]["net_loss_brl"] for r in eligible if r["public_outcome_label"]=="l"]
+        needed_capital=sorted(r["economics_scenarios"][name]["net_loss_brl"]/.01
+                              for r in signals)
+        max_range=(RISK_CAP_BRL-PUBLIC_FEES_SCENARIOS[name])/(1.5*WIN_REAL_PER_POINT)
         costs_summary[name]={
+            "maximum_exact_symmetric_candle_range_for_1pct_budget_pts":round(max_range,4),
+            "minimum_capital_for_smallest_advertised_stop_1pct_BRL":round(min(needed_capital),2),
+            "median_capital_required_for_one_advertised_stop_1pct_BRL":round(median(needed_capital),2),
+            "maximum_capital_required_for_one_advertised_stop_1pct_BRL":round(max(needed_capital),2),
             "one_WIN_eligible_1percent_2000BRL":len(eligible),
             "ineligible_even_with_one_WIN":len(signals)-len(eligible),
             "eligible_public_win_labels":len(all_win),
@@ -179,6 +209,7 @@ def audit_data(data):
         "all_symmetric_with_rounding_tolerance":all(x["mathematical_vector"]["symmetric_under_level_rounding"] for x in signals),
         "cost_scenarios":costs_summary,
         "identifiability_counterexample":mathematical_nonidentifiability(data["s"],bars),
+        "OHLCV_cannot_identify_aggressor_delta_proof":flow_nonidentifiability_from_ohlc_and_volume(),
         "records":signals,
         "limitations":[
             "Only two days of selected promotional labels, NOT the complete original signal record",
