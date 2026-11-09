@@ -1,0 +1,31 @@
+name: Tracker public signals | Deep candle and trigger forensics
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - research/greenhouse_deeper_signal_forensics.py
+      - research/greenhouse_public_gallery_decode.py
+      - .github/workflows/tracker-deeper-signal-forensics.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check price-only hypothesis versus 43 promotional label candles, plus deterministic same-day null
+        run: |
+          python -m py_compile research/greenhouse_deeper_signal_forensics.py
+          python -m research.greenhouse_deeper_signal_forensics
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: tracker-reversal-43-candle-evidence
+          path: research/results/tracker_public_43_signals_deeper_forensics.json
+          retention-days: 14
