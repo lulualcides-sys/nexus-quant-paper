@@ -6,7 +6,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Nexus Quant - original independent research"
 #property link      "https://github.com/lulualcides-sys/nexus-quant-paper"
-#property version   "0.20"
+#property version   "0.200"
 #property description "WIN M1: confirmed absorption/exhaustion against classified exchange trades"
 #property description "Independent indicator. NOT Greenhouse Tracker, not validated for trading."
 #property indicator_chart_window
@@ -159,7 +159,7 @@ bool PriceExhaustion(const int i,const int total,
    {
       if(TimeToString(ts[j],TIME_DATE)!=session || realVolume[j]<=0)
          return false;
-      sumVolume+=realVolume[j];
+      sumVolume+=(double)realVolume[j];
       priorHigh=MathMax(priorHigh,h[j]);
       priorLow=MathMin(priorLow,l[j]);
    }
