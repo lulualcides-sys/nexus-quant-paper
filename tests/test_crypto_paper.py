@@ -116,8 +116,8 @@ class CryptoPaperTest(unittest.TestCase):
             state = process(self.data, path=path)
             self.assertEqual(len(json.loads(path.read_text())["books"]), 4)
             message = digest(state, "2026-10-31")
-            self.assertIn("BTCUSDT", message)
-            self.assertIn("ETHUSDT", message)
+            self.assertIn("BTC/USDT", message)
+            self.assertIn("ETH/USDT", message)
             self.assertIn("SIMULACAO", message)
             self.assertNotIn("ordem real enviada", message)
 
