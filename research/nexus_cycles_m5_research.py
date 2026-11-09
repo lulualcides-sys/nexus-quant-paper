@@ -84,6 +84,13 @@ def main(argv=None):
     for variant, info in result["variants"].items():
         print(variant + " holdout " + str(info["holdout"]) +
               " cost stress " + str(info["holdout_2x_cost"]))
+    print("SIMPLE CA breakout control holdout: " +
+          str(result["benchmark_simple_ca_breakout"]["holdout"]))
+    for fold in result["rolling_origin"]:
+        print("ROLLING FOLD " + str(fold["fold"]) +
+              " " + str(fold["test_start"]) + "..." +
+              str(fold["test_end_exclusive"]) + ": " +
+              str({key: val["net_usd"] for key, val in fold["results"].items()}))
     print("UNVALIDATED HYPOTHESIS — no historical or real-money profit claimed")
 
 
