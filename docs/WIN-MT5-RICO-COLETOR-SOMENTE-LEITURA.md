@@ -10,11 +10,11 @@
 - O histórico e os relatórios ficam na pasta local `private_mt5/`. `.gitignore` impede que essa pasta seja adicionada acidentalmente ao repositório. **Sem upload automático para GitHub ou serviços externos.**
 - Executa estratégia Sweep congelada em janelas cronológicas 70/30, apenas para pesquisa, com custo de taxas estimado R$1,40/ciclo **não confirmado** na conta e slippage de 1 ou 2 ticks por lado; compara baseline e filtro econômico líquido 1:1.
 - O resultado é um JSON com ledger, lucro líquido hipotético, drawdown realizado, profit factor e flags de qualidade. Campo de aprovação para conta real sempre `false`.
-- `executar_WIN_MT5_somente_leitura.cmd`: lançador Windows local, configurado inicialmente para o contrato WINZ26 (vigente em novembro de 2026); exige Python e o pacote oficial MetaTrader5 já instalados. Não instala programas automaticamente.
+- `executar_WIN_MT5_somente_leitura.cmd`: iniciador Windows com contrato WINZ26 padrão em novembro de 2026. Exige Python 3 previamente instalado, mas **cria automaticamente o ambiente `.mt5_win_venv/` e instala nele o pacote oficial `MetaTrader5` via PyPI**, quando faltar. Não instala o terminal Rico nem altera programas Python globais. `--self-test` testa o código sem terminal; `--setup-only` verifica o ambiente e as dependências sem conectar à corretora.
 
 ## Evidência de testes
 
-- GitHub Actions: https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42666918161
+- GitHub Actions Linux (10 testes da coleta com MT5 simulado): https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42666918161 . Windows (iniciador de um clique, instalação no venv e importação do pacote) tem workflow próprio: https://github.com/lulualcides-sys/nexus-quant-paper/actions/workflows/win-mt5-windows-smoke.yml ; ver conclusão da execução atual antes de afirmar validação.
 - Foram executados 10 testes com dados sintéticos e API MT5 simulada, verificando sequência cronológica, timezone UTC, volume real, proteção contra duplicação, rejeição de símbolo errado, histórico indisponível, corte de candle incompleto, ausência de ordens e relatório de pesquisa sem ganhos inventados.
 - O GitHub CI Linux **não consegue conectar-se ao terminal Windows MT5 do usuário**: o teste confirma funcionamento lógico, não a compatibilidade efetiva de autenticação/feeds da Rico.
 - O teste com WINQ26 e WINJ26 de terceiros foi realizado anteriormente: https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42664956216 . Ainda não há lucro consistente ou evidência de vantagem fora da amostra.
@@ -22,7 +22,7 @@
 ## Como ativar no PC depois de instalar o MT5 pela Rico
 
 1. Instalar o MetaTrader 5 da Rico e entrar na conta de simulação ou em uma conexão autorizada a mostrar preços, sem enviar ordens.
-2. No Windows, instalar Python 3, se necessário. Executar `py -3 -m pip install MetaTrader5` para a API oficial. **O pacote é instalado localmente e não conecta por meio deste chat.**
+2. No Windows, instalar Python 3.11, se ainda não tiver. **Não é necessário executar pip manualmente**: o iniciador cria um ambiente virtual privado e instala automaticamente o pacote `MetaTrader5` oficial, desde que o computador tenha acesso à internet. Isso não instala o aplicativo MetaTrader 5 propriamente dito.
 3. Baixar/clonar a branch da PR #50 para o computador e executar `executar_WIN_MT5_somente_leitura.cmd`. Ela usa WINZ26 como padrão em novembro de 2026. Depois de mudar o vencimento, chamar `executar_WIN_MT5_somente_leitura.cmd WIN<mes><ano>` com código correto, não WINFUT.
 4. O programa fará leitura M1 de até 90 dias do histórico que o terminal disponibilizar e gravará os arquivos em `private_mt5` no computador do usuário. Se não houver 100 candles M1 válidos ou não vier volume real, ele falhará explicitamente.
 5. Os relatórios podem ser inspecionados localmente; não publicamos arquivos dessa pasta nem pedimos senha da corretora.
