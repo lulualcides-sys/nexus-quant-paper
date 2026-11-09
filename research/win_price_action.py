@@ -176,6 +176,7 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
     max_dd = 0.0
     position = None
     trades = []
+    unverifiable_position_gaps = 0
     rejected = {"risk": 0, "gap": 0, "no_room": 0}
     estimated_cost = cfg.fee_brl_roundtrip + (
         2 * cfg.slip_ticks_per_side * WIN_TICK * POINT_VALUE_BRL)
@@ -196,10 +197,18 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
         today = local_day(b["time"])
         if position:
             side = position["side"]
+            # All missing intervals while a position is active are unverifiable:
+            # the missing M1 bars could have hit stop, target, or both.
+            if b["time"] - m1[i - 1]["time"] != 60:
+                unverifiable_position_gaps += 1
+                adverse = (min(b["open"], position["stop"]) if side == 1
+                           else max(b["open"], position["stop"]))
+                exit_at(b, adverse, "UNVERIFIABLE_DATA_GAP")
+                continue
             if today != position["day"]:
-                # Missing closing data: carry the uncertainty and close on the next actual open.
+                unverifiable_position_gaps += 1
                 exit_at(b, min(b["open"], position["stop"]) if side == 1
-                        else max(b["open"], position["stop"]), "GAP_OVERNIGHT")
+                        else max(b["open"], position["stop"]), "UNVERIFIABLE_OVERNIGHT")
                 continue
             stop_hit = b["low"] <= position["stop"] if side == 1 else b["high"] >= position["stop"]
             goal_hit = b["high"] >= position["target"] if side == 1 else b["low"] <= position["target"]
@@ -260,10 +269,14 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
         elif target_hit:
             exit_at(b, target, "TARGET_ENTRY_BAR")
 
+    open_mark = (round(position["side"] *
+                       (m1[-1]["close"] - position["entry"]) * POINT_VALUE_BRL - estimated_cost, 2)
+                 if position else None)
     profits = sum(t["net_brl"] for t in trades if t["net_brl"] > 0)
     losses = -sum(t["net_brl"] for t in trades if t["net_brl"] < 0)
     return {
-        "status": "EXPERIMENTAL_PAPER_NOT_VALIDATED",
+        "status": ("BACKTEST_HAS_UNVERIFIABLE_POSITION_GAPS" if unverifiable_position_gaps
+                   else "EXPERIMENTAL_PAPER_NOT_VALIDATED"),
         "capital_brl": cfg.starting_brl,
         "ending_equity_brl": round(equity, 2),
         "net_brl": round(equity - cfg.starting_brl, 2),
@@ -273,6 +286,11 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
         "profit_factor": round(profits / losses, 3) if losses else None,
         "max_realized_drawdown_pct": round(max_dd, 2),
         "open_at_end": bool(position),
+        "open_position_mark_to_market_net_brl": open_mark,
+        "equity_including_open_mark_brl": round(equity + open_mark, 2) if open_mark is not None else round(equity, 2),
+        "unverifiable_position_gap_exits": unverifiable_position_gaps,
+        "exit_reasons": {why: sum(t["reason"] == why for t in trades)
+                         for why in sorted({t["reason"] for t in trades})},
         "rejected": rejected,
         "one_contract_only": True,
         "max_concurrent_positions": 1,
