@@ -11,7 +11,6 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from statistics import median
 
 from research.win_price_data import (
     POINT_VALUE_BRL, WIN_TICK, local_day, read_win_csv, resample, win_session
@@ -90,6 +89,7 @@ def _break_retest(m1, i, side, cfg):
             retained = all(m1[k]["close"] >= line(k) - cfg.line_tolerance_points
                            for k in range(j + 1, i))
             retest = (b["low"] <= line(i) + cfg.line_tolerance_points
+                      and b["low"] >= line(i) - cfg.line_tolerance_points
                       and b["close"] > line(i) + WIN_TICK
                       and b["close"] > b["open"])
             stop = b["low"] - WIN_TICK
@@ -100,6 +100,7 @@ def _break_retest(m1, i, side, cfg):
             retained = all(m1[k]["close"] <= line(k) + cfg.line_tolerance_points
                            for k in range(j + 1, i))
             retest = (b["high"] >= line(i) - cfg.line_tolerance_points
+                      and b["high"] <= line(i) + cfg.line_tolerance_points
                       and b["close"] < line(i) - WIN_TICK
                       and b["close"] < b["open"])
             stop = b["high"] + WIN_TICK
@@ -217,7 +218,8 @@ def simulate(m1, cfg=Settings()):
             elif not win_session(b["time"] + 60):
                 exit_at(b, b["close"], "SESSION_EXIT")
             continue
-        if not win_session(b["time"]) or local_day(m1[i - 1]["time"]) != today:
+        if (not win_session(b["time"]) or not win_session(b["time"] + 60)
+                or local_day(m1[i - 1]["time"]) != today):
             continue
         if daily_net <= -(cfg.starting_brl * cfg.daily_loss_fraction):
             rejected["daily_stop"] += 1
