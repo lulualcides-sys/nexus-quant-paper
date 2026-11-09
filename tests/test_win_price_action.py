@@ -49,8 +49,9 @@ class WinPriceActionTests(unittest.TestCase):
         self.assertEqual(setup["setup"], "range_rejection")
         self.assertEqual(setup["side"], 1)
         self.assertEqual(setup["stop"], 100000.0)
-        history[0]["high"] = 100300.0
-        history[-1]["high"] = 100300.0
+        for row in history:
+            row["high"] = 100300.0
+        history[5]["high"] = 100400.0
         self.assertIsNone(_range_rejection(bars, len(bars)-1, history, Settings()))
 
     def test_future_bars_do_not_change_old_candidate(self):
