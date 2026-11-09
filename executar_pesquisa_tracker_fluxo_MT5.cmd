@@ -18,13 +18,6 @@ if errorlevel 1 (
   exit /b 2
 )
 
-if /I "%~1"=="--self-test" (
-  %PYCMD% -m unittest discover -s tests -p test_win_mt5_tick_provenance.py -v
-  if errorlevel 1 exit /b 1
-  %PYCMD% -m unittest discover -s tests -p test_win_flow_public_label_comparison.py -v
-  exit /b %errorlevel%
-)
-
 if not exist ".mt5_win_venv\Scripts\python.exe" (
   echo Criando Python isolado para nao afetar os outros robos...
   %PYCMD% -m venv ".mt5_win_venv"
@@ -39,12 +32,30 @@ set "PYEXE=%CD%\.mt5_win_venv\Scripts\python.exe"
 "%PYEXE%" -c "import MetaTrader5" >nul 2>nul
 if errorlevel 1 (
   echo Instalando pacote oficial MetaTrader5 para leitura de ticks...
-  "%PYEXE%" -m pip install --disable-pip-version-check --no-input MetaTrader5
+  "%PYEXE%" -m pip install --disable-pip-version-check --no-input MetaTrader5 tzdata
   if errorlevel 1 (
     echo Pacote nao disponivel. Confira rede e compatibilidade Python.
     pause
     exit /b 4
   )
+)
+
+"%PYEXE%" -c "from zoneinfo import ZoneInfo; ZoneInfo('America/Sao_Paulo')" >nul 2>nul
+if errorlevel 1 (
+  echo Instalando base de fusos horarios tzdata para America/Sao_Paulo...
+  "%PYEXE%" -m pip install --disable-pip-version-check --no-input tzdata
+  if errorlevel 1 (
+    echo Nao foi possivel validar os horarios UTC/Sao Paulo. Interrompendo.
+    pause
+    exit /b 7
+  )
+)
+
+if /I "%~1"=="--self-test" (
+  "%PYEXE%" -m unittest discover -s tests -p test_win_mt5_tick_provenance.py -v
+  if errorlevel 1 exit /b 1
+  "%PYEXE%" -m unittest discover -s tests -p test_win_flow_public_label_comparison.py -v
+  exit /b %errorlevel%
 )
 
 if /I "%~1"=="--setup-only" (
