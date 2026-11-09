@@ -77,6 +77,9 @@ class WinPriceActionTests(unittest.TestCase):
         self.assertTrue(t["ambiguous_same_candle"])
         self.assertEqual(t["net_brl"], -16.0)
         self.assertEqual(report["net_brl"], -16.0)
+        self.assertEqual(t["planned_net_loss_brl"], 16.0)
+        self.assertEqual(t["planned_net_win_brl"], 14.0)
+        self.assertEqual(t["planned_net_rr"], 0.875)
         self.assertTrue(report["one_contract_only"])
 
     def test_stop_size_includes_roundtrip_cost(self):
