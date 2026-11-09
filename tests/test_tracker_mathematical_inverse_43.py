@@ -4,7 +4,7 @@ import unittest
 
 from research.tracker_mathematical_inverse_43 import (
     reconstruct_levels,one_contract_economics,wilson_interval,
-    mathematical_nonidentifiability,BANKROLL_BRL,RISK_CAP_BRL
+    mathematical_nonidentifiability,flow_nonidentifiability_from_ohlc_and_volume,BANKROLL_BRL,RISK_CAP_BRL
 )
 
 class TrackerMathInverseTests(unittest.TestCase):
@@ -69,6 +69,16 @@ class TrackerMathInverseTests(unittest.TestCase):
         self.assertTrue(0.69<low<0.77)
         self.assertTrue(0.9<high<0.96)
         with self.assertRaises(ValueError):wilson_interval(44,43)
+
+    def test_two_opposite_aggression_deltas_share_same_OHLCV(self):
+        proof=flow_nonidentifiability_from_ohlc_and_volume(100.)
+        self.assertEqual(proof["case_A"]["same_total_traded_volume"],100.)
+        self.assertEqual(proof["case_B"]["same_total_traded_volume"],100.)
+        self.assertEqual(proof["case_A"]["signed_delta"],60.)
+        self.assertEqual(proof["case_B"]["signed_delta"],-60.)
+        self.assertFalse(proof["mathematically_unique_aggression_from_OHLCV"])
+        with self.assertRaises(ValueError):
+            flow_nonidentifiability_from_ohlc_and_volume(0)
 
     def test_prove_nonidentifiability_from_positive_examples_only(self):
         fake=[(i,0,560+i,"c",100000,100060,99940,"w",570+i,60)
