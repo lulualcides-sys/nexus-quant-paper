@@ -63,7 +63,8 @@ def study(bars, provenance, quality):
         "cost_scenarios_slippage_ticks_each_side":[0,1,2],
         "declared_models":{
             "sweep_vwap":"sweep, volume, M5 veto, session OHLCV-VWAP proxy context",
-            "sweep_no_vwap":"identical signal but without VWAP proxy filter (feature ablation)"
+            "sweep_no_vwap":"identical signal but without VWAP proxy filter (feature ablation)",
+            "sweep_vwap_min_net_rr1":"identical VWAP setup with fixed minimum expected net payoff of 1:1"
         },
         "periods":{},
         "warning":[
@@ -80,10 +81,13 @@ def study(bars, provenance, quality):
         part=period_bars(bars,start,end)
         entry={"start":start,"end_exclusive":end,"market_bars":sum(start<=local_day(b["time"])<end for b in part),
                "models":{}}
-        for name,vwap in (("sweep_vwap",True),("sweep_no_vwap",False)):
+        for name,vwap,min_net_rr in (("sweep_vwap",True,0.0),
+                                     ("sweep_no_vwap",False,0.0),
+                                     ("sweep_vwap_min_net_rr1",True,1.0)):
             costs={}
             for ticks in (0,1,2):
-                cfg=Parameters(require_vwap_context=vwap,slippage_ticks_each_side=ticks)
+                cfg=Parameters(require_vwap_context=vwap,slippage_ticks_each_side=ticks,
+                               min_net_rr=min_net_rr)
                 stats=_snapshot(simulate(part,cfg,start_date=start,end_date=end))
                 if any(not(start<=local_day(t["entry_time"])<end) for t in stats["ledger"]):
                     raise AssertionError("An entry occurred outside a data period")
@@ -105,7 +109,7 @@ def study(bars, provenance, quality):
                 return False
         return True
 
-    result["retrospective_review_pass"]={name:approved(name) for name in ("sweep_vwap","sweep_no_vwap")}
+    result["retrospective_review_pass"]={name:approved(name) for name in ("sweep_vwap","sweep_no_vwap","sweep_vwap_min_net_rr1")}
     result["approved_for_real_orders"]=False
     return result
 
@@ -121,6 +125,7 @@ def report_md(report):
         "- Capital R$2.000 por janela, 1 WIN por vez, stops por trade, sem limite diário.",
         "- Filtros: falso rompimento com retorno para dentro da faixa, candle de rejeição, volume, momentum M5 e VWAP estimada.",
         "- Teste de controle: mesmo robô com filtro de VWAP desligado; parâmetros não ajustados após ver os resultados.",
+        "- Filtro exploratório econômico separado: exige alvo líquido >= stop líquido (R/R >=1); não substitui a versão de base.",
         "- Custos: R$4 de ida/volta estimados mais 0, 1 ou 2 ticks de slippage por lado.",
         "",
         "## Resultado principal — 1 tick de slippage por lado",
@@ -129,7 +134,7 @@ def report_md(report):
         "|---|---|---:|---:|---:|---:|---:|---:|---:|"
     ]
     for pname,item in report["periods"].items():
-        for model in ("sweep_vwap","sweep_no_vwap"):
+        for model in ("sweep_vwap","sweep_no_vwap","sweep_vwap_min_net_rr1"):
             x=item["models"][model]["1"]
             fmt=lambda x:"N/D" if x is None else str(x)
             lines.append(f"| {pname} | {model} | {item['market_bars']} | "
@@ -139,7 +144,7 @@ def report_md(report):
               "| Janela | Variante | Mediana R/R líquido planejado | Operações com R/R líquido abaixo de 1 |",
               "|---|---|---:|---:|"]
     for pname,item in report["periods"].items():
-        for model in ("sweep_vwap","sweep_no_vwap"):
+        for model in ("sweep_vwap","sweep_no_vwap","sweep_vwap_min_net_rr1"):
             x=item["models"][model]["1"]
             lines.append(f"| {pname} | {model} | {x['median_planned_net_rr'] if x['median_planned_net_rr'] is not None else 'N/D'} | "
                          f"{x['trades_below_1_to_1_net_rr']}/{x['trades']} |")
@@ -148,14 +153,14 @@ def report_md(report):
             "| Janela | Versão | 0 tick/lado | 1 tick/lado | 2 ticks/lado |",
             "|---|---|---:|---:|---:|"]
     for pname,item in report["periods"].items():
-        for model in ("sweep_vwap","sweep_no_vwap"):
+        for model in ("sweep_vwap","sweep_no_vwap","sweep_vwap_min_net_rr1"):
             x=item["models"][model]
             lines.append(f"| {pname} | {model} | {x['0']['net_brl']:+.2f} | {x['1']['net_brl']:+.2f} | {x['2']['net_brl']:+.2f} |")
     lines += ["","## Integridade dos resultados (1 tick por lado)","",
               "| Janela | Versão | Saídas por minutos ausentes | Tipos de saída | Posição aberta ao fim? |",
               "|---|---|---:|---|---|"]
     for pname,item in report["periods"].items():
-        for model in ("sweep_vwap","sweep_no_vwap"):
+        for model in ("sweep_vwap","sweep_no_vwap","sweep_vwap_min_net_rr1"):
             x=item["models"][model]["1"]
             kinds=", ".join(f"{key}:{value}" for key,value in x["exit_reasons"].items())
             lines.append(f"| {pname} | {model} | {x['unverifiable_position_gap_exits']} | "
