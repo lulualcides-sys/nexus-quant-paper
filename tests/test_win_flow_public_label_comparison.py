@@ -56,7 +56,7 @@ class PrivateComparisonTests(unittest.TestCase):
         self.assertEqual(extra[0],original[0])
     def test_missing_one_minute_in_prior_20_refuses_causal_setup(self):
         b=bars()
-        b[8]["time"]+=60
+        for row in b[8:]: row["time"]+=60 # create real M1 gap, preserve ordering
         signs,_=independent_signals(b)
         self.assertEqual(signs,[])
     def test_matches_exact_and_one_minute_unique_only(self):
