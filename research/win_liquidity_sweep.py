@@ -142,6 +142,7 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
     maximum_dd = 0.0
     position = None
     trades = []
+    uncertain_position_gaps = 0
     rejects = {"risk":0, "gap":0, "insufficient_room":0}
     cost = cfg.fee_roundtrip_brl + 2 * cfg.slippage_ticks_each_side * WIN_TICK * POINT_VALUE_BRL
 
@@ -163,6 +164,16 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
         today = local_day(b["time"])
         if position is not None:
             side = position["side"]
+            # An unobserved M1 interval could have hit either exit order.
+            # Do not silently carry a position across a hole in the data.
+            # Worst of recorded next-open versus the planned stop is a
+            # hypothetical liquidation, NOT an independently verified fill.
+            if b["time"] - bars[i - 1]["time"] != 60:
+                uncertain_position_gaps += 1
+                adverse = (min(position["stop"], b["open"]) if side == 1
+                           else max(position["stop"], b["open"]))
+                close(b, adverse, "UNVERIFIABLE_DATA_GAP")
+                continue
             if today != position["day"]:
                 adverse = min(position["stop"], b["open"]) if side == 1 else max(position["stop"], b["open"])
                 close(b, adverse, "OVERNIGHT_MISSING_EXIT")
@@ -222,10 +233,16 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
             # first chronological price, so target after open is plausible.
             close(b, target, "STOP_WIN_ENTRY")
 
+    # Never report an unclosed position as if its risk were zero. This is
+    # a marked estimate, not a fill or a realized backtest operation.
+    open_mark = (round(position["side"] *
+                       (bars[-1]["close"] - position["entry"]) * POINT_VALUE_BRL - cost, 2)
+                 if position is not None else None)
     gains = sum(t["net_brl"] for t in trades if t["net_brl"] > 0)
     losses = -sum(t["net_brl"] for t in trades if t["net_brl"] < 0)
     return {
-        "status":"BACKTEST_EXPERIMENTAL_ONLY",
+        "status":("BACKTEST_HAS_UNVERIFIABLE_POSITION_GAPS" if uncertain_position_gaps
+                  else "BACKTEST_EXPERIMENTAL_ONLY"),
         "starting_capital_brl":cfg.capital_brl,
         "equity_closed_brl":round(equity,2),
         "net_brl":round(equity-cfg.capital_brl,2),
@@ -239,5 +256,9 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
         "cost_roundtrip_brl":cost,
         "rejected":rejects,
         "open_at_end":position is not None,
+        "open_position_mark_to_market_net_brl":open_mark,
+        "equity_including_open_mark_brl":round(equity + open_mark, 2) if open_mark is not None else round(equity, 2),
+        "unverifiable_position_gap_exits":uncertain_position_gaps,
+        "exit_reasons":{kind: sum(t["why"] == kind for t in trades) for kind in sorted({t["why"] for t in trades})},
         "ledger":trades,
     }
