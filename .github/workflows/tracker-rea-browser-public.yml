@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.20.0'
+          node-version: '22.23.4'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -44,7 +44,7 @@ jobs:
         timeout-minutes: 8
         run: |
           set +e
-          timeout 420s npx -y rea-agents@latest capture-browser-scenario tracker_public_rea_scenario.json --detail summary --evidence_output "$PWD/tracker_public_rea_browser_evidence.json" --json > tracker_public_rea_summary.json 2>rea_browser_stderr.txt
+          timeout 420s npx -y rea-agents@latest capture-browser-scenario tracker_public_rea_scenario.json --json > tracker_public_rea_summary.json 2>rea_browser_stderr.txt
           ret=$?
           echo "REA_BROWSER_EXIT_CODE=$ret"
           tail -c 1800 rea_browser_stderr.txt
