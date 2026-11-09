@@ -1,11 +1,20 @@
 name: "NEXUS Futebol | relatório diário Telegram existente"
 on:
+  # Uma publicação destas correções executa o fechamento pendente
+  # imediatamente, sem depender de cron atrasado.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nexus-football-daily.yml'
+      - 'src/nexus_football_daily.py'
+      - 'src/nexus_football_archive.py'
   schedule:
     # Primeira tentativa: 00h00 America/Sao_Paulo (03h00 UTC).
     # Tentativas de recuperação: 00h20, 00h40 e 01h00; o marcador impede duplicação.
     # GitHub Actions pode iniciar tarde: cron não garante entrega no minuto exato.
     - cron: "0,20,40 3 * * *"
     - cron: "0 4 * * *"
+    - cron: "0 5 * * *" # recuperação 02h00 BRT; envio único por marcador
   workflow_dispatch:
 permissions:
   contents: write
