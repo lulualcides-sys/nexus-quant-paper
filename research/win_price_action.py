@@ -21,7 +21,6 @@ from research.win_price_data import (
 class Settings:
     starting_brl: float = 2000.0
     risk_fraction: float = 0.01
-    daily_loss_fraction: float = 0.02
     fee_brl_roundtrip: float = 4.0
     slip_ticks_per_side: int = 1
     reward_risk: float = 2.0
@@ -163,7 +162,7 @@ def candidate(m1, i, cfg=Settings()):
 
 def simulate(m1, cfg=Settings()):
     """One WIN max. A next-open entry; conservative intrabar stop priority."""
-    if not 0 < cfg.risk_fraction <= 0.05 or not 0 < cfg.daily_loss_fraction <= 0.1:
+    if not 0 < cfg.risk_fraction <= 0.05:
         raise ValueError("Invalid risk fractions")
     if cfg.fee_brl_roundtrip < 0 or cfg.slip_ticks_per_side < 0 or cfg.reward_risk < 1:
         raise ValueError("Invalid costs or reward")
@@ -175,19 +174,16 @@ def simulate(m1, cfg=Settings()):
     equity = cfg.starting_brl
     peak = equity
     max_dd = 0.0
-    day = None
-    daily_net = 0.0
     position = None
     trades = []
-    rejected = {"risk": 0, "daily_stop": 0, "gap": 0, "no_room": 0}
+    rejected = {"risk": 0, "gap": 0, "no_room": 0}
     estimated_cost = cfg.fee_brl_roundtrip + (
         2 * cfg.slip_ticks_per_side * WIN_TICK * POINT_VALUE_BRL)
 
     def exit_at(bar, price, why, ambiguous=False):
-        nonlocal equity, peak, max_dd, daily_net, position
+        nonlocal equity, peak, max_dd, position
         pnl = position["side"] * (price - position["entry"]) * POINT_VALUE_BRL - estimated_cost
         equity += pnl
-        daily_net += pnl
         peak = max(peak, equity)
         max_dd = max(max_dd, (peak - equity) / peak * 100) if peak else max_dd
         trades.append({**position, "exit_time": bar["time"], "exit": price,
@@ -198,9 +194,6 @@ def simulate(m1, cfg=Settings()):
     for i in range(66, len(m1)):
         b = m1[i]
         today = local_day(b["time"])
-        if today != day:
-            day = today
-            daily_net = 0.0
         if position:
             side = position["side"]
             if today != position["day"]:
@@ -220,9 +213,6 @@ def simulate(m1, cfg=Settings()):
             continue
         if (not win_session(b["time"]) or not win_session(b["time"] + 60)
                 or local_day(m1[i - 1]["time"]) != today):
-            continue
-        if daily_net <= -(cfg.starting_brl * cfg.daily_loss_fraction):
-            rejected["daily_stop"] += 1
             continue
         if b["time"] - m1[i - 1]["time"] != 60:
             rejected["gap"] += 1
@@ -257,7 +247,7 @@ def simulate(m1, cfg=Settings()):
         if side * (target - entry) < 1.5 * distance:
             rejected["no_room"] += 1
             continue
-        position = {**setup, "entry_time": b["time"], "day": day,
+        position = {**setup, "entry_time": b["time"], "day": today,
                     "entry": entry, "stop": stop, "target": target}
         # A stop reached in the entry candle is a loss; no assumed intrabar target first.
         stop_hit = b["low"] <= stop if side == 1 else b["high"] >= stop
@@ -282,12 +272,17 @@ def simulate(m1, cfg=Settings()):
         "open_at_end": bool(position),
         "rejected": rejected,
         "one_contract_only": True,
+        "max_concurrent_positions": 1,
+        "daily_loss_limit_enabled": False,
+        "stop_red_enabled": True,
+        "stop_win_enabled": True,
         "estimated_cost_brl_per_roundtrip": estimated_cost,
         "fibonacci_filter": cfg.fibonacci_filter,
         "warnings": [
             "OHLC cannot prove intraminute fill sequence or order-book priority",
             "Fee and slippage are assumptions, not broker quotes",
             "CSV contract rollovers, historical gaps, data licensing and live fills require review",
+            "No daily loss lockout: repeated stop losses may exhaust the entire account",
             "Reported performance, if any, is historical simulation and NOT a live profit claim",
         ],
         "trades": trades,
