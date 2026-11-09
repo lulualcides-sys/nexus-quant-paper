@@ -38,7 +38,10 @@ def read_source(path):
     git_hash=hashlib.sha1(b"blob "+str(len(payload)).encode()+b"\x00"+payload).hexdigest()
     if git_hash != SOURCE_BLOB:
         raise ValueError("WINJ26 source mutated; immutable hash mismatch")
-    text=payload.decode("utf-8-sig",errors="replace")
+    try:
+        text=payload.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text=payload.decode("cp1252")  # Strict Profit Windows text; no replacement
     rows=[]
     for j,cells in enumerate(csv.reader(io.StringIO(text), delimiter=";"),1):
         if not cells or all(not q.strip() for q in cells):
