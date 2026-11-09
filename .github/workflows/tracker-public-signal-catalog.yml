@@ -1,0 +1,28 @@
+name: Tracker public signal reference catalog
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - research/greenhouse_public_signal_reference.py
+      - .github/workflows/tracker-public-signal-catalog.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public_source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read only public offer markup and inspect signal/year labels and YouTube IDs
+        run: python -m research.greenhouse_public_signal_reference
+      - name: Preserve only source catalog references
+        uses: actions/upload-artifact@v4
+        with:
+          name: greenhouse-public-signals-media-catalog
+          path: research/results/greenhouse_public_signal_source_catalog.json
+          retention-days: 14
