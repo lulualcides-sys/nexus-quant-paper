@@ -221,8 +221,15 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
         if side * (target-entry) < 1.25 * distance:
             rejects["insufficient_room"] += 1
             continue
+        # Nominal reward/risk in points overstates the reward/risk after costs.
+        # Record economics at the actual modeled entry rather than claiming 1.8R net.
+        planned_net_win = side * (target-entry) * POINT_VALUE_BRL - cost
+        planned_net_red = distance * POINT_VALUE_BRL + cost
         position={**sig,"entry_time":b["time"],"entry":entry,"stop":stop,
-                  "target":target,"day":today,"bars_held":0}
+                  "target":target,"day":today,"bars_held":0,
+                  "planned_net_reward_brl":round(planned_net_win,2),
+                  "planned_net_loss_brl":round(planned_net_red,2),
+                  "planned_net_rr":round(planned_net_win/planned_net_red,3)}
         # Entry next-open; stop hit inside entry candle takes precedence.
         on_stop = b["low"] <= stop if side == 1 else b["high"] >= stop
         on_target = b["high"] >= target if side == 1 else b["low"] <= target
