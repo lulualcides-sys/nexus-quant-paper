@@ -1,0 +1,37 @@
+name: WIN MT5 | Read-Only Local Data Collector Audit
+on:
+  push:
+    branches:
+      - research/win-liquidity-sweep-m1m5-20261109
+    paths:
+      - research/mt5_readonly_collector.py
+      - tests/test_mt5_readonly_collector.py
+      - .github/workflows/mt5-win-readonly-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline_validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile collector without broker packages or credentials
+        run: python -m py_compile research/mt5_readonly_collector.py tests/test_mt5_readonly_collector.py
+      - name: Validate UTC conversion, M1 continuity, true volume, no-order path, two-window report
+        run: python -m unittest discover -s tests -p 'test_mt5_readonly_collector.py' -v
+      - name: Check no order routing methods in collector
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          t=ast.parse(Path('research/mt5_readonly_collector.py').read_text())
+          names={n.attr for n in ast.walk(t) if isinstance(n,ast.Attribute)}
+          forbidden={'order_send','order_check','positions_get','history_deals_get','account_info','login'}
+          found=names & forbidden
+          if found: raise SystemExit('Forbidden MT5 method(s): '+repr(found))
+          print('Safe read-only MT5 API surface verified')
+          PY
