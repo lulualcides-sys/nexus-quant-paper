@@ -137,7 +137,9 @@ def run(imported, provenance, quality):
     report["research_conclusion"] = "PASSA_REVIEW" if (
         all(
             all(
-                report["periods"][p]["cost_scenarios"][f"slippage_{k}_ticks_each_way"]["net_brl"] > 0
+                report["periods"][p]["cost_scenarios"][f"slippage_{k}_ticks_each_way"]["unverifiable_position_gap_exits"] == 0
+                and not report["periods"][p]["cost_scenarios"][f"slippage_{k}_ticks_each_way"]["open_at_end"]
+                and report["periods"][p]["cost_scenarios"][f"slippage_{k}_ticks_each_way"]["net_brl"] > 0
                 and report["periods"][p]["cost_scenarios"][f"slippage_{k}_ticks_each_way"]["closed"] >= 30
                 and (report["periods"][p]["cost_scenarios"][f"slippage_{k}_ticks_each_way"]["profit_factor"] or 0) >= 1.2
                 for k in (1,2)
@@ -178,6 +180,16 @@ def markdown(report):
                 f"{sc['net_brl']:+.2f} | {fmt(sc['profit_factor'])} | "
                 f"{sc['max_realized_drawdown_pct']}% | {sc['max_reds_consecutivos']} |"
             )
+    lines += ["","## Integridade: lacunas durante operações e exposição não encerrada","",
+              "| Mês | Slippage/lado | Saídas não verificáveis por dados faltantes | Posição aberta ao fim? |",
+              "|---|---:|---:|---|"]
+    for month,item in report["periods"].items():
+        for slips in SLIPPAGE_TICKS:
+            x=item["cost_scenarios"][f"slippage_{slips}_ticks_each_way"]
+            lines.append(f"| {month} | {slips} | {x['unverifiable_position_gap_exits']} | "
+                         f"{'sim' if x['open_at_end'] else 'não'} |")
+    lines += ["","Uma liquidação presumida após candles M1 ausentes não comprova preenchimento"
+              " de ordens. Tais operações invalidam aprovação automática.", ""]
     lines += ["","## Estratificação dos setups (1 tick por lado)"]
     for month,item in report["periods"].items():
         sc=item["cost_scenarios"]["slippage_1_ticks_each_way"]
