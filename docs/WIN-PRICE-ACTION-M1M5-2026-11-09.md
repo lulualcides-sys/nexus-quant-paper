@@ -12,8 +12,10 @@ Não altera o ATLAS, os 27 robôs, o monitor diário ou estados existentes. Não
 - Não compra/vende apenas porque tocou a linha, nem entra em rompimento sem reteste.
 - Fibonacci é filtro automático opcional e experimental (38,2%, 50%, 61,8%) — **não é a marcação manual do usuário**.
 - Entrada simulada na abertura da vela seguinte à confirmação. Não assume que um candle histórico proporcionou execução antes de existir sinal.
-- 1 contrato WIN, banca R$2.000, orçamento de risco inicial 1% por operação (R$20) incluindo custo estimado; bloquear novas entradas após perda realizada diária de 2% (R$40).
-- Stop além do extremo do reteste; alvo 2R, mas em faixa lateral limita ao extremo oposto e exige ao menos 1,5R de espaço. Stop tem precedência se tanto stop quanto alvo são atingidos no mesmo candle.
+- **Somente uma posição por vez**: no máximo 1 contrato WIN em aberto. Após a saída, volta a avaliar oportunidades de entrada, sem empilhar ordens na mesma posição.
+- Banca de referência R$2.000, orçamento de risco inicial **1% por operação (R$20), incluindo custos estimados**. **Sem limite de perda diária nem bloqueio por sequência de stops**, conforme solicitado. A cada nova oportunidade o risco técnico deve continuar cabendo no orçamento; sem margem/risco viável, não abre posição.
+- **Stop Red** (stop-loss): stop técnico além do extremo do reteste; **Stop Win** (take-profit): alvo inicial 2R, limitado ao extremo oposto na lateralização e exigindo no mínimo 1,5R de espaço. Se stop e alvo forem tocados no mesmo candle, contabiliza o stop prioritariamente. Uma posição fechada permite procurar nova oportunidade.
+- **Risco relevante:** sem trava diária, uma sequência de sinais perdedores pode consumir toda a banca. O stop não garante execução no preço e o risco realizado pode superar 1%. Essa configuração é somente para simulação até comprovar robustez.
 - Custos de pesquisa **estimados**: R$4 ida e volta + slippage de um tick por lado = R$6 por negócio. Não são custos verificados junto à corretora.
 - Se faltar dado real, não inventar operações, lucro, win rate ou resultado de backtest.
 
