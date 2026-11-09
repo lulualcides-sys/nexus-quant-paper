@@ -54,6 +54,11 @@ if errorlevel 1 (
     exit /b 4
   )
 )
+rem Setup-only mode validates isolated package installation without a terminal connection.
+if /I "%~1"=="--setup-only" (
+  "%PYEXE%" -c "import MetaTrader5 as mt5; print('MetaTrader5 instalado:', mt5.__version__)"
+  exit /b %errorlevel%
+)
 echo.
 echo O MetaTrader 5 deve estar instalado, aberto e conectado no PC.
 echo Se o contrato nao estiver na Rico, a coleta sera recusada.
