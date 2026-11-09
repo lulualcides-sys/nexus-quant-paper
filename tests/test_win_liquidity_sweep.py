@@ -107,6 +107,9 @@ class LiquiditySweepTests(unittest.TestCase):
         self.assertEqual(report["ledger"][0]["entry_time"],bars[101]["time"])
         self.assertEqual(report["ledger"][0]["why"],"STOP_WIN")
         self.assertEqual(report["ledger"][0]["net_brl"],12.0)
+        self.assertEqual(report["ledger"][0]["planned_net_reward_brl"],12.0)
+        self.assertEqual(report["ledger"][0]["planned_net_loss_brl"],16.0)
+        self.assertEqual(report["ledger"][0]["planned_net_rr"],0.75)
 
     def test_missing_candle_while_position_open_invalidates_backtest_quality(self):
         bars = fixture()
