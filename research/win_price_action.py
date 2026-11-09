@@ -27,6 +27,7 @@ class Settings:
     min_range_points: float = 250.0
     line_tolerance_points: float = 15.0
     fibonacci_filter: bool = False
+    min_net_rr: float = 0.0  # Optional research veto; 0 preserves historical behavior
 
 
 def _m5_closed(m1, i):
@@ -164,6 +165,8 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
     """One WIN max. A next-open entry; conservative intrabar stop priority."""
     if not 0 < cfg.risk_fraction <= 0.05:
         raise ValueError("Invalid risk fractions")
+    if not 0 <= cfg.min_net_rr <= 3:
+        raise ValueError("Invalid net RR research gate")
     if cfg.fee_brl_roundtrip < 0 or cfg.slip_ticks_per_side < 0 or cfg.reward_risk < 1:
         raise ValueError("Invalid costs or reward")
     if len(m1) < 100:
@@ -177,7 +180,7 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
     position = None
     trades = []
     unverifiable_position_gaps = 0
-    rejected = {"risk": 0, "gap": 0, "no_room": 0}
+    rejected = {"risk": 0, "gap": 0, "no_room": 0, "uneconomic_rr": 0}
     estimated_cost = cfg.fee_brl_roundtrip + (
         2 * cfg.slip_ticks_per_side * WIN_TICK * POINT_VALUE_BRL)
 
@@ -262,6 +265,9 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
         # This is the cost-inclusive planned payoff, not the nominal 2R.
         net_win = side * (target-entry) * POINT_VALUE_BRL - estimated_cost
         net_loss = distance * POINT_VALUE_BRL + estimated_cost
+        if cfg.min_net_rr and net_win < cfg.min_net_rr * net_loss:
+            rejected["uneconomic_rr"] += 1
+            continue
         position = {**setup, "entry_time": b["time"], "day": today,
                     "entry": entry, "stop": stop, "target": target,
                     "planned_net_win_brl": round(net_win, 2),
@@ -305,6 +311,7 @@ def simulate(m1, cfg=Settings(), *, start_local=None, end_local=None):
         "stop_win_enabled": True,
         "estimated_cost_brl_per_roundtrip": estimated_cost,
         "fibonacci_filter": cfg.fibonacci_filter,
+        "minimum_net_rr_filter": cfg.min_net_rr,
         "warnings": [
             "OHLC cannot prove intraminute fill sequence or order-book priority",
             "Fee and slippage are assumptions, not broker quotes",
