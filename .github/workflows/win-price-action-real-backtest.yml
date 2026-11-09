@@ -1,0 +1,40 @@
+name: WIN Price Action | Backtest M1 real WINQ26
+on:
+  push:
+    branches:
+      - research/win-price-action-m1m5-20261109
+    paths:
+      - research/win_price_action.py
+      - research/backtest_win_price_action_real.py
+      - research/atlas_winq26_public.py
+      - research/win_price_data.py
+      - .github/workflows/win-price-action-real-backtest.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research_backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check strategy tests and compile report runner
+        run: |
+          python -m py_compile research/backtest_win_price_action_real.py
+          python -m unittest discover -s tests -p 'test_win_price_action.py' -v
+      - name: Download pinned authentic-claimed WINQ26 Profit dataset and run historical simulation
+        env:
+          NEXUS_NEWS_GUARD_ENABLED: "0"
+        run: python -m research.backtest_win_price_action_real
+      - name: Attach independently verifiable backtest results and ledgers (not raw market data)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-price-action-winq26-june-july-2026-report
+          path: |
+            research/results/win_price_action_winq26_backtest.json
+            research/results/win_price_action_winq26_backtest.md
+          retention-days: 30
