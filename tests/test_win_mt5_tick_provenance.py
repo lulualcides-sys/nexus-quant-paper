@@ -104,7 +104,7 @@ class FlowProvenanceTests(unittest.TestCase):
         original=trades(0)
         quote={"time_msc":original[8]["time_msc"]+1,
                "flags":2,"volume_real":500,"last":100005.}
-        agg,_=aggregate_trade_ticks(original+[quote],START,START+timedelta(minutes=1))
+        agg,_=aggregate_trade_ticks(sorted(original+[quote],key=lambda x:x['time_msc']),START,START+timedelta(minutes=1))
         self.assertEqual(agg[rate(0)["time"]]["buy"]+
                          agg[rate(0)["time"]]["sell"],50.)
     def test_both_aggressor_flags_are_unknown(self):
