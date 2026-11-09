@@ -16,22 +16,22 @@ def sample():
 class PublicForensicsTests(unittest.TestCase):
     def test_buy_reversal_price_only_features_are_not_original_tracker(self):
         bars=sample()
-        bars[560]={"open":100020,"high":100090,"low":99985,"close":100050}
+        bars[560]={"open":100025,"high":100080,"low":99970,"close":100045}
         result=features(bars,560,"c")
         self.assertTrue(result["full_price_sweep_hypothesis"])
-        self.assertTrue(result["swept_recent_20bar_extreme"])
+        self.assertTrue(result["swept_20bar_extreme"])
         self.assertTrue(result["wick_35_pct"])
 
     def test_buy_price_extreme_without_wick_does_not_pass(self):
         bars=sample()
         bars[560]={"open":99985,"high":100090,"low":99980,"close":100050}
         result=features(bars,560,"c")
-        self.assertTrue(result["swept_recent_20bar_extreme"])
+        self.assertTrue(result["swept_20bar_extreme"])
         self.assertFalse(result["full_price_sweep_hypothesis"])
 
     def test_sell_reversal_mirrors_buy(self):
         bars=sample()
-        bars[560]={"open":100080,"high":100115,"low":100010,"close":100050}
+        bars[560]={"open":100075,"high":100140,"low":100010,"close":100045}
         result=features(bars,560,"v")
         self.assertTrue(result["full_price_sweep_hypothesis"])
 
