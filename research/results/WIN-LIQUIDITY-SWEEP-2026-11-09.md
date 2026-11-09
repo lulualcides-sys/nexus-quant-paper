@@ -17,15 +17,15 @@ Não modifica WIN Price Action, ATLAS, outros robôs, monitor, estados, ordens o
 
 - WINQ26, exportação Profit declarada por terceiro, sem auditoria independente B3. Git blob SHA1 fixo 43c50f01882f1ac497a218549e0bff2964d94aa5.
 - Dados: 35.574 candles M1 do contrato WINQ26 entre fevereiro e julho de 2026.
-- Workflow verificado: https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42641081158
-- 9 testes técnicos passaram; backtest e upload dos ledgers JSON e Markdown concluídos.
+- Workflow corrigido e verificado: https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42659540202 (versão original preservada como referência).
+- 11 testes técnicos passaram; backtest e upload dos ledgers JSON e Markdown concluídos. Dois testes novos verificam buracos nos candles durante operações e risco aberto ao fim do histórico.
 
 ## Resultado líquido: R$6 estimados por operação completa
 
 | Período | Candles | VWAP: trades | VWAP: R$ | Sem VWAP: trades | Sem VWAP: R$ |
 |---|---:|---:|---:|---:|---:|
 | Fev-Mar 2026 | 390 | 0 | 0 | 0 | 0 |
-| Abr-Mai 2026 | 13.748 | 2 | +29 | 4 | +31 |
+| Abr-Mai 2026 | 13.748 | 2 | -7 | 4 | -39 |
 | Junho 2026 | 11.296 | 19 | -114 | 34 | -172 |
 | Julho 2026 | 10.140 | 31 | -65 | 51 | -82 |
 
@@ -33,12 +33,18 @@ Junho VWAP: 36,84% acerto, PF 0,424, DD realizado 6,956%. Julho VWAP: 48,39% ace
 
 ## Conclusão
 
-**Não passou a triagem histórica.** Os ganhos ocasionais de abril–maio baseiam-se em 2 a 4 trades e não são evidência de lucro consistente. O filtro VWAP reduziu perdas comparado à ablação, mas ambas perderam em junho e julho.
+**Não passou a triagem histórica.** A auditoria encontrou operações atravessando minutos sem candles M1 observáveis. Em abril–maio, após eliminar a hipótese indevida de continuidade de posições sobre lacunas, os resultados líquidos passaram de +R$29 para **−R$7** com VWAP e de +R$31 para **−R$39** sem VWAP. Esse ajuste não é melhoria de rentabilidade; é correção de integridade. No cenário-base, uma das duas saídas com VWAP e três das quatro sem VWAP exigiram liquidação hipotética após lacuna e são **não verificáveis**, impossibilitando qualquer aprovação. Junho/julho permaneceram negativos. O filtro VWAP reduziu perdas comparado à ablação, mas ambas perderam em junho e julho.
 
 Dados OHLC não demonstram ordem intrabar exata, prioridade de fila nem preço real de execução. Os meses desta fonte já foram estudados em outras pesquisas e não formam holdout externo intacto. Não recalibrar retrospectivamente até produzir lucro aparente. Para promover, exigir dados reais inéditos de outros vencimentos, custo verificado, pelo menos 100 trades por configuração e teste prospectivo.
 
-Arquivos: research/win_liquidity_sweep.py (estratégia); research/win_liquidity_sweep_backtest.py (runner PINNED), tests/test_win_liquidity_sweep.py (9 testes), .github/workflows/win-liquidity-sweep.yml (execução CI).
+Arquivos: research/win_liquidity_sweep.py (estratégia); research/win_liquidity_sweep_backtest.py (runner PINNED), tests/test_win_liquidity_sweep.py (11 testes), .github/workflows/win-liquidity-sweep.yml (execução CI).
 
 Comandos: python -m unittest discover -s tests -p test_win_liquidity_sweep.py -v; python -m research.win_liquidity_sweep_backtest.
 
 **Robô distinto da PR #49, mantido em branch própria. Nenhuma ordem real.**
+
+## Integridade do motor (correção após o estudo inicial)
+
+O replay agora registra `UNVERIFIABLE_DATA_GAP` quando existe lacuna temporal de M1 durante uma operação e a cancela no próximo preço observado com hipótese adversa. **Não há como saber se o stop, alvo ou ambos foram executados no intervalo faltante**; por isso essa saída contamina o backtest para fins de aprovação, mesmo que seja registrada com preço pessimista. Posições abertas ao fim da amostra são marcadas a mercado separadamente, sem inventar fechamento. O gate reprova lacunas e posições abertas.
+
+Resumo corrigido com 1 tick por lado: abril-maio VWAP 1 saída não verificável de 2; sem VWAP 3 de 4; junho VWAP 0 de 19; junho sem VWAP 1 de 34; julho 0 em ambos. Fonte: [CI 42659540202](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42659540202).
