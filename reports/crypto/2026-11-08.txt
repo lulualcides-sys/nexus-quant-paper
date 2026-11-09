@@ -1,0 +1,14 @@
+🪙 NEXUS CRIPTO — 2026-11-08
+4 robos H1 • BTC/ETH SPOT • SOMENTE SIMULACAO
+Risco 0,5%/entrada; sem alavancagem; custos estimados.
+BTCUSDT: último H1 observado 08/11 21:00 BRT
+BTCUSDT ema_pullback: dia 0 fech., USDT +0.00 | total USDT +0.00 | V/D 0/0 | sem posicao
+  Entradas acumuladas: 0 | Tendência H1 sem alta: EMA50 <= EMA200
+BTCUSDT channel20: dia 0 fech., USDT +0.00 | total USDT +0.00 | V/D 0/0 | sem posicao
+  Entradas acumuladas: 0 | Tendência H1 sem alta: EMA50 <= EMA200
+ETHUSDT: último H1 observado 08/11 21:00 BRT
+ETHUSDT ema_pullback: dia 0 fech., USDT +0.00 | total USDT +0.00 | V/D 0/0 | sem posicao
+  Entradas acumuladas: 0 | Tendência H1 sem alta: EMA50 <= EMA200
+ETHUSDT channel20: dia 0 fech., USDT +0.00 | total USDT +0.00 | V/D 0/0 | sem posicao
+  Entradas acumuladas: 0 | Tendência H1 sem alta: EMA50 <= EMA200
+⚠️ P&L de referencia; nao executa na Binance/FBS. Sem lucro garantido.
