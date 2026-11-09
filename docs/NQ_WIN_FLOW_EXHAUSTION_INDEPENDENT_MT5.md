@@ -1,6 +1,6 @@
 # NQ WIN Exaustão de Fluxo — alternativa funcional independente ao Tracker (pesquisa)
 
-**Estado em 09/11/2026:** fonte MQL5 criada, modelo de referência Python testado, compilação real MetaEditor em CI separada. NÃO é o indicador proprietário Tracker, não utiliza fonte privada, não há negociação automática nem rentabilidade demonstrada.
+**Estado em 09/11/2026:** fonte MQL5 criada e **compilada no MetaEditor 5 oficial em Windows: 0 erros, 0 avisos, EX5 de 26.802 bytes**. Modelo Python de referência com 12 testes determinísticos aprovados; ver [compilação final 42686854921](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42686854921) e [testes](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42686049884). NÃO é o indicador proprietário Tracker, não utiliza fonte privada, não há negociação automática nem rentabilidade demonstrada.
 
 ## Fontes consultadas
 
@@ -16,7 +16,7 @@
 - `research/win_flow_exhaustion_reference.py`: espelho Python determinístico, sem ligação com corretora; calcula candidatos e audita a disponibilidade de fluxo classificado.
 - `tests/test_win_flow_exhaustion_reference.py`: 12 testes sintéticos, incluindo cobertura, direção de agressão, não-repaint de candle fechado, volume real e custos.
 - `.github/workflows/win-flow-exhaustion-mt5.yml`: testes Python no Actions sem pacote de corretora.
-- `.github/workflows/win-flow-metaeditor-compile.yml`: tentativa de compilação de verdade em Windows com MetaEditor oficial, sem login em conta de negociação. Conferir **conclusão** antes de afirmar que o `.ex5` existe.
+- `.github/workflows/win-flow-metaeditor-compile.yml`: tentativa de compilação de verdade em Windows com MetaEditor oficial, sem login em conta de negociação. [Compilação FINAL verificada](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42686854921): 0 erros/0 avisos, arquivo `.ex5` criado em Windows sem login na Rico; ainda não foi testado num gráfico com dados reais do broker.
 
 ## Como esta versão gera um sinal
 
