@@ -90,6 +90,46 @@ class WinPriceActionTests(unittest.TestCase):
         self.assertFalse(report["open_at_end"])
         self.assertEqual(report["rejected"]["risk"], 1)
 
+    def test_reenters_after_losses_beyond_old_daily_cap_and_hits_stop_win(self):
+        # Four consecutive losses exceed former daily R$40 guard; fifth
+        # valid signal must still open and close at the take-profit.
+        bars = candles()
+        stop_indices = (71, 81, 91, 101)
+        for i in stop_indices:
+            bars[i].update(low=99940.0, high=100015.0)
+        bars[111].update(low=99985.0, high=100110.0)
+        signals = {69, 79, 89, 99, 109}
+        def setup(_bars, i, _cfg):
+            return ({"setup": "break_retest", "side": 1,
+                     "stop": 99950.0, "signal_time": bars[i]["time"]}
+                    if i in signals else None)
+        with patch("research.win_price_action.candidate", side_effect=setup):
+            report = simulate(bars)
+        self.assertEqual(report["closed"], 5)
+        self.assertEqual([t["reason"] for t in report["trades"]],
+                         ["STOP", "STOP", "STOP", "STOP", "TARGET"])
+        self.assertEqual([t["net_brl"] for t in report["trades"]],
+                         [-16.0, -16.0, -16.0, -16.0, 14.0])
+        self.assertEqual(report["net_brl"], -50.0)
+        self.assertEqual(report["rejected"].get("daily_stop"), None)
+        self.assertFalse(report["daily_loss_limit_enabled"])
+        self.assertTrue(report["stop_red_enabled"])
+        self.assertTrue(report["stop_win_enabled"])
+
+    def test_never_stacks_new_entries_while_trade_is_open(self):
+        bars = candles()
+        bars[75].update(low=99940.0, high=100015.0)
+        def signal_while_open(_bars, i, _cfg):
+            return ({"setup": "break_retest", "side": 1,
+                     "stop": 99950.0, "signal_time": bars[i]["time"]}
+                    if i in range(69, 75) else None)
+        with patch("research.win_price_action.candidate", side_effect=signal_while_open):
+            result = simulate(bars)
+        self.assertEqual(result["closed"], 1)
+        self.assertEqual(result["trades"][0]["entry_time"], bars[70]["time"])
+        self.assertEqual(result["trades"][0]["exit_time"], bars[75]["time"])
+        self.assertEqual(result["max_concurrent_positions"], 1)
+
     def test_no_real_trade_or_fake_profit_without_csv(self):
         bars = candles()
         result = simulate(bars)
