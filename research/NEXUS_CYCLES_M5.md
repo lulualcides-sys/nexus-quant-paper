@@ -70,6 +70,19 @@ da corretora. O relatório faz divisão cronológica por dias (70/30)
 e teste com custos dobrados. A sensibilidade não constitui walk-forward;
 se o período/ativo já foi examinado, o holdout não é intocado.
 
+## Controles adicionais de comparação
+
+O relatório inclui um **benchmark SIMPLE**: compra/venda após o primeiro
+fechamento além do CA (sem aguardar C1/C2), com exatamente a mesma lógica
+de stop, alvo, custos e limite de risco. O resultado do modelo de ciclos
+deve ser comparado a este controle, e não somente a zero.
+
+Também são apresentados até três blocos `rolling_origin` de validação
+cronológica (janelas 40–60%, 60–80%, 80–100%), sem ajustar parâmetros.
+Eles são diagnósticos de estabilidade, **não** uma otimização walk-forward
+com validação independente, e seus resultados são insatisfatórios em
+amostras muito pequenas. Não existe promessa de vantagem.
+
 ## Critérios de avaliação para próxima fase
 
 1. Obter dados independentes M5/M1 com corretora, especificação de
