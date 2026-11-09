@@ -32,6 +32,7 @@ class Parameters:
     max_hold_bars: int = 35
     max_gap_points: float = 20.0
     require_vwap_context: bool = True
+    min_net_rr: float = 0.0  # Optional research guard, 0 preserves original strategy
 
 
 def _valid_history(bars, i, lookback):
@@ -131,6 +132,8 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
         raise ValueError("per_trade_risk outside allowed research range")
     if cfg.fee_roundtrip_brl < 0 or cfg.slippage_ticks_each_side < 0:
         raise ValueError("negative costs")
+    if not 0 <= cfg.min_net_rr <= 3:
+        raise ValueError("min_net_rr out of valid range")
     if cfg.lookback_bars < 5 or cfg.max_hold_bars < 1 or cfg.reward_risk < 1:
         raise ValueError("invalid strategy parameters")
     if len(bars) < 100:
@@ -143,7 +146,7 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
     position = None
     trades = []
     uncertain_position_gaps = 0
-    rejects = {"risk":0, "gap":0, "insufficient_room":0}
+    rejects = {"risk":0, "gap":0, "insufficient_room":0, "uneconomic_rr":0}
     cost = cfg.fee_roundtrip_brl + 2 * cfg.slippage_ticks_each_side * WIN_TICK * POINT_VALUE_BRL
 
     def close(b, price, reason, ambiguous=False):
@@ -225,6 +228,9 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
         # Record economics at the actual modeled entry rather than claiming 1.8R net.
         planned_net_win = side * (target-entry) * POINT_VALUE_BRL - cost
         planned_net_red = distance * POINT_VALUE_BRL + cost
+        if cfg.min_net_rr and planned_net_win < cfg.min_net_rr * planned_net_red:
+            rejects["uneconomic_rr"] += 1
+            continue
         position={**sig,"entry_time":b["time"],"entry":entry,"stop":stop,
                   "target":target,"day":today,"bars_held":0,
                   "planned_net_reward_brl":round(planned_net_win,2),
@@ -261,6 +267,7 @@ def simulate(bars, cfg=Parameters(), *, start_date=None, end_date=None):
         "no_daily_loss_limit":True,
         "stop_red_and_win":True,
         "cost_roundtrip_brl":cost,
+        "minimum_net_rr_filter":cfg.min_net_rr,
         "rejected":rejects,
         "open_at_end":position is not None,
         "open_position_mark_to_market_net_brl":open_mark,
