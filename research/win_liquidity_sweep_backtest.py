@@ -10,6 +10,7 @@ import json
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
+from statistics import median
 from tempfile import TemporaryDirectory
 
 from research.atlas_winq26_public import SOURCE_BLOB, SOURCE_URL, SYMBOL, canonicalize, fetch
@@ -40,6 +41,8 @@ def _snapshot(outcome):
     outcome["worst_consecutive_reds"] = worst_streak
     outcome["stop_red_count"] = sum(t["why"].startswith("STOP_RED") for t in ledger)
     outcome["stop_win_count"] = sum(t["why"].startswith("STOP_WIN") for t in ledger)
+    outcome["median_planned_net_rr"] = round(median(t["planned_net_rr"] for t in ledger),3) if ledger else None
+    outcome["trades_below_1_to_1_net_rr"] = sum(t["planned_net_rr"] < 1 for t in ledger)
     outcome["ledger"] = ledger
     return outcome
 
@@ -132,6 +135,15 @@ def report_md(report):
             lines.append(f"| {pname} | {model} | {item['market_bars']} | "
                          f"{x['trades']} | {fmt(x['winrate_pct'])}% | {x['net_brl']:+.2f} | "
                          f"{fmt(x['profit_factor'])} | {x['max_realized_drawdown_pct']}% | {x['worst_consecutive_reds']} |")
+    lines += ["","## Economia real dos alvos com custos (1 tick por lado)","",
+              "| Janela | Variante | Mediana R/R líquido planejado | Operações com R/R líquido abaixo de 1 |",
+              "|---|---|---:|---:|"]
+    for pname,item in report["periods"].items():
+        for model in ("sweep_vwap","sweep_no_vwap"):
+            x=item["models"][model]["1"]
+            lines.append(f"| {pname} | {model} | {x['median_planned_net_rr'] if x['median_planned_net_rr'] is not None else 'N/D'} | "
+                         f"{x['trades_below_1_to_1_net_rr']}/{x['trades']} |")
+    lines += ["","O alvo nominal de 1,8R é em pontos brutos, não em payoff após taxas e slippage.",""]
     lines+=["","## Sensibilidade a custo (resultado líquido em R$)","",
             "| Janela | Versão | 0 tick/lado | 1 tick/lado | 2 ticks/lado |",
             "|---|---|---:|---:|---:|"]
