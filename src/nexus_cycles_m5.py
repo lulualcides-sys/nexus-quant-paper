@@ -161,6 +161,26 @@ def candidate_for_day(bars, indices, variant, atr, h1, ends, cfg):
     width = ca_high - ca_low
     if width <= 0:
         return None, "zero_ca"
+    if variant == "SIMPLE":
+        # Control: first confirmed CA close, same exposure/fees/stop/target.
+        # NEVER crosses a signal with its own execution candle.
+        for j in range(4, 47):
+            b = seq[j]
+            side = 1 if b["close"] > ca_high else (-1 if b["close"] < ca_low else 0)
+            if not side:
+                continue
+            entry_i = indices[j + 1]
+            entry = bars[entry_i]["open"]
+            stop = ca_high if side == 1 else ca_low
+            if (entry - stop) * side <= 0:
+                return None, "gap_wrong_side"
+            return {
+                "entry_i": entry_i, "side": side, "stop": stop,
+                "ca_high": ca_high, "ca_low": ca_low,
+                "c1_edge": None, "signal_time": b["time"],
+                "variant": "SIMPLE",
+            }, "signal"
+        return None, "no_ca_breakout"
     if variant == "C":
         channel_atr = atr[indices[3]]
         if channel_atr <= 0 or not cfg.min_ca_atr <= width / channel_atr <= cfg.max_ca_atr:
@@ -254,7 +274,7 @@ def simulate_trade(bars, indices, candidate, equity, cfg):
 
 def run(bars, variant, cfg=None, initial_equity=5000.0):
     """One isolated virtual book per variant; no live state or broker access."""
-    if variant not in ("A", "B", "C"):
+    if variant not in ("A", "B", "C", "SIMPLE"):
         raise ValueError("Unknown variant")
     cfg = cfg or Settings()
     if initial_equity <= 0:
@@ -350,6 +370,45 @@ def chronological_report(bars, cfg=None, source="user_supplied_M5", split=0.7):
         stressed = run(bars, code, doubled)
         test = [t for t in stressed["trades"] if cutoff and t["day"] >= cutoff]
         out["variants"][code]["holdout_2x_cost"] = metrics(test)
+    # Simple breakout benchmark: identical risk and fill assumptions.
+    plain = run(bars, "SIMPLE", cfg)
+    plain_stress = run(bars, "SIMPLE", doubled)
+    out["benchmark_simple_ca_breakout"] = {
+        "all": metrics(plain["trades"]),
+        "development": metrics([t for t in plain["trades"] if cutoff and t["day"] < cutoff]),
+        "holdout": metrics([t for t in plain["trades"] if cutoff and t["day"] >= cutoff]),
+        "holdout_2x_cost": metrics([t for t in plain_stress["trades"]
+                                   if cutoff and t["day"] >= cutoff]),
+    }
+
+    # Expanding-window evaluation, WITHOUT refitting any parameters.
+    # Each test window is disjoint, dates are chronological, and no trade
+    # from a later fold can affect any earlier fold's reported P&L.
+    out["rolling_origin"] = []
+    fractions = (0.4, 0.6, 0.8, 1.0)
+    if len(dates) >= 10:
+        for fold in range(3):
+            left = int(len(dates) * fractions[fold])
+            right = int(len(dates) * fractions[fold + 1])
+            if not (0 < left < right):
+                continue
+            start_day, end_day = dates[left].isoformat(), (
+                dates[right].isoformat() if right < len(dates) else None)
+            fold_data = {"fold": fold + 1,
+                         "training_days": left, "test_start": start_day,
+                         "test_end_exclusive": end_day, "results": {}}
+            for code in ("A", "B", "C", "SIMPLE"):
+                observed = run(bars, code, cfg)["trades"]
+                test_trades = [t for t in observed
+                               if t["day"] >= start_day
+                               and (end_day is None or t["day"] < end_day)]
+                fold_data["results"][code] = metrics(test_trades)
+            out["rolling_origin"].append(fold_data)
+    out["rolling_origin_method"] = (
+        "Expanding train window, sequential disjoint test windows; "
+        "no parameter fitting, purging or independent broker feed; "
+        "diagnostic only, not a completed validation.")
+
     out["valid_for_profit_claim"] = False
     out["limitations"] = [
         "A single chronological holdout is not a walk-forward or untouched independent test.",
