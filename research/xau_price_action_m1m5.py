@@ -265,8 +265,13 @@ def scan_signals(bars,tf,settings):
             if (s:=candidate(bars,i,tf,settings)) is not None]
 
 
-def simulate_ticks(quotes,signals,tf,settings):
-    """One position max; next-quote MARKET entry, BID/ASK exit, gap-aware stop."""
+def simulate_ticks(quotes,signals,tf,settings,*,time_stop_enabled=True):
+    """One position max; next-quote MARKET entry, BID/ASK exit, gap-aware stop.
+
+    The time-based exit is an OPTIONAL simulation assumption, NOT a trader
+    confirmed Stop Win/Red rule. Preserve previous default for all prior
+    reports; run time_stop_enabled=False only as an explicitly labeled audit.
+    """
     settings.validate()
     if tf not in (60,300):raise ValueError("Invalid timeframe")
     signals=sorted(signals,key=lambda v:v["eligible_ms"])
@@ -287,7 +292,8 @@ def simulate_ticks(quotes,signals,tf,settings):
             p=position;side=p["side"]
             stop_trigger=(bid<=p["stop"] if side==1 else ask>=p["stop"])
             target_trigger=(bid>=p["target"] if side==1 else ask<=p["target"])
-            timed=ms>=p["entry_ms"]+tf*settings.max_hold_bars*1000
+            timed=(time_stop_enabled and
+                   ms>=p["entry_ms"]+tf*settings.max_hold_bars*1000)
             why=None
             if stop_trigger:
                 why="STOP"
