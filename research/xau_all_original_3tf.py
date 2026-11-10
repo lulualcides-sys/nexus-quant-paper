@@ -134,13 +134,21 @@ def load_quotes(path, day):
         raise ValueError("No recorded XAUUSD quotes")
     dt0=datetime.fromtimestamp(first,timezone.utc)
     dt1=datetime.fromtimestamp(last,timezone.utc)
-    if dt0.hour!=12 or dt1.hour!=22:
-        raise ValueError("Missing morning/afternoon market coverage")
+    # The source has a real gold daily rollover break; Fridays may end
+    # earlier, and New York DST alters November liquidity windows. These
+    # are not missing/fake ticks. Require substantial factual coverage,
+    # but never manufacture omitted market hours.
+    if dt0.hour not in (12,13,14) or dt1.hour<20 or last-first<7*3600:
+        raise ValueError("Insufficient market-session coverage: "
+                         f"first={dt0.isoformat()} last={dt1.isoformat()}")
     output={}
     for tf,period in TIMEFRAMES.items():
         output[tf]=list(summaries[tf].values())
         expected=11*3600//period
-        if len(output[tf])<int(expected*.90):
+        # Previously a 90% *clock-time* threshold wrongly quarantined
+        # healthy Fridays and DST sessions. 70% still requires 7.7 hours
+        # of observed candles within the fixed 11h source window.
+        if len(output[tf])<int(expected*.70):
             raise ValueError(f"{tf}: incomplete observed candles {len(output[tf])}/{expected}")
         if any(output[tf][i]["time"]<=output[tf][i-1]["time"]
                for i in range(1,len(output[tf]))):
@@ -376,7 +384,8 @@ def aggregate(reports_folder,output):
         files.append(row)
     good=[row for row in files if not row.get("quarantined")]
     if len(good)<21:
-        raise ValueError("Too few full valid sessions for 200 H1 BB20 context")
+        raise ValueError("Too few source-verified sessions for BB20 H1 context: "
+                         f"{len(good)}/{len(DAYS)}")
     out={"study":"Original 27 Nexus Quant bots plus ATLAS, XAU only, M1/M5/M15",
         "paper_only":True,"promoted_to_live":False,
         "source":"XAUUSD public Dukascopy bid/ask; MID candles",
