@@ -1,9 +1,11 @@
-name: XAUUSD | 15-session fixed-parameter quote robustness (historical)
+name: XAUUSD | 15 attempted, 14 clean quote sessions (bad-tick quarantine)
 on:
   push:
     branches: [research/xauusd-quote-tracker-mt5-20261110]
     paths:
       - research/xau_quote_robustness_panel.py
+      - research/xau_quote_execution_backtest.py
+      - tests/test_xau_quote_execution_backtest.py
       - tests/test_xau_quote_robustness_panel.py
       - .github/workflows/xau-15-session-robustness.yml
   workflow_dispatch:
@@ -30,10 +32,11 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/ticks" "$RUNNER_TEMP/reports"
-          # 2026-10-19 through 2026-11-06, excluding weekends.
+          # Nov 06 QUARANTINED in full: quote invalid/crossed at raw row 31309.
+          # Never cherry-pick individual quotes or trade outcomes.
           DAYS=(20261019 20261020 20261021 20261022 20261023
                 20261026 20261027 20261028 20261029 20261030
-                20261102 20261103 20261104 20261105 20261106)
+                20261102 20261103 20261104 20261105)
           for d in "${DAYS[@]}"; do
             date="${d:0:4}-${d:4:2}-${d:6:2}"
             npx --yes dukascopy-node@1.51.1 \
@@ -51,7 +54,7 @@ jobs:
           set -euo pipefail
           DAYS=(20261019 20261020 20261021 20261022 20261023
                 20261026 20261027 20261028 20261029 20261030
-                20261102 20261103 20261104 20261105 20261106)
+                20261102 20261103 20261104 20261105)
           for d in "${DAYS[@]}"; do
             for tf in M1 M5; do
               for scenario in base friction; do
@@ -71,15 +74,16 @@ jobs:
         run: |
           python -m research.xau_quote_robustness_panel \
             --reports "$RUNNER_TEMP/reports" \
-            --dates "20261019,20261020,20261021,20261022,20261023,20261026,20261027,20261028,20261029,20261030,20261102,20261103,20261104,20261105,20261106" \
+            --dates "20261019,20261020,20261021,20261022,20261023,20261026,20261027,20261028,20261029,20261030,20261102,20261103,20261104,20261105" \
             --output "$RUNNER_TEMP/summary.json"
+          printf '%s\n' '{"quarantined_date":"2026-11-06","reason":"bad or crossed Dukascopy bid/ask quote at record 31309","method":"excluded entire session before any profitability aggregation"}' > "$RUNNER_TEMP/quarantine.json"
           python - <<'PY'
           from pathlib import Path
           import json,os
           p=Path(os.environ["RUNNER_TEMP"])/"summary.json"
           r=json.loads(p.read_text())
           assert r["approved_for_trading"] is False
-          assert len(r["date_window"])==15
+          assert len(r["date_window"])==14
           for tf in ("M1","M5"):
               for mode in ("base","friction"):
                   v=r["variants"][tf][mode]
@@ -91,8 +95,9 @@ jobs:
       - name: Retain aggregate and per-day ledgers without redistributing raw quotes
         uses: actions/upload-artifact@v4
         with:
-          name: xau-15-session-quote-robustness-audit
+          name: xau-14-clean-session-quote-robustness-audit
           path: |
             ${{ runner.temp }}/summary.json
+            ${{ runner.temp }}/quarantine.json
             ${{ runner.temp }}/reports/*.json
           retention-days: 15
