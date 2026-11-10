@@ -199,6 +199,14 @@ class QuoteTrackerTests(unittest.TestCase):
                          "for(int i=oldestNew;i>=1;i--)"):
             self.assertIn(expected,m,expected)
 
+    def test_mt5_chart_distinguishes_missing_feed_from_no_signal(self):
+        source=Path("indicators/mt5/NQ_XAU_Quote_Tracker_Research.mq5").read_text(encoding="utf-8")
+        for required in ("InpShowDataStatus", "DrawDataStatus(",
+                         "SEM SPREAD HISTORICO", "SEM TICKS DA CORRETORA",
+                         "BAIXA ATIVIDADE NO FEED", "DADOS OK"):
+            self.assertIn(required, source)
+        self.assertIn("ArraySetAsSeries(spread,true);", source)
+
     def test_source_contains_no_order_routing_or_fake_aggressor(self):
         m=Path("indicators/mt5/NQ_XAU_Quote_Tracker_Research.mq5").read_text(encoding="utf-8")
         self.assertIn("tick_volume",m)
