@@ -5,8 +5,10 @@ on:
     paths:
       - 'research/backtest_27.py'
       - 'research/trade_attribution_27.py'
+      - 'research/frozen_tape_27.py'
       - 'tests/test_backtest_27.py'
       - 'tests/test_trade_attribution_27.py'
+      - 'tests/test_frozen_tape_27.py'
       - '.github/workflows/backtest-27.yml'
   workflow_dispatch:
   push:
@@ -14,8 +16,10 @@ on:
     paths:
       - 'research/backtest_27.py'
       - 'research/trade_attribution_27.py'
+      - 'research/frozen_tape_27.py'
       - 'tests/test_backtest_27.py'
       - 'tests/test_trade_attribution_27.py'
+      - 'tests/test_frozen_tape_27.py'
       - '.github/workflows/backtest-27.yml'
 permissions:
   contents: read
@@ -34,6 +38,7 @@ jobs:
       - name: Validate backtest code without data downloads
         run: |
           python -m unittest discover -s tests -p 'test_trade_attribution_27.py' -v
+          python -m unittest discover -s tests -p 'test_frozen_tape_27.py' -v
           python -m unittest discover -s tests -p 'test_backtest_27.py' -v
   historical-paper-replay:
     needs: offline-regression
@@ -54,5 +59,6 @@ jobs:
           path: |
             research/results/backtest_27_2026-11-01.json
             research/results/backtest_27_2026-11-01.md
+            research/results/backtest_27_frozen_tape.json.gz
           retention-days: 30
           if-no-files-found: warn
