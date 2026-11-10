@@ -1,0 +1,30 @@
+name: XAUUSD | archive every positive original M1 M5 M15 M30
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/preserved/xau_all_positive_original_robots_20261110.json'
+      - 'research/preserved/xau_m15_positive_20261110.json'
+      - 'tests/test_xau_all_positive_archived.py'
+      - '.github/workflows/xau-save-positive-archive.yml'
+  push:
+    branches: [archive/xau-positive-all-timeframes-20261110]
+    paths:
+      - 'research/preserved/xau_all_positive_original_robots_20261110.json'
+      - 'tests/test_xau_all_positive_archived.py'
+      - '.github/workflows/xau-save-positive-archive.yml'
+permissions:
+  contents: read
+jobs:
+  validate-all-positive-snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify 52 historical positives, M15 original snapshot and no live automation
+        run: |
+          python -m unittest discover -s tests -p 'test_xau_all_positive_archived.py' -v
+          python -m unittest discover -s tests -p 'test_preserved_xau_m15.py' -v
