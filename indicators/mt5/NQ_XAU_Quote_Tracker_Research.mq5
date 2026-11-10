@@ -38,7 +38,7 @@ input bool     InpDrawPriceLabels    = true;   // Entry 50 / Target 200 / Stop -
 input bool     InpDrawSignalText     = true;   // COMPRA / VENDA labels
 input bool     InpRequireLiquidityZone = false;// Optional independent hypothesis
 input int      InpLiquidityMinTouches = 2;    // Older repeat tests of a prior extreme
-input double   InpLiquidityToleranceATR = 0.18;// Proximity of repeated quote lows/highs
+input double   InpLiquidityToleranceATR = 0.08;// Proximity of repeated quote lows/highs
 input bool     InpAlertOnNewBar      = false;
 
 double BufferBuy[];
