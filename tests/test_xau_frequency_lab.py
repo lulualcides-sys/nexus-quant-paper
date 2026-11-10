@@ -88,6 +88,22 @@ class VariantTests(unittest.TestCase):
                 self.assertEqual(x["scenarios"]["friction"]["net_usd_per_oz"],0)
             self.assertEqual(r["quote_rows"],1240)
 
+    def test_mt5_research_presets_match_independent_python_hypotheses(self):
+        lab=Path("indicators/mt5/NQ_XAU_Quote_Tracker_Lab_Research.mq5").read_text(encoding="utf-8")
+        for term in ("LAB_REFERENCE=0", "LAB_BALANCED=1", "LAB_ACTIVE=2",
+                     "InpLabPreset=LAB_REFERENCE", "gLb=14; gMinTick=12; gActivity=1.10;",
+                     "gMinRange=0.50; gMaxRange=2.75;",
+                     "gWick=0.22; gClose=0.58; gSweep=0.025; gSpread=0.32;",
+                     "gLb=10; gMinTick=10; gActivity=1.02;",
+                     "gMinRange=0.40; gMaxRange=3.00;",
+                     "gWick=0.18; gClose=0.55; gSweep=0.015; gSpread=0.30;",
+                     "NAO APROVADO (VALIDACAO NEGATIVA)",
+                     "NQXAULAB_", "BufferBuy[0]=EMPTY_VALUE"):
+            self.assertIn(term,lab)
+        for forbidden in ("OrderSend(", "CTrade ", "trade.Buy(", "WebRequest(",
+                          "TICK_FLAG_BUY", "TICK_FLAG_SELL"):
+            self.assertNotIn(forbidden,lab)
+
     def test_executable_variants_do_not_use_trading_api(self):
         from research import xau_frequency_lab as lab
         import inspect
