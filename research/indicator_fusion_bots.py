@@ -5,8 +5,7 @@ No broker connection, no orders, no state mutations, no fabricated candles.
 Dependencies: Python standard library. Uses only completed OHLC bars.
 """
 from __future__ import annotations
-from dataclasses import dataclass
-from math import isfinite, sqrt
+from math import isfinite
 from statistics import mean, pstdev
 
 TIMEFRAMES = {'M1': 60, 'M5': 300, 'M15': 900, 'M30': 1800}
@@ -204,8 +203,11 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
             side=signal[i-1]
             a=feats[i-1]['atr']
             entry=b['open']
-            dist=max(1.5*a,entry*cost_bps/10000*2.0)
-            if dist>0 and isfinite(dist):
+            dist=1.5*a
+            # Fixed cost-aware permission gate, independent of stress scenario.
+            # The same trades, stops and sizes must be compared under 14 vs 28 bps.
+            fee_floor=entry*14/10000
+            if dist>0 and isfinite(dist) and 1.8*dist >= 3*fee_floor:
                 qty=min(.0075*equity/dist, equity/entry)
                 if qty>0:
                     pos={'side':side,'entry':entry,'qty':qty,'stop':entry-side*dist,
