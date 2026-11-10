@@ -37,6 +37,21 @@ def _summarize(days,policy,cost):
         dd=max(dd,peak-equity)
     rng=random.Random(20261110)
     bootstrap=sorted(sum(rng.choices(daily,k=len(daily))) for _ in range(3000))
+    from statistics import median
+    stopped=[t for t in trades if t["reason"]=="STOP"]
+    # Fraction of stopped trades that had achieved some executable
+    # favorable move *before* their actual stop (NOT after it).
+    diagnostic={
+        "stopped_trades":len(stopped),
+        "stop_MFE_R_median":round(median(t["MFE_R_before_actual_exit"]
+                                         for t in stopped),5) if stopped else None,
+        "stops_after_favorable_0_5R":sum(bool(t["stopped_after_0_5R"])
+                                         for t in stopped),
+        "stops_after_favorable_1R":sum(bool(t["stopped_after_1R"])
+                                       for t in stopped),
+        "stop_MAE_R_median":round(median(t["MAE_R_before_actual_exit"]
+                                         for t in stopped),5) if stopped else None,
+    }
     setup_metrics={}
     for name in ("break_retest","range_rejection"):
         ss=[x for x in trades if x["setup"]==name]
@@ -58,6 +73,7 @@ def _summarize(days,policy,cost):
         "positive_days":sum(v>0 for v in daily),
         "negative_days":sum(v<0 for v in daily),
         "setup_metrics":setup_metrics,
+        "stop_forensics":diagnostic,
         "exits":dict(sorted(Counter(t["reason"] for t in trades).items())),
         "entry_rejections":dict(sorted(rejections.items())),
     }
@@ -172,6 +188,7 @@ def report_text(r):
                 f"- {policy}, {month}: {row['setup_metrics']}; "
                 f"saídas={row['exits']}; PF={row['profit_factor']}; "
                 f"expectativa/oper={row['expectancy_usd_per_oz']}; "
+                f"forense stop={row['stop_forensics']}; "
                 f"bootstrap por sessão={row['daily_bootstrap_95pct']}"
             )
     lines.extend([
