@@ -392,6 +392,7 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
     stressed=replace(settings,commission_roundtrip_usd_per_oz=.60,
                      slippage_usd_each_market_side=.20)
     result={}
+    pools_global={"legacy":[],"marked_rules_v3":[]}
     for tf,label in ((60,"M1"),(300,"M5")):
         bars=candles_from_quotes(quotes,tf)
         if len(bars)<(360 if tf==60 else 110):
@@ -412,6 +413,7 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
             ("legacy",legacy,{"original_strategy_proxy_only":1}),
             ("marked_rules_v3",signals,events)
         ):
+            pools_global[name].extend(pool)
             row={"signals":len(pool),"events":diagnostics,
                  "signal_setups":dict(sorted(Counter(s["setup"] for s in pool).items())),
                  "costs":{}}
@@ -424,6 +426,25 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
                     raise ValueError("Trade outside session or false fills")
                 row["costs"][cost]=outcome
             result[label][name]=row
+
+    # Research BOTH timeframes together under one global XAU position lock.
+    # Never add separately simulated M1+M5 equity, which could overlap.
+    from research.xau_pa_shared_execution import simulate_shared_quotes
+    result["SHARED"]={}
+    for name,pool in pools_global.items():
+        shared={
+            "signals":len(pool),
+            "events":{"one_global_symbol_lock":1,
+                      "ambiguous_simultaneous_m1_m5_skipped":1},
+            "signal_setups":dict(sorted(Counter(s["setup"] for s in pool).items())),
+            "costs":{}
+        }
+        for cost,cfg in (("standard",settings),("double",stressed)):
+            outcome=simulate_shared_quotes(trading,pool,cfg)
+            if outcome["filled"]>len(pool):
+                raise ValueError("Shared executor invented a fill")
+            shared["costs"][cost]=outcome
+        result["SHARED"][name]=shared
     return {
         "day":day,"source":source,"marking_mode":marking_mode,
         "manual_mark_file_present":marking_mode=="manual",
