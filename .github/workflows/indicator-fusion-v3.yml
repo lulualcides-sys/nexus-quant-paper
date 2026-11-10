@@ -27,5 +27,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: indicator-fusion-v3-frequency-paper
-          path: research/results/indicator_fusion_v3_frequency_latest.json
+          path: |
+            research/results/indicator_fusion_v3_frequency_latest.json
+            research/results/xau_gc_f_observed_m5_20261110.json.gz
           if-no-files-found: error
