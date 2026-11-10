@@ -30,7 +30,7 @@ class ExecutionAssumptions:
     slippage_usd_per_side: float = 0.0
 
     def check(self):
-        if (self.timeframe_seconds not in (60, 300) or self.ttl_bars < 1 or
+        if (self.timeframe_seconds not in (60, 300, 900) or self.ttl_bars < 1 or
             self.max_hold_bars < 1 or self.commission_roundtrip_usd_per_oz < 0 or
             self.slippage_usd_per_side < 0):
             raise ValueError("Invalid execution assumptions")
