@@ -47,3 +47,21 @@ Referência de implementação dos campos e flags de tick na documentação MQL5
 - Manter WIN, ATLAS, ouro H4 e robôs aprovados inalterados. Integrar apenas após revisão e resultados independentes.
 
 **Estado nesta branch:** pesquisa isolada; indicador não é a fórmula do Tracker, não é robô e não afirma acerto ou performance. 
+
+## Refinamentos auditados — 10/11/2026
+
+Comparação documental com https://lojadagreenhouse.com.br/ofertatracker/ e https://lojadagreenhouse.com.br/: são observáveis apenas a confirmação da vela, a geometria pública de Fibonacci, as setas, os exemplos de dados e os relatos comerciais. **Não há equações de sinal, parâmetros internos ou série oficial XAUUSD** para calcular uma taxa de coincidência.
+
+Mudanças na mesma PR de pesquisa, sem alterar a `main`:
+
+- Além das setas de compra/venda, o MT5 agora desenha etiquetas **COMPRA/VENDA** e preços com texto **ENTRADA 50%**, **ALVO 200%**, **STOP -100%** e, por padrão, guias de 0%/100%; são objetos visuais sem execução de ordens.
+- Após desconexões ou pausas, a rotina percorre os candles novos que já fecharam, em vez de avaliar apenas a última vela M1/M5.
+- Filtro **opcional** `InpRequireLiquidityZone=false` (padrão): exige múltiplos testes anteriores do extremo, com distância máxima `0,08× ATR` (`InpLiquidityToleranceATR`), no mínimo 2 toques. É uma **hipótese original** e fica desativada até haver dados para testar se reduz falsos positivos. O modelo Python espelha a mesma regra quando habilitada.
+- Exportações CSV são verificadas com hash SHA256 por streaming (sem carregar o arquivo inteiro na memória); seleção equivocada de M1/M5 é rejeitada.
+- Contrato da pesquisa permanece: **sem ordem automática, sem manipular WIN, sem agressão/delta fictícia, sem lucro alegado**.
+
+**Evidência do último pipeline testado:** GitHub Actions
+https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42758936261 —
+20 testes unitários independentes aprovados em Linux e Windows, compilação MetaEditor 5 oficial com **0 erros/0 avisos**, saída EX5 **25.540 bytes**, artifact `nq-xauusd-quote-tracker-compiled-ex5`. Foram dados sintéticos de teste para os sinais; ainda não é prova de coincidência com o Tracker Greenhouse, nem backtest de ouro em corretora.
+
+**Gate para declarar 'idêntico':** captura de funcionamento simultâneo do indicador original autorizado (mesmo broker, XAUUSD, timezone e timeframe) e nossa revisão durante intervalos completos, com **todos** os sinais e não-sinais, preços e horários. Sem o original acessível não é possível declarar identidade. Um visual aproximado, por si só, não comprova o mesmo algoritmo. Versão de pesquisa permanece DRAFT.
