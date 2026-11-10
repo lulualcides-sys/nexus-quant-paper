@@ -1,0 +1,114 @@
+name: XAUUSD PA | M1 M5 3h warmup historical March October
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_warmup_study.py
+      - research/xau_pa_warmup_scorecard.py
+      - tests/test_xau_pa_warmup_study.py
+      - .github/workflows/xau-pa-warmup-m1m5-march-october.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        month: [march, october]
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test warm-up boundaries, no early trades, transparent scorecard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_warmup_study.py research/xau_pa_warmup_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_warmup_study.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_quality_experiment.py' -v
+      - name: Strict fixed historical source dates using a single 09-17 quote tape
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/raw" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.month }}" == "march" ]]; then
+            DAYS=(20260309 20260310 20260311 20260312 20260313
+                  20260316 20260317 20260318 20260319 20260320)
+          else
+            DAYS=(20261012 20261013 20261014 20261015 20261016
+                  20261019 20261020 20261021 20261022 20261023)
+          fi
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/raw" -fn "xau_${d}" \
+              -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/raw/xau_${d}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_warmup_study \
+              --ticks "$f" --day "$d" \
+              --output "$RUNNER_TEMP/evidence/warm_${d}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+            test -f "$RUNNER_TEMP/evidence/warm_${d}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-warmup-${{ matrix.month }}-evidence
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  summarize:
+    needs: [compare]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-warmup-*-evidence
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Compare exact execution tape and freeze all negative outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_warmup_scorecard \
+            --input "$RUNNER_TEMP/evidence" --output "$RUNNER_TEMP/out"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads((Path(os.environ["RUNNER_TEMP"])/"out/warmup_scorecard.json").read_text())
+          assert not r["approved_for_live"] and r["no_live_broker_mt5_data"]
+          assert r["historical_experiment_not_forward_trading"]
+          assert len(r["clean_dates"]["march"])>=8
+          assert len(r["clean_dates"]["october"])>=8
+          for tf,arms in r["results"].items():
+              for period in ("march","october"):
+                  cold=arms["cold_control"][period]["double"]
+                  warm=arms["warm_control"][period]["double"]
+                  quality=arms["warm_quality"][period]["double"]
+                  assert warm["filled"]<=warm["signals"]
+                  assert quality["signals"]<=warm["signals"]
+                  assert cold["filled"]<=cold["signals"]
+                  print("WARM_COMPARE",tf,period,
+                        "cold",cold["signals"],cold["filled"],cold["net_usd_per_oz"],
+                        "warm",warm["signals"],warm["filled"],warm["net_usd_per_oz"],
+                        "quality",quality["signals"],quality["filled"],quality["net_usd_per_oz"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-M1-M5-3h-warmup-vs-cold-scorecard
+          path: ${{ runner.temp }}/out/*
+          retention-days: 30
