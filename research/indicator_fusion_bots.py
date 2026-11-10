@@ -170,6 +170,9 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
     trades = []
     for i in range(begin,finish):
         b = bars[i]
+        # A position open at the candle OPEN owns this candle. If it closes
+        # later inside the candle, we cannot retroactively enter at its OPEN.
+        occupied_at_open = pos is not None
         if pos:
             side = pos['side']
             hit_stop = b['low'] <= pos['stop'] if side==1 else b['high'] >= pos['stop']
@@ -199,7 +202,7 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
                 pos=None
         # Never enter from a signal in the current, not-yet-closed candle.
         # Never create two trades on one bar; no entries over missing bar gaps.
-        if pos is None and equity>0 and signal[i-1] and bars[i]['time']-bars[i-1]['time']==interval:
+        if not occupied_at_open and pos is None and equity>0 and signal[i-1] and bars[i]['time']-bars[i-1]['time']==interval:
             side=signal[i-1]
             a=feats[i-1]['atr']
             entry=b['open']
@@ -233,6 +236,11 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
     gains=sum(max(0,t['net']) for t in trades)
     losses=-sum(min(0,t['net']) for t in trades)
     return {'trades':len(trades), 'closed_net_usd':round(equity-capital,2),
+            'closed_gross_usd':round(sum(t['gross'] for t in trades),2),
+            'closed_fees_usd':round(sum(t['cost'] for t in trades),2),
+            'stop_exits':sum(t['exit_reason']=='stop_first' for t in trades),
+            'target_exits':sum(t['exit_reason']=='target' for t in trades),
+            'time_exits':sum(t['exit_reason']=='time' for t in trades),
             'marked_net_usd':round(equity-capital+mtm,2),
             'open_at_end':pos is not None,'winrate_pct':round(100*sum(t['net']>0 for t in trades)/len(trades),2) if trades else None,
             'profit_factor':round(gains/losses,3) if losses else None,
@@ -240,11 +248,13 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
             'ledger':trades}
 
 
-def research(bars, *, timeframe, costs=(14.,28.)):
+def research(bars, *, timeframe, costs=(0.,7.,14.,28.)):
     """Three chronological replay windows; earlier candles are warm-up only.
     Does not tune parameters on the validation windows. Strict paper-only label.
     """
     interval=TIMEFRAMES[timeframe]
+    if 14. not in costs or 28. not in costs:
+        raise ValueError('Research requires 14/28bps baseline and stress')
     check_bars(bars, interval)
     f=make_features(bars)
     sig=signals(bars,f)
@@ -260,14 +270,23 @@ def research(bars, *, timeframe, costs=(14.,28.)):
                for cost in costs}
             folds.append({'start':bars[cut[j]]['time'], 'end':bars[cut[j+1]-1]['time'],
                           'scenarios':{k:{n:v for n,v in d.items() if n!='ledger'} for k,d in r.items()}})
-        normal,stress=(str(costs[0]),str(costs[-1]))
+        normal,stress=(str(14.),str(28.))
         total=sum(fold['scenarios'][normal]['trades'] for fold in folds)
         # Threshold only marks a RESEARCH candidate, never permission to trade.
         consistent=(total>=30 and all(fold['scenarios'][normal]['marked_net_usd']>0 and
                          fold['scenarios'][stress]['marked_net_usd']>0 and
                          fold['scenarios'][normal]['max_realized_drawdown_pct']<=10
                          for fold in folds))
-        out['strategies'][name]={'closed_trades':total,
+        audit = {str(cost): {
+            'net_usd': round(sum(fold['scenarios'][str(cost)]['marked_net_usd'] for fold in folds), 2),
+            'closed_gross_usd': round(sum(fold['scenarios'][str(cost)]['closed_gross_usd'] for fold in folds), 2),
+            'closed_fees_usd': round(sum(fold['scenarios'][str(cost)]['closed_fees_usd'] for fold in folds), 2),
+            'trades': sum(fold['scenarios'][str(cost)]['trades'] for fold in folds),
+            'stops': sum(fold['scenarios'][str(cost)]['stop_exits'] for fold in folds),
+            'targets': sum(fold['scenarios'][str(cost)]['target_exits'] for fold in folds),
+            'timeouts': sum(fold['scenarios'][str(cost)]['time_exits'] for fold in folds),
+        } for cost in costs}
+        out['strategies'][name]={'closed_trades':total,'cost_decomposition':audit,
             'net_usd':round(sum(fold['scenarios'][normal]['marked_net_usd'] for fold in folds),2),
             'net_double_cost_usd':round(sum(fold['scenarios'][stress]['marked_net_usd'] for fold in folds),2),
             'retrospective_consistency_pass':consistent,'live_approved':False,'folds':folds}
