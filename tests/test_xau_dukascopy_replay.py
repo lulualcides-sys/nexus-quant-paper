@@ -69,9 +69,9 @@ class DukascopyReplayTests(unittest.TestCase):
     def test_m5_aggregation_keeps_5_minute_boundaries(self):
         with tempfile.TemporaryDirectory() as td:
             file=Path(td)/"quotes.csv"
-            write_ticks(file,n=70)
+            write_ticks(file,n=300)
             bars,audit=aggregate_real_quotes(file,300)
-            self.assertEqual(len(bars),14)
+            self.assertEqual(len(bars),60)
             self.assertEqual(bars[0]["tick_volume"],25)
             self.assertEqual(audit["timeframe_seconds"],300)
 
