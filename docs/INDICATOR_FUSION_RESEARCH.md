@@ -17,7 +17,7 @@
 
 - XAUUSD proxy `GC=F` de Yahoo, **não** cotação negociável do broker. Dados M5 (1 mês) agregados para M15 e M30 somente em blocos inteiros e sem lacunas; M1 separadamente (5 dias). Recortes temporais diferentes não são equivalentes.
 - Entrada na **abertura da próxima vela íntegra** após sinal fechado. Candle de sinal jamais gera fill intrabar.
-- Stop `1,5 ATR(10)` ou, no mínimo, duas vezes o custo relativo assumido; alvo `1,8R`; limite 48 velas. Saída stop-first quando stop e alvo são tocados na mesma vela. Gap adverso executa no preço de abertura pior. Sem alavancagem, exposição nominal no máximo 1×, limite de risco-stop planejado 0,75%. O risco efetivo pode exceder em gaps.
+- Stop `1,5 ATR(10)` fixo para os dois cenários de custos; sem entrada quando o alvo teórico de 1,8R não cobre pelo menos 3 vezes o custo nominal de referência de 14 bps. Alvo `1,8R`; limite 48 velas. Saída stop-first quando stop e alvo são tocados na mesma vela. Gap adverso executa no preço de abertura pior. Sem alavancagem, exposição nominal no máximo 1×, limite de risco-stop planejado 0,75%. O risco efetivo pode exceder em gaps.
 - Custo completo de ida e volta: **14 e 28 bps** do nocional; não inclui swap exato, execução real por bid/ask, notícia, rolagem de futuro, tick-data ou taxa específica da corretora.
 - Três segmentos cronológicos; posições reiniciadas em cada segmento. O histórico já foi examinado no projeto e não deve ser chamado de holdout independente.
 - Candidato retrospectivo apenas com >=30 operações fechadas, P&L marcado a mercado positivo em cada segmento em 14/28 bps e drawdown realizado <=10%. Mesmo que passe, permanece não aprovado para capital real até validação prospectiva independente com dados e custos da corretora.
