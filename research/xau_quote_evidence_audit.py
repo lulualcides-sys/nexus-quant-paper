@@ -23,10 +23,11 @@ def analyze_evidence(folder: str | Path, dates: list[str]) -> dict:
         "strategies":{},
         "eligible_for_broker_orders":False,
     }
+    source_hashes_by_day = {}
     for tf in ("M1","M5"):
         by_scenario={}
         for scenario in ("base","friction"):
-            events=[]; signals=filled=expired=0; quote_hashes={}
+            events=[]; signals=filled=expired=0
             for day in dates:
                 path=folder/f"xau_{day}_{tf}_{scenario}.json"
                 if not path.is_file():
@@ -42,9 +43,9 @@ def analyze_evidence(folder: str | Path, dates: list[str]) -> dict:
                     record["broker_lot_or_commission_verified"] is not False or
                     record["spread_accounted_through_actual_bid_ask"] is not True):
                     raise ValueError(f"Invalid provenance for {path.name}")
-                if day in quote_hashes and quote_hashes[day]!=src["source_sha256"]:
-                    raise ValueError("Source changed between scenarios")
-                quote_hashes[day]=src["source_sha256"]
+                if day in source_hashes_by_day and source_hashes_by_day[day]!=src["source_sha256"]:
+                    raise ValueError("Source changed between timeframes/scenarios")
+                source_hashes_by_day[day]=src["source_sha256"]
                 if not (0<=exe["filled"]==exe["closed"]<=exe["planned_signals"]):
                     raise ValueError("Invalid fill/plan accounting")
                 if len(exe["ledger"]) != exe["filled"]:
