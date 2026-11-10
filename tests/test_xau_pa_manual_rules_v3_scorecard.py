@@ -10,7 +10,7 @@ from research.xau_pa_manual_rules_v3_scorecard import summarize,markdown
 
 def fake_day(day):
     data={}
-    for tf in ("M1","M5"):
+    for tf in ("M1","M5","SHARED"):
         data[tf]={}
         for model in ("legacy","marked_rules_v3"):
             models={"legacy":"break_retest","marked_rules_v3":"range_rejection"}
