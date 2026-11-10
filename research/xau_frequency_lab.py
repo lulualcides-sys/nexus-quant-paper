@@ -214,8 +214,35 @@ def main():
     p.add_argument("--ticks",required=True)
     p.add_argument("--day",required=True)
     p.add_argument("--out",required=True)
+    p.add_argument("--quarantine-out",required=False)
+    p.add_argument("--day-id",required=False)
     args=p.parse_args()
-    report=run_day(args.ticks,args.day)
+    try:
+        report=run_day(args.ticks,args.day)
+    except ValueError as exc:
+        reason=str(exc)
+        # Quarantine whole source DAY, never remove a few losing quote rows.
+        # Program bugs, missing files, wrong dates, and an unexpected failure
+        # remain fatal. Data errors are recorded BEFORE producing any P&L.
+        prefix=("Invalid or crossed XAUUSD bid/ask",
+                "Out-of-order Dukascopy source",
+                "Quote time anomaly")
+        if not args.quarantine_out or not reason.startswith(prefix):
+            raise
+        import hashlib
+        source=Path(args.ticks)
+        with source.open("rb") as handle:
+            sha=hashlib.file_digest(handle,"sha256").hexdigest()
+        q={"day_id":args.day_id or args.day,
+           "date_utc":args.day,
+           "source_sha256":sha,
+           "data_quality_error":reason,
+           "all_trades_excluded_before_scoring":True}
+        dest=Path(args.quarantine_out)
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        dest.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        print("QUARANTINED ENTIRE DATA WINDOW",q["day_id"],reason)
+        return
     dest=Path(args.out)
     dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
