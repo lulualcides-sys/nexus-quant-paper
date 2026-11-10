@@ -103,7 +103,7 @@ def aggregate_real_quotes(path: str | Path, timeframe_seconds: int = 60,
         bars.append(active)
     if not bars:
         raise ValueError("No valid independent historical quotes")
-    if len(bars) < 50:
+    if len(bars) < (16 if timeframe_seconds == 900 else 50):
         raise ValueError("Insufficient quote history for research: need at least 50 candles")
     if all(b["high"] == b["low"] for b in bars):
         raise ValueError("No historical bid-price movement")
