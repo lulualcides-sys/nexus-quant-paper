@@ -1,0 +1,115 @@
+name: XAUUSD PA v6 | M5 completed context M1 entries paired backtest
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_m5_context_m1_v6.py
+      - research/xau_pa_m5_context_m1_v6_scorecard.py
+      - tests/test_xau_pa_m5_context_m1_v6.py
+      - tests/test_xau_pa_m5_context_m1_v6_scorecard.py
+      - .github/workflows/xau-pa-m5-context-m1-v6.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test_and_replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [june, july]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Closed M5 no lookahead, M1 entry and no fabricated marks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_m5_context_m1_v6.py research/xau_pa_m5_context_m1_v6_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_m5_context_m1_v6.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_m5_context_m1_v6_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_fidelity_v4.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+      - name: Compare identical XAUUSD real historical BID ASK 09-21 UTC
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.block }}" == "june" ]]; then
+            DAYS=(20260622 20260623 20260624 20260625 20260626)
+          else
+            DAYS=(20260727 20260728 20260729 20260730 20260731)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            src="$RUNNER_TEMP/quotes/xau_${day}.csv"
+            test -s "$src"
+            head -n1 "$src" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_m5_context_m1_v6 \
+              --ticks "$src" --day "$day" \
+              --out "$RUNNER_TEMP/evidence/m5_m1_${day}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/m5_m1_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-v6-${{ matrix.block }}-quote-ledgers
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  scorecard:
+    needs: [test_and_replay]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-v6-*-quote-ledgers
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Audit exactly same M1 entries with vs without completed M5 context
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_m5_context_m1_v6_scorecard \
+            --evidence "$RUNNER_TEMP/evidence" --output "$RUNNER_TEMP/report"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"report/m5_context_m1_v6.json"
+          d=json.loads(p.read_text())
+          assert d["trading_approved"] is False
+          assert d["user_marks_verified"] is False
+          assert len(d["clean_dates"]["june"])>=4
+          assert len(d["clean_dates"]["july"])>=4
+          for month in ("june","july"):
+              base=d["results"]["v4_M1_reference"]["double"][month]
+              new=d["results"]["v6_M5_context_M1_entry"]["double"][month]
+              assert new["signals"]<=base["signals"]
+              assert new["filled"]<=new["signals"]
+              print("VERIFIED_PA_V6",month,"baseline",base["signals"],
+                    base["filled"],base["net_usd_per_oz"],
+                    "new",new["signals"],new["filled"],
+                    new["net_usd_per_oz"],
+                    "new_stops",new["exits"].get("STOP",0),
+                    "new_range",new["setup_metrics"]["range_rejection"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-v6-m5-context-m1-entry-scorecard
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30
