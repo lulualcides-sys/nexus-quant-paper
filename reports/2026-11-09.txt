@@ -1,0 +1,62 @@
+<b>📊 NEXUS QUANT — 2026-11-09</b>
+🧪 27 robôs previstos: 10 Ouro H4 + 15 H1 + 1 USD/CAD + 1 Momentum60
+<i>RESULTADOS VIRTUAIS • sem ordens reais na FBS</i>
+
+<b>📌 RESUMO DO DIA • OURO H4</b>
+📥 Entradas: <b>0</b>  •  Saídas: <b>0</b>
+💵 Hoje: <b>US$ +0.00</b>
+📈 Acumulado: <b>US$ +512.85</b>
+📍 Posições abertas: 0/10
+
+<b>🟦 5 CONVENCIONAIS</b>
+<i>0,75% risco-stop • até 1× nocional</i>
+• <b>Pullback 20</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +63.92 · V/D 1/0 · ⚪ livre
+• <b>Momentum 100</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +63.92 · V/D 1/0 · ⚪ livre
+• <b>RSI Trend</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +24.48 · V/D 1/1 · ⚪ livre
+• <b>Channel 20</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ -39.22 · V/D 0/1 · ⚪ livre
+• <b>Channel 55</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ -39.22 · V/D 0/1 · ⚪ livre
+
+<b>🟥 5 ALAVANCADOS</b>
+<i>1,50% risco-stop • limite 3× nocional</i>
+🟢 Stop móvel GREEN: após +1R; sem TP fixo (novas posições).
+• <b>Channel 20 L</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +171.74 · V/D 1/0 · ⚪ livre
+• <b>Channel 55 L</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +171.74 · V/D 1/0 · ⚪ livre
+• <b>Momentum 100 L</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +95.48 · V/D 1/0 · ⚪ livre
+• <b>Momentum 40 L</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +0.00 · V/D 0/0 · ⚪ livre
+• <b>Trend Long L</b>  |  hoje <b>US$ +0.00</b>
+  0 entradas / 0 fech. · acum. US$ +0.00 · V/D 0/0 · ⚪ livre
+
+📥 Entradas virtuais abertas hoje: 0 nos dez robôs de ouro.
+
+<b>🟨 11º ROBÔ — BB20 Pullback H1/M15 | USD/CAD</b>
+1 fech. hoje | dia US$ +1.92 | total US$ -2.97 | V/D 4/8 | sem posição
+📍 Confirmação H1 expirada | banca US$ 1,000 virtual
+⚠️ Tendência H1 EMA50/EMA200 + toque SMA20 M15 (BB 20,2), trailing por fechamento; sem TP. *Gaps/custos podem causar perdas.
+
+<b>🧪 15 EXPERIMENTAIS H1 | 5 mercados × 3 estratégias</b>
+Risco planejado 0,25%/op.; até 1× nocional | NÃO VALIDADOS
+EURUSD: 2 entradas | 1 saídas | 1/3 abertas | US$ -1.33
+USDJPY: 3 entradas | 4 saídas | 0/3 abertas | US$ -5.18
+XAUUSD: 5 entradas | 5 saídas | 3/3 abertas | US$ +3.93
+US500: 1 entradas | 2 saídas | 1/3 abertas | US$ -5.30
+XTIUSD: 2 entradas | 3 saídas | 1/3 abertas | US$ -0.11
+Experimento hoje: 13 entradas, 15 saídas, US$ -7.98 realizado virtual
+Sem setup ≠ erro; estratégias experimentais não são recomendação de operação.
+🧪 EXTRA Momentum60 H4 (NÃO VALIDADO): 0 entradas, 0 saídas hoje, US$ +0.00; total US$ +0.00, V/D 0/0, sem posição
+
+<b>🏁 FECHAMENTO</b>
+🏅 Melhor saldo acumulado (grupo ouro): Channel 20 L · US$ +171.74
+💼 Capital VIRTUAL: US$ 71,000 em 27 bancas previstas.
+🌍 Mercados observados: EUR/USD, USD/JPY, US500, WTI.
+⚠️ Risco maior pode ampliar perdas; financiamento estimado.
+⛔ Sem operações reais ou ganhos de corretora. Dados e custos aproximados.
+🕒 Último candle ouro H4 no estado: 09/11 17:00 BRT (snapshot, sem preço ao vivo).
