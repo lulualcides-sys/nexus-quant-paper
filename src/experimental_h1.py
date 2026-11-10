@@ -106,7 +106,7 @@ def _close(b, market, bar, price, why):
 
 def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=True, bar_seconds=3600):
     """Stop checks before trailing; execute entry-bar stops, never re-enter."""
-    if bar_seconds not in (60, 300, 900, 3600):
+    if bar_seconds not in (60, 300, 900, 1800, 3600):
         raise ValueError("Unsupported research candle interval")
     row = bars[i]
     previous = bars[i - 1]
