@@ -378,6 +378,8 @@ def causal_signals(bars,tf,trade_start_ms,trade_end_ms,
 
 def one_day(path,day,*,marking_mode="proxy",marks_path=None):
     if day not in DAYS:raise ValueError("Day not in fixed historical set")
+    if marking_mode=="manual" and marks_path is None:
+        raise ValueError("No user-supplied drawing file; no guessing manual marks")
     quotes,source=parse_quotes(path,day)
     start=utc_ms(day,9);trade_start=utc_ms(day,12);end=utc_ms(day,21)
     if (quotes[0][0]<start or quotes[-1][0]>end+59999 or
@@ -386,8 +388,6 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
     trading=[q for q in quotes if trade_start<=q[0]<end]
     if not trading or trading[0][0]>trade_start+60000:
         raise SourceQualityError("Missing comparable 12-21 UTC quotes")
-    if marking_mode=="manual" and marks_path is None:
-        raise ValueError("No user-supplied drawing file; no guessing manual marks")
     settings=Settings()
     stressed=replace(settings,commission_roundtrip_usd_per_oz=.60,
                      slippage_usd_each_market_side=.20)
@@ -404,18 +404,26 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
                                      marking_mode=marking_mode,
                                      manual_lines=manual_lines,
                                      manual_zones=manual_zone)
-        row={"signals":len(signals),"events":events,
-             "signal_setups":dict(sorted(Counter(s["setup"] for s in signals).items())),
-             "costs":{}}
-        for cost,cfg in (("standard",settings),("double",stressed)):
-            outcome=simulate_ticks(trading,signals,tf,cfg)
-            if outcome["filled"]>len(signals) or any(
-                t["entry_ms"]<trade_start or t["entry_ms"]>=end
-                for t in outcome["trades"]
-            ):
-                raise ValueError("Trade outside session or false fills")
-            row["costs"][cost]=outcome
-        result[label]=row
+        from research.xau_price_action_m1m5 import scan_signals
+        legacy=[s for s in scan_signals(bars,tf,settings)
+                if trade_start<=s["eligible_ms"]<end]
+        result[label]={}
+        for name,pool,diagnostics in (
+            ("legacy",legacy,{"original_strategy_proxy_only":1}),
+            ("marked_rules_v3",signals,events)
+        ):
+            row={"signals":len(pool),"events":diagnostics,
+                 "signal_setups":dict(sorted(Counter(s["setup"] for s in pool).items())),
+                 "costs":{}}
+            for cost,cfg in (("standard",settings),("double",stressed)):
+                outcome=simulate_ticks(trading,pool,tf,cfg)
+                if outcome["filled"]>len(pool) or any(
+                    t["entry_ms"]<trade_start or t["entry_ms"]>=end
+                    for t in outcome["trades"]
+                ):
+                    raise ValueError("Trade outside session or false fills")
+                row["costs"][cost]=outcome
+            result[label][name]=row
     return {
         "day":day,"source":source,"marking_mode":marking_mode,
         "manual_mark_file_present":marking_mode=="manual",
@@ -451,11 +459,12 @@ def main():
         return
     target=Path(args.out);target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps(record,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
-    for tf,part in record["results"].items():
-        e=part["costs"]["double"]
-        print("FAITHFUL_PA",args.day,tf,"signals",part["signals"],
-              "fills",e["filled"],"net_USD_per_oz",e["net_usd_per_oz"],
-              "events",part["events"])
+    for tf,modes in record["results"].items():
+        for name,part in modes.items():
+            e=part["costs"]["double"]
+            print("PA_V3",args.day,tf,name,"signals",part["signals"],
+                  "fills",e["filled"],"net_USD_per_oz",e["net_usd_per_oz"],
+                  "events",part["events"])
 
 
 if __name__=="__main__":
