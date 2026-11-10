@@ -1,0 +1,57 @@
+name: Indicator Fusion GOLD V5 | frozen two-source exit audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/indicator_fusion_v5_exits.py'
+      - 'research/run_indicator_fusion_v5_exits.py'
+      - 'tests/test_indicator_fusion_v5_exits.py'
+      - '.github/workflows/indicator-fusion-v5.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-caused-signals-two-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run 56+ V1-V5 audit and parity unit tests
+        run: |
+          python -m unittest \
+            tests.test_indicator_fusion_bots \
+            tests.test_indicator_fusion_v2 \
+            tests.test_indicator_fusion_v3_frequency \
+            tests.test_indicator_fusion_v4_costaware \
+            tests.test_indicator_fusion_v5_exits -v
+      - name: Retrieve exact frozen historical price artifacts from this repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/v5/yahoo /tmp/v5/dukascopy
+          gh run download 42879014930 --repo "$GITHUB_REPOSITORY" \
+            --name indicator-fusion-v3-frequency-paper --dir /tmp/v5/yahoo
+          gh run download 42847239203 --repo "$GITHUB_REPOSITORY" \
+            --name XAU-all-original-27-plus-ATLAS-M1-M5-M15-84-scorecards --dir /tmp/v5/dukascopy
+          test -f /tmp/v5/yahoo/xau_gc_f_observed_m5_20261110.json.gz
+          test -f /tmp/v5/dukascopy/xau-candles/20261005.json
+          test -f /tmp/v5/dukascopy/xau-candles/20261105.json
+      - name: Verify frozen-source fingerprints, V4 parity and three exit policies
+        run: |
+          python -m research.run_indicator_fusion_v5_exits \
+            --yahoo-gzip /tmp/v5/yahoo/xau_gc_f_observed_m5_20261110.json.gz \
+            --dukascopy-dir /tmp/v5/dukascopy
+      - name: Archive all scenarios, source fingerprints, folds and no-live verdict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: indicator-fusion-v5-frozen-two-source-paper
+          path: |
+            research/results/indicator_fusion_v5_exit_latest.json
+            research/results/indicator_fusion_v5_exit_latest.md
+          if-no-files-found: warn
