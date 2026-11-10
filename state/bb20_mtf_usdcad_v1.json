@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794268800,
+  "watermark_m15": 1794272400,
   "equity": 997.0289033597743,
   "position": null,
   "closed": [
@@ -152,5 +152,5 @@
     }
   ],
   "last_entry_h1": 1794218400,
-  "last_reason": "Intervalo M15 com lacuna; entrada ignorada"
+  "last_reason": "Confirmação H1 expirada"
 }
