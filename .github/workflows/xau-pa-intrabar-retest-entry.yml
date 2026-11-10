@@ -1,0 +1,109 @@
+name: XAUUSD PA | correct late market entry with causal intrabar retest reaction
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_intrabar_retest_execution.py
+      - research/xau_pa_intrabar_entry_scorecard.py
+      - tests/test_xau_pa_intrabar_retest_execution.py
+      - .github/workflows/xau-pa-intrabar-retest-entry.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        month: [may, sep_oct]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Causality tests breakout close => later touch => later tick reaction => next quote
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_intrabar_retest_execution.py research/xau_pa_intrabar_entry_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_intrabar_retest_execution.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_m5_context_m1_v6.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+      - name: Real historical XAUUSD BID ASK 09-21 UTC, compare no added filters
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.month }}" == "may" ]]; then
+            DAYS=(20260518 20260519 20260520 20260521 20260522)
+          else
+            DAYS=(20260928 20260929 20260930 20261001 20261002)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/quotes/xau_${day}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_intrabar_retest_execution \
+              --ticks "$f" --day "$day" \
+              --out "$RUNNER_TEMP/evidence/intrabar_${day}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/intrabar_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-intrabar-${{ matrix.month }}-tick-ledgers
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  aggregate:
+    needs: [compare]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-intrabar-*-tick-ledgers
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Paired M1 comparison quote-level entry distance to same retested trendline
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_intrabar_entry_scorecard \
+            --evidence "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/report"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ["RUNNER_TEMP"])/"report/xau_intrabar_entry_scorecard.json").read_text())
+          assert not d["live_approved"] and not d["real_broker_execution"]
+          assert d["unchanged_range_setup"] and d["same_costs_stop_target"]
+          assert len(d["clean_days"]["may"])>=4 and len(d["clean_days"]["sep_oct"])>=4
+          for period in ("may","sep_oct"):
+              for arm in ("close_of_retest_market_entry","after_intrabar_retest_reaction"):
+                  s=d["result"][arm]["double"][period]
+                  print("ENTRY_TIMING_REPLAY",period,arm,
+                        "signals",s["signals"],"fills",s["filled"],
+                        "wins",s["wins"],"losses",s["losses"],
+                        "net_USD_oz",s["net_usd_per_oz"],
+                        "median_entry_extension_R",s["entry_distance_to_retested_line_median_R"],
+                        "stops",s["stop_exits"],"range",s["by_setup"]["range_rejection"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-intrabar-timing-vs-candle-close-full-scorecard
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30
