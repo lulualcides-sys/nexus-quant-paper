@@ -1,0 +1,31 @@
+name: WIN open-source-inspired flow | volume bar CVD research
+on:
+  push:
+    branches:
+      - research/win-open-flow-volume-bars-20261109
+    paths:
+      - research/win_volume_bars_cvd.py
+      - tests/test_win_volume_bars_cvd.py
+      - .github/workflows/win-volume-bars-cvd.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic_quality:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Provide UTC/Sao Paulo time zone on Windows
+        run: python -m pip install --disable-pip-version-check tzdata
+      - name: Compile independent research engine
+        run: python -m py_compile research/win_volume_bars_cvd.py
+      - name: Test causal volume bars, trade-by-trade CVD and absorption
+        run: python -m unittest discover -s tests -p test_win_volume_bars_cvd.py -v
