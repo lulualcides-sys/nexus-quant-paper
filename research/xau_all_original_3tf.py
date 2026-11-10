@@ -295,7 +295,7 @@ def _summary(book,capital):
     }
 
 
-def replay(bars,tf,stress=1.0):
+def replay(bars,tf,stress=1.0,start_ts=None):
     seconds=TIMEFRAMES[tf]
     if len(bars)<INITIAL_WARMUP+100:
         raise ValueError(f"Insufficient {tf} XAUUSD observed candles")
