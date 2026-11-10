@@ -58,6 +58,7 @@ def main():
             results['timeframes'][tf]=report
             for name,x in report['strategies'].items():
                 print('RESULT',tf,name,x['closed_trades'],x['net_usd'],x['net_double_cost_usd'],x['retrospective_consistency_pass'],flush=True)
+                print('COST_AUDIT',tf,name,json.dumps(x['cost_decomposition'],sort_keys=True),flush=True)
         except Exception as exc:
             results['timeframes'][tf]={'status':'UNAVAILABLE','error':type(exc).__name__+': '+str(exc)[:350],
                                       'paper_only':True,'approved_for_live':False}
