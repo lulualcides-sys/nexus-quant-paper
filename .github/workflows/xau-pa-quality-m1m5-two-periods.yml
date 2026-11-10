@@ -1,0 +1,118 @@
+name: XAUUSD PA | unchanged vs one frozen quality hypothesis July/Sep
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_quality_experiment.py
+      - research/xau_pa_quality_scorecard.py
+      - tests/test_xau_pa_quality_experiment.py
+      - .github/workflows/xau-pa-quality-m1m5-two-periods.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    strategy:
+      fail-fast: false
+      matrix:
+        month: [july, september]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unit tests for no lookahead and fair accounting before quote retrieval
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_quality_experiment.py research/xau_pa_quality_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_quality_experiment.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_may_replication.py' -v
+      - name: Fixed same-feed BID/ASK quote comparisons: control and quality
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.month }}" == "july" ]]; then
+            DAYS=(20260706 20260707 20260708 20260709 20260710
+                  20260713 20260714 20260715 20260716 20260717)
+          else
+            DAYS=(20260907 20260908 20260909 20260910 20260911
+                  20260914 20260915 20260916 20260917 20260918)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T12:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            quotes="$RUNNER_TEMP/quotes/xau_${day}.csv"
+            test -s "$quotes"
+            head -n1 "$quotes" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_quality_experiment \
+              --ticks "$quotes" --day "$day" \
+              --out "$RUNNER_TEMP/evidence/xau_pa_quality_${day}.json" \
+              --quarantine-out "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/xau_pa_quality_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-unchanged-quality-${{ matrix.month }}
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  summarize:
+    needs: [compare]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-unchanged-quality-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Strict two-period M1/M5 baseline versus quality report
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_quality_scorecard \
+            --source "$RUNNER_TEMP/evidence" \
+            --out "$RUNNER_TEMP/scorecard"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"scorecard"
+          r=json.loads((root/"xau_pa_quality_comparison.json").read_text())
+          assert r["approval_blocked"] and r["no_connected_mt5_validation"]
+          assert r["not_a_prospective_future_holdout"]
+          assert len(r["valid_dates"]["july"])>=8
+          assert len(r["valid_dates"]["september"])>=8
+          for tf,variants in r["results"].items():
+              for period in ("july","september"):
+                  original=variants["control"]["double"][period]
+                  quality=variants["quality_v1"]["double"][period]
+                  assert quality["signal_count"]<=original["signal_count"]
+                  assert original["filled"]<=original["signal_count"]
+                  assert quality["filled"]<=quality["signal_count"]
+                  print("COMPARE",tf,period,"base",original["signal_count"],
+                        original["filled"],original["net_usd_per_oz"],
+                        "quality",quality["signal_count"],quality["filled"],
+                        quality["net_usd_per_oz"],
+                        "quality-bootstrap",quality["bootstrap_day_net_p025_p975"])
+          PY
+      - name: Upload reports, never underlying raw Dukascopy quote files
+        uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-quality-two-period-M1-M5-scorecard
+          path: ${{ runner.temp }}/scorecard/*
+          retention-days: 30
