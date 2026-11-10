@@ -240,7 +240,7 @@ def main():
            "all_trades_excluded_before_scoring":True}
         dest=Path(args.quarantine_out)
         dest.parent.mkdir(parents=True,exist_ok=True)
-        dest.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        dest.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         print("QUARANTINED ENTIRE DATA WINDOW",q["day_id"],reason)
         return
     dest=Path(args.out)
