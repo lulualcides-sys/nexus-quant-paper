@@ -1,0 +1,116 @@
+name: XAUUSD Price Action v3 | explicit LTA LTD break retest and range-only
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_manual_rules_v3.py
+      - research/xau_pa_manual_rules_v3_scorecard.py
+      - tests/test_xau_pa_manual_rules_v3.py
+      - tests/test_xau_pa_manual_rules_v3_scorecard.py
+      - .github/workflows/xau-pa-marked-rules-v3-oct-nov.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        period: [october, november]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prove no same-bar retest, no EMA, prior manual marks only, audit stop
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_manual_rules_v3.py research/xau_pa_manual_rules_v3_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+      - name: Replay fixed quotes XAUUSD 09-21 UTC (trades 12-21 only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/raw" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.period }}" == "october" ]]; then
+            DAYS=(20261026 20261027 20261028 20261029 20261030)
+          else
+            DAYS=(20261102 20261103 20261104 20261105 20261106)
+          fi
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/raw" -fn "xau_${d}" \
+              -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/raw/xau_${d}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            # No user-supplied markup supplied for these dates. Explicitly
+            # exercise CAUSAL PROXY mode; NEVER call it a manual backtest.
+            python -m research.xau_pa_manual_rules_v3 \
+              --ticks "$f" --day "$d" --marking-mode proxy \
+              --out "$RUNNER_TEMP/evidence/xau_manual_v3_${d}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+            test -f "$RUNNER_TEMP/evidence/xau_manual_v3_${d}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-v3-proxy-${{ matrix.period }}-ledgers
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  report:
+    needs: [backtest]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-v3-proxy-*-ledgers
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Verify original vs causal-proxy decision rules, M1 M5 and costs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_manual_rules_v3_scorecard \
+            --evidence "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/report"
+          python - <<'PY'
+          from pathlib import Path
+          import json,os
+          f=Path(os.environ["RUNNER_TEMP"])/"report/price_action_marked_v3.json"
+          r=json.loads(f.read_text())
+          assert r["marking_mode"]=="proxy"
+          assert r["actual_user_marks_provided"] is False
+          assert r["manual_fidelity_verified"] is False
+          assert r["live_trading_approved"] is False
+          assert r["never_a_MT5_broker_backtest"] is True
+          assert len(r["clean_days"]["october"])>=3
+          assert len(r["clean_days"]["november"])>=3
+          for tf,policies in r["result"].items():
+              for policy,scenarios in policies.items():
+                  for period,stats in scenarios["double"].items():
+                      assert stats["filled"]<=stats["signals"]
+                      print("MARKED_RULES_V3",tf,policy,period,
+                            "signals",stats["signals"],"fills",stats["filled"],
+                            "wins",stats["wins"],"losses",stats["losses"],
+                            "netUSDperOz",stats["net_usd_per_oz"],
+                            "setups",stats["by_setup"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-v3-marked-rules-M1-M5-scorecard
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30
