@@ -26,6 +26,7 @@ input int      InpHistoryScanBars        = 90;   // Limit costly historical tick
 input double   InpBarVolumeMultiplier    = 1.15; // Hypothesis, not Tracker parameter
 input int      InpMinimumClassifiedTicks = 25;   // Minimum properly classified trades
 input double   InpMinClassifiedShare     = 0.60; // Share of all trade volume with direction flags
+input double   InpMaxTickBarVolumeDeviation = 0.20; // Fail-closed if tape differs from broker candle
 input double   InpContraAggressorShare   = 0.56; // Sell pressure for buys / buy pressure for sells
 input double   InpMinimumWickFraction    = 0.15;
 input double   InpCloseLocation          = 0.60;
@@ -68,14 +69,15 @@ double TickRound(const double price)
 
 // Buy-side aggression = executed trades flagged TICK_FLAG_BUY, not
 // "positive candles" or an invented split of total volume.
-bool ClassifiedContraFlow(const datetime candleStart,int &direction,
-                          double &contraShare,double &classifiedCoverage,
-                          double &observedVolume)
+bool ClassifiedContraFlow(const datetime candleStart,const double barRealVolume,
+                          int &direction,double &contraShare,
+                          double &classifiedCoverage,double &observedVolume)
 {
    direction=0;
    contraShare=0.0;
    classifiedCoverage=0.0;
    observedVolume=0.0;
+   if(barRealVolume<=0.0) {gRejectedNoTickFlow++;return false;}
    MqlTick trades[];
    const ulong fromMs=(ulong)candleStart*1000;
    const ulong toMs=fromMs+(ulong)PeriodSeconds(_Period)*1000-1;
@@ -89,42 +91,53 @@ bool ClassifiedContraFlow(const datetime candleStart,int &direction,
    for(int k=0;k<received;k++)
    {
       const uint flags=trades[k].flags;
+      // LAST=8 or VOLUME=16: a quote-only BID/ASK event is not a trade.
+      if((flags&(TICK_FLAG_LAST|TICK_FLAG_VOLUME))==0)
+         continue;
+      const long stamp=trades[k].time_msc;
+      if(stamp<(long)fromMs || stamp>(long)toMs)
+         continue;
+      const double v=trades[k].volume_real;
+      const double tradePrice=trades[k].last;
+      const double grid=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_SIZE);
+      if(v<=0.0 || !MathIsValidNumber(v) ||
+         tradePrice<=0.0 || !MathIsValidNumber(tradePrice) ||
+         grid<=0.0 || MathAbs(tradePrice/grid-MathRound(tradePrice/grid))>0.000001)
+         continue;
+      // Genuine trade but absent/invalid side: count against usable coverage.
       const bool buy=(flags&TICK_FLAG_BUY)!=0;
       const bool sell=(flags&TICK_FLAG_SELL)!=0;
-      if(!buy && !sell)
+      if(buy==sell)
       {
-         // Price/volume updates without an aggressor flag cannot be classified.
-         // Count genuine volume as unknown, never infer a side.
-         if((flags&TICK_FLAG_VOLUME)!=0 && trades[k].volume_real>0)
-            unknownVol+=trades[k].volume_real;
+         unknownVol+=v;
          continue;
       }
-      if(buy==sell) continue; // invalid BOTH flags
-      const double v=trades[k].volume_real;
-      if(v<=0.0) continue; // no genuine executed size
-      if(trades[k].time_msc<(long)fromMs ||
-         trades[k].time_msc>(long)toMs)
-         continue;
-      if(firstStamp<0) firstStamp=trades[k].time_msc;
-      lastStamp=trades[k].time_msc;
-      if(buy) buyVol+=v; else sellVol+=v;
+      if(firstStamp<0) firstStamp=stamp;
+      lastStamp=stamp;
+      if(buy) buyVol+=v;
+      else sellVol+=v;
       classifiedEvents++;
    }
    const double classified=buyVol+sellVol;
    observedVolume=classified+unknownVol;
-   if(classifiedEvents<InpMinimumClassifiedTicks || classified<=0.0)
+   if(classifiedEvents<InpMinimumClassifiedTicks || classified<=0.0 ||
+      observedVolume<=0.0)
    {
       gRejectedNoTickFlow++;return false;
    }
-   classifiedCoverage=classified/(classified+unknownVol);
+   classifiedCoverage=classified/observedVolume;
    if(classifiedCoverage<InpMinClassifiedShare)
+   {
+      gRejectedNoTickFlow++;return false;
+   }
+   // A small, synthetic or truncated tick sample cannot validate an M1 volume.
+   const double deviation=MathAbs(observedVolume-barRealVolume)/barRealVolume;
+   if(deviation>InpMaxTickBarVolumeDeviation)
    {
       gRejectedNoTickFlow++;return false;
    }
    if(InpVerifyTickCoverage)
    {
-      // Silence of the venue is possible, but historical truncation is worse.
-      // This conservative sanity guard does not PROVE completeness.
       if(firstStamp<0 || firstStamp>(long)(fromMs+15000) ||
          lastStamp<(long)(toMs-15000))
       {
@@ -134,8 +147,7 @@ bool ClassifiedContraFlow(const datetime candleStart,int &direction,
    contraShare=MathMax(buyVol,sellVol)/classified;
    if(contraShare<InpContraAggressorShare)
       return false;
-   // Price-side direction to be decided by actual CLOSE, not ticks alone.
-   direction=(sellVol>buyVol)?1:-1; // Heavy sells absorbed -> BUY reversal
+   direction=(sellVol>buyVol)?1:-1;
    return true;
 }
 
@@ -241,7 +253,7 @@ void EvaluateClosed(const int i,const int total,
    }
    int flowDirection=0;
    double contra=0.0,coverage=0.0,traded=0.0;
-   if(!ClassifiedContraFlow(t[i],flowDirection,contra,coverage,traded))
+   if(!ClassifiedContraFlow(t[i],(double)realVolume[i],flowDirection,contra,coverage,traded))
       return;
    if((buy && flowDirection!=1)||(sell && flowDirection!=-1))
       return; // Trade delta must contradict the candle's successful reversal
@@ -278,6 +290,7 @@ int OnInit()
    if(InpLookbackBars<5 || InpHistoryScanBars<1 ||
       InpBarVolumeMultiplier<1.0 || InpMinimumClassifiedTicks<5 ||
       InpMinClassifiedShare<=0 || InpMinClassifiedShare>1 ||
+      InpMaxTickBarVolumeDeviation<0 || InpMaxTickBarVolumeDeviation>1 ||
       InpContraAggressorShare<=0.50 || InpContraAggressorShare>1 ||
       InpMinimumWickFraction<0 || InpMinimumWickFraction>1 ||
       InpCloseLocation<0.5 || InpCloseLocation>1 ||
