@@ -104,6 +104,9 @@ def step(book, bars, indicators, i):
         "entry_ts": row["time"], "entry": opened, "side": current,
         "risk_fraction": RISK, "source": "next H4 open, virtual only",
     })
+    # The current H4 is complete: account for stop/target after the
+    # entry at its OPEN without generating a second entry.
+    step(book, bars, indicators, i)
 
 
 def update(state, hourly):
