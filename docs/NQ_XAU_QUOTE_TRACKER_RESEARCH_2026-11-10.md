@@ -65,3 +65,42 @@ https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42758936261 �
 20 testes unitários independentes aprovados em Linux e Windows, compilação MetaEditor 5 oficial com **0 erros/0 avisos**, saída EX5 **25.540 bytes**, artifact `nq-xauusd-quote-tracker-compiled-ex5`. Foram dados sintéticos de teste para os sinais; ainda não é prova de coincidência com o Tracker Greenhouse, nem backtest de ouro em corretora.
 
 **Gate para declarar 'idêntico':** captura de funcionamento simultâneo do indicador original autorizado (mesmo broker, XAUUSD, timezone e timeframe) e nossa revisão durante intervalos completos, com **todos** os sinais e não-sinais, preços e horários. Sem o original acessível não é possível declarar identidade. Um visual aproximado, por si só, não comprova o mesmo algoritmo. Versão de pesquisa permanece DRAFT.
+
+
+## Execução comprovada em cotações históricas reais do ouro — 10/11/2026
+
+**Artefato de auditoria:** [GitHub Actions 42760267105](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42760267105). Execução aprovada, com **10 testes adicionais de integração + 20 testes do detector**. O EX5 foi compilado separadamente no [workflow 42759095890](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42759095890), usando MetaEditor oficial, **0 erros e 0 avisos**, com binário **26.168 bytes**. Os artefatos do Actions possuem prazo de expiração.
+
+### Fonte aberta utilizada
+
+- [dukascopy-node](https://www.dukascopy-node.app/instrument/xauusd), ferramenta de pesquisa open source, versão **1.51.1** fixada nos comandos de CI. Busca os dados de cotações bid/ask históricos para XAUUSD.
+- **Não** usa o volume `askVolume/bidVolume` das cotações como agressão, lotes negociados ou volume transacionado. Faz a contagem **separada** de atualizações observadas de preço bid/ask e conserva o **maior spread registrado por candle** como filtro conservador.
+- A fonte Dukascopy **não equivale ao feed XAUUSD de uma conta MT5 específica**, portanto essa validação prova apenas que a lógica reproduzível processa dados reais e gera seus próprios sinais.
+- Não commitamos os ticks brutos da Dukascopy; ficam apenas os relatórios, período, contagem, hash SHA256 do arquivo de origem e amostra resumida das setas no artefato do Actions.
+
+### Duas janelas fixas, sem recalibrar após os resultados
+
+| Janela UTC | Cotações bid/ask | Candles M1 / M5 | Compras M1 | Vendas M1 | Sinais M5 |
+|---|---:|---:|---:|---:|---:|
+| 2026-10-29 12:00–17:00 | 150.767 | 300 / 60 | 1 | 1 | 0 |
+| 2026-11-03 12:00–17:00 | 139.216 | 300 / 60 | 0 | 1 | 0 |
+| **Total** | **289.983** | **600 / 120** | **1** | **2** | **0** |
+
+**Esta contagem não é um backtest de lucro/prejuízo.** Nenhuma ordem foi enviada, nenhuma entrada de Fibonacci foi assumida preenchida, nenhum resultado de mercado foi convertido em trade. Foram testes históricos do indicador, sem avaliar operação executável ou custos totais. Apenas 10 horas totais de dados não demonstram vantagem estatística.
+
+### Evidência reproduzível no repositório
+
+- `research/xau_dukascopy_replay.py`: lê arquivos CSV do downloader `timestamp,askPrice,bidPrice,askVolume,bidVolume`, valida preço e horário, constrói OHLC de **bid**, tick_volume por contagem de **atualizações de cotação**, spread conservador por barra e passa os candles fechados para `research/xau_quote_tracker_reference.py`. Protege contra cotações cruzadas, dados desordenados, históricos curtos e candle final possivelmente aberto.
+- `tests/test_xau_dukascopy_replay.py`: 10 testes offline independentes, inclusive rejeição de dados incorretos e distinção rigorosa entre contagem de updates e volume financeiro.
+- `.github/workflows/xau-real-quote-replay.yml`: downloads gratuitos em janelas fixas, 2 timeframes, audit/proveniência e artifact `xauusd-real-dukascopy-quote-replay-research`. Reexecutar pelo GitHub Actions; nenhuma chave ou login de corretora é usada.
+- `indicators/mt5/NQ_XAU_Quote_Tracker_Research.mq5`: o indicador para gráfico **XAUUSD M1 ou M5 no MT5**, compilado e preservado na PR. Precisa de terminal MT5 funcionando com um **feed da corretora** para exibir um gráfico ao vivo e atestar o sinal real da mesma conta.
+
+**O que ainda NÃO foi comprovado:** funcionamento dentro do MT5 do usuário com sua corretora/servidor; coincidência exata de setas com o Tracker Greenhouse; taxas de acerto, retornos e lucro líquido. A Greenhouse não fornece públicamente uma série completa de setas *em XAUUSD* com o mesmo feed e instantes que permitiria testar equivalência. Não inferir a regra interna a partir de publicidade.
+
+### Como usar o indicador na própria plataforma MT5
+
+1. Acesse [o workflow compilado e aprovado](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42759095890) e seu artefato **`nq-xauusd-quote-tracker-compiled-ex5`**.
+2. No terminal MT5 com conexão **demo** e símbolo **XAUUSD**, use **Arquivo > Abrir pasta de dados**. Coloque o arquivo `.ex5` em `MQL5/Indicators/`, reinicie o Navegador de indicadores e arraste `NQ_XAU_Quote_Tracker_Research` para o gráfico **M1/M5**. Nenhuma ordem é enviada.
+3. Verifique **Journal/Experts** quanto a erros, candles, spread e histórico suficientes. O indicador não inventa setas quando faltam dados de cotação ou o spread está ausente. O terminal MetaQuotes demo que não apresenta XAUUSD ou não permite sessão não é suficiente para a confirmação de operação ao vivo.
+
+**Decisão técnica:** manter a PR em DRAFT até existir teste realmente observável na plataforma MT5 específica e dados auditáveis para avaliar resultados de negociações hipotéticas; manter todos os demais robôs/estratégias intactos.
