@@ -17,7 +17,7 @@ from research.xau_price_action_m1m5 import (
 BASE=int(datetime(2026,6,8,12,0,tzinfo=timezone.utc).timestamp()*1000)
 
 
-def signal(*,side=1,eligible=BASE+60000,atr_value=1.,stop=99.8,setup="break_retest"):
+def signal(*,side=1,eligible=BASE+60000,atr_value=1.,stop=99.5,setup="break_retest"):
     return {"setup":setup,"side":side,"atr":atr_value,
             "stop":stop,"signal_ms":eligible-60000,
             "eligible_ms":eligible,"timeframe_seconds":60}
@@ -99,13 +99,13 @@ class XAUPriceActionTests(unittest.TestCase):
         r=simulate_ticks([
             (BASE+59000,99.0,99.2),
             (BASE+60000,100.0,100.2), # Entry at 100.3 (ask + 0.1)
-            (BASE+65000,101.1,101.4), # ASK above TP, BID still below
-            (BASE+70000,101.3,101.5),
+            (BASE+65000,101.7,102.1), # ASK above TP, BID still below
+            (BASE+70000,101.9,102.1),
         ],[signal()],60,Settings())
         self.assertEqual(r["filled"],1)
         self.assertEqual(r["trades"][0]["entry"],100.3)
         self.assertEqual(r["trades"][0]["reason"],"TARGET")
-        self.assertAlmostEqual(r["net_usd_per_oz"],.7)
+        self.assertAlmostEqual(r["net_usd_per_oz"],1.3)
 
     def test_sell_market_bid_ask_target(self):
         r=simulate_ticks([
@@ -152,7 +152,7 @@ class XAUPriceActionTests(unittest.TestCase):
         b=signal(eligible=BASE+120000)
         r=simulate_ticks([(BASE+60000,100.,100.2),
                           (BASE+120000,100.2,100.4),
-                          (BASE+125000,101.3,101.5)],
+                          (BASE+125000,101.9,102.1)],
                          [a,b],60,Settings())
         self.assertEqual(r["filled"],1)
         self.assertEqual(r["rejected"]["already_in_position"],1)
