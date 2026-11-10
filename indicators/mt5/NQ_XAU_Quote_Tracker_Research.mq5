@@ -33,7 +33,12 @@ input double   InpCloseLocation      = 0.62;
 input double   InpSweepATR           = 0.06;
 input double   InpMaxSpreadATR       = 0.35;  // M1/M5 historical broker spread proxy
 input int      InpLineHorizonBars    = 20;
-input bool     InpDrawExtraLevels    = false;
+input bool     InpDrawExtraLevels    = true;   // Public candle 0-100% guides
+input bool     InpDrawPriceLabels    = true;   // Entry 50 / Target 200 / Stop -100
+input bool     InpDrawSignalText     = true;   // COMPRA / VENDA labels
+input bool     InpRequireLiquidityZone = false;// Optional independent hypothesis
+input int      InpLiquidityMinTouches = 2;    // Older repeat tests of a prior extreme
+input double   InpLiquidityToleranceATR = 0.18;// Proximity of repeated quote lows/highs
 input bool     InpAlertOnNewBar      = false;
 
 double BufferBuy[];
@@ -133,6 +138,20 @@ int ResearchSignal(const int i,const int total,
    const bool sell=highs[i]>=priorHigh+InpSweepATR*atr &&
                    closes[i]<priorHigh && closes[i]<opens[i] &&
                    location<=1.0-InpCloseLocation && upperWick>=InpMinimumWick;
+   if(InpRequireLiquidityZone)
+   {
+      // Optional research proxy: two or more OLD price touches at the extreme.
+      // Not a claim about proprietary Greenhouse flow or exact signal rules.
+      const double tol=InpLiquidityToleranceATR*atr;
+      int lowsTouched=0,highsTouched=0;
+      for(int j=i+1;j<=i+InpLookbackBars;j++)
+      {
+         if(MathAbs(lows[j]-priorLow)<=tol) lowsTouched++;
+         if(MathAbs(highs[j]-priorHigh)<=tol) highsTouched++;
+      }
+      if(buy && lowsTouched<InpLiquidityMinTouches) return 0;
+      if(sell && highsTouched<InpLiquidityMinTouches) return 0;
+   }
    if(buy==sell) return 0;
    return buy?1:-1;
 }
@@ -155,6 +174,22 @@ void DrawLevel(const string id,const string suffix,const datetime originTime,
    ObjectSetString(0,key,OBJPROP_TOOLTIP,
       "NQ XAU research "+suffix+" "+DoubleToString(p,_Digits)+
       " | quote activity, NOT aggressor flow");
+   if(InpDrawPriceLabels)
+   {
+      const string labelKey=key+"_TEXT";
+      const datetime labelTime=originTime+
+            (datetime)((long)PeriodSeconds(_Period)*(long)MathMax(2,InpLineHorizonBars/2));
+      if(ObjectCreate(0,labelKey,OBJ_TEXT,0,labelTime,p))
+      {
+         ObjectSetInteger(0,labelKey,OBJPROP_COLOR,tone);
+         ObjectSetInteger(0,labelKey,OBJPROP_FONTSIZE,9);
+         ObjectSetInteger(0,labelKey,OBJPROP_ANCHOR,ANCHOR_LEFT);
+         ObjectSetInteger(0,labelKey,OBJPROP_SELECTABLE,false);
+         ObjectSetInteger(0,labelKey,OBJPROP_HIDDEN,true);
+         ObjectSetString(0,labelKey,OBJPROP_FONT,"Arial");
+         ObjectSetString(0,labelKey,OBJPROP_TEXT,suffix+"  "+DoubleToString(p,_Digits));
+      }
+   }
 }
 
 void DrawResearchVector(const int i,const int side,const datetime &times[],
@@ -188,6 +223,21 @@ void EvaluateClosed(const int i,const int total,
    const double span=highs[i]-lows[i];
    if(side==1) BufferBuy[i]=lows[i]-0.12*span;
    else BufferSell[i]=highs[i]+0.12*span;
+   if(InpDrawSignalText)
+   {
+      const string labelKey=gPrefix+"SIGNAL_"+IntegerToString((long)times[i]);
+      const double labelPrice=side==1?lows[i]-0.27*span:highs[i]+0.27*span;
+      if(ObjectFind(0,labelKey)<0 &&
+         ObjectCreate(0,labelKey,OBJ_TEXT,0,times[i],labelPrice))
+      {
+         ObjectSetInteger(0,labelKey,OBJPROP_COLOR,side==1?clrLimeGreen:clrTomato);
+         ObjectSetInteger(0,labelKey,OBJPROP_FONTSIZE,9);
+         ObjectSetInteger(0,labelKey,OBJPROP_ANCHOR,ANCHOR_CENTER);
+         ObjectSetInteger(0,labelKey,OBJPROP_SELECTABLE,false);
+         ObjectSetInteger(0,labelKey,OBJPROP_HIDDEN,true);
+         ObjectSetString(0,labelKey,OBJPROP_TEXT,side==1?"COMPRA":"VENDA");
+      }
+   }
    DrawResearchVector(i,side,times,highs,lows);
    gResearchSignals++;
    if(InpAlertOnNewBar && i==1 && gLastOpen!=0)
@@ -214,7 +264,9 @@ int OnInit()
       InpMinimumWick<0 || InpMinimumWick>1 ||
       InpCloseLocation<0.5 || InpCloseLocation>1 ||
       InpSweepATR<0 || InpMaxSpreadATR<=0 ||
-      InpLineHorizonBars<1 || _Point<=0)
+      InpLiquidityMinTouches<2 || InpLiquidityMinTouches>InpLookbackBars ||
+      InpLiquidityToleranceATR<0 ||
+      InpLineHorizonBars<2 || _Point<=0)
       return INIT_PARAMETERS_INCORRECT;
    SetIndexBuffer(0,BufferBuy,INDICATOR_DATA);
    SetIndexBuffer(1,BufferSell,INDICATOR_DATA);
@@ -267,7 +319,18 @@ int OnCalculate(const int rates_total,const int prev_calculated,
          EvaluateClosed(i,rates_total,time,open,high,low,close,tick_volume,spread);
    }
    else if(gLastOpen!=time[0])
-      EvaluateClosed(1,rates_total,time,open,high,low,close,tick_volume,spread);
+   {
+      // Recover EVERY newly closed candle after a pause, not just index 1.
+      // Bound runtime and retain the same no-lookahead rule.
+      int oldestNew=0;
+      for(int i=1;i<rates_total-required && i<=InpHistoryScanBars;i++)
+      {
+         if(gLastOpen>0 && time[i]<=gLastOpen) break;
+         oldestNew=i;
+      }
+      for(int i=oldestNew;i>=1;i--)
+         EvaluateClosed(i,rates_total,time,open,high,low,close,tick_volume,spread);
+   }
    gLastOpen=time[0];
    return rates_total;
 }
