@@ -194,7 +194,16 @@ def day_study(path,day):
     # Both are the same *concept* (confirmed LTA/LTD -> real retest).
     # Original benchmark uses the already existing strategy engine as-is.
     original=replay_signals(quotes,day)
-    reactive,reason=reactive_retest_signals(execution,bars,start,end)
+    reactive_breaks,reason=reactive_retest_signals(execution,bars,start,end)
+    # Preserve all RANGE decisions from the v6 reference unchanged.
+    # This comparison only alters the entry timing of LTA/LTD break/retest.
+    unchanged_ranges=[s for s in original if s["setup"]=="range_rejection"]
+    reactive=sorted(reactive_breaks+unchanged_ranges,
+                    key=lambda s:s["eligible_ms"])
+    if any(x["eligible_ms"]==y["eligible_ms"]
+           for x,y in zip(reactive,reactive[1:])):
+        raise ValueError("Cannot resolve simultaneous range and retest entries")
+    reason["unchanged_range_signals_carried_over"]=len(unchanged_ranges)
     settings=Settings()
     doubled=replace(settings,commission_roundtrip_usd_per_oz=.60,
                     slippage_usd_each_market_side=.20)
