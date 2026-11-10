@@ -1,0 +1,22 @@
+<b>🪙 NEXUS CRIPTO | 10/11/2026</b>
+<i>4 robôs H1 • BTC/ETH SPOT • SOMENTE SIMULACAO</i>
+
+<b>📊 RESUMO</b>
+Hoje: <b>USDT +0.00</b> · Acumulado: <b>USDT +0.00</b>
+Entradas acumuladas: 0 · Fechamentos hoje: 0
+Vitórias/derrotas: 0/0 · Posições abertas: 0
+
+<b>BTC/USDT</b>
+<i>Última vela H1: 10/11 00:00 BRT</i>
+• <b>Retorno à EMA20</b>: hoje +0.00 · total +0.00 USDT · livre
+• <b>Rompimento Canal 20</b>: hoje +0.00 · total +0.00 USDT · livre
+<i>Sem sinal: Tendência H1 sem alta: EMA50 &lt;= EMA200</i>
+
+<b>ETH/USDT</b>
+<i>Última vela H1: 10/11 00:00 BRT</i>
+• <b>Retorno à EMA20</b>: hoje +0.00 · total +0.00 USDT · livre
+• <b>Rompimento Canal 20</b>: hoje +0.00 · total +0.00 USDT · livre
+<i>Sem sinal: Tendência H1 sem alta: EMA50 &lt;= EMA200</i>
+
+<i>Risco planejado 0,5%/entrada, sem alavancagem. P&L virtual após custos estimados.</i>
+<i>Nenhuma ordem enviada à Binance ou FBS; não há lucro garantido.</i>
