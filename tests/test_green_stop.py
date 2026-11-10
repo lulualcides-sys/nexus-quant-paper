@@ -60,7 +60,10 @@ class GreenStopTests(unittest.TestCase):
         self.assertIsNone(p["target"])
         self.assertEqual(p["mode"],"green_runner")
         self.assertAlmostEqual(p["notional_leverage"],2,places=6)
-        self.assertLessEqual(p["qty"]*abs(p["entry"]-p["stop"]),5000*0.015+0.001)
+        # Once the entry candle closes, trailing can tighten the stop.
+        # Planned entry risk must be measured with the original entry_risk,
+        # not with a newer, protective stop that may be above entry.
+        self.assertLessEqual(p["qty"]*p["entry_risk"],5000*0.015+0.001)
     def test_older_open_positions_continue_fixed(self):
         # Even after LIVE_POLICY changes, existing positions should retain
         # the policy written when those particular positions were opened.
