@@ -1,0 +1,39 @@
+name: NQ WIN licensed tape CSV | Cross-platform audit
+on:
+  push:
+    branches:
+      - research/win-licensed-tape-csv-20261109
+    paths:
+      - research/win_licensed_tape_csv.py
+      - tests/test_win_licensed_tape_csv.py
+      - iniciar_pesquisa_WIN_csv_licenciado.cmd
+      - .github/workflows/win-licensed-tape-import.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Ensure Windows zoneinfo America/Sao_Paulo is available
+        run: python -m pip install --disable-pip-version-check tzdata
+      - name: Compile and test official Profit historical tick CSV compatibility
+        run: |
+          python -m py_compile research/win_licensed_tape_csv.py
+          python -m unittest discover -s tests -p test_win_licensed_tape_csv.py -v
+      - name: Windows one-click launcher offline tests (isolated venv)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: call iniciar_pesquisa_WIN_csv_licenciado.cmd --self-test
+      - name: Static prohibited brokerage/credential calls
+        run: |
+          python -c "from pathlib import Path; c=Path('research/win_licensed_tape_csv.py').read_text(); forbidden=('order_send(', 'account_info(', 'login(', 'requests.post('); assert not any(x in c for x in forbidden); print('Local read-only licensed CSV parser passed')"
