@@ -295,8 +295,10 @@ def _summary(book,capital):
     }
 
 
-def replay(bars,tf,stress=1.0,start_ts=None):
+def replay(bars,tf,stress=1.0,start_ts=None,exit_horizon_multiplier=1):
     seconds=TIMEFRAMES[tf]
+    if exit_horizon_multiplier not in (1,3,15):
+        raise ValueError('Unregistered time horizon factor')
     if len(bars)<INITIAL_WARMUP+100:
         raise ValueError(f"Insufficient {tf} XAUUSD observed candles")
     if any(bars[i]["time"]<=bars[i-1]["time"] for i in range(1,len(bars))):
@@ -318,6 +320,14 @@ def replay(bars,tf,stress=1.0,start_ts=None):
     atlas_book=atlas.initial(bars)
     # Explicit default: news guard off. No hindsight macro-calendar patch.
     with ExitStack() as stack:
+        if exit_horizon_multiplier != 1:
+            # RESEARCH ONLY: identical signal rules, identical ATR stops,
+            # longer TIME exits equivalent to a 15-minute bar clock.
+            for module,attr in ((gold,"MAX_HOLD"),(lever,"MAX_HOLD_BARS"),
+                                (h1,"MAX_HOLD"),(momentum,"MAX_HOLD_BARS"),
+                                (atlas,"MAX_HOLD_BARS")):
+                stack.enter_context(patch.object(module,attr,
+                    getattr(module,attr)*exit_horizon_multiplier))
         stack.enter_context(patch.object(gold,"COST_BPS",
               {**gold.COST_BPS,"XAUUSD":BASE_COST_BPS*stress}))
         stack.enter_context(patch.object(lever,"COST_BPS_ROUNDTRIP",
