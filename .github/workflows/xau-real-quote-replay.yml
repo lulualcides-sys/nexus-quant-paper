@@ -30,20 +30,26 @@ jobs:
       - name: Download FIXED historical XAUUSD tick window from public Dukascopy feed
         run: |
           mkdir -p "$RUNNER_TEMP/dukascopy"
-          npx --yes dukascopy-node@1.51.1 \
-            -i xauusd -from 2026-10-29T12:00Z -to 2026-10-29T17:00Z \
-            -t tick -f csv -dir "$RUNNER_TEMP/dukascopy" -fn xau_20261029 \
-            -bs 3 -bp 1500 -r 2
-          test -s "$RUNNER_TEMP/dukascopy/xau_20261029.csv"
-          head -n 1 "$RUNNER_TEMP/dukascopy/xau_20261029.csv" | grep -q '^timestamp,askPrice,bidPrice'
+          # Two predeclared windows: no threshold selection using observed results.
+          for day in 2026-10-29 2026-11-03; do
+            shortday="${day//-/}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${day}T12:00Z" -to "${day}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/dukascopy" -fn "xau_${shortday}" \
+              -bs 3 -bp 1500 -r 2
+            test -s "$RUNNER_TEMP/dukascopy/xau_${shortday}.csv"
+            head -n 1 "$RUNNER_TEMP/dukascopy/xau_${shortday}.csv" | grep -q '^timestamp,askPrice,bidPrice'
+          done
       - name: Reconstruct ONLY market quote activity and display signal counts
         run: |
-          python -m research.xau_dukascopy_replay \
-            --ticks "$RUNNER_TEMP/dukascopy/xau_20261029.csv" \
-            --timeframe M1 --point 0.001 --output "$RUNNER_TEMP/reports/xau_20261029_m1.json"
-          python -m research.xau_dukascopy_replay \
-            --ticks "$RUNNER_TEMP/dukascopy/xau_20261029.csv" \
-            --timeframe M5 --point 0.001 --output "$RUNNER_TEMP/reports/xau_20261029_m5.json"
+          for day in 20261029 20261103; do
+            for tf in M1 M5; do
+              python -m research.xau_dukascopy_replay \
+                --ticks "$RUNNER_TEMP/dukascopy/xau_${day}.csv" \
+                --timeframe "$tf" --point 0.001 \
+                --output "$RUNNER_TEMP/reports/xau_${day}_${tf}.json"
+            done
+          done
       - name: Audit provenance and no-fake-profit policy
         run: |
           python - <<'PY'
