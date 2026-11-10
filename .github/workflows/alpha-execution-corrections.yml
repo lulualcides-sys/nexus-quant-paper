@@ -1,0 +1,49 @@
+name: Nexus Quant | corrigir execucao no candle da entrada
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/gold_forward.py'
+      - 'src/leveraged_gold.py'
+      - 'src/experimental_h1.py'
+      - 'src/momentum60_shadow.py'
+      - 'src/crypto_paper.py'
+      - 'tests/test_entry_candle_settlement.py'
+      - '.github/workflows/alpha-execution-corrections.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deterministic-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: New same-entry-candle stop/target tests
+        run: python -m unittest discover -s tests -p 'test_entry_candle_settlement.py' -v
+      - name: Full existing regressions
+        run: python -m unittest discover -s tests -v
+  historical-paper-replay:
+    needs: deterministic-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Replay all 27 real paper engines with honest Yahoo proxies
+        run: python -m research.backtest_27
+      - name: Preserve raw 27-bot report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: entry-candle-corrected-27-results
+          path: |
+            research/results/backtest_27_2026-11-01.json
+            research/results/backtest_27_2026-11-01.md
+          retention-days: 30
+          if-no-files-found: warn
