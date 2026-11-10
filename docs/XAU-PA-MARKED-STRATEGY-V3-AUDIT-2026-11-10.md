@@ -94,8 +94,24 @@ Não utilizar o exemplo acima como marcação factual. Ele serve para o formato.
 
 - **Fidelidade ao trader: PENDENTE.** Necessário comparar marcações e entradas realmente efetuadas/anotadas pelo usuário, com horários/níveis e exemplos de sinais rejeitados, contra o motor; não basta melhorar P&L de um proxy.
 - **Parâmetros de risco: HIPÓTESES.** Stop Red/Stop Win sem valores monetários, localização exata e tratamento de saída não podem ser reproduzidos perfeitamente.
-- **M1 e M5 foram simulados SEPARADAMENTE**. Cada backtest respeita uma posição por vez; **não somar os resultados nem ativar simultaneamente sem um executor global compartilhado com trava por símbolo**.
+- **M1 e M5 foram reportados separadamente para diagnóstico**, mas também executados no braço **SHARED** do [novo executor de trava global](../research/xau_pa_shared_execution.py): **uma única posição por XAUUSD** entre ambos os timeframes, respeitando prazo individual de cada timeframe. Caso dois sinais ocorram exatamente juntos, nenhum é escolhido até haver uma regra de prioridade fornecida pelo usuário. O resultado SHARED não é a soma das duas contas separadas.
 - **Nenhuma conta MT5 autorizada conectada**, nenhuma comprovação de desempenho em feed do broker, nenhuma ordem enviada.
 - **Fonte e horários:** XAUUSD spot bid/ask Dukascopy 09h–21h UTC, aquecimento 09h–12h e ordens de 12h–21h, regras históricas pré-definidas mas não validada uma amostra prospectiva.
 
 **DECISÃO: PR #61 em DRAFT, não mesclar, não operar com dinheiro real.** A v3 corrigiu a sequência causal e tornou possível aceitar marcações explícitas; nenhum benefício financeiro robusto foi demonstrado.
+
+
+## 6. Trava global de posição: M1 e M5 simultâneos (mesmas datas)
+
+A v3 inicialmente testava a posição única **dentro de cada timeframe**, o que não bastava para cumprir a preferência do usuário de uma posição por vez no instrumento. Foi acrescentado o [executor compartilhado](../research/xau_pa_shared_execution.py), com [sete testes de borda](../tests/test_xau_pa_shared_execution.py) que verificam tempo de vida de 20 barras M1 versus 20 barras M5, ausência de posições sobrepostas, colisões simultâneas bloqueadas e coincidência com o motor anterior em uma operação isolada.
+
+**Reexecução GitHub Actions concluída:** [run 42807389157](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42807389157), três jobs **SUCCESS**; 12 testes do motor v3 + 5 de auditoria + 7 da trava compartilhada + 15 do simulador original, repetidos por período. Mesmas 9 sessões válidas, mesma fonte BID/ASK e custos de stress.
+
+| Operação no XAUUSD | Outubro sinais / fills | Outubro líquido US$/oz | Novembro sinais / fills | Novembro líquido US$/oz | Total fills | Total US$/oz |
+|---|---:|---:|---:|---:|---:|---:|
+| Legado com posição global | 11 / 9 | +4,847 | 15 / 9 | −16,588 | 18 | **−11,741** |
+| Regras v3 + **posição global M1/M5** | 77 / 43 | −77,429 | 56 / 37 | −27,982 | 80 | **−105,411** |
+
+A versão v3 global acertou **19 de 80 operações** (23,75%) e perdeu em **61**, por isso não apresenta vantagem líquida. Os dois blocos foram negativos. São resultados com **marcações proxy automáticas**, não com linhas reais do usuário.
+
+**Decisão:** trava por símbolo implementada e testada; nenhum resultado autoriza negociação. Não somar resultados M1+M5 separados e nunca escolher um time frame por lucro retrospectivo.
