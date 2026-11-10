@@ -22,6 +22,7 @@ from src.feed import MARKETS, parse_yahoo
 from src.market_quality import validate_bars
 from src.strategies import make_indicators
 from research.screen_v2 import aggregate_hourly_to_h4
+from research.trade_attribution_27 import attribute_trades
 from src import gold_forward as gold
 from src import leveraged_gold as leveraged
 from src import experimental_h1 as h1
@@ -131,6 +132,7 @@ def _ledger_result(group, name, book, capital, *, first, last, samples,
         "entries_observed":count, "closed_trades":len(closed),
         "open_at_end":book.get("position") is not None,
         "wins":wins, "losses":sum(p<0 for p in pnls),
+        "loss_attribution":attribute_trades(closed),
         "win_rate_pct":round(100*wins/len(closed),2) if closed else None,
         "profit_factor":round(gains/losses,3) if losses else None,
         "net_realized_usd":round(realized,2),
@@ -376,6 +378,24 @@ def markdown(result):
                      f"{value['entries_observed']} | {value['closed_trades']} | {vd} | "
                      f"{value['net_realized_usd']:+.2f} | {stressed} | "
                      f"{value['closed_only_drawdown_pct']:.2f}% |")
+    lines += ["", "## Atribuição descritiva das perdas por robô", "",
+              "O JSON registra saídas, horários UTC de entrada, meses de saída, "
+              "custos e as cinco piores operações. Atribuição descritiva "
+              "não estabelece causalidade nem justifica filtrar operações retrospectivamente.", "",
+              "| Robô | Expectativa US$/fech. | Maior origem de perdas | Perda US$ |",
+              "|---|---:|---|---:|"]
+    for key, value in result["robots"].items():
+        if value["status"] == "unavailable":
+            lines.append(f"| {key} | — | SEM DADOS | — |")
+            continue
+        diag = value["loss_attribution"]
+        losers = [(reason, row["total_losing_trades_abs_usd"])
+                  for reason, row in diag["by_exit_reason"].items()
+                  if row["total_losing_trades_abs_usd"] > 0]
+        reason, loss = max(losers, key=lambda item: item[1]) if losers else ("Sem perdas", 0.)
+        expectancy = diag["avg_net_usd"]
+        exp_label = f"{expectancy:+.5f}" if expectancy is not None else "—"
+        lines.append(f"| {key} | {exp_label} | {reason} | {loss:.2f} |")
     lines += ["","## Dados e limitações"]
     for market,meta in result["price_data"].items():
         lines.append(f"- {market}: {meta['bars']} candles; {meta['first']} a {meta['last']}; SHA-256 \x60{meta['sha256']}\x60")
