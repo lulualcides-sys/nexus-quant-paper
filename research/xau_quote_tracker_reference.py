@@ -32,6 +32,9 @@ class QuotePolicy:
     max_spread_atr: float = 0.35
     point: float = 0.01
     tick_size: float = 0.01
+    require_liquidity_zone: bool = False  # Optional, NOT proven Tracker rule
+    liquidity_touch_tolerance_atr: float = 0.18
+    liquidity_min_touches: int = 2
 
     def validate(self):
         if (self.timeframe_seconds not in (60, 300)
@@ -41,7 +44,9 @@ class QuotePolicy:
             or not 0 <= self.min_wick_fraction <= 1
             or not .5 <= self.close_location <= 1
             or self.sweep_atr < 0 or self.max_spread_atr <= 0
-            or self.point <= 0 or self.tick_size <= 0):
+            or self.point <= 0 or self.tick_size <= 0
+            or self.liquidity_touch_tolerance_atr < 0
+            or self.liquidity_min_touches < 2):
             raise ValueError("Invalid XAU quote-research policy")
 
 
@@ -112,6 +117,15 @@ def signal(bars: list[dict], index: int, closed_through: int,
             and c < previous_high and c < o
             and location <= 1-policy.close_location
             and (h-max(o, c))/span >= policy.min_wick_fraction)
+    if policy.require_liquidity_zone:
+        # Independent optional double-touch proxy; no undocumented Tracker claim.
+        tolerance = policy.liquidity_touch_tolerance_atr*atr
+        buy_touches = sum(abs(float(x["low"])-previous_low) <= tolerance for x in previous)
+        sell_touches = sum(abs(float(x["high"])-previous_high) <= tolerance for x in previous)
+        if buy and buy_touches < policy.liquidity_min_touches:
+            buy = False
+        if sell and sell_touches < policy.liquidity_min_touches:
+            sell = False
     return 1 if buy and not sell else (-1 if sell and not buy else 0)
 
 
@@ -163,7 +177,9 @@ def scan_csv(path: str | Path, policy: QuotePolicy) -> dict:
     """
     policy.validate()
     path = Path(path)
-    h = hashlib.sha256(path.read_bytes()).hexdigest()
+    # Stream checksum instead of loading multi-GB authorized broker exports in RAM.
+    with path.open("rb") as handle:
+        h = hashlib.file_digest(handle, "sha256").hexdigest()
     rows = []
     with path.open("r", encoding="utf-8-sig", newline="") as f:
         rd = csv.DictReader(f)
@@ -193,6 +209,13 @@ def scan_csv(path: str | Path, policy: QuotePolicy) -> dict:
         raise ValueError("Empty or invalid broker candle data")
     if any(rows[i]["time"] <= rows[i-1]["time"] for i in range(1, len(rows))):
         raise ValueError("Unordered/duplicate candles")
+    # Reject a mistaken timeframe selection, not just a couple of sparse bars.
+    # Weekends and data gaps are allowed, but the given timeframe must actually occur.
+    gaps = [rows[i]["time"] - rows[i-1]["time"] for i in range(1, len(rows))]
+    if any(gap % policy.timeframe_seconds for gap in gaps):
+        raise ValueError("Candles not aligned to selected broker timeframe")
+    if len(rows) >= 3 and policy.timeframe_seconds not in gaps:
+        raise ValueError("Selected timeframe has no contiguous candles in CSV")
     # No external proof of server time/completeness or broker execution quality.
     # The last row may be forming; fail closed by excluding it.
     signals = scan_closed(rows, len(rows)-2, policy) if len(rows) >= 2 else []
