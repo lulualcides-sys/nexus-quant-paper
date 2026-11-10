@@ -88,7 +88,7 @@ class MarkedZones:
 
 
 def parse_mark_file(path: str|Path|None, day: str, timeframe: int,
-                    trade_start_ms: int):
+                    trade_start_ms: int, bars: list[dict]):
     """User marks must be supplied, time-anchored, and PRE-EXIST trading.
 
     Format permits one range rectangle and several marked LTA/LTD lines.
@@ -104,6 +104,9 @@ def parse_mark_file(path: str|Path|None, day: str, timeframe: int,
     date_marker=content.get("created_ms")
     if not isinstance(date_marker,int) or date_marker>trade_start_ms:
         raise ValueError("Manual marking must precede trading start")
+    # Map timestamps to actual candle indices in this identical source tape.
+    # Absolute epoch-bar numbers cannot be compared to array indices.
+    bar_index={bar["time"]*1000:i for i,bar in enumerate(bars)}
     lines=[]
     for raw in content.get("trendlines",[]):
         if not isinstance(raw,dict):
@@ -112,11 +115,11 @@ def parse_mark_file(path: str|Path|None, day: str, timeframe: int,
         if (not isinstance(x1_ms,int) or not isinstance(x2_ms,int) or
             x1_ms<0 or x2_ms<0 or x1_ms>=x2_ms or
             x2_ms+timeframe*1000>date_marker or
-            x1_ms%(timeframe*1000)!=0 or x2_ms%(timeframe*1000)!=0):
+            x1_ms not in bar_index or x2_ms not in bar_index):
             raise ValueError("Line anchors must be closed candles predating the marking")
         line=Trendline(kind=raw.get("kind",""),
-                       x1=x1_ms//(timeframe*1000),
-                       y1=float(raw.get("y1",0)),x2=x2_ms//(timeframe*1000),
+                       x1=bar_index[x1_ms],
+                       y1=float(raw.get("y1",0)),x2=bar_index[x2_ms],
                        y2=float(raw.get("y2",0)),created_ms=date_marker,
                        source="user")
         line.assert_valid(trade_start_ms,timeframe)
@@ -380,7 +383,7 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
         if len(bars)<(360 if tf==60 else 110):
             raise SourceQualityError("Too few candles")
         if marking_mode=="manual":
-            manual_lines,manual_zone=parse_mark_file(marks_path,day,tf,trade_start)
+            manual_lines,manual_zone=parse_mark_file(marks_path,day,tf,trade_start,bars)
         else:
             manual_lines=();manual_zone=None
         signals,events=causal_signals(bars,tf,trade_start,end,
@@ -401,7 +404,7 @@ def one_day(path,day,*,marking_mode="proxy",marks_path=None):
         result[label]=row
     return {
         "day":day,"source":source,"marking_mode":marking_mode,
-        "manual_markings_verified":marking_mode=="manual",
+        "manual_mark_file_present":marking_mode=="manual",
         "user_drawn_marking_fidelity_verified":False,
         "symbol":"XAUUSD","warmup_utc":"09:00-12:00",
         "trade_utc":"12:00-21:00",
