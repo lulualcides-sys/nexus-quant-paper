@@ -48,6 +48,13 @@ class IndicatorFusionTest(unittest.TestCase):
         self.assertEqual(a['ledger'][0]['entry_i'],WARMUP+1)
         self.assertAlmostEqual(a['ledger'][0]['entry'],b[WARMUP+1]['open'])
         self.assertLess(z['ledger'][0]['net'],a['ledger'][0]['net'])
+        self.assertEqual([(t['entry_i'],t['exit_i'],t['qty']) for t in a['ledger']],
+                         [(t['entry_i'],t['exit_i'],t['qty']) for t in z['ledger']])
+
+    def test_cost_floor_prevents_cost_dominated_trades(self):
+        b=sample();s=[0]*len(b);s[WARMUP]=1
+        r=replay(b,s,empty_features(len(b),atr=.01),interval=900)
+        self.assertEqual(r['trades'],0)
 
     def test_stop_before_target_same_bar(self):
         b=sample();idx=WARMUP+1
