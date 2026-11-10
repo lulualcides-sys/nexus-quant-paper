@@ -156,6 +156,49 @@ class QuoteTrackerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"Only XAUUSD"):
                 scan_csv(file,P)
 
+    def test_optional_liquidity_zone_requires_repeated_previous_touches(self):
+        b=buy_data()
+        for old in b[2:22]:
+            old["low"]=2001.0
+        b[5]["low"]=2000.0
+        # One old print at the extreme is not a verified zone.
+        self.assertEqual(signal(b,22,24,P),1)
+        self.assertEqual(signal(b,22,24,QuotePolicy(require_liquidity_zone=True)),0)
+        b[12]["low"]=2000.05
+        self.assertEqual(signal(b,22,24,QuotePolicy(require_liquidity_zone=True)),1)
+
+    def test_optional_liquidity_zone_does_not_relabel_future_bars(self):
+        b=sell_data()
+        policy=QuotePolicy(require_liquidity_zone=True)
+        self.assertEqual(signal(b,22,24,policy),-1)
+        b[23]={**b[23],"low":1500.0,"high":2600.0,"close":2005.0}
+        self.assertEqual(signal(b,22,24,policy),-1)
+
+    def test_csv_wrong_timeframe_is_rejected_not_resampled(self):
+        data=buy_data()
+        with tempfile.TemporaryDirectory() as temp:
+            file=Path(temp)/"gold_m5.csv"
+            keys=["symbol","time_utc","open","high","low","close",
+                  "tick_volume","spread_points"]
+            with file.open("w",encoding="utf-8",newline="") as f:
+                writer=csv.DictWriter(f,fieldnames=keys)
+                writer.writeheader()
+                for i,b in enumerate(data):
+                    writer.writerow({"symbol":"XAUUSD.a",
+                       "time_utc":datetime.fromtimestamp(T0+300*i,timezone.utc).isoformat(),
+                       **{k:b[k] for k in keys if k not in ("symbol","time_utc")}})
+            with self.assertRaisesRegex(ValueError,"no contiguous candles"):
+                scan_csv(file,QuotePolicy(timeframe_seconds=60))
+            self.assertEqual(scan_csv(file,QuotePolicy(timeframe_seconds=300))["closed_signals"],1)
+
+    def test_chart_has_public_geometry_labels_and_reconnect_recovery(self):
+        m=Path("indicators/mt5/NQ_XAU_Quote_Tracker_Research.mq5").read_text(encoding="utf-8")
+        for expected in ("OBJ_TEXT", "ENTRADA 50%", "ALVO 200%",
+                         "STOP -100%", "COMPRA", "VENDA",
+                         "InpRequireLiquidityZone", "InpLiquidityToleranceATR",
+                         "for(int i=oldestNew;i>=1;i--)"):
+            self.assertIn(expected,m,expected)
+
     def test_source_contains_no_order_routing_or_fake_aggressor(self):
         m=Path("indicators/mt5/NQ_XAU_Quote_Tracker_Research.mq5").read_text(encoding="utf-8")
         self.assertIn("tick_volume",m)
