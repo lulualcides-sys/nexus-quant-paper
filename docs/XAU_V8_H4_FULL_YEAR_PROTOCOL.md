@@ -13,3 +13,7 @@
 - Todos os períodos foram previamente usados noutros estudos do projeto. Não se trata de holdout intocado. Sem swap, comissão FBS real, news guard com histórico congelado ou execução tick-by-tick da corretora.
 
 Workflow isolado `.github/workflows/xau-v8-h4-full-year.yml`; relatórios em `research/results/xau_v8_h4_full_year.{json,md}`.
+
+## Auditoria estatística pós-hoc da V8
+
+Depois da primeira execução anual, foi acrescentado o módulo `research/xau_v8_bootstrap_audit.py`, que só reamostra os resultados **já executados**, sem alterar sinais, lote ou regras de entrada/saída. Faz 5.000 reamostragens independentes dos dias com fechamento de operação (semente fixa 20261110), como diagnóstico da incerteza do resultado anual. Esse procedimento ignora a dependência entre trades, possíveis mudanças de regime e o viés de seleção entre cinco modelos; portanto não mede probabilidade real de lucro no próximo ano, mesmo quando o histórico passa na triagem retrospectiva.
