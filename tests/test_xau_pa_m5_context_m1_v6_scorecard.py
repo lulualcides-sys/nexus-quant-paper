@@ -24,7 +24,10 @@ def synthetic_evidence(day):
                 "net_usd_per_oz":pnl,
                 "rejected":{"wide_spread":0},
                 "trades":[{"setup":"range_rejection","net_usd_per_oz":pnl,
-                           "reason":"STOP"}],
+                           "reason":"STOP","MFE_R_before_actual_exit":0.4,
+                           "MAE_R_before_actual_exit":-1.2,
+                           "stopped_after_0_5R":False,
+                           "stopped_after_1R":False}],
             }
     return {
         "day":day,"source":{"date_utc":day,"sha256":"a"*64,
