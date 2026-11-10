@@ -51,6 +51,9 @@ class GreenStopTests(unittest.TestCase):
         b=lever.fresh([{"time":i*14400} for i in range(245)])["books"]["lev_channel20"]
         bars=[{"time":i*14400,"open":100,"high":102,"low":98,"close":101} for i in range(251)]
         ind=[{"atr":2} for _ in range(251)]
+        # This test verifies runner policy, not immediate stop settlement.
+        # The entry candle must NOT touch the 0.75-unit protective stop.
+        bars[250]["low"] = 99.6
         with patch("src.leveraged_gold.sign",side_effect=[1,0]):
             lever.one_bar(b,"lev_channel20",bars,ind,250,mode="green_runner")
         p=b["position"]
