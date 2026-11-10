@@ -34,7 +34,7 @@ Custos de stress: spread observado BID/ASK, comissão **hipotética US$ 0,60 por
 | M5 | v4 zonas fixas | 0 / 0 | 0,000 | 5 / 5 | −10,988 | 5 | **−10,988** |
 | M5 | v5 zonas móveis | 1 / 0 | 0,000 | 8 / 8 | −22,678 | 8 | **−22,678** |
 | **M1+M5 trava única** | **v4 zonas fixas** | **16 / 12** | **−5,453** | **16 / 13** | **−24,946** | **25** | **−30,399** |
-| **M1+M5 trava única** | **v5 zonas móveis** | **32 / 18** | **−20,317** | **41 / 21** | **−35,528** | **39** | **−55,845** |
+| **M1+M5 trava única** | **v5 zonas móveis** | **32 / 18** | **−20,317** | **41 / 21** | **−35,528** | **39** | **−55,844** |
 
 *Nota de arredondamento:* alguns subtotais acima exibem três casas decimais; o ledger completo contém os valores de precisão usados para a auditoria. Total combinado v5 exato **−55,844479 USD/oz**; total combinado v4 exato **−30,399 USD/oz**.
 
@@ -47,7 +47,7 @@ A v5 adicionou 14 operações, com maior prejuízo. A taxa de acerto **caiu** de
 ## Diagnóstico causal das perdas da v5
 
 Decomposição do livro **SHARED**, v5:
-- **Rejeição de faixa/lateralização:** 19 fills, **3 vitórias**, **−US$42,295479/oz**. Setembro? Não. Esta decomposição é de **fevereiro e julho**.
+- **Rejeição de faixa/lateralização:** 19 fills, **3 vitórias**, **−US$42,295479/oz**. Esta decomposição corresponde exclusivamente a **fevereiro e julho**.
 - **Rompimento LTA/LTD e reteste:** 20 fills, **7 vitórias**, **−US$13,549/oz**.
 - **Total:** 39 fills, 10 vitórias, −US$55,844479/oz.
 
