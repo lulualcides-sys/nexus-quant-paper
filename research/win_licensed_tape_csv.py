@@ -93,6 +93,28 @@ def sniff_delimiter(header):
     candidates=(";","\t",",")
     return max(candidates,key=lambda delim:header.count(delim))
 
+def detect_csv_session(path):
+    """Infer contract and local date only from first trade; validate all rows."""
+    with open(path,"r",encoding="utf-8-sig",newline="") as fh:
+        head=fh.readline()
+        if not head:raise ValueError("Empty licensed source CSV")
+        fh.seek(0)
+        reader=csv.DictReader(fh,delimiter=sniff_delimiter(head))
+        cols={ALIASES[norm(n)]:n for n in reader.fieldnames or []
+              if norm(n) in ALIASES}
+        if not CRITICAL.issubset(cols):
+            raise ValueError("Missing official licensed tick CSV headers")
+        for row in reader:
+            if not row or all(not str(v or "").strip() for v in row.values()):
+                continue
+            ticker=str(row[cols["ativo"]]).strip().upper()
+            if not WIN.fullmatch(ticker):
+                raise ValueError("CSV must contain a single-expiry WIN e.g. WINZ26")
+            day=iso_date(row[cols["data"]]).isoformat()
+            return ticker,day
+    raise ValueError("No trade events found")
+
+
 def safe_trade_rows(path,expected_symbol,expected_day,*,max_events=HARD_CAP_TRADES):
     if not WIN.fullmatch(expected_symbol):
         raise ValueError("Use WIN with an explicit exchange expiry, e.g. WINZ26")
@@ -256,8 +278,8 @@ def private_output(result,path):
 def main():
     p=argparse.ArgumentParser(description="Licensed Profit/Nelogica trade CSV -> private NQ flow diagnostics; no broker connection")
     p.add_argument("--csv",required=True)
-    p.add_argument("--symbol",default="WINZ26")
-    p.add_argument("--date",required=True,help="YYYY-MM-DD (trades contain local Sao Paulo timestamps)")
+    p.add_argument("--symbol",default=None,help="Optional expiry; inferred from the first CSV trade by default")
+    p.add_argument("--date",default=None,help="Optional YYYY-MM-DD; inferred from the first CSV trade by default")
     p.add_argument("--output",default="private_mt5/nq_licensed_tape_research.json")
     p.add_argument("--compare-public",action="store_true",
                    help="Compare with public Greenhouse 03/04-Nov promotional labels; exploratory")
@@ -265,10 +287,15 @@ def main():
     source=Path(args.csv)
     if not source.is_file():
         p.error("Licensed source CSV file was not found")
-    rows,quality=build_minutes(safe_trade_rows(source,args.symbol,args.date))
+    inferred_symbol,inferred_day=detect_csv_session(source)
+    symbol=args.symbol or inferred_symbol
+    day=args.date or inferred_day
+    if symbol.upper()!=inferred_symbol or day!=inferred_day:
+        p.error("Explicit contract/day conflicts with first CSV trade")
+    rows,quality=build_minutes(safe_trade_rows(source,symbol,day))
     signals,decision=independent_signals(rows)
     result={"status":"LICENSED_LOCAL_TICK_SOURCE_RESEARCH_NOT_TRACKER",
-            "symbol":args.symbol,"date":args.date,
+            "symbol":symbol,"date":day,
             "source_csv_sha256":source_hash(source),
             "quality":quality,"detector":decision,
             "signals":signals,"minutes":rows,
@@ -281,7 +308,7 @@ def main():
         req=urllib.request.Request(PAGE,headers={"User-Agent":"NexusQuantPublicReference/1.0"})
         with urllib.request.urlopen(req,timeout=30) as response:
             html=response.read(1_000_000).decode("utf-8-sig")
-        labels=[x for x in public_markers_from_html(html) if x["date"]==args.date]
+        labels=[x for x in public_markers_from_html(html) if x["date"]==day]
         result["exploratory_public_label_overlap"]={
             "exact":compare(signals,labels,0),
             "plus_minus_1min":compare(signals,labels,1),
