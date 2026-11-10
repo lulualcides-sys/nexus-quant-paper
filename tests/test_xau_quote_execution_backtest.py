@@ -94,9 +94,20 @@ class TickExecutionTests(unittest.TestCase):
         r=simulate([(61,99.8,100),(90,105,105.2)],
                    commission_roundtrip_usd_per_oz=0.4,
                    slippage_usd_per_side=0.2)
-        self.assertAlmostEqual(r["ledger"][0]["executed_entry_assumed"],100.2)
-        self.assertAlmostEqual(r["ledger"][0]["exit_price_assumed"],104.8)
-        self.assertAlmostEqual(r["net_usd_per_oz"],4.2)
+        self.assertAlmostEqual(r["ledger"][0]["executed_entry_assumed"],100.)
+        self.assertAlmostEqual(r["ledger"][0]["exit_price_assumed"],105.)
+        self.assertAlmostEqual(r["net_usd_per_oz"],4.6)
+
+    def test_stop_and_market_exits_slip_but_target_limits_do_not(self):
+        stopped=simulate([(61,99.8,100.),(90,94.,96.)],
+                         slippage_usd_per_side=0.2)
+        self.assertEqual(stopped["ledger"][0]["executed_entry_assumed"],100.)
+        self.assertEqual(stopped["ledger"][0]["exit_price_assumed"],93.8)
+        target=simulate([(61,99.8,100.),(90,106.,106.2)],
+                        slippage_usd_per_side=0.2)
+        self.assertEqual(target["ledger"][0]["reason"],"TARGET")
+        self.assertEqual(target["ledger"][0]["exit_price_assumed"],105.)
+        self.assertEqual(target["net_usd_per_oz"],5.)
 
     def test_stop_on_entry_tick_has_priority_to_prevent_fabricated_win(self):
         r=simulate([(61,90.,99.)])
