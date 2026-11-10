@@ -57,6 +57,19 @@ class V7(unittest.TestCase):
         b=x.backtest(rows,f,'channel20',begin=rows[244]['time'],finish=rows[249]['time']+14400,signal_fn=sig,lot_step=1.)
         self.assertEqual(a['entries'],1);self.assertEqual(b['entries'],0)
         self.assertEqual(b['blocked'].get('minimum_lot_or_risk'),1)
+    def test_larger_equity_can_enable_lot_without_changing_signals(self):
+        rows=mockbars();f=features(len(rows));f[243]['atr']=60.
+        sig=lambda name,bars,feat,i: 1 if i==243 else 0
+        common=dict(begin=rows[244]['time'],finish=rows[249]['time']+14400,signal_fn=sig,lot_step=1.)
+        a=x.backtest(rows,f,'channel20',capital=5000.,**common)
+        b=x.backtest(rows,f,'channel20',capital=20000.,**common)
+        self.assertEqual(a['entries'],0)
+        self.assertEqual(b['entries'],1)
+        self.assertEqual(b['ledger'][0]['qty_oz'],1.)
+    def test_larger_equity_does_not_change_signal_rules(self):
+        self.assertEqual(x.RISK,.0075)
+        self.assertEqual(x.STOP_ATR,2.)
+        self.assertEqual(x.TARGET_ATR,3.5)
     def test_short_uses_bid_entry_ask_exit(self):
         rows=mockbars();f=features(len(rows));sig=lambda name,bars,feat,i: -1 if i==243 else 0
         r=x.backtest(rows,f,'channel20',begin=rows[244]['time'],finish=rows[247]['time']+14400,signal_fn=sig,lot_step=0.,slippage=0.)

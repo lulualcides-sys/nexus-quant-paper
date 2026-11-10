@@ -257,6 +257,18 @@ def study(bars):
         out['strategies'][name]={'configs':configurations,'research_screen_pass':eligible,
                                  'live_approved':False}
         if eligible:out['candidate_for_forward'].append(name)
+    # POST-HOC SIZING DIAGNOSTIC ONLY. These experiments were added after
+    # observing the 5k lot rejections; never label new capital as signal edge.
+    out['posthoc_bankroll_sensitivity']={}
+    for new_capital in (10000.,20000.):
+        scenario={}
+        for name in RULES:
+            per_cost={}
+            for slip in (.15,.75):
+                d=backtest(bars,features,name,slippage=slip,lot_step=1.,capital=new_capital)
+                per_cost[f'slippage_{slip:.2f}']={k:v for k,v in d.items() if k!='ledger'}
+            scenario[name]=per_cost
+        out['posthoc_bankroll_sensitivity'][str(int(new_capital))]=scenario
     return out
 
 
@@ -269,9 +281,17 @@ def format_report(payload):
         c=study['configs']; normal=c['one_ounce_slip_0p15']; stress=c['one_ounce_slip_0p75']; frac=c['fractional_slip_0p15']
         m=sum(x['net_usd']>0 for x in normal['months'].values())
         lines.append(f"| {name} | {normal['overall']['closed_trades']} | {normal['overall']['net_usd']:+.2f} | {stress['overall']['net_usd']:+.2f} | {m}/3 | {frac['overall']['net_usd']:+.2f} | {study['research_screen_pass']} |")
-    lines +=['','- Capital: US$5,000 por modelo, independente, nunca somados numa carteira; risco-stop máximo planejado 0,75%, 1x notional.',
+    lines +=['','## Diagnóstico pós-hoc apenas de tamanho de banca (lote de 1oz)', '',
+             '| Banca inicial | Modelo | Operações, slippage US$0,15/lado | P&L US$0,15 | Operações US$0,75 | P&L US$0,75 |',
+             '|---:|---|---:|---:|---:|---:|']
+    for capital,cohort in payload['posthoc_bankroll_sensitivity'].items():
+        for name,v in cohort.items():
+            a=v['slippage_0.15'];b=v['slippage_0.75']
+            lines.append(f"| {capital} | {name} | {a['closed_trades']} | {a['net_usd']:+.2f} | {b['closed_trades']} | {b['net_usd']:+.2f} |")
+    lines +=['', '- Este diagnóstico é posterior ao primeiro resultado V7, ajusta SOMENTE capital inicial. NÃO é novo holdout nem melhora de estratégia.', '',
+             '- Capital: US$5,000 por modelo, independente, nunca somados numa carteira; risco-stop máximo planejado 0,75%, 1x notional.',
              '- Min 1 oz impede operações quando distância de stop e banca não satisfazem o risco. Fracionário é **controle teórico não executável** em lote abaixo de 0.01 de 100oz.',
-             '- Janeiro não estudado. Meses avaliados: 2026-07, 2026-08, 2026-09 com April-Jun warmup. Corretora não auditada; spread já cobrado no BID/ASK.',
+             '- Meses avaliados: 2026-07, 2026-08, 2026-09 com abril–junho apenas para aquecimento. Corretora não auditada; spread já cobrado no BID/ASK.',
              '- Quatro cenários pré-declarados, sem seleção de hiperparâmetros por resultado; históricos previamente examinados.',
              '- Sem classificação live; pesquisa apenas. Meses independentes resetam banca; somar resultados desses meses não é equivalente à carteira contínua.',
              '- Nenhuma estratégia alcança a conclusão de lucro consistente sem stress + meses + número suficiente de operações e forward.', '']
@@ -293,6 +313,9 @@ def main():
                'pf':v['overall']['profit_factor'],'dd':v['overall']['max_intrabar_proxy_dd_pct'],
                'blocked':v['overall']['blocked'],'monthly_net':{m:r['net_usd'] for m,r in v['months'].items()}}
                for k,v in c.items()},sort_keys=True),item['research_screen_pass'],flush=True)
+    for capital,cohort in report['posthoc_bankroll_sensitivity'].items():
+        for strategy, scenarios in cohort.items():
+            print('V7_BANKROLL', capital, strategy, json.dumps({k:{'n':v['closed_trades'],'net':v['net_usd'],'return_pct':v['return_pct'],'blocked':v['blocked'],'pf':v['profit_factor']} for k,v in scenarios.items()},sort_keys=True),flush=True)
     print('V7_SCREEN',report['candidate_for_forward'],'LIVE',report['approved_for_live'],flush=True)
 
 if __name__=='__main__':main()

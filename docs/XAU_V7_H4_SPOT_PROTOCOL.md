@@ -24,3 +24,7 @@ python -m research.xau_v7_preserved_h4_bidask
 ```
 
 Executar via workflow isolado `.github/workflows/xau-v7-preserved-h4-bidask.yml`. Publicar JSON íntegro e resumo, preservar fracassos, nunca alterar `state/` ou enviar ordens.
+
+## Diagnóstico posterior sobre a banca (não é otimização)
+
+Depois de constatar que a banca de US$5.000 com risco de 0,75% e contrato de pelo menos 1 onça bloqueou a maioria dos sinais H4, foram **adicionados posteriormente** cenários de US$10.000 e US$20.000, mantendo os cinco sinais originais, os stops, limites de exposição e slippage de US$0,15 / US$0,75 por lado. O objetivo é descobrir o impacto do tamanho do contrato, não escolher a banca que apresenta o maior lucro. Isso não comprova lucratividade fora da amostra nem constitui sugestão de depositar mais dinheiro.
