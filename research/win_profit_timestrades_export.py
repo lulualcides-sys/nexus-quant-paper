@@ -140,29 +140,44 @@ def iter_profit_export(path,*,symbol=None,day=None):
         if count==0:raise ValueError("No trades in file")
 
 def analyze_profit_export(path,*,symbol=None,day=None,target_contracts=500):
+    """Two bounded streaming passes; avoids caching millions of trades in RAM.
+
+    A before/after SHA-256 catches file mutations between passes. Each pass
+    separately validates contract/day/order/id so stale duplicate prints
+    cannot be silently counted as new trades.
+    """
+    from itertools import chain
     source=Path(path)
-    checked=list(iter_profit_export(source,symbol=symbol,day=day))
-    count=len(checked)
-    if count<1:raise ValueError("No trades")
-    ident_status=all(x["has_exchange_trade_id"] for x in checked)
-    minimal=({"time_msc":x["time_msc"],"price":x["price"],
-              "quantity":x["quantity"],"aggressor":x["aggressor"]}
-             for x in checked)
-    # Read-only import and one deterministic, closed-bar signal model.
-    from itertools import tee
-    a,b=tee(minimal,2)
-    minutes,quality=build_minutes(a)
+    checksum_before=source_hash(source)
+    rows=iter_profit_export(source,symbol=symbol,day=day)
+    first=next(rows)  # Fail explicitly if there are no trades.
+    instrument,session=first["symbol"],first["day"]
+    ids=first["has_exchange_trade_id"]
+    minutes,quality=build_minutes(
+        ({"time_msc":x["time_msc"],"price":x["price"],
+          "quantity":x["quantity"],"aggressor":x["aggressor"]}
+         for x in chain((first,),rows)))
     volume_policy=Policy(target_contracts=target_contracts)
-    vbars,vmeta=build_closed_volume_bars(b,volume_policy)
+    vbars,vmeta=build_closed_volume_bars(
+        ({"time_msc":x["time_msc"],"price":x["price"],
+          "quantity":x["quantity"],"aggressor":x["aggressor"]}
+         for x in iter_profit_export(source,symbol=instrument,day=session)),
+        volume_policy)
+    checksum_after=source_hash(source)
+    if checksum_after!=checksum_before:
+        raise ValueError("Source CSV changed during two-pass audit; no report produced")
+    count=quality["executed_trade_rows"]
+    if vmeta["total_trade_prints_processed"]!=count:
+        raise ValueError("Source event counts disagree between independent passes")
     signals,checks=independent_signals(minutes)
     v_signals=detect_absorption(vbars,volume_policy)
     return {
         "status":"PRIVATE_PROFIT_EXPORT_CANDIDATE_RESEARCH_NO_BROKER_TRADES",
-        "symbol":checked[0]["symbol"],"day":checked[0]["day"],
-        "raw_source_sha256":source_hash(source),
+        "symbol":instrument,"day":session,
+        "raw_source_sha256":checksum_before,
         "trade_events":count,
-        "exchange_trade_ids_available":ident_status,
-        "duplicate_event_verification_if_no_id":"NOT_AVAILABLE" if not ident_status else "IDS_CHECKED",
+        "exchange_trade_ids_available":ids,
+        "duplicate_event_verification_if_no_id":"NOT_AVAILABLE" if not ids else "IDS_CHECKED",
         "m1_quality":quality,"m1_signals":signals,"m1_detector":checks,
         "volume_bars":vbars,"volume_bars_quality":vmeta,"volume_absorption_signals":v_signals,
         "trade_initiator_side_provided_by_file_not_inferred":True,
