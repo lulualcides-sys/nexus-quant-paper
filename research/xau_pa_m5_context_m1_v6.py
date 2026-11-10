@@ -141,6 +141,39 @@ def confirm_m5_zone_touch(signals,m1bars):
     return approved,dict(sorted(veto.items()))
 
 
+def audit_excursions(trades,quotes):
+    """Quote-level favorable/adverse movement only BEFORE actual exit.
+
+    Never infer a price after stopping out, never substitute mid-price for
+    executable BID (long exit) / ASK (short exit). This is diagnostic only:
+    it does not adjust entries, stops or PnL of the existing experiment.
+    """
+    from bisect import bisect_left,bisect_right
+    stamps=[q[0] for q in quotes]
+    annotated=[]
+    for trade in trades:
+        side=trade["side"]
+        risk=side*(trade["entry"]-trade["stop"])
+        if risk<=0:raise ValueError("Expected positive entry-to-stop distance")
+        start=bisect_left(stamps,trade["entry_ms"])
+        stop=bisect_right(stamps,trade["exit_ms"])
+        if start>=stop:
+            raise ValueError("No quotes inside confirmed trade duration")
+        excursions=[
+            side*((bid if side==1 else ask)-trade["entry"])
+            for _,bid,ask in quotes[start:stop]
+        ]
+        mfe=max(excursions)/risk
+        mae=min(excursions)/risk
+        annotated.append({**trade,
+            "MFE_R_before_actual_exit":round(mfe,5),
+            "MAE_R_before_actual_exit":round(mae,5),
+            "stopped_after_0_5R":trade["reason"]=="STOP" and mfe>=.5,
+            "stopped_after_1R":trade["reason"]=="STOP" and mfe>=1.,
+        })
+    return annotated
+
+
 def evaluate_day(path,day):
     if day not in DAYS:raise ValueError("Only preregistered June/July 2026 dates")
     quotes,src=parse_quotes(path,day)
@@ -181,6 +214,7 @@ def evaluate_day(path,day):
                 raise ValueError("Filled count exceeded signals")
             if any(t["entry_ms"]<market_open or t["entry_ms"]>=end for t in tested["trades"]):
                 raise ValueError("Out-of-session fill")
+            tested["trades"]=audit_excursions(tested["trades"],execution)
             outcome["costs"][cost]=tested
         results[policy]=outcome
     return {
