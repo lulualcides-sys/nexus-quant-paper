@@ -40,6 +40,7 @@ input bool     InpRequireLiquidityZone = false;// Optional independent hypothesi
 input int      InpLiquidityMinTouches = 2;    // Older repeat tests of a prior extreme
 input double   InpLiquidityToleranceATR = 0.08;// Proximity of repeated quote lows/highs
 input bool     InpAlertOnNewBar      = false;
+input bool     InpShowDataStatus     = true;   // Surface missing historical feed data
 
 double BufferBuy[];
 double BufferSell[];
@@ -217,6 +218,48 @@ void DrawResearchVector(const int i,const int side,const datetime &times[],
    }
 }
 
+// On-chart data diagnostics; never interpret lack of signals as profitability.
+void DrawDataStatus(const int total,const long &ticks[],const int &spreads[])
+{
+   if(!InpShowDataStatus) return;
+   const string key=gPrefix+"DATA_STATUS";
+   if(ObjectFind(0,key)<0)
+   {
+      if(!ObjectCreate(0,key,OBJ_LABEL,0,0,0)) return;
+      ObjectSetInteger(0,key,OBJPROP_CORNER,CORNER_LEFT_UPPER);
+      ObjectSetInteger(0,key,OBJPROP_XDISTANCE,15);
+      ObjectSetInteger(0,key,OBJPROP_YDISTANCE,32);
+      ObjectSetInteger(0,key,OBJPROP_FONTSIZE,9);
+      ObjectSetInteger(0,key,OBJPROP_SELECTABLE,false);
+      ObjectSetInteger(0,key,OBJPROP_HIDDEN,true);
+   }
+   const int required=(InpLookbackBars>InpATRPeriod?InpLookbackBars:InpATRPeriod)+3;
+   string status="DADOS OK | setas so em candles fechados";
+   color tone=clrSilver;
+   if(total<required)
+   {
+      status="AGUARDANDO HISTORICO M1/M5";
+      tone=clrTomato;
+   }
+   else if(ticks[1]<=0)
+   {
+      status="SEM TICKS DA CORRETORA NA VELA FECHADA";
+      tone=clrTomato;
+   }
+   else if(spreads[1]<=0)
+   {
+      status="SEM SPREAD HISTORICO | sinais bloqueados";
+      tone=clrTomato;
+   }
+   else if(ticks[1]<InpMinTickUpdates)
+   {
+      status="BAIXA ATIVIDADE NO FEED (nao e fluxo agressor)";
+      tone=clrGold;
+   }
+   ObjectSetInteger(0,key,OBJPROP_COLOR,tone);
+   ObjectSetString(0,key,OBJPROP_TEXT,"NQ XAU PESQUISA | "+status);
+}
+
 void EvaluateClosed(const int i,const int total,
                     const datetime &times[],const double &opens[],
                     const double &highs[],const double &lows[],const double &closes[],
@@ -304,7 +347,14 @@ int OnCalculate(const int rates_total,const int prev_calculated,
                 const int &spread[])
 {
    const int required=(InpLookbackBars>InpATRPeriod?InpLookbackBars:InpATRPeriod)+1;
-   if(rates_total<required+3) return 0;
+   // Series semantics BEFORE diagnostics inspect last completed candle.
+   ArraySetAsSeries(tick_volume,true);
+   ArraySetAsSeries(spread,true);
+   if(rates_total<required+3)
+   {
+      DrawDataStatus(rates_total,tick_volume,spread);
+      return 0;
+   }
    ArraySetAsSeries(time,true);
    ArraySetAsSeries(open,true);
    ArraySetAsSeries(high,true);
@@ -337,6 +387,7 @@ int OnCalculate(const int rates_total,const int prev_calculated,
       for(int i=oldestNew;i>=1;i--)
          EvaluateClosed(i,rates_total,time,open,high,low,close,tick_volume,spread);
    }
+   DrawDataStatus(rates_total,tick_volume,spread);
    gLastOpen=time[0];
    return rates_total;
 }
