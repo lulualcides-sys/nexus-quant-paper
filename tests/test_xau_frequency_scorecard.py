@@ -33,8 +33,10 @@ class ScoreTests(unittest.TestCase):
     def test_cannot_use_future_data_in_training_selection(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td)
-            for day in TRAIN:
-                (root/f"xau_{day}.json").write_text(json.dumps(day_report(day,2,2.)))
+            for i,day in enumerate(TRAIN):
+                # Some losing trades are required for a defined, auditable PF.
+                pnl = -1. if i%3==0 else 2.
+                (root/f"xau_{day}.json").write_text(json.dumps(day_report(day,2,pnl)))
             selection=rank_training(root)
             self.assertEqual(selection["preselected_candidate"],"active_F50_M1")
             (root/"xau_20261109_18.json").write_text("INVALID FUTURE FILE")
@@ -44,8 +46,9 @@ class ScoreTests(unittest.TestCase):
     def test_future_cannot_be_presented_as_approved_without_sample(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td)
-            for day in TRAIN+VALIDATION+FUTURE_HOLDOUT:
-                (root/f"xau_{day}.json").write_text(json.dumps(day_report(day,2,2.)))
+            for i,day in enumerate(TRAIN+VALIDATION+FUTURE_HOLDOUT):
+                pnl=-1. if i%3==0 else 2.
+                (root/f"xau_{day}.json").write_text(json.dumps(day_report(day,2,pnl)))
             s=rank_training(root)
             out=final_assessment(root,s)
             self.assertTrue(out["approval_blocked"])
