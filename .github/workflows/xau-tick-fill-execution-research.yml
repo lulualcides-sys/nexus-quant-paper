@@ -1,0 +1,104 @@
+name: XAUUSD | Historical bid-ask fill, cost and out-of-window diagnostic
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - research/xau_quote_execution_backtest.py
+      - tests/test_xau_quote_execution_backtest.py
+      - .github/workflows/xau-tick-fill-execution-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fill_research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify entry/exit order, no future ticks and fail-closed scenarios
+        run: |
+          python -m py_compile research/xau_quote_execution_backtest.py
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_dukascopy_replay.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Fixed original and additional independent XAUUSD quote dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/xau_data" "$RUNNER_TEMP/xau_reports"
+          # Four fixed sessions (no in-sample parameter tuning).
+          for day in 2026-10-29 2026-11-03 2026-11-04 2026-11-05; do
+            shortday="${day//-/}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${day}T12:00Z" -to "${day}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/xau_data" \
+              -fn "xau_${shortday}" -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/xau_data/xau_${shortday}.csv"
+            test -s "$f"
+            head -n 1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+          done
+      - name: Real bid-ask quote replay, unfilled limits and cost sensitivity
+        shell: bash
+        run: |
+          set -euo pipefail
+          for day in 20261029 20261103 20261104 20261105; do
+            for tf in M1 M5; do
+              for scenario in base friction; do
+                if [[ "$scenario" == "base" ]]; then
+                  fee=0
+                  slip=0
+                else
+                  # Hypothetical US$/oz scenarios, NOT verified brokerage tariffs.
+                  fee=0.30
+                  slip=0.10
+                fi
+                python -m research.xau_quote_execution_backtest \
+                  --ticks "$RUNNER_TEMP/xau_data/xau_${day}.csv" \
+                  --timeframe "$tf" --commission "$fee" --slippage "$slip" \
+                  --output "$RUNNER_TEMP/xau_reports/xau_${day}_${tf}_${scenario}.json"
+              done
+            done
+          done
+      - name: Report chronologically segmented outcomes and fail closed on uncertain data
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,os,pathlib
+          folder=pathlib.Path(os.environ["RUNNER_TEMP"])/"xau_reports"
+          all_reports=sorted(folder.glob("*.json"))
+          assert len(all_reports)==16, "Missing one research configuration"
+          for f in all_reports:
+              d=json.loads(f.read_text())
+              e=d["execution"]
+              assert d["source"]["source_rows"] > 1000, f.name
+              assert len(d["source"]["source_sha256"])==64
+              assert d["broker_lot_or_commission_verified"] is False
+              assert d["spread_accounted_through_actual_bid_ask"] is True
+              assert d["independently_validated_with_original_greenhouse"] is False
+              assert e["filled"]==e["closed"]
+              assert e["filled"]<=e["planned_signals"]
+              print(f.name, "signals",e["planned_signals"],"fills",e["filled"],
+                    "net US$/oz",e["net_usd_per_oz"],"PF",e["profit_factor"])
+          # Stress-case for same signals must never look better from extra
+          # commission/slippage (trade paths may change only if cost affected fills).
+          for day in ("20261029","20261103","20261104","20261105"):
+              for tf in ("M1","M5"):
+                  prefix=f"xau_{day}_{tf}_"
+                  base=json.loads((folder/(prefix+"base.json")).read_text())["execution"]
+                  stress=json.loads((folder/(prefix+"friction.json")).read_text())["execution"]
+                  assert base["filled"]==stress["filled"]
+                  assert stress["net_usd_per_oz"]<=base["net_usd_per_oz"]+1e-6
+          PY
+      - name: Retain summaries and audit ledgers, never raw quote data
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-quote-execution-bidask-4-sessions
+          path: ${{ runner.temp }}/xau_reports/*.json
+          retention-days: 15
