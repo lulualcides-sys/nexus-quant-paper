@@ -228,6 +228,15 @@ def build_minutes(events,*,source_tag="Nelogica_licensed_tick_csv"):
                     "independent_broker_candle_crosscheck":False,
                     "no_trading_orders_or_real_fill_claims":True}
 
+def source_hash(path,chunk_size=1024*1024):
+    """SHA-256 without loading a very large licensed tick file into memory."""
+    checksum=hashlib.sha256()
+    with open(path,"rb") as fh:
+        for part in iter(lambda:fh.read(chunk_size),b""):
+            checksum.update(part)
+    return checksum.hexdigest()
+
+
 def private_output(result,path):
     dest=Path(path).resolve()
     if "private_mt5" not in dest.parts:
@@ -260,7 +269,7 @@ def main():
     signals,decision=independent_signals(rows)
     result={"status":"LICENSED_LOCAL_TICK_SOURCE_RESEARCH_NOT_TRACKER",
             "symbol":args.symbol,"date":args.date,
-            "source_csv_sha256":hashlib.sha256(source.read_bytes()).hexdigest(),
+            "source_csv_sha256":source_hash(source),
             "quality":quality,"detector":decision,
             "signals":signals,"minutes":rows,
             "original_tracker_source_recovered":False,
