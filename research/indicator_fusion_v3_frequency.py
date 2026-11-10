@@ -6,8 +6,9 @@ No modification of preserved robots, no broker or paper-state side effects.
 """
 from __future__ import annotations
 from collections import Counter
+from calendar import monthrange
 from datetime import datetime, timezone
-from math import isfinite
+from math import isfinite, floor
 from statistics import mean
 
 from research.indicator_fusion_bots import check_bars, ema, atr_wilder, TIMEFRAMES
@@ -82,10 +83,10 @@ def _time_month(ts):
     return datetime.fromtimestamp(ts,timezone.utc).strftime('%Y-%m')
 
 
-def _close(position,exit_price,bar_i,reason,fee_bps):
+def _close(position,exit_price,bar_i,reason,fee_bps,fee_per_oz=0.):
     p=position
     gross=p['side']*(exit_price-p['entry'])*p['qty']
-    fee=p['qty']*p['entry']*fee_bps/10000
+    fee=p['qty']*(p['entry']*fee_bps/10000+fee_per_oz)
     return {'bot':p['bot'],'side':p['side'],'entry_i':p['entry_i'],
             'exit_i':bar_i,'entry_time':p['entry_time'],
             'entry':p['entry'],'exit':exit_price,'qty':p['qty'],
@@ -93,7 +94,8 @@ def _close(position,exit_price,bar_i,reason,fee_bps):
 
 
 def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
-              interval=300,max_hold=MAX_HOLD):
+              interval=300,max_hold=MAX_HOLD,stop_atr=STOP_ATR,target_r=TARGET_R,
+              risk_frac=RISK_FRAC,min_qty_step_oz=None,fee_per_oz=0.):
     """One real position on XAU, no overlapping virtual books or double-counting.
 
     At each candle OPEN, an existing position occupies the bar, even if
@@ -101,7 +103,10 @@ def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
     evaluated after the opening gap. Intrabar ambiguity is stop-first.
     """
     check_bars(bars,interval)
-    if fee_bps<0 or capital<=0 or max_hold<1:raise ValueError('invalid settings')
+    if (fee_bps<0 or capital<=0 or max_hold<1 or fee_per_oz<0 or
+        risk_frac<=0 or risk_frac>1 or stop_atr<=0 or target_r<=0 or
+        (min_qty_step_oz is not None and min_qty_step_oz<=0)):
+        raise ValueError('invalid settings')
     if set(sig)!=set(NAMES) or any(len(v)!=len(bars) for v in sig.values()):
         raise ValueError('signal dimensions')
     first=max(WARMUP+1,start if start is not None else WARMUP+1)
@@ -109,7 +114,7 @@ def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
     if final<=first:raise ValueError('empty replay')
     pnl=[];equity=capital;peak=capital;dd=0.;position=None
     seen_candidates=Counter();blocked_position=Counter();blocked_gap=Counter()
-    entered=Counter()
+    entered=Counter(); min_lot_rejections=0
     for i in range(first,final):
         b=bars[i]
         occupied=position is not None
@@ -128,7 +133,7 @@ def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
             else:
                 fill=None
             if fill is not None:
-                trade=_close(p,fill,i,reason,fee_bps)
+                trade=_close(p,fill,i,reason,fee_bps,fee_per_oz)
                 pnl.append(trade);equity+=trade['net']
                 peak=max(peak,equity)
                 if peak>0: dd=max(dd,(peak-equity)/peak*100)
@@ -145,14 +150,19 @@ def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
         if not choices or equity<=0:continue
         # Priority precommitted by fixed order; no retrospective selection.
         name,side=choices[0]
-        entry=b['open'];dist=STOP_ATR*atr[i-1]
+        entry=b['open'];dist=stop_atr*atr[i-1]
         if not isfinite(dist) or dist<=0:continue
-        qty=min(equity*RISK_FRAC/dist,equity/entry)
+        qty=min(equity*risk_frac/dist,equity/entry)
+        if min_qty_step_oz is not None:
+            qty=floor((qty+1e-9)/min_qty_step_oz)*min_qty_step_oz
+            if qty<=0:
+                min_lot_rejections+=1
+                continue
         if qty<=0:continue
         entered[name]+=1
         position={'bot':name,'side':side,'entry':entry,'qty':qty,
                   'entry_i':i,'entry_time':b['time'],
-                  'stop':entry-side*dist,'target':entry+side*TARGET_R*dist}
+                  'stop':entry-side*dist,'target':entry+side*target_r*dist}
         # Candles after OPEN can hit stop/target on the entry candle.
         s=side
         if (s==1 and b['low']<=position['stop']) or (s==-1 and b['high']>=position['stop']):
@@ -161,24 +171,37 @@ def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
             fill=position['target'];reason='target'
         else:fill=None
         if fill is not None:
-            trade=_close(position,fill,i,reason,fee_bps)
+            trade=_close(position,fill,i,reason,fee_bps,fee_per_oz)
             pnl.append(trade);equity+=trade['net'];peak=max(peak,equity)
             if peak>0:dd=max(dd,(peak-equity)/peak*100)
             position=None
     floating=0
     if position is not None:
         last=bars[final-1]['close']
-        floating=position['side']*(last-position['entry'])*position['qty']-position['qty']*position['entry']*fee_bps/10000
+        floating=position['side']*(last-position['entry'])*position['qty']-position['qty']*(position['entry']*fee_bps/10000+fee_per_oz)
     winners=sum(t['net'] for t in pnl if t['net']>0)
     losers=-sum(t['net'] for t in pnl if t['net']<0)
     months=Counter(_time_month(t['entry_time']) for t in pnl)
     observed_days=(bars[final-1]['time']-bars[first]['time'])/86400
     normalized= len(pnl)*30/observed_days if observed_days>0 else None
+    start_utc=datetime.fromtimestamp(bars[first]['time'],timezone.utc)
+    end_utc=datetime.fromtimestamp(bars[final-1]['time'],timezone.utc)
+    full_month_count=0
+    for key,n in months.items():
+        year,month=(int(v) for v in key.split('-'))
+        # Require strict coverage of month start and month end. No partial
+        # month's trade count may be claimed to meet a monthly quota.
+        month_days=monthrange(year,month)[1]
+        start_month=datetime(year,month,1,tzinfo=timezone.utc)
+        end_month=datetime(year,month,month_days,23,55,tzinfo=timezone.utc)
+        if start_utc <= start_month and end_utc >= end_month and n>=MONTHLY_TARGET:
+            full_month_count+=1
     return {
         'closed_trades':len(pnl),'signals_total':sum(seen_candidates.values()),
         'signals_by_type':dict(seen_candidates),'entered_by_type':dict(entered),
         'blocked_by_open_position':dict(blocked_position),
         'blocked_at_data_gap':dict(blocked_gap),
+        'min_lot_rejections':min_lot_rejections,
         'net_usd':round(equity-capital+floating,2),
         'realized_usd':round(equity-capital,2),
         'gross_usd':round(sum(t['gross'] for t in pnl),2),
@@ -189,7 +212,8 @@ def portfolio(bars,atr,sig,*,fee_bps=14.,start=None,end=None,capital=5000.,
         'max_realized_drawdown_pct':round(dd,3),
         'trade_counts_by_utc_month':dict(months),
         'trades_per_30_calendar_days_estimate':round(normalized,1) if normalized is not None else None,
-        'goal_200_month_reached_in_observed_window': any(n>=200 for n in months.values()),
+        'goal_200_full_calendar_month_verified':full_month_count>0,
+        'partial_month_counts_are_not_monthly_proof':True,
         'ledger':pnl,
     }
 
