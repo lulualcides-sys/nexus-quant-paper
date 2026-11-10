@@ -95,11 +95,10 @@ def run_day(path: str | Path, day: str) -> dict:
             for name,cfg in (("standard",base),("double",double)):
                 x=simulate_ticks(quotes,signals,tf,cfg)
                 cost_scenarios[name]=x
-            if cost_scenarios["standard"]["filled"]!=cost_scenarios["double"]["filled"]:
-                raise ValueError("Cost assumptions mysteriously altered fills")
-            if (cost_scenarios["double"]["net_usd_per_oz"]>
-                    cost_scenarios["standard"]["net_usd_per_oz"]+1e-5):
-                raise ValueError("Higher transaction costs increased PnL")
+            # The existing economic RR veto explicitly depends on costs.
+            # Therefore double costs can reject an entry that standard costs
+            # accepted. Do NOT assert same fills or monotonic net PnL.
+            # Report each executed ledger independently, including rejections.
             experiments[label][mode]={
                 "signals":len(signals),"costs":cost_scenarios,
             }
