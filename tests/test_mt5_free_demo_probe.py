@@ -52,7 +52,7 @@ class MT5DemoProbeTests(unittest.TestCase):
     def test_native_no_account_reports_not_connected(self):
         mt5=FakeMT5(initialize=False)
         d=diagnose(mt5,"C:\\test\\terminal64.exe")
-        self.assertEqual(d["status"],"FRESH_MT5_TERMINAL_NEEDS_ACCOUNT")
+        self.assertEqual(d["status"],"FRESH_MT5_COULD_NOT_INITIALIZE_ACCOUNT_OR_HEADLESS_ENVIRONMENT")
         self.assertEqual(mt5.shutdowns,1)
         self.assertNotIn("login",mt5.call_log)
         self.assertFalse(d["account_created_by_probe"])
