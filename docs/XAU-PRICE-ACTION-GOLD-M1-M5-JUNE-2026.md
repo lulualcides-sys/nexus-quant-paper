@@ -46,3 +46,26 @@ Pesquisa iniciada em 10/11/2026. **Não é um robô operacional, um Expert Advis
 4. Nenhuma publicação de robô real sem aprovação explicitamente fundamentada.
 
 **Decisão no momento do primeiro teste:** versão de pesquisa isolada, sem merge e sem negociação automática.
+
+## Replicação mantendo os parâmetros: 04–29/05/2026
+
+**GitHub Actions SUCCESS:** [run 42796282799](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42796282799), três jobs aprovados, **20 sessões previstas e 20 válidas**, sem descartar nenhum dia. Mesmo código, mesmos dois setups, filtro de risco, custo hipotético e horário UTC usados na execução de junho.
+
+- [Código do consolidador de maio](../research/xau_pa_may_replication.py), [quatro testes adicionais](../tests/test_xau_pa_may_replication.py), [workflow](../.github/workflows/xau-price-action-may-replication.yml).
+- M1: **18 sinais**, **16 operações preenchidas**, 1 vitória e 15 derrotas; resultado **−US$ 37,010 por onça**, PF **0,104**. Primeira metade de maio: **−US$ 20,173/oz**; segunda metade: **−US$ 16,837/oz**.
+- Composição M1: rompimento/reteste 11 trades **−US$ 23,723/oz**; lateralização/rejeição 5 trades **−US$ 13,287/oz**. 14 stops, 1 alvo, 1 fechamento por tempo.
+- M5: **nenhum sinal ou operação** em 20 sessões; resultado monetário 0 significa **ausência de operações, não empate ou estratégia sem risco**. O contexto M15 mais restritivo resulta em poucos sinais.
+- Intervalo bootstrap descritivo de P&L M1 ao reamostrar sessões: aproximadamente **−US$ 56,234 a −US$ 18,782/oz**. Não é garantia estatística de perda futura, mas mostra ausência de evidência robusta nesta amostra.
+- Os dados são cotações históricas da Dukascopy, não de conta MT5 do usuário; preços de ouro spot sem lote real. Maio é **anterior** a junho; não constitui teste prospectivo fora da amostra, ainda que os parâmetros tenham sido preservados.
+
+### Consolidação descritiva (sem escolher dias ou setups)
+
+| Período | Sessões válidas | Operações M1 | V/D | P&L M1 (US$/oz) | Operações M5 | P&L M5 |
+|---|---:|---:|---:|---:|---:|---:|
+| Maio/2026 | 20 | 16 | 1/15 | **−37,010** | 0 | 0 (sem operações) |
+| Junho/2026 (08–19) | 9 | 7 | 3/4 | **+21,200** | 4 | **−6,524** |
+| **Total descritivo** | **29** | **23** | **4/19** | **−15,810** | **4** | **−6,524** |
+
+**Conclusão atualizada:** Price Action adaptado ao ouro **não tem expectativa líquida positiva demonstrada**. Resultado positivo em uma janela pequena de junho não resistiu à replicação histórica de maio. Não reduzir stop, remover perdas ou otimizar filtros nos mesmos 29 pregões e alegar validação independente. Precisa de dados posteriores realmente não usados, regras pré-congeladas, mais de 100 trades e custos/condições do broker documentados. Nenhum código de robô operacional ou configuração de conta foi modificado.
+
+**Estado:** PR da pesquisa em DRAFT e isolada da main; backtests reais de cotações concluídos, mas nenhuma operação real/MT5 nem identidade com qualquer indicador comercial comprovadas.
