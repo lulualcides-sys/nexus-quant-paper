@@ -48,6 +48,12 @@ class TestCostAware(unittest.TestCase):
         self.assertIn('legacy_stress_14bps',x['cost_scenarios'])
         self.assertIn('fbs_spread_plus_0p75_each_side',x['cost_scenarios'])
         self.assertFalse(x['robust_profit_confirmed'])
+    def test_posthoc_not_live_and_folds(self):
+        z=run(prices())['posthoc_ablation_no_momentum']
+        self.assertTrue(z['post_hoc_selected'])
+        self.assertEqual(z['disabled_model'],'MOMENTUM_2BAR')
+        self.assertFalse(z['approved_for_live'])
+        self.assertEqual(len(z['folds']),3)
     def test_no_claim_for_partial_month(self):
         x=run(prices())
         self.assertFalse(x['cost_scenarios']['fbs_spread_plus_0p15_each_side']['goal_200_full_calendar_month_verified'])
