@@ -38,6 +38,7 @@ class MockMT5:
         self.rates=[rate(i) for i in range(rate_count)]
         self.all_ticks=[t for i in range(rate_count) for t in trades(i)]
         self.called=[]
+        self.tick_ranges=[]
     def terminal_info(self):
         self.called.append("terminal_info")
         return SimpleNamespace(connected=True)
@@ -52,6 +53,7 @@ class MockMT5:
         return self.rates
     def copy_ticks_range(self,symbol,start,end,flags):
         self.called.append("copy_ticks_range")
+        self.tick_ranges.append((start,end))
         a=start.timestamp()*1000
         b=end.timestamp()*1000
         return [t for t in self.all_ticks if a<=t["time_msc"]<=b]
@@ -161,6 +163,24 @@ class FlowProvenanceTests(unittest.TestCase):
                                  output_directory=td)[0]
             self.assertTrue(Path(receipt["file"]).exists())
             self.assertEqual(len(receipt["sha256"]),64)
+    def test_inclusive_broker_tick_range_does_not_double_fetch_boundary(self):
+        mock=MockMT5()
+        exact=rate(10)["time"]*1000
+        mock.all_ticks.append({"time_msc":exact,"flags":FLAG_LAST|FLAG_VOLUME|FLAG_BUY,
+                               "volume_real":1.0,"last":100005.0})
+        mock.all_ticks.sort(key=lambda r:r["time_msc"])
+        rows,quality=extract_day(mock,symbol="WINZ26",date_string="2026-11-03",
+                                now_utc=datetime(2026,11,9,tzinfo=timezone.utc))
+        self.assertEqual(quality["tick_updates_examined"],60*25+1)
+        self.assertEqual(len(mock.tick_ranges),60)
+        first_start,first_end=mock.tick_ranges[0]
+        second_start,second_end=mock.tick_ranges[1]
+        self.assertEqual(first_start,START)
+        self.assertEqual(first_end,START+timedelta(minutes=10,milliseconds=-1))
+        self.assertEqual(second_start,START+timedelta(minutes=10))
+        self.assertLess(first_end,second_start)
+        self.assertTrue(rows[10]["valid_flow"])
+
     def test_no_future_data_extraction(self):
         with self.assertRaisesRegex(ValueError,"future or incomplete"):
             extract_day(MockMT5(),symbol="WINZ26",date_string="2026-11-03",
