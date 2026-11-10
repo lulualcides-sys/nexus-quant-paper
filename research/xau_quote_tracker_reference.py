@@ -33,7 +33,7 @@ class QuotePolicy:
     point: float = 0.01
     tick_size: float = 0.01
     require_liquidity_zone: bool = False  # Optional, NOT proven Tracker rule
-    liquidity_touch_tolerance_atr: float = 0.18
+    liquidity_touch_tolerance_atr: float = 0.08
     liquidity_min_touches: int = 2
 
     def validate(self):
