@@ -51,6 +51,34 @@ class IndicatorFusionTest(unittest.TestCase):
         self.assertEqual([(t['entry_i'],t['exit_i'],t['qty']) for t in a['ledger']],
                          [(t['entry_i'],t['exit_i'],t['qty']) for t in z['ledger']])
 
+    def test_intrabar_exit_must_not_reenter_retroactively_at_open(self):
+        b=sample(280)
+        first=WARMUP+1
+        second=first+1
+        # First position survives its entry candle, then stops within next bar.
+        b[second]['open']=b[first]['open']
+        b[second]['high']=b[second]['open']+1.
+        b[second]['low']=b[second]['open']-20.
+        b[second]['close']=b[second]['open']-1.
+        s=[0]*len(b)
+        s[first-1]=1
+        s[second-1]=1
+        r=replay(b,s,empty_features(len(b),atr=5),interval=900,
+                 start=first,end=second+1)
+        self.assertEqual(r['trades'],1)
+        self.assertEqual(r['ledger'][0]['entry_i'],first)
+        self.assertEqual(r['ledger'][0]['exit_i'],second)
+        self.assertFalse(r['open_at_end'])
+
+    def test_decompose_cost_impact_with_zero_cost_control(self):
+        b=sample(295);s=[0]*len(b);s[WARMUP]=1
+        f=empty_features(len(b),atr=100)
+        z=replay(b,s,f,cost_bps=0.,interval=900)
+        v=replay(b,s,f,cost_bps=14.,interval=900)
+        self.assertEqual(z['trades'],v['trades'])
+        self.assertEqual(z['closed_fees_usd'],0)
+        self.assertAlmostEqual(v['closed_gross_usd']-v['closed_fees_usd'],v['closed_net_usd'],places=2)
+
     def test_cost_floor_prevents_cost_dominated_trades(self):
         b=sample();s=[0]*len(b);s[WARMUP]=1
         r=replay(b,s,empty_features(len(b),atr=.01),interval=900)
