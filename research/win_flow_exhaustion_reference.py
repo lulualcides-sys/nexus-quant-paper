@@ -7,12 +7,14 @@ No inference from tick-volume / candle direction. No orders, no live claims.
 """
 from __future__ import annotations
 from dataclasses import dataclass
+import math
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 SP = ZoneInfo("America/Sao_Paulo")
 BUY_FLAG=32
 SELL_FLAG=64
+LAST_FLAG=8
 VOLUME_FLAG=16
 TICK_MILLISECOND=1000
 
@@ -72,26 +74,36 @@ def price_candidate(bars: list[dict], i: int, policy: ResearchPolicy=ResearchPol
     return 1 if buy and not sell else (-1 if sell and not buy else None)
 
 def classified_flow(ticks: list[dict], candle_open_seconds: int,
-                    policy: ResearchPolicy=ResearchPolicy()):
-    """Classified executions only. Missing metadata means no signal."""
+                    policy: ResearchPolicy=ResearchPolicy(),
+                    bar_real_volume: float | None=None,
+                    max_volume_deviation: float=.20):
+    """Count only genuine Last/Volume event flags; reject insufficient tape.
+
+    Mirrors the MQL5 indicator's conservative flow gate. Exactly matching
+    execution/orderbook behavior is not claimed; M1 flags depend on provider.
+    """
     from_ms=candle_open_seconds*1000
     to_ms=from_ms+59999
     buy=sell=unknown=0.
     classified_events=0
     first=last=None
     for t in ticks:
-        stamp=t["time_msc"]
+        stamp=int(t["time_msc"])
         if not from_ms<=stamp<=to_ms:
             continue
         flags=int(t.get("flags",0))
+        if not (flags & (LAST_FLAG|VOLUME_FLAG)):
+            continue  # do not treat cached quote as a trade
+        vol=float(t.get("volume_real",0))
+        price=float(t.get("last",0))
+        if vol<=0 or not math.isfinite(vol) or price<=0 or not math.isfinite(price):
+            continue
+        if abs(price/5-round(price/5))>1e-7:
+            continue
         is_buy=bool(flags & BUY_FLAG)
         is_sell=bool(flags & SELL_FLAG)
-        vol=float(t.get("volume_real",0))
-        if is_buy == is_sell:  # both or neither
-            if not is_buy and flags & VOLUME_FLAG and vol>0:
-                unknown+=vol
-            continue
-        if vol<=0:
+        if is_buy == is_sell:  # both flags or neither flag -> unknown
+            unknown+=vol
             continue
         if is_buy:buy+=vol
         else:sell+=vol
@@ -99,11 +111,15 @@ def classified_flow(ticks: list[dict], candle_open_seconds: int,
         first=stamp if first is None else min(first,stamp)
         last=stamp if last is None else max(last,stamp)
     classified=buy+sell
-    if classified_events<policy.min_classified_events or classified<=0:
+    observed=classified+unknown
+    if classified_events<policy.min_classified_events or classified<=0 or observed<=0:
         return None
-    share=classified/(classified+unknown)
+    share=classified/observed
     if share<policy.min_classified_share:
         return None
+    if bar_real_volume is not None:
+        if bar_real_volume<=0 or abs(observed-bar_real_volume)/bar_real_volume>max_volume_deviation:
+            return None
     if policy.verify_tick_coverage and (first>from_ms+15000 or last<to_ms-15000):
         return None
     dominance=max(buy,sell)/classified
@@ -111,6 +127,7 @@ def classified_flow(ticks: list[dict], candle_open_seconds: int,
         return None
     return {"side":1 if sell>buy else -1, "buy_volume":buy,
             "sell_volume":sell,"unknown_volume":unknown,
+            "observed_tick_volume":observed,
             "contra_share":dominance, "coverage":share,
             "classified_events":classified_events}
 
@@ -133,7 +150,8 @@ def classify_closed_bar(bars: list[dict], i: int, ticks: list[dict],
     """Signal i is only available AFTER bars[i] closes; never bar in formation."""
     side=price_candidate(bars,i,policy)
     if side is None:return None
-    flow=classified_flow(ticks,bars[i]["time"],policy)
+    flow=classified_flow(ticks,bars[i]["time"],policy,
+                         bar_real_volume=float(bars[i].get("real_volume",0)))
     if flow is None or flow["side"]!=side:
         return None
     return {"time":bars[i]["time"],"side":side,
