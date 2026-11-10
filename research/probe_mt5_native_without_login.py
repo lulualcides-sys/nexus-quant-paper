@@ -24,7 +24,7 @@ def diagnose(mt5, path):
         initialized=bool(mt5.initialize(path,timeout=20000))
         results["terminal_initialized"]=initialized
         if not initialized:
-            results["status"]="FRESH_MT5_TERMINAL_NEEDS_ACCOUNT"
+            results["status"]="FRESH_MT5_COULD_NOT_INITIALIZE_ACCOUNT_OR_HEADLESS_ENVIRONMENT"
             return results
         info=mt5.terminal_info()
         connected=bool(info is not None and info.connected)
