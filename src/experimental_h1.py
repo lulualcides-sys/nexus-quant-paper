@@ -105,7 +105,7 @@ def _close(b, market, bar, price, why):
 
 
 def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=True):
-    """Stop checks before trailing; do not enter and exit on same candle."""
+    """Stop checks before trailing; execute entry-bar stops, never re-enter."""
     row = bars[i]
     previous = bars[i - 1]
     p = b["position"]
