@@ -5,8 +5,10 @@ on:
     paths:
       - research/xau_pa_manual_rules_v3.py
       - research/xau_pa_manual_rules_v3_scorecard.py
+      - research/xau_pa_shared_execution.py
       - tests/test_xau_pa_manual_rules_v3.py
       - tests/test_xau_pa_manual_rules_v3_scorecard.py
+      - tests/test_xau_pa_shared_execution.py
       - .github/workflows/xau-pa-marked-rules-v3-oct-nov.yml
   workflow_dispatch:
 permissions:
@@ -31,9 +33,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile research/xau_pa_manual_rules_v3.py research/xau_pa_manual_rules_v3_scorecard.py
+          python -m py_compile research/xau_pa_manual_rules_v3.py research/xau_pa_manual_rules_v3_scorecard.py research/xau_pa_shared_execution.py
           python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
           python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_shared_execution.py' -v
           python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
       - name: Replay fixed quotes XAUUSD 09-21 UTC (trades 12-21 only)
         shell: bash
@@ -99,6 +102,7 @@ jobs:
           assert r["never_a_MT5_broker_backtest"] is True
           assert len(r["clean_days"]["october"])>=3
           assert len(r["clean_days"]["november"])>=3
+          assert set(r["result"])=={"M1","M5","SHARED"}
           for tf,policies in r["result"].items():
               for policy,scenarios in policies.items():
                   for period,stats in scenarios["double"].items():
