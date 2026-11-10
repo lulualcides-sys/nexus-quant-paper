@@ -226,7 +226,9 @@ def extract_day(mt5,*,symbol,date_string,now_utc):
     ptr=start
     while ptr<end:
         upto=min(ptr+timedelta(minutes=CHUNK_MINUTES),end)
-        ticks=mt5.copy_ticks_range(symbol,ptr,upto,mt5.COPY_TICKS_TRADE)
+        # MT5 date_to is inclusive; request up to the last millisecond to
+        # avoid hitting a chunk-boundary event twice on broker feeds.
+        ticks=mt5.copy_ticks_range(symbol,ptr,upto-timedelta(milliseconds=1),mt5.COPY_TICKS_TRADE)
         if ticks is None:
             raise ValueError(f"MT5 tick download failed at {ptr.isoformat()}: {mt5.last_error()}")
         piece,n=aggregate_trade_ticks(ticks,ptr,upto,max_events=MAX_TICKS_PER_DAY-seen)
