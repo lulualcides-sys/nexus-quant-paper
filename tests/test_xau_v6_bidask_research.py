@@ -81,6 +81,17 @@ class ResearchV6Tests(unittest.TestCase):
     def test_parameter_fixed(self):
         self.assertEqual((m.PARAMS['stop_atr'],m.PARAMS['target_r'],m.PARAMS['max_hold']),(3.,3.,36))
         self.assertEqual(m.DISABLED,'MOMENTUM_2BAR')
+    def test_pinned_csv_uses_epoch_milliseconds_and_prices(self):
+        dt=int(datetime(2026,7,1,tzinfo=timezone.utc).timestamp())
+        header='timestamp,open,high,low,close\n'
+        rows=''.join(f'{(dt+60*i)*1000},3500,3501,3499,3500\n' for i in range(205))
+        parsed=m._parse_monthly_csv((header+rows).encode(),year=2026,month=7)
+        self.assertEqual(len(parsed),205)
+        self.assertEqual(parsed[0]['time'],dt)
+    def test_csv_rejects_other_month_or_bad_bars(self):
+        dt=int(datetime(2026,7,1,tzinfo=timezone.utc).timestamp())
+        s='timestamp,open,high,low,close\n'+f'{dt*1000},3500,3490,3510,3500\n'
+        with self.assertRaises(ValueError):m._parse_monthly_csv(s.encode(),year=2026,month=7)
     def test_zero_cost_not_magic_return(self):
         bars=synthetic_quotes();signals={k:[0]*len(bars) for k in m.NAMES}
         res,_=m.replay_bidask(bars,slippage=0,atr=[2]*len(bars),signals=signals)

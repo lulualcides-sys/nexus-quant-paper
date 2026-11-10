@@ -38,3 +38,13 @@ python -m research.xau_v6_bidask_research --workers 6
 ```
 
 GitHub Actions: `.github/workflows/xau-v6-bidask-validation.yml`. This workflow reads historical public data, writes research JSON, archives it as a CI artifact and has **no write permissions, broker API, account credentials, production state changes, or automated trading**.
+
+## Alternate immutable public mirror (default on CI)
+
+The original direct daily Dukascopy downloader may be slow. To keep the test reproducible, V6 also supports an independent **read-only GitHub mirror** of Dukascopy M1 BID/ASK files: `kevingtlin/Market-Data-Lab`, pinned commit `b60bd71d0e34a42cb962daf688ff252e73f409ca`. The original source is Dukascopy; the mirror is NOT an independent market venue. June to September 2026 CSV are downloaded and SHA256 recorded per file. UTC Unix **milliseconds** are validated, ASK/BID timestamps inner-joined, and only complete M5 buckets are replayed.
+
+The default V6 CI path uses this pinned mirror. The direct Dukascopy endpoint remains available as `--source direct_dukascopy` for future source comparison, with the same frozen rules. Mirror records may contain absent trading minutes, never fabricated. If the pinned files are missing, corrupted or incomplete, the test fails closed.
+
+```bash
+python -m research.xau_v6_bidask_research --source pinned_mirror
+```

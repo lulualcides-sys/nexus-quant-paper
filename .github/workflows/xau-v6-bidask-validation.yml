@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run 72+ focused V1-V6 simulator invariant tests
+      - name: Run 74+ focused V1-V6 simulator invariant tests
         run: |
           python -m unittest \
             tests.test_indicator_fusion_bots \
@@ -27,9 +27,9 @@ jobs:
             tests.test_indicator_fusion_v4_costaware \
             tests.test_indicator_fusion_v5_exits \
             tests.test_xau_v6_bidask_research -v
-      - name: Independently retrieve real Dukascopy historical BID and ASK candles and test locked V4
+      - name: Independently retrieve pinned real Dukascopy historical BID and ASK candles and test locked V4
         run: |
-          python -m research.xau_v6_bidask_research --workers 6
+          python -m research.xau_v6_bidask_research --source pinned_mirror
       - name: Save paper-only 3-month report and source fingerprints
         if: always()
         uses: actions/upload-artifact@v4

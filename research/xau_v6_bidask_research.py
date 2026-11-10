@@ -14,6 +14,8 @@ from math import floor, isfinite, sqrt
 from pathlib import Path
 from statistics import mean, median
 import argparse
+import csv
+import io
 import json
 import lzma
 import random
@@ -176,6 +178,84 @@ def download_history(start: date=START, end_exclusive: date=END_EXCLUSIVE, worke
               'source_hashes':source,
               'no_filled_bars':True,'source_only_completed_m5':True}
     return price_rows,metadata
+
+
+# Third-party read-only Dukascopy monthly mirror, commit pinned for immutable replay.
+# The mirror was located AFTER V4 and is historical; it is not a prospective test.
+MIRROR_REPO = 'kevingtlin/Market-Data-Lab'
+MIRROR_COMMIT = 'b60bd71d0e34a42cb962daf688ff252e73f409ca'
+
+
+def _parse_monthly_csv(raw: bytes, *, year: int, month: int) -> list[dict]:
+    try:
+        data = csv.DictReader(io.StringIO(raw.decode('utf-8-sig')))
+        if data.fieldnames is None or not {'timestamp','open','high','low','close'}.issubset(data.fieldnames):
+            raise ValueError('Missing OHLC CSV fields')
+        rows = []
+        for item in data:
+            timestamp_ms=int(item['timestamp'])
+            if timestamp_ms%60000:
+                raise ValueError('Misaligned M1 timestamp')
+            ts=timestamp_ms//1000
+            dt=datetime.fromtimestamp(ts,timezone.utc)
+            if dt.year!=year or dt.month!=month:
+                raise ValueError('Price timestamp outside monthly file')
+            price={k:float(item[k]) for k in ('open','high','low','close')}
+            if any(not isfinite(v) or v<200 or v>20000 for v in price.values()):
+                raise ValueError('Invalid XAUUSD price magnitude')
+            if price['low']>min(price['open'],price['close']) or price['high']<max(price['open'],price['close']):
+                raise ValueError('Invalid BID/ASK OHLC row')
+            if START<=dt.date()<END_EXCLUSIVE:
+                rows.append({'time':ts,**price})
+        if len(rows)<200:raise ValueError('Too few month observations')
+        if any(rows[i]['time']<=rows[i-1]['time'] for i in range(1,len(rows))):
+            raise ValueError('Duplicate or nonmonotonic source timestamps')
+        return rows
+    except (KeyError, TypeError) as exc:
+        raise ValueError('Invalid CSV row') from exc
+
+
+def download_history_mirror():
+    """Pinned public BID/ASK monthly M1, no network need for node/npm packages."""
+    by_month = {}
+    hashes=[]
+    for month in (6,7,8,9):
+        results={}
+        for side in ('bid','ask'):
+            filename=f'xauusd_{side}_m1_2026_{month:02d}.csv'
+            url=(f'https://raw.githubusercontent.com/{MIRROR_REPO}/{MIRROR_COMMIT}/'
+                 f'xauusd/{side}/m1/{filename}')
+            raw=_get_file(url)
+            if raw is None:raise ValueError('Pinned mirror monthly file missing: '+filename)
+            rows=_parse_monthly_csv(raw,year=2026,month=month)
+            hashes.append({'file':filename,'bytes':len(raw),'sha256':sha256(raw).hexdigest(),
+                           'first':rows[0]['time'],'last':rows[-1]['time']})
+            results[side]=rows
+        by_month[month]=results
+    combined=[];excluded=Counter();pairs=0;spreads=[];orphans=0
+    for month in sorted(by_month):
+        minrows,counts=combine_minutes(by_month[month]['bid'],by_month[month]['ask'])
+        if counts['orphan_minutes']>60:
+            raise ValueError('Excess asymmetric BID/ASK gaps in monthly source')
+        agg,quality=aggregate_m5(minrows)
+        if len(agg)<100:
+            raise ValueError('Too few complete M5 quotes in a calendar month')
+        combined.extend(agg);spreads.extend(row['open_spread'] for row in agg)
+        pairs+=counts['common_minutes'];orphans+=counts['orphan_minutes']
+        excluded['incomplete_m5']+=quality['excluded_incomplete_m5_buckets']
+    if len(combined)<5000:raise ValueError('Too few complete M5 quotes for validation')
+    if any(combined[i]['time']<=combined[i-1]['time'] for i in range(1,len(combined))):
+        raise ValueError('Cross-month duplicates or reorder')
+    return combined,{'provider':'Dukascopy quote sides hosted by Market-Data-Lab pinned public GitHub commit',
+                     'upstream':'Dukascopy via dukascopy-node; not an FBS account',
+                     'mirror_repo':MIRROR_REPO,'commit':MIRROR_COMMIT,
+                     'data_start':START.isoformat(),'evaluation_start':EVALUATION_START.isoformat(),
+                     'end_exclusive':END_EXCLUSIVE.isoformat(),
+                     'complete_m5':len(combined),'minute_pairs':pairs,
+                     'orphan_side_minutes':orphans,
+                     'excluded_partial_m5_buckets':excluded['incomplete_m5'],
+                     'median_observed_m5_open_spread_usd_per_oz':round(median(spreads),5),
+                     'source_hashes':hashes,'no_imputation':True}
 
 
 def _exit_price(position, bar, slippage, *, reason):
@@ -342,8 +422,9 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--output',default='research/results/xau_v6_bidask_2026_jul_sep.json')
     p.add_argument('--workers',type=int,default=6)
+    p.add_argument('--source',choices=('pinned_mirror','direct_dukascopy'),default='pinned_mirror')
     args=p.parse_args()
-    bars,meta=download_history(workers=args.workers)
+    bars,meta=(download_history_mirror() if args.source=='pinned_mirror' else download_history(workers=args.workers))
     report=run_study(bars,meta)
     dst=Path(args.output);dst.parent.mkdir(parents=True,exist_ok=True)
     dst.write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
