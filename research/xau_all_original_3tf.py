@@ -329,6 +329,8 @@ def replay(bars,tf,stress=1.0,start_ts=None):
         stack.enter_context(patch.object(atlas,"COST_BPS",
               {**atlas.COST_BPS,"XAUUSD":BASE_COST_BPS*stress}))
         for i in range(INITIAL_WARMUP,len(bars)):
+            if start_ts is not None and bars[i]["time"] < start_ts:
+                continue  # Keep full original warmup but compare identical calendar window.
             for key in gold.STUDY:
                 gold.evaluate_bar(normal[key],key,bars,indicators,i)
             for key in lever.CONFIG:
