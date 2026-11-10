@@ -178,7 +178,6 @@ def summarize(folder: str | Path) -> dict:
                         raise ValueError("Missing trade ledger")
                     trades.extend(item["ledger"])
                     day_nets.append(item["net_usd_per_oz"])
-                profit=sum(sum(max(0,float(t["net_usd_per_oz"])) for t in []) for _ in [])
                 profit=sum(max(0,float(t["net_usd_per_oz"])) for t in trades)
                 loss=-sum(min(0,float(t["net_usd_per_oz"])) for t in trades)
                 net=profit-loss
