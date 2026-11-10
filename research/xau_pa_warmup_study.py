@@ -58,7 +58,11 @@ def one_day(filepath: str|Path,day: str):
     for tf,label in ((60,"M1"),(300,"M5")):
         b_cold=candles_from_quotes(cold,tf)
         b_warm=candles_from_quotes(all_quotes,tf)
-        if len(b_cold)<50 or len(b_warm)<100:
+        # Eight hours contain 480 M1 bars, but only 96 M5 bars.
+        # Apply a timeframe-aware coverage gate; 100 M5 would reject
+        # every correctly captured full session.
+        min_warm=(300 if tf==60 else 90)
+        if len(b_cold)<50 or len(b_warm)<min_warm:
             raise SourceQualityError("Too few complete candles for indicator warmup")
         cold_signals=scan_signals(b_cold,tf,cfg)
         full_signals=scan_signals(b_warm,tf,cfg)
