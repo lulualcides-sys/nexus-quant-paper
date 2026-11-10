@@ -225,6 +225,7 @@ def main():
         # Program bugs, missing files, wrong dates, and an unexpected failure
         # remain fatal. Data errors are recorded BEFORE producing any P&L.
         prefix=("Invalid or crossed XAUUSD bid/ask",
+                "Nonchronological or crossed price stream",
                 "Out-of-order Dukascopy source",
                 "Quote time anomaly")
         if not args.quarantine_out or not reason.startswith(prefix):
