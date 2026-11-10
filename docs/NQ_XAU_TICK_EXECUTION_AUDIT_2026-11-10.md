@@ -53,3 +53,12 @@ No conjunto, o M5 mostra lucro teórico em **quatro operações** e não tem nen
 4. São necessários dados e custos do broker autorizado do usuário, captura efetiva de M1/M5 no terminal, condições de execução, documentação de spreads e uma janela futura mantida fora do desenvolvimento.
 
 **Status verificável da etapa atual:** código, CI, dados históricos auditados, gerenciamento de ordem simulada e relatórios entregues no GitHub. Lucro real, equivalência com o Tracker original e conexão MT5 **não estão comprovados**.
+
+## Verificação cronológica adicional — 9 de novembro de 2026
+
+- **Fonte independente:** [GitHub Actions 42786406929](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42786406929), artefato `xauusd-20261109-predeclared-holdout`, período 2026-11-09 12:00–17:00 UTC, `dukascopy-node@1.51.1`.
+- **Cotações históricas:** 149.860 registros de bid/ask, SHA256 `134eea932b88394af88c347f5c0446d522e32bb7fcef683c3e979eeea46e3024`.
+- **Parâmetros e custos inalterados:** M1 1 sinal de pesquisa, 1 entrada limite preenchida, 0 vitórias, 1 derrota, líquido hipotético de **−US$ 3,776 por onça** com comissão roundtrip US$ 0,30/oz e slippage stop/mercado US$ 0,10/oz. M5 **zero sinais e nenhuma operação**.
+- **Validações:** 16 testes de execução, 21 do indicador e 10 de ingestão; workflow aprovado. Não houve escolha de parâmetros após observar o resultado. No entanto, o próprio dia já foi examinado nesta pesquisa e não poderá servir como novo holdout para versões futuras.
+
+**Leitura científica:** 14 pregões da auditoria anterior + 1 pregão posterior apenas confirmam que a hipótese atual do M1 continua insuficiente e negativa; o M5 não ganhou evidência adicional. Não somar retornos de diferentes cenários nem afirmar operação real de corretora. Uma eventual hipótese nova precisará de data futura ainda não vista, e não ser declarada vencedora nas mesmas datas.
