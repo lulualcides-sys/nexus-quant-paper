@@ -62,3 +62,20 @@ No conjunto, o M5 mostra lucro teórico em **quatro operações** e não tem nen
 - **Validações:** 16 testes de execução, 21 do indicador e 10 de ingestão; workflow aprovado. Não houve escolha de parâmetros após observar o resultado. No entanto, o próprio dia já foi examinado nesta pesquisa e não poderá servir como novo holdout para versões futuras.
 
 **Leitura científica:** 14 pregões da auditoria anterior + 1 pregão posterior apenas confirmam que a hipótese atual do M1 continua insuficiente e negativa; o M5 não ganhou evidência adicional. Não somar retornos de diferentes cenários nem afirmar operação real de corretora. Uma eventual hipótese nova precisará de data futura ainda não vista, e não ser declarada vencedora nas mesmas datas.
+
+## Investigação de causas de saída — reaproveitamento de evidência sem novos downloads
+
+A rotina [`research/xau_quote_evidence_audit.py`](../research/xau_quote_evidence_audit.py) lê o artefato histórico de [14 sessões](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42781887672). Ela valida consistência do hash SHA256 do arquivo de cotações entre **todos os timeframes e cenários de custo**, linhas de operação, origem, preços não-finitos e contexto de feed. Fornece o relatório por tipo de saída com teste adversarial e mantém a autorização de negociação permanentemente bloqueada enquanto não houver evidência necessária.
+
+Reexecução auditada em [GitHub Actions 42786974274](https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/42786974274), artefato `xauusd-exit-reason-and-approval-gate`. Refinamento posterior acrescentou a verificação cruzada de hash entre cenários e timeframes.
+
+| Modo (com custo hipotético) | M1: ocorrências | M1: lucro/prejuízo US$/oz | M5: ocorrências | M5: lucro/prejuízo US$/oz |
+|---|---:|---:|---:|---:|
+| TARGET | 4 | +21,280 | 2 | +34,322 |
+| STOP | 8 | −43,410 | 1 | −10,175 |
+| TIME | 0 | 0 | 1 | −8,910 |
+| **Líquido** | **12 trades** | **−22,130** | **4 trades** | **+15,237** |
+
+**Diagnóstico:** No M1 a taxa observada de alvos foi 4/12, contra 8/12 stops; os lucros de alvo não cobriram as perdas de stop. Isso NÃO prova que um ajuste particular aumentaria lucros. O M5 não teve amostra suficiente para afirmar robustez (4 trades). Qualquer alteração de filtro agora testada nos mesmos 14 pregões ou em 09/11 será **dentro da amostra vista**, e não evidência fora da amostra. Uma versão nova precisará de observação posterior realmente intocada.
+
+**Regra de segurança:** não habilitar execução, não integrar na `main`, não prometer lucratividade e não modificar os robôs já aprovados. A PR de pesquisa permanece isolada.
