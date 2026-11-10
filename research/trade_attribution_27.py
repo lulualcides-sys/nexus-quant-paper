@@ -56,6 +56,7 @@ def _aggregate(rows):
         "losses": sum(x < 0 for x in pnls),
         "flats": sum(x == 0 for x in pnls),
         "net_usd": round(sum(pnls), 5),
+        "total_losing_trades_abs_usd": round(losses, 5),
         "avg_net_usd": round(sum(pnls) / len(rows), 5) if rows else None,
         "profit_factor": round(gains / losses, 5) if losses > 0 else None,
     }
