@@ -95,6 +95,36 @@ class IndicatorFusionTest(unittest.TestCase):
         self.assertEqual(t['exit_reason'],'stop_first')
         self.assertLess(t['net'],0)
 
+    def test_favorable_open_gap_hits_target_before_intrabar_stop(self):
+        b=sample(280)
+        entry_i=WARMUP+1; gap_i=entry_i+1
+        px=b[entry_i]['open']
+        b[gap_i]['open']=px+20
+        b[gap_i]['high']=px+22
+        b[gap_i]['low']=px-20
+        b[gap_i]['close']=px+1
+        s=[0]*len(b);s[WARMUP]=1
+        r=replay(b,s,empty_features(len(b),atr=5),interval=900,
+                 start=entry_i,end=gap_i+1)
+        self.assertEqual(r['trades'],1)
+        self.assertEqual(r['ledger'][0]['exit_reason'],'target_gap')
+        self.assertGreater(r['ledger'][0]['gross'],0)
+
+    def test_adverse_open_gap_fills_at_open_worse_than_stop(self):
+        b=sample(280)
+        entry_i=WARMUP+1; gap_i=entry_i+1
+        px=b[entry_i]['open']
+        b[gap_i]['open']=px-20
+        b[gap_i]['high']=px+25
+        b[gap_i]['low']=px-22
+        b[gap_i]['close']=px+1
+        s=[0]*len(b);s[WARMUP]=1
+        r=replay(b,s,empty_features(len(b),atr=5),interval=900,
+                 start=entry_i,end=gap_i+1)
+        self.assertEqual(r['trades'],1)
+        self.assertEqual(r['ledger'][0]['exit_reason'],'stop_gap')
+        self.assertEqual(r['ledger'][0]['exit'],b[gap_i]['open'])
+
     def test_gap_skips_entry(self):
         b=sample();idx=WARMUP+1
         for i in range(idx,len(b)):
