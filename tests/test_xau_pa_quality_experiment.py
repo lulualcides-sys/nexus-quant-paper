@@ -71,7 +71,7 @@ class XAUQualityTests(unittest.TestCase):
         self.assertFalse(pass_quality(b,signal(b),60))
 
     def test_range_rejection_requires_actual_support_wick(self):
-        b=candle(op=100.8,close=101.,low=99.8,high=101.1)
+        b=candle(op=100.75,close=101.,low=99.8,high=101.1)
         self.assertTrue(pass_quality(b,signal(b,setup="range_rejection",atr=.75),60))
         bad=candle(op=100.0,close=101.,low=99.8,high=101.1)
         self.assertFalse(pass_quality(bad,signal(bad,setup="range_rejection",atr=.75),60))
