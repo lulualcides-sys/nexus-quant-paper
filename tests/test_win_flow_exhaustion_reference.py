@@ -8,7 +8,7 @@ from pathlib import Path
 import unittest
 
 from research.win_flow_exhaustion_reference import (
-    BUY_FLAG,SELL_FLAG,VOLUME_FLAG,ResearchPolicy,price_candidate,
+    BUY_FLAG,SELL_FLAG,VOLUME_FLAG,LAST_FLAG,ResearchPolicy,price_candidate,
     classified_flow,classify_closed_bar,fibonacci_levels,economic_note
 )
 
@@ -40,11 +40,11 @@ def ticks(start,*,selling=True,unknown_volume=0):
         else:
             direction=BUY_FLAG if i<20 else SELL_FLAG
         t.append({"time_msc":ms,"flags":direction|VOLUME_FLAG,
-                  "volume_real":5.0})
+                  "volume_real":5.0,"last":100005.0})
     # First=+2s, last=+57.2s => both sides of bar covered.
     if unknown_volume:
         t.append({"time_msc":start*1000+32000,"flags":VOLUME_FLAG,
-                  "volume_real":unknown_volume})
+                  "volume_real":unknown_volume,"last":100005.0})
     return t
 
 class IndependentFlowTests(unittest.TestCase):
@@ -73,9 +73,30 @@ class IndependentFlowTests(unittest.TestCase):
     def test_missing_trade_side_flags_never_creates_imaginary_aggression(self):
         b=bars_buy()
         trade=[{"time_msc":q["time_msc"],"flags":VOLUME_FLAG,
-                "volume_real":q["volume_real"]} for q in ticks(b[20]["time"])]
+                "volume_real":q["volume_real"],"last":q["last"]} for q in ticks(b[20]["time"])]
         self.assertIsNone(classified_flow(trade,b[20]["time"]))
         self.assertIsNone(classify_closed_bar(b,20,trade))
+
+    def test_quote_only_last_price_and_side_flags_never_become_trade(self):
+        b=bars_buy()
+        tape=ticks(b[20]["time"])
+        for q in tape:
+            q["flags"]=4 | (q["flags"] & (BUY_FLAG|SELL_FLAG))  # ASK=4, no trade event
+        self.assertIsNone(classify_closed_bar(b,20,tape))
+
+    def test_real_candle_volume_mismatch_fails_closed(self):
+        b=bars_buy()
+        tape=ticks(b[20]["time"])
+        b[-1]["real_volume"]=700  # 125 traded vs 700 in M1, >20% divergence
+        self.assertIsNone(classify_closed_bar(b,20,tape))
+        self.assertIsNone(classified_flow(tape,b[20]["time"],bar_real_volume=700))
+
+    def test_both_trade_sides_count_as_unknown_not_valid_flow(self):
+        b=bars_buy()
+        tape=ticks(b[20]["time"])
+        for q in tape[:15]:
+            q["flags"] |= BUY_FLAG|SELL_FLAG
+        self.assertIsNone(classify_closed_bar(b,20,tape))
 
     def test_tick_volume_only_is_not_exchange_contract_size(self):
         b=bars_buy()
