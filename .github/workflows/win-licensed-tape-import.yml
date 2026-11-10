@@ -6,6 +6,7 @@ on:
     paths:
       - research/win_licensed_tape_csv.py
       - tests/test_win_licensed_tape_csv.py
+      - iniciar_pesquisa_WIN_csv_licenciado.cmd
       - .github/workflows/win-licensed-tape-import.yml
   workflow_dispatch:
 permissions:
@@ -29,6 +30,10 @@ jobs:
         run: |
           python -m py_compile research/win_licensed_tape_csv.py
           python -m unittest discover -s tests -p test_win_licensed_tape_csv.py -v
+      - name: Windows one-click launcher offline tests (isolated venv)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: call iniciar_pesquisa_WIN_csv_licenciado.cmd --self-test
       - name: Static prohibited brokerage/credential calls
         run: |
           python -c "from pathlib import Path; c=Path('research/win_licensed_tape_csv.py').read_text(); forbidden=('order_send(', 'account_info(', 'login(', 'requests.post('); assert not any(x in c for x in forbidden); print('Local read-only licensed CSV parser passed')"
