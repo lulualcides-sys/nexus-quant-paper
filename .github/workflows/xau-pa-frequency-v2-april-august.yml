@@ -1,0 +1,115 @@
+name: XAUUSD PA v2 | M1 M5 structural retest plus pullback frequency
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_frequency_v2.py
+      - research/xau_pa_frequency_v2_scorecard.py
+      - tests/test_xau_pa_frequency_v2.py
+      - tests/test_xau_pa_frequency_v2_scorecard.py
+      - .github/workflows/xau-pa-frequency-v2-april-august.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        month: [april, august]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Strict test of complete candle, UTC trading sessions, ask bid and stop
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_frequency_v2.py research/xau_pa_frequency_v2_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_frequency_v2.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_frequency_v2_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_warmup_study.py' -v
+      - name: Fixed real spot XAUUSD BID ASK historical quotes 09-21 UTC
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.month }}" == "april" ]]; then
+            DAYS=(20260406 20260407 20260408 20260409 20260410
+                  20260413 20260414 20260415 20260416 20260417)
+          else
+            DAYS=(20260803 20260804 20260805 20260806 20260807
+                  20260810 20260811 20260812 20260813 20260814)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            src="$RUNNER_TEMP/quotes/xau_${day}.csv"
+            test -s "$src"
+            head -n1 "$src" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_frequency_v2 \
+              --ticks "$src" --day "$day" \
+              --out "$RUNNER_TEMP/evidence/xau_v2_${day}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/xau_v2_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-frequency-v2-${{ matrix.month }}-evidence
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  aggregate:
+    needs: [replay]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-frequency-v2-*-evidence
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Compare all four hypotheses in both months M1 M5 without selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_frequency_v2_scorecard \
+            --evidence "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/out"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads((Path(os.environ["RUNNER_TEMP"])/"out/xau_pa_frequency_v2.json").read_text())
+          assert not r["trading_approved"] and r["no_broker_mt5_validation"]
+          assert len(r["clean_dates"]["april"])>=8
+          assert len(r["clean_dates"]["august"])>=8
+          assert len(r["result"])==2
+          for tf,data in r["result"].items():
+              assert set(data)=={"baseline","structural","pullback","combined"}
+              for month in ("april","august"):
+                  for model,scenarios in data.items():
+                      a=scenarios["double"][month]
+                      assert a["filled"]<=a["signals"]
+                      print("FREQUENCY_V2",tf,month,model,
+                            "signals",a["signals"],"fills",a["filled"],
+                            "wins",a["wins"],"losses",a["losses"],
+                            "net",a["net_usd_per_oz"],"PF",a["profit_factor"],
+                            "bootstrap",a["bootstrap_day_95pct"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-frequency-v2-M1-M5-complete-report
+          path: ${{ runner.temp }}/out/*
+          retention-days: 30
