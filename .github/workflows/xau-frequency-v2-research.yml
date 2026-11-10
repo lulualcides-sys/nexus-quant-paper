@@ -1,0 +1,137 @@
+name: XAUUSD | Frozen six-strategy search, chronological validation, untouched forward test
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - research/xau_frequency_lab.py
+      - research/xau_frequency_scorecard.py
+      - tests/test_xau_frequency_lab.py
+      - tests/test_xau_frequency_scorecard.py
+      - .github/workflows/xau-frequency-v2-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research_immutable:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check candidate and scorecard syntax plus anti-overfitting tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_frequency_lab.py research/xau_frequency_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_frequency_lab.py' -v
+          python -m unittest discover -s tests -p 'test_xau_frequency_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Train 15 predeclared historical sessions, record full-window quarantines
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/xau_bars" "$RUNNER_TEMP/xau_lab"
+          DAYS=(20260921 20260922 20260923 20260924 20260925
+                20260928 20260929 20260930 20261001 20261002
+                20261005 20261006 20261007 20261008 20261009)
+          for day in "${DAYS[@]}"; do
+            d="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${d}T12:00Z" -to "${d}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/xau_bars" \
+              -fn "xau_${day}" -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/xau_bars/xau_${day}.csv"
+            test -s "$file"
+            head -n1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_frequency_lab \
+              --ticks "$file" --day "$day" --day-id "$day" \
+              --out "$RUNNER_TEMP/xau_lab/xau_${day}.json" \
+              --quarantine-out "$RUNNER_TEMP/xau_lab/quarantine_${day}.json"
+            rm -f "$file"
+          done
+      - name: PRESELECT from TRAIN ONLY before validation and future windows
+        shell: bash
+        run: |
+          python -m research.xau_frequency_scorecard \
+            --dir "$RUNNER_TEMP/xau_lab" --mode preselect \
+            --out "$RUNNER_TEMP/xau_lab/training_selection.json"
+          test -s "$RUNNER_TEMP/xau_lab/training_selection.json"
+          sha256sum "$RUNNER_TEMP/xau_lab/training_selection.json"
+      - name: Next ten fixed chronologically later validation sessions
+        shell: bash
+        run: |
+          set -euo pipefail
+          DAYS=(20261012 20261013 20261014 20261015 20261016
+                20261019 20261020 20261021 20261022 20261023)
+          for day in "${DAYS[@]}"; do
+            d="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${d}T12:00Z" -to "${d}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/xau_bars" \
+              -fn "xau_${day}" -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/xau_bars/xau_${day}.csv"
+            test -s "$file"
+            head -n1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_frequency_lab \
+              --ticks "$file" --day "$day" --day-id "$day" \
+              --out "$RUNNER_TEMP/xau_lab/xau_${day}.json" \
+              --quarantine-out "$RUNNER_TEMP/xau_lab/quarantine_${day}.json"
+            rm -f "$file"
+          done
+      - name: NEW forward windows never used by prior Tracker research
+        shell: bash
+        run: |
+          set -euo pipefail
+          # These times are predetermined BEFORE inspecting any returns.
+          for row in "20261109_18 2026-11-09T18:00Z 2026-11-09T23:00Z" \
+                     "20261110_00 2026-11-10T00:00Z 2026-11-10T05:00Z"; do
+            read -r id from to <<< "$row"
+            day="${id:0:8}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "$from" -to "$to" \
+              -t tick -f csv -dir "$RUNNER_TEMP/xau_bars" \
+              -fn "xau_${id}" -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/xau_bars/xau_${id}.csv"
+            test -s "$file"
+            head -n1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_frequency_lab \
+              --ticks "$file" --day "$day" --day-id "$id" \
+              --out "$RUNNER_TEMP/xau_lab/xau_${id}.json" \
+              --quarantine-out "$RUNNER_TEMP/xau_lab/quarantine_${id}.json"
+            rm -f "$file"
+          done
+      - name: Read frozen training selection and disclose all later outcomes
+        shell: bash
+        run: |
+          python -m research.xau_frequency_scorecard \
+            --dir "$RUNNER_TEMP/xau_lab" --mode final \
+            --selected-json "$RUNNER_TEMP/xau_lab/training_selection.json" \
+            --out "$RUNNER_TEMP/xau_lab/heldout_scorecard.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=Path(os.environ["RUNNER_TEMP"])/"xau_lab"
+          a=json.loads((d/"training_selection.json").read_text())
+          b=json.loads((d/"heldout_scorecard.json").read_text())
+          assert a["trading_approved"] is False
+          assert b["approval_blocked"] is True
+          assert b["train_selected_before_future_data"] == a["preselected_candidate"]
+          assert b["validation_days"] >= 8
+          assert b["future_days"] == 2
+          print("FINAL approval BLOCKED until broker test and sufficient unseen samples")
+          PY
+      - name: Keep complete transparent scorecard, not raw licensed tick files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xau-frequency-v2-frozen-training-validation-forward
+          path: |
+            ${{ runner.temp }}/xau_lab/*.json
+          retention-days: 30
