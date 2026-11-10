@@ -141,6 +141,10 @@ def one_bar(book,name,h4,ind,i,*,mode="fixed"):
        "held_bars":0,"borrowed":max(0.0,notional-equity),
        "notional_leverage":notional/equity
     }
+    # The H4 bar is complete at replay/scan time: stop/target can be
+    # touched AFTER entry at its open, including on the entry candle.
+    # Existing-position path guarantees no duplicate new entry.
+    one_bar(book,name,h4,ind,i,mode=mode)
 
 def update(state,hourly):
     h4=aggregate_hourly_to_h4(hourly)

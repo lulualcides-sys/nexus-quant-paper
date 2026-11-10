@@ -51,13 +51,19 @@ class GreenStopTests(unittest.TestCase):
         b=lever.fresh([{"time":i*14400} for i in range(245)])["books"]["lev_channel20"]
         bars=[{"time":i*14400,"open":100,"high":102,"low":98,"close":101} for i in range(251)]
         ind=[{"atr":2} for _ in range(251)]
+        # This test verifies runner policy, not immediate stop settlement.
+        # The entry candle must NOT touch the 0.75-unit protective stop.
+        bars[250]["low"] = 99.6
         with patch("src.leveraged_gold.sign",side_effect=[1,0]):
             lever.one_bar(b,"lev_channel20",bars,ind,250,mode="green_runner")
         p=b["position"]
         self.assertIsNone(p["target"])
         self.assertEqual(p["mode"],"green_runner")
         self.assertAlmostEqual(p["notional_leverage"],2,places=6)
-        self.assertLessEqual(p["qty"]*abs(p["entry"]-p["stop"]),5000*0.015+0.001)
+        # Once the entry candle closes, trailing can tighten the stop.
+        # Planned entry risk must be measured with the original entry_risk,
+        # not with a newer, protective stop that may be above entry.
+        self.assertLessEqual(p["qty"]*p["entry_risk"],5000*0.015+0.001)
     def test_older_open_positions_continue_fixed(self):
         # Even after LIVE_POLICY changes, existing positions should retain
         # the policy written when those particular positions were opened.

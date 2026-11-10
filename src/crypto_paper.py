@@ -179,6 +179,9 @@ def step(b, strategy, bars, ind, i):
                      "slip_cost": (entry - open_price) * qty}
     b["entries"] += 1
     b["last_reason"] = "Entrada virtual COMPRA (sem ordem)"
+    # The entry occurs at this H1 OPEN; check its stop in the same
+    # completed candle, never silently carry first-candle losses forward.
+    step(b, strategy, bars, ind, i)
 
 
 def update(state, datasets):

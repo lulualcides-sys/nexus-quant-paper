@@ -74,6 +74,10 @@ def evaluate_bar(book,key,bars,ind,i):
                     "start":t,"i":i,"held_bars":0,"qty":qty,
                     "stop":open_price-signal_now*ATR_STOP*atr,
                     "target":open_price+signal_now*ATR_TARGET*atr}
+                # Entry is at this candle's OPEN. Its subsequent high/low
+                # must also be checked; otherwise first-bar stops disappear.
+                # Existing-position path returns without another entry.
+                evaluate_bar(book,key,bars,ind,i)
 
 def update(state,bars):
     h4=aggregate_hourly_to_h4(bars)
