@@ -254,6 +254,8 @@ def retest_signal(bars,i,tf,line,breakout_i,rng):
         "breakout_ms":bars[breakout_i]["time"]*1000,
         "line_kind":line.kind,"line_source":line.source,
         "line_retest_level":round(level,5),
+        "line_anchor_indices":[line.x1,line.x2],
+        "line_anchor_prices":[round(line.y1,5),round(line.y2,5)],
     }
 
 
@@ -291,7 +293,8 @@ def range_signal(bars,i,tf,zone,sideways_only=True):
 
 
 def causal_signals(bars,tf,trade_start_ms,trade_end_ms,
-                   *,marking_mode,manual_lines=(),manual_zones=None):
+                   *,marking_mode,manual_lines=(),manual_zones=None,
+                   proxy_zones_fn=None):
     """Confirmed breakout -> persistent pending state -> confirmed retest.
 
     One attempt per line/crossing, no same-bar breakout + retest, expires
@@ -308,7 +311,9 @@ def causal_signals(bars,tf,trade_start_ms,trade_end_ms,
         if manual_zones is not None and manual_zones.source!="user":
             raise ValueError("Proxy zones presented as manual")
     pre=[b for b in bars if (b["time"]+tf)*1000<=trade_start_ms]
-    zone=manual_zones if marking_mode=="manual" else proxy_zones(pre,trade_start_ms)
+    zone=(manual_zones if marking_mode=="manual" else
+          (proxy_zones if proxy_zones_fn is None else proxy_zones_fn)
+          (pre,trade_start_ms))
     pending=None;last_fired=-100;events=Counter()
     out=[]
     for i in range(35,len(bars)-1):
