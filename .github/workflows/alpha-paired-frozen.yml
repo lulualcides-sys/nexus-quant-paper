@@ -1,0 +1,63 @@
+name: Nexus Quant | A-B mesmos candles antes-depois 27 robos
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/compare_frozen_27.py'
+      - '.github/workflows/alpha-paired-frozen.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  exact-tape-paired-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout paired comparator
+        uses: actions/checkout@v4
+      - name: Checkout pre-fix paper engines
+        uses: actions/checkout@v4
+        with:
+          ref: c35c657cfed4cca877a29c6511eebfa91643331a
+          path: baseline
+          persist-credentials: false
+      - name: Checkout published fixed paper engines
+        uses: actions/checkout@v4
+        with:
+          ref: 31bcedddb699a4b3f605a10df39d8dcf9bf77c9c
+          path: corrected
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download immutable pre-fix OHLC from existing successful run
+        uses: actions/download-artifact@v4
+        with:
+          name: nexus-27-paper-backtest
+          run-id: 42827354096
+          repository: lulualcides-sys/nexus-quant-paper
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: frozen
+      - name: Assert exact frozen historical artifact
+        run: |
+          test -s frozen/backtest_27_frozen_tape.json.gz
+          sha256sum frozen/backtest_27_frozen_tape.json.gz
+      - name: Replay baseline on exact frozen tape
+        run: python research/compare_frozen_27.py replay baseline frozen/backtest_27_frozen_tape.json.gz output/before.json
+      - name: Replay published fix on IDENTICAL frozen tape
+        run: python research/compare_frozen_27.py replay corrected frozen/backtest_27_frozen_tape.json.gz output/after.json
+      - name: Compare 27 strategies on same input and export results
+        run: python research/compare_frozen_27.py compare output/before.json output/after.json output/comparison.md output/comparison.json
+      - name: Archive paired proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-alpha-same-tape-before-after
+          path: |
+            output/before.json
+            output/after.json
+            output/comparison.md
+            output/comparison.json
+          if-no-files-found: warn
+          retention-days: 30
