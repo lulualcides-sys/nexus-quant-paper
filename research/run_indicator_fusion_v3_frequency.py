@@ -2,7 +2,7 @@
 from __future__ import annotations
 from datetime import datetime,timezone
 from pathlib import Path
-import json
+import json, gzip, hashlib
 from research.indicator_fusion_v3_frequency import research
 from research.atlas_mtf_comparison import download_m5,resample_m5
 from research.run_indicator_fusion import download_m1
@@ -20,6 +20,15 @@ def main():
             else:
                 if m5 is None:m5=download_m5()
                 data=resample_m5(m5,300 if name=='M5' else 900)
+            if name=='M5':
+                out=Path('research/results/xau_gc_f_observed_m5_20261110.json.gz')
+                out.parent.mkdir(parents=True,exist_ok=True)
+                raw=json.dumps(data,sort_keys=True,separators=(',',':')).encode('utf-8')
+                with gzip.open(out,'wb') as handle: handle.write(raw)
+                digest=hashlib.sha256(raw).hexdigest()
+                result['m5_snapshot_sha256']=digest
+                result['m5_snapshot_bars']=len(data)
+                print('V3_SNAPSHOT',out,'sha256',digest,'bars',len(data),flush=True)
             stats=research(data,timeframe=name)
             result['timeframes'][name]=stats
             for cost in ('0.0','7.0','14.0','28.0'):
