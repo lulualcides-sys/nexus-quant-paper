@@ -98,9 +98,23 @@ def parse_mark_file(path: str|Path|None, day: str, timeframe: int,
     if path is None:
         return [],None
     content=json.loads(Path(path).read_text(encoding="utf-8"))
-    if (content.get("symbol")!="XAUUSD" or content.get("day")!=day or
-        content.get("timeframe_seconds")!=timeframe):
-        raise ValueError("User's mark file does not match symbol/day/timeframe")
+    if content.get("symbol")!="XAUUSD" or content.get("day")!=day:
+        raise ValueError("User's mark file does not match symbol/day")
+    if "by_timeframe" in content:
+        by_tf=content["by_timeframe"]
+        if not isinstance(by_tf,dict) or not by_tf:
+            raise ValueError("Manual file needs timeframe-specific marks")
+        label="M1" if timeframe==60 else "M5"
+        selected=by_tf.get(label)
+        if selected is None:
+            # Explicitly leave the unmarked timeframe with ZERO signals.
+            return [],None
+        if not isinstance(selected,dict):
+            raise ValueError("Malformed timeframe-specific mark object")
+    else:
+        if content.get("timeframe_seconds")!=timeframe:
+            return [],None
+        selected=content
     date_marker=content.get("created_ms")
     if not isinstance(date_marker,int) or date_marker>trade_start_ms:
         raise ValueError("Manual marking must precede trading start")
@@ -108,7 +122,7 @@ def parse_mark_file(path: str|Path|None, day: str, timeframe: int,
     # Absolute epoch-bar numbers cannot be compared to array indices.
     bar_index={bar["time"]*1000:i for i,bar in enumerate(bars)}
     lines=[]
-    for raw in content.get("trendlines",[]):
+    for raw in selected.get("trendlines",[]):
         if not isinstance(raw,dict):
             raise ValueError("Malformed manual trendline")
         x1_ms=raw.get("x1_ms");x2_ms=raw.get("x2_ms")
@@ -125,8 +139,8 @@ def parse_mark_file(path: str|Path|None, day: str, timeframe: int,
         line.assert_valid(trade_start_ms,timeframe)
         lines.append(line)
     zones=None
-    if content.get("range") is not None:
-        z=content["range"]
+    if selected.get("range") is not None:
+        z=selected["range"]
         zones=MarkedZones(
             support_low=float(z["support_low"]),
             support_high=float(z["support_high"]),
