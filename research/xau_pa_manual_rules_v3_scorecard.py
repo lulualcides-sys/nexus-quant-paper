@@ -86,14 +86,14 @@ def summarize(folder: str|Path):
             r.get("trade_utc")!="12:00-21:00" or
             len(r.get("source",{}).get("sha256",""))!=64 or
             r["source"].get("date_utc")!=day or
-            set(r.get("results",{}))!={"M1","M5"}):
+            set(r.get("results",{}))!={"M1","M5","SHARED"}):
             raise ValueError("Source/provenance cannot support this result")
         if r["marking_mode"] not in ("manual","proxy"):
             raise ValueError("Unrecognized mark source")
         if mode is None: mode=r["marking_mode"]
         if mode!=r["marking_mode"]:
             raise ValueError("Cannot mix manual and proxy source days")
-        for tf in ("M1","M5"):
+        for tf in ("M1","M5","SHARED"):
             if set(r["results"][tf])!={"legacy","marked_rules_v3"}:
                 raise ValueError("Missing control/v3 paired replay")
             for policy in ("legacy","marked_rules_v3"):
@@ -103,7 +103,7 @@ def summarize(folder: str|Path):
     if min(len(x) for x in clean.values())<3:
         raise ValueError("Insufficient clean days in each predeclared panel")
     output={}
-    for tf in ("M1","M5"):
+    for tf in ("M1","M5","SHARED"):
         output[tf]={}
         for policy in ("legacy","marked_rules_v3"):
             output[tf][policy]={
@@ -148,7 +148,7 @@ def markdown(r):
         "| TF | Braço | Out sinais / exec. | Out US$/oz | Nov sinais / exec. | Nov US$/oz |",
         "|---|---|---:|---:|---:|---:|",
     ]
-    for tf in ("M1","M5"):
+    for tf in ("M1","M5","SHARED"):
         for arm in ("legacy","marked_rules_v3"):
             a=r["result"][tf][arm]["double"]
             x=a["october"];y=a["november"]
@@ -160,7 +160,7 @@ def markdown(r):
         "",
         "## Motivos para NÃO entrar, e composição dos sinais",
     ])
-    for tf in ("M1","M5"):
+    for tf in ("M1","M5","SHARED"):
         for period,row in r["result"][tf]["marked_rules_v3"]["double"].items():
             lines.append(
                 f"- {tf} {period}: {row['by_setup']}; "
@@ -171,6 +171,8 @@ def markdown(r):
         "",
         "Simulação em BID/ASK Dukascopy; custos de corretora hipotéticos; "
         "não é conta MT5, nem valida lotes reais, nem demonstra desempenho futuro.",
+        "SHARED representa uma trava global no XAU para M1+M5: sinais do mesmo instante são "
+        "descartados por falta de prioridade manual especificada. NÃO somar M1 e M5 como carteira. ",
         "Os dois meses foram fixados antes de executar a pesquisa v3, "
         "mas são históricos e não devem ser chamados de forward prospectivo.",
         "**Nenhuma ordem automática e nenhuma aprovação para dinheiro real.**",
