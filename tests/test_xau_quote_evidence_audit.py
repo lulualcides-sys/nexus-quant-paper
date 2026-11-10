@@ -89,6 +89,16 @@ class EvidenceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"perversely"):
                 analyze_evidence(p,["20261109"])
 
+    def test_mismatched_source_hash_between_timeframes_is_blocked(self):
+        td,p=self.make_folder()
+        with td:
+            f=p/"xau_20261109_M5_friction.json"
+            item=json.loads(f.read_text())
+            item["source"]["source_sha256"]="2"*64
+            f.write_text(json.dumps(item))
+            with self.assertRaisesRegex(ValueError,"Source changed"):
+                analyze_evidence(p,["20261109"])
+
     def test_no_broker_equivalence_claims(self):
         td,p=self.make_folder()
         with td:
