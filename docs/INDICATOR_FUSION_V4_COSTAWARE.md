@@ -20,7 +20,7 @@ Manter aproximadamente 200 entradas/30 dias em uma única carteira de ouro, sem 
 - Contagem de operações por mês em calendários parciais não autoriza afirmar **200 operações em mês completo**. Usar estimativa explicitamente rotulada de 30 dias, e acompanhar meses futuros inteiros.
 
 ## Estado e critérios de promoção
-- 39 testes unitários agregados V1–V4 aprovados antes da publicação da branch; o workflow executa 39 testes novamente.
+- 40 testes unitários agregados V1–V4 aprovados antes da publicação da branch; o workflow executa 40 testes novamente.
 - Só promover após avaliação em dados prospectivos novos do mesmo ativo, simulação da execução real do broker, slippage, spread variável, lote mínimo e regime de notícias, drawdown com P&L aberto, comparando custos normal e estresse.
 - Nenhuma fonte compilada EX4/EX5 foi decompilada; nenhum robô anterior substituído, nenhum estado ou ordem real alterado.
 
@@ -30,3 +30,6 @@ Manter aproximadamente 200 entradas/30 dias em uma única carteira de ouro, sem 
 `python -m research.run_indicator_fusion_v4_costaware`
 
 Arquivo auditável de saída: `research/results/indicator_fusion_v4_costaware_latest.json` no artifact GitHub Actions do workflow.
+
+## Ablação pós-hoc (não aprovada)
+Após observar as perdas por modelo, foi testada a retirada completa do gatilho MOMENTUM_2BAR. Isso **não adiciona filtros**, mas É seleção retrospectiva por resultado, com risco de sobreajuste. Relatar o comparativo e os três segmentos cronológicos; não afirmar robustez independente nem ativar operação real.
