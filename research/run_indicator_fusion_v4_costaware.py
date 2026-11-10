@@ -18,6 +18,7 @@ def main():
               'net',x['net_usd'],'gross',x['gross_usd'],'fees',x['fees_usd'],
               'dd',x['max_realized_drawdown_pct'],'per_bot',x['entered_by_type'],flush=True)
     print('V4_FOLDS',result['folds'],flush=True)
+    print('V4_ABLATION',result['posthoc_ablation_no_momentum'],flush=True)
     path=Path('research/results/indicator_fusion_v4_costaware_latest.json')
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
