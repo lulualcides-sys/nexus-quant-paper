@@ -70,6 +70,25 @@ def run(bars, timeframe='M5'):
             row[name]={'closed_trades':rr['closed_trades'],'net_usd':rr['net_usd'],
                        'drawdown_pct':rr['max_realized_drawdown_pct']}
         output['folds'].append(row)
+    # Post-hoc ablation is diagnostic ONLY. Chosen after seeing which models
+    # lost money on this same dataset: it is not an independent holdout.
+    disabled='MOMENTUM_2BAR'
+    ablation={name:(series if name!=disabled else [0]*len(series))
+              for name,series in sig.items()}
+    study={'disabled_model':disabled,'post_hoc_selected':True,
+           'approved_for_live':False,'by_cost':{},'folds':[]}
+    for key in ('fbs_spread_plus_0p15_each_side','fbs_spread_plus_0p75_each_side',
+                'fbs_spread_plus_1p50_each_side','legacy_stress_14bps'):
+        rr=portfolio(bars,atr,ablation,**params,**SCENARIOS[key])
+        study['by_cost'][key]={k:v for k,v in rr.items() if k!='ledger'}
+    for i in range(3):
+        row={'first':bars[cuts[i]]['time'],'last':bars[cuts[i+1]-1]['time']}
+        for key in ('fbs_spread_plus_0p15_each_side','fbs_spread_plus_0p75_each_side'):
+            rr=portfolio(bars,atr,ablation,start=cuts[i],end=cuts[i+1],
+                         **params,**SCENARIOS[key])
+            row[key]={'trades':rr['closed_trades'],'net':rr['net_usd']}
+        study['folds'].append(row)
+    output['posthoc_ablation_no_momentum']=study
     out=output['cost_scenarios']['fbs_spread_plus_0p15_each_side']
     output['observed_monthly_trade_count']=out['trade_counts_by_utc_month']
     output['estimate_30day_trades']=out['trades_per_30_calendar_days_estimate']
