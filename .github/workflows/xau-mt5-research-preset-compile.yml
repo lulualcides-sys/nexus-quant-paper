@@ -102,5 +102,5 @@ jobs:
         if: success()
         with:
           name: nq-xauusd-quote-tracker-LAB-experimental-EX5
-          path: indicators/mt5/NQ_XAU_Quote_Tracker_Research.ex5
+          path: indicators/mt5/NQ_XAU_Quote_Tracker_Lab_Research.ex5
           retention-days: 30
