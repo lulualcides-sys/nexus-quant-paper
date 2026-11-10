@@ -1,0 +1,117 @@
+name: XAUUSD PA v4 | causal marked swings and confirmed retests
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_fidelity_v4.py
+      - research/xau_pa_fidelity_v4_scorecard.py
+      - research/xau_pa_manual_rules_v3.py
+      - research/xau_pa_shared_execution.py
+      - tests/test_xau_pa_fidelity_v4.py
+      - .github/workflows/xau-pa-fidelity-v4-sep-oct.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        month: [september, october]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unit test causal marks, closed-bar confirmations and shared stops
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_fidelity_v4.py research/xau_pa_fidelity_v4_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_fidelity_v4.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3_scorecard.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_shared_execution.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+      - name: Paired 09-21 UTC XAUUSD BID ASK source replay, trade 12-21 UTC
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/raw" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.month }}" == "september" ]]; then
+            DAYS=(20260921 20260922 20260923 20260924 20260925)
+          else
+            DAYS=(20261005 20261006 20261007 20261008 20261009)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/raw" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/raw/xau_${day}.csv"
+            test -s "$file"
+            head -n1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_fidelity_v4 \
+              --ticks "$file" --day "$day" \
+              --out "$RUNNER_TEMP/evidence/xau_pa_v4_${day}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/xau_pa_v4_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-price-action-v4-${{ matrix.month }}-paired-ledgers
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  audit:
+    needs: [compare]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-price-action-v4-*-paired-ledgers
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Audit both periods unchanged v3 vs v4, global lock, wins, loss and veto
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_fidelity_v4_scorecard \
+            --folder "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/report"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          path=Path(os.environ["RUNNER_TEMP"])/"report/xau_pa_fidelity_v4_scorecard.json"
+          r=json.loads(path.read_text())
+          assert not r["approved_to_trade"] and r["no_broker_mt5_live_or_demo_fills_verified"]
+          assert not r["fidelity_to_user_manual_lines_verified"]
+          assert r["one_shared_position_across_timeframes"]
+          for month in ("september","october"):
+              assert len(r["clean_dates"][month])>=4
+          for tf,scenarios in r["result"].items():
+              assert set(scenarios)=={"v3_baseline","v4_confirmed"}
+              for mode,costs in scenarios.items():
+                  for month,record in costs["double"].items():
+                      assert record["filled"]<=record["signals"]
+                      print("PA_FIDELITY_V4",tf,mode,month,
+                            "signals",record["signals"],
+                            "fills",record["filled"],"wins",record["wins"],
+                            "losses",record["losses"],
+                            "net_USD_per_oz",record["net_usd_per_oz"],
+                            "exits",record["exit_reasons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-price-action-v4-september-october-report
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30
