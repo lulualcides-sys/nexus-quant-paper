@@ -44,15 +44,15 @@ Exemplo de formato de arquivo manual; **valores sintéticos ilustrativos**, não
 {
   "symbol": "XAUUSD",
   "day": "20261102",
-  "created_ms": 1793616900000,
+  "created_ms": 1793619000000,
   "by_timeframe": {
     "M1": {
       "trendlines": [
         {
           "kind": "LTD",
-          "x1_ms": 1793606400000,
+          "x1_ms": 1793611200000,
           "y1": 4000.0,
-          "x2_ms": 1793610000000,
+          "x2_ms": 1793614500000,
           "y2": 3995.0
         }
       ],
@@ -62,9 +62,6 @@ Exemplo de formato de arquivo manual; **valores sintéticos ilustrativos**, não
         "resistance_low": 4020.0,
         "resistance_high": 4022.0
       }
-    },
-    "M5": {
-      "trendlines": []
     }
   }
 }
