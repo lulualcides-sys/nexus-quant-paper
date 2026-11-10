@@ -1,0 +1,39 @@
+name: XAU V6 | frozen bid-ask 3-month external replay
+on:
+  workflow_dispatch:
+  push:
+    branches: ['research/indicator-fusion-gold-*']
+    paths:
+      - research/xau_v6_bidask_research.py
+      - tests/test_xau_v6_bidask_research.py
+      - .github/workflows/xau-v6-bidask-validation.yml
+permissions:
+  contents: read
+jobs:
+  older-source-time-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run 72+ focused V1-V6 simulator invariant tests
+        run: |
+          python -m unittest \
+            tests.test_indicator_fusion_bots \
+            tests.test_indicator_fusion_v2 \
+            tests.test_indicator_fusion_v3_frequency \
+            tests.test_indicator_fusion_v4_costaware \
+            tests.test_indicator_fusion_v5_exits \
+            tests.test_xau_v6_bidask_research -v
+      - name: Independently retrieve real Dukascopy historical BID and ASK candles and test locked V4
+        run: |
+          python -m research.xau_v6_bidask_research --workers 6
+      - name: Save paper-only 3-month report and source fingerprints
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xau-v6-older-bidask-paper-research
+          path: research/results/xau_v6_bidask_2026_jul_sep.json
+          if-no-files-found: warn
