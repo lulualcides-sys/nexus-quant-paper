@@ -27,7 +27,7 @@
 | ativo F75/alvo250 | M5 | 23 | 19 | 6/13 | **−82,100** | 0,423 | −26,534 | −55,566 |
 | equilibrado F75/alvo250 | M5 | 12 | 11 | 5/6 | **−46,348** | 0,464 | −19,947 | −26,401 |
 
-**Primeira metade:** 03–14 agosto (nove sessões válidas); **segunda metade:** 17–28 agosto (nove sessões válidas). A separação está fixada por data. Cada variante apresentou P&L líquido **negativo em ambas as metades**, mesmo sem selecionar um vencedor pela amostra.
+**Primeira metade:** 03–14 agosto (nove sessões válidas); **segunda metade:** 17–28 agosto (nove sessões válidas). A separação está fixada por data. Todas as variantes tiveram P&L líquido **negativo no acumulado do mês**. Nas metades separadas, nenhuma teve resultado positivo: a referência M5 teve **zero operações/zero resultado** na segunda metade, enquanto as demais apresentaram prejuízo nas duas metades.
 
 Contagens de sinais, preenchimentos e lucro são de **cada configuração concorrente**, e **não devem ser somadas entre variantes como se fossem operações independentes de uma única conta**.
 
