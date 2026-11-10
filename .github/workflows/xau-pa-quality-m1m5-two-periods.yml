@@ -35,7 +35,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
           python -m unittest discover -s tests -p 'test_xau_pa_scorecard.py' -v
           python -m unittest discover -s tests -p 'test_xau_pa_may_replication.py' -v
-      - name: Fixed same-feed BID/ASK quote comparisons: control and quality
+      - name: "Fixed same-feed BID/ASK quote comparisons - control and quality"
         shell: bash
         run: |
           set -euo pipefail
