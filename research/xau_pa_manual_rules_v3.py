@@ -294,7 +294,7 @@ def range_signal(bars,i,tf,zone,sideways_only=True):
 
 def causal_signals(bars,tf,trade_start_ms,trade_end_ms,
                    *,marking_mode,manual_lines=(),manual_zones=None,
-                   proxy_zones_fn=None):
+                   proxy_zones_fn=None,proxy_dynamic_zone_fn=None):
     """Confirmed breakout -> persistent pending state -> confirmed retest.
 
     One attempt per line/crossing, no same-bar breakout + retest, expires
@@ -323,6 +323,14 @@ def causal_signals(bars,tf,trade_start_ms,trade_end_ms,
         rng=atr(bars,i,14)
         if not rng or rng<=0:
             events["missing_atr"]+=1;continue
+        if marking_mode=="proxy" and proxy_dynamic_zone_fn is not None:
+            # The provider sees a read-only slice of candles STRICTLY before
+            # this candidate candle. It cannot use its high/low/close.
+            zone=proxy_dynamic_zone_fn(tuple(bars[:i]),b["time"]*1000,tf)
+            if zone is not None:
+                if zone.source!="proxy" or zone.created_ms>b["time"]*1000:
+                    raise ValueError("Causal proxy must be created before its signal candle")
+            events["proxy_zone_refreshed"]+=1
 
         # Process PENDING before allowing fresh breakouts. Thus retest MUST
         # be a later candle; break/retest cannot execute on breakout candle.
