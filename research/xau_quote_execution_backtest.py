@@ -6,6 +6,8 @@ Long TP/SL use BID; short TP/SL use ASK. Targets fill at the stated level,
 stops can slip through gaps, and the last tick forces liquidation. There is
 no intrabar OHLC fill assumption. Broker commissions/swap, latency, rejected
 orders and available liquidity are not known; this is NOT a broker backtest.
+A limit order is never filled worse than its limit. Slippage applies only to
+stop/market exits; target limits fill at target if touched.
 PnL units are hypothetical USD per ONE ounce, not per broker lot/account.
 """
 from __future__ import annotations
@@ -83,7 +85,10 @@ def simulate_quote_execution(ticks, planned_signals: list[dict],
         # Slip ALWAYS adverse, fees per one ounce are hypothetical assumptions.
         side=p["side"]
         raw_exit=quote_exit
-        exit_px=raw_exit-side*cfg.slippage_usd_per_side
+        # TAKE PROFIT is treated as a LIMIT exit: never an adverse fill past
+        # its own limit. Only stops and market/time exits can slip.
+        exit_px=(raw_exit if reason=="TARGET" else
+                 raw_exit-side*cfg.slippage_usd_per_side)
         pnl=side*(exit_px-p["fill"])-cfg.commission_roundtrip_usd_per_oz
         closed.append({
             "side":"BUY" if side==1 else "SELL",
@@ -149,7 +154,7 @@ def simulate_quote_execution(ticks, planned_signals: list[dict],
                 pending=None
                 filled+=1
                 position={**s,"opened_ms":ts,
-                          "fill":s["entry"]+side*cfg.slippage_usd_per_side}
+                          "fill":s["entry"]  # LIMIT orders must not fill at a worse price}
                 # Account for gap-through both entry and stop on the SAME tick.
                 if side==1 and bid<=s["stop"]:
                     close(ts,min(bid,s["stop"]),"STOP_SAME_TICK")
