@@ -11,7 +11,7 @@ from pathlib import Path
 
 from research.win_licensed_tape_csv import (
     side,parse_brazil_number,parse_event_time,safe_trade_rows,
-    build_minutes,private_output,source_hash
+    build_minutes,private_output,source_hash,detect_csv_session
 )
 from research.win_flow_public_label_comparison import independent_signals
 
@@ -94,6 +94,21 @@ class LicensedTapeTests(unittest.TestCase):
             self.assertEqual(len(source_hash(path)),64)
             self.assertNotIn("BUY_AGENT_SECRET",saved)
             self.assertNotIn("SELL_AGENT_SECRET",saved)
+
+    def test_infer_symbol_and_day_without_manual_configuration(self):
+        with tempfile.TemporaryDirectory() as td:
+            path=Path(td)/"licensed.csv"
+            create_csv(path,make_rows())
+            self.assertEqual(detect_csv_session(path),("WINZ26","2026-11-03"))
+
+    def test_continuous_symbol_cannot_be_auto_inferred(self):
+        with tempfile.TemporaryDirectory() as td:
+            path=Path(td)/"licensed.csv"
+            rows=make_rows()
+            rows[0]=("WINFUT",*rows[0][1:])
+            create_csv(path,rows)
+            with self.assertRaisesRegex(ValueError,"single-expiry"):
+                detect_csv_session(path)
 
     def test_missing_aggressor_always_reduces_coverage(self):
         rows=make_rows()
