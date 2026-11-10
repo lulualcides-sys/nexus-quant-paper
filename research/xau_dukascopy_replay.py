@@ -42,7 +42,7 @@ def aggregate_real_quotes(path: str | Path, timeframe_seconds: int = 60,
     an accurate live MT5 chart must use its *own* broker feed instead.
     """
     path = Path(path)
-    if not point > 0 or timeframe_seconds not in (60, 300):
+    if not point > 0 or timeframe_seconds not in (60, 300, 900):
         raise ValueError("Invalid timeframe/point")
     size = path.stat().st_size
     if size <= 0 or size > 250_000_000:
