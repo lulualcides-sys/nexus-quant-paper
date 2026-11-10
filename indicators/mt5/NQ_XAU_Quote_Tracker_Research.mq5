@@ -187,7 +187,13 @@ void DrawLevel(const string id,const string suffix,const datetime originTime,
          ObjectSetInteger(0,labelKey,OBJPROP_SELECTABLE,false);
          ObjectSetInteger(0,labelKey,OBJPROP_HIDDEN,true);
          ObjectSetString(0,labelKey,OBJPROP_FONT,"Arial");
-         ObjectSetString(0,labelKey,OBJPROP_TEXT,suffix+"  "+DoubleToString(p,_Digits));
+         string caption=suffix;
+         if(suffix=="ENTRY_50") caption="ENTRADA 50%";
+         else if(suffix=="TARGET_200") caption="ALVO 200%";
+         else if(suffix=="STOP_NEG100") caption="STOP -100%";
+         else if(suffix=="BASE_0") caption="FIBO 0%";
+         else if(suffix=="BASE_100") caption="FIBO 100%";
+         ObjectSetString(0,labelKey,OBJPROP_TEXT,caption+"  "+DoubleToString(p,_Digits));
       }
    }
 }
