@@ -154,7 +154,7 @@ def simulate_quote_execution(ticks, planned_signals: list[dict],
                 pending=None
                 filled+=1
                 position={**s,"opened_ms":ts,
-                          "fill":s["entry"]  # LIMIT orders must not fill at a worse price}
+                          "fill":s["entry"]}  # LIMIT orders must not fill worse than the limit
                 # Account for gap-through both entry and stop on the SAME tick.
                 if side==1 and bid<=s["stop"]:
                     close(ts,min(bid,s["stop"]),"STOP_SAME_TICK")
