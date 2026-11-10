@@ -109,7 +109,7 @@ class DukascopyReplayTests(unittest.TestCase):
             file=Path(td)/"quotes.csv"
             write_ticks(file)
             with self.assertRaisesRegex(ValueError,"Invalid timeframe"):
-                aggregate_real_quotes(file,900)
+                aggregate_real_quotes(file,1800)
 
     def test_warmup_required(self):
         with tempfile.TemporaryDirectory() as td:
