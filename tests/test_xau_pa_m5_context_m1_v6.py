@@ -9,7 +9,7 @@ import unittest
 
 from research.xau_pa_m5_context_m1_v6 import (
     DAYS,POLICIES,m5_context_at,filter_m1_with_m5,
-    confirm_m5_zone_touch,evaluate_day,utc_ms,
+    confirm_m5_zone_touch,evaluate_day,audit_excursions,utc_ms,
 )
 
 
@@ -105,6 +105,24 @@ class M5ContextM1Tests(unittest.TestCase):
         }
         with self.assertRaisesRegex(ValueError,"M1 signal candle not available"):
             confirm_m5_zone_touch([s],[])
+
+    def test_mfe_mae_only_until_actual_exit_and_executable_side(self):
+        ms=100000
+        trade={
+            "side":1,"entry":100.2,"stop":99.2,"entry_ms":ms,
+            "exit_ms":ms+2000,"reason":"STOP",
+        }
+        # Long exits use BID. Never use ASK peaks or post-stop recovery.
+        quotes=[
+            (ms,100.,100.3),(ms+1000,100.81,101.5),
+            (ms+2000,99.1,99.3),
+            (ms+3000,105.,105.2),
+        ]
+        tagged=audit_excursions([trade],quotes)[0]
+        self.assertAlmostEqual(tagged["MFE_R_before_actual_exit"],.61)
+        self.assertTrue(tagged["stopped_after_0_5R"])
+        self.assertFalse(tagged["stopped_after_1R"])
+        self.assertLessEqual(tagged["MAE_R_before_actual_exit"],-1.)
 
     def test_disallows_unselected_optimization_dates(self):
         with self.assertRaisesRegex(ValueError,"preregistered"):
