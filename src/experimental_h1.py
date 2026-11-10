@@ -176,8 +176,9 @@ def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=T
                          "reason": strategy, "risk_fraction": RISK_FRACTION})
     b["diagnostics"]["entered"] += 1
     b["last_reason"] = "Entrada experimental COMPRA" if side > 0 else "Entrada experimental VENDA"
-    # Entry at this candle's open uses only previous completed OHLC.
-    # No claim of actual executable brokerage fills.
+    # Enter at candle OPEN: this same complete candle can hit the stop.
+    # Existing-position path checks it without another entry.
+    step(b, market, strategy, bars, ind, i, allow_new_entry=False)
 
 
 def reconcile_subhour_watermark(state,market,stamps,mark):
