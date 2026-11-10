@@ -177,14 +177,21 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
             side = pos['side']
             hit_stop = b['low'] <= pos['stop'] if side==1 else b['high'] >= pos['stop']
             hit_target = b['high'] >= pos['target'] if side==1 else b['low'] <= pos['target']
-            if hit_stop:
-                # Worse gap price, not fictitious stop fill.
-                fill = min(b['open'],pos['stop']) if side==1 else max(b['open'],pos['stop'])
-                why = 'stop_first'
+            # If OPEN already crossed a level, its chronological priority is
+            # observable. Stop-first applies ONLY to ambiguous intrabar paths.
+            # Favorable gaps are conservatively capped at the target price.
+            if (side==1 and b['open']<=pos['stop']) or (side==-1 and b['open']>=pos['stop']):
+                fill=b['open']
+                why='stop_gap'
+            elif (side==1 and b['open']>=pos['target']) or (side==-1 and b['open']<=pos['target']):
+                fill=pos['target']
+                why='target_gap'
+            elif hit_stop:
+                fill=pos['stop']
+                why='stop_first'
             elif hit_target:
-                fill = pos['target']
-                # favorable gap: cap at target, never exaggerate profit.
-                why = 'target'
+                fill=pos['target']
+                why='target'
             elif i-pos['at']>=48:
                 fill=b['close'];why='time'
             else:
@@ -238,8 +245,8 @@ def replay(bars, signal, feats, *, cost_bps=14., start=None, end=None, capital=5
     return {'trades':len(trades), 'closed_net_usd':round(equity-capital,2),
             'closed_gross_usd':round(sum(t['gross'] for t in trades),2),
             'closed_fees_usd':round(sum(t['cost'] for t in trades),2),
-            'stop_exits':sum(t['exit_reason']=='stop_first' for t in trades),
-            'target_exits':sum(t['exit_reason']=='target' for t in trades),
+            'stop_exits':sum(t['exit_reason'] in ('stop_first','stop_gap') for t in trades),
+            'target_exits':sum(t['exit_reason'] in ('target','target_gap') for t in trades),
             'time_exits':sum(t['exit_reason']=='time' for t in trades),
             'marked_net_usd':round(equity-capital+mtm,2),
             'open_at_end':pos is not None,'winrate_pct':round(100*sum(t['net']>0 for t in trades)/len(trades),2) if trades else None,
