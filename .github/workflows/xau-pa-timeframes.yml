@@ -5,6 +5,7 @@ on:
     paths:
       - research/xau_pa_timeframes.py
       - tests/test_xau_pa_timeframes.py
+      - tests/test_xau_dukascopy_replay.py
       - .github/workflows/xau-pa-timeframes.yml
   workflow_dispatch:
 permissions:
