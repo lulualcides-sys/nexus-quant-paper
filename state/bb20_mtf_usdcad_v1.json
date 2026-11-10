@@ -2,9 +2,23 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794272400,
+  "watermark_m15": 1794277800,
   "equity": 997.0289033597743,
-  "position": null,
+  "position": {
+    "side": 1,
+    "entry": 1.4125200510025024,
+    "entry_ts": 1794275100,
+    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
+    "qty_usd": 997.0289033597743,
+    "stop": 1.4107503042423433,
+    "initial_r": 0.0017697467601592504,
+    "best_close": 1.4125200510025024,
+    "stop_policy": "close_trailing_no_tp_v1",
+    "stop_updates": 0,
+    "green_protected": false,
+    "target": null,
+    "confirm_h1": 1794268800
+  },
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -151,6 +165,6 @@
       "final_stop": 1.4118302610657278
     }
   ],
-  "last_entry_h1": 1794218400,
-  "last_reason": "Confirmação H1 expirada"
+  "last_entry_h1": 1794268800,
+  "last_reason": "Entrada virtual COMPRA"
 }
