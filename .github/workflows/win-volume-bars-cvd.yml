@@ -8,6 +8,7 @@ on:
       - tests/test_win_volume_bars_cvd.py
       - research/win_profit_timestrades_export.py
       - tests/test_win_profit_timestrades_export.py
+      - analisar_WIN_fluxo_Profit_timestrades.cmd
       - .github/workflows/win-volume-bars-cvd.yml
   workflow_dispatch:
 permissions:
@@ -29,6 +30,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check tzdata
       - name: Compile independent research engine
         run: python -m py_compile research/win_volume_bars_cvd.py research/win_profit_timestrades_export.py
+      - name: Test Windows one-click CSV import launcher with isolated environment
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: call analisar_WIN_fluxo_Profit_timestrades.cmd --self-test
       - name: Test causal volume bars, trade-by-trade CVD and absorption
         run: |
           python -m unittest discover -s tests -p test_win_volume_bars_cvd.py -v
