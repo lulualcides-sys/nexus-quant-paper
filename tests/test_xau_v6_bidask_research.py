@@ -78,6 +78,13 @@ class ResearchV6Tests(unittest.TestCase):
         res,_=m.replay_bidask(bars,slippage=.15,capital=100,atr=[2]*len(bars),signals=signals)
         self.assertEqual(res['closed_trades'],0)
         self.assertGreater(res['blocked'].get('min_lot',0),0)
+    def test_bank_size_is_not_an_extra_entry_filter(self):
+        bars=synthetic_quotes();sig={k:[0]*len(bars) for k in m.NAMES};sig[m.NAMES[0]][225]=1
+        small,_=m.replay_bidask(bars,slippage=.15,capital=100,atr=[2]*len(bars),signals=sig)
+        large,_=m.replay_bidask(bars,slippage=.15,capital=10000,atr=[2]*len(bars),signals=sig)
+        self.assertEqual(small['closed_trades'],0)
+        self.assertEqual(large['closed_trades'],1)
+        self.assertEqual(m.PARAMS['risk_frac'],.0075)
     def test_parameter_fixed(self):
         self.assertEqual((m.PARAMS['stop_atr'],m.PARAMS['target_r'],m.PARAMS['max_hold']),(3.,3.,36))
         self.assertEqual(m.DISABLED,'MOMENTUM_2BAR')

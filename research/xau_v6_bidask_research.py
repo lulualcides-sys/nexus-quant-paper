@@ -414,6 +414,20 @@ def run_study(bars,meta):
        all(f1[f'2026-{x:02d}']['net_usd']>0 and f2[f'2026-{x:02d}']['net_usd']>0 for x in (7,8,9)) and
        stress['max_closed_equity_drawdown_pct']<=12 and
        normal['daily_bootstrap_ci'].get('two_sided_95pct_ci_for_net_closed_usd',[-1])[0]>0)
+    # Separate sizing-only diagnostic, defined after the original V6 audit.
+    # Not an optimization or improvement candidate; changing the virtual bankroll
+    # leaves every signal, fee, stop, and target rule unchanged. The US$5000
+    # baseline above remains authoritative for the user's starting bank.
+    sizing={}
+    for slip in (.15,.75):
+        key=f'slippage_{slip:.2f}_each_side'
+        alt,alt_ledger=replay_bidask(bars,start=eval_i,slippage=slip,
+                                    capital=10000.,atr=atr,signals=signals)
+        sizing[key]={**alt,'daily_bootstrap_ci':bootstrap_daily_pnl(alt_ledger)}
+    results['capital_10000_sizing_sensitivity_only']={
+        'status':'diagnostic_not_comparable_in_dollars_to_5000_base',
+        'not_a_new_strategy':True,'cannot_infer_profitability':True,
+        'scenario_initial_capital_usd':10000.,'by_slippage':sizing}
     results['live_approved']=False
     return results
 
@@ -434,6 +448,10 @@ def main():
               'return_pct',r['pct_return'],'PF',r['profit_factor'],'DD',r['max_closed_equity_drawdown_pct'],
               'CI',r['daily_bootstrap_ci'].get('two_sided_95pct_ci_for_net_closed_usd'),flush=True)
         print('V6_MONTHLY',key,json.dumps(report['monthly_folds'][key],sort_keys=True),flush=True)
+    for key,d in report['capital_10000_sizing_sensitivity_only']['by_slippage'].items():
+        print('V6_SIZING_ONLY',key,'capital',10000,'trades',d['closed_trades'],
+              'net_usd',d['net_usd'],'return_pct',d['pct_return'],
+              'min_lot_blocked',d['blocked'].get('min_lot',0),flush=True)
     print('V6_SCREEN',report['research_screen_pass'],'LIVE',report['live_approved'],'OUTPUT',str(dst),flush=True)
 
 if __name__=='__main__':main()

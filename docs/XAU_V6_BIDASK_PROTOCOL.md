@@ -48,3 +48,7 @@ The default V6 CI path uses this pinned mirror. The direct Dukascopy endpoint re
 ```bash
 python -m research.xau_v6_bidask_research --source pinned_mirror
 ```
+
+## Separate bankroll sizing sensitivity (implemented after the first V6 test)
+
+The US$5,000 scenario recorded many valid entry signals rejected because the one-ounce minimum plus the 1× notional exposure cap could no longer be satisfied as equity fell. This is not an entry filter and should not be removed to force the target trade count. The audit now also runs the **same** frozen signals at **US$10,000 virtual starting capital** (US$0.15/0.75 slippage per side) solely to measure this capital/lot constraint. It is not a new strategy, not optimization, does not alter the US$5,000 reference result and cannot demonstrate sustainable profitability. Results are reported separately in dollars and percentage returns, never combined with the baseline or month-reset folds.
