@@ -2,23 +2,9 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794249000,
-  "equity": 995.1045050653017,
-  "position": {
-    "side": 1,
-    "entry": 1.4089499711990356,
-    "entry_ts": 1794223800,
-    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 995.1045050653017,
-    "stop": 1.4118302610657278,
-    "initial_r": 0.001739785359137875,
-    "best_close": 1.4135700464248657,
-    "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 7,
-    "green_protected": true,
-    "target": null,
-    "confirm_h1": 1794218400
-  },
+  "watermark_m15": 1794268800,
+  "equity": 997.0289033597743,
+  "position": null,
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -151,8 +137,20 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.4104012223235756
+    },
+    {
+      "entry_ts": 1794223800,
+      "exit_ts": 1794252600,
+      "entry": 1.4089499711990356,
+      "exit": 1.4118302610657278,
+      "side": 1,
+      "net_usd": 1.9244,
+      "cost_usd": 0.10572,
+      "exit_type": "TRAIL_STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.4118302610657278
     }
   ],
   "last_entry_h1": 1794218400,
-  "last_reason": "Stop móvel subiu"
+  "last_reason": "Intervalo M15 com lacuna; entrada ignorada"
 }
