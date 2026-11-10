@@ -1,0 +1,119 @@
+name: WIN Flow | Final independent indicator QA and MetaEditor compile
+on:
+  push:
+    branches:
+      - research/win-flow-release-validation-20261109
+    paths:
+      - research/win_flow_exhaustion_reference.py
+      - research/win_mt5_tick_provenance.py
+      - research/win_flow_public_label_comparison.py
+      - research/tracker_mathematical_inverse_43.py
+      - indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.mq5
+      - tests/test_win_flow_exhaustion_reference.py
+      - tests/test_win_mt5_tick_provenance.py
+      - tests/test_win_flow_public_label_comparison.py
+      - tests/test_tracker_mathematical_inverse_43.py
+      - .github/workflows/win-flow-release-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify_reference_and_safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile independent Python analytics and tick audit modules
+        run: |
+          python -m py_compile research/win_flow_exhaustion_reference.py research/win_mt5_tick_provenance.py research/win_flow_public_label_comparison.py research/tracker_mathematical_inverse_43.py
+      - name: Run focused reference, tape-quality, causal-matching and inverse-vector risk tests
+        run: |
+          python -m unittest discover -s tests -p 'test_win_flow_exhaustion_reference.py' -v
+          python -m unittest discover -s tests -p 'test_win_mt5_tick_provenance.py' -v
+          python -m unittest discover -s tests -p 'test_win_flow_public_label_comparison.py' -v
+          python -m unittest discover -s tests -p 'test_tracker_mathematical_inverse_43.py' -v
+      - name: Confirm Python collector is only local read-only MT5 calls
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          source=Path("research/win_mt5_tick_provenance.py").read_text(encoding="utf-8")
+          tree=ast.parse(source)
+          disallowed={"order_send","order_check","positions_get","account_info",
+                      "login","history_deals_get"}
+          attrs={n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)}
+          assert disallowed.isdisjoint(attrs),disallowed&attrs
+          chart=Path("indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.mq5").read_text(encoding="utf-8")
+          for check in ("TICK_FLAG_LAST","TICK_FLAG_VOLUME","InpMaxTickBarVolumeDeviation",
+                        "BufferBuy[0]=EMPTY_VALUE","CopyTicksRange"):
+              assert check in chart,check
+          for forbidden in ("OrderSend(","OrderCheck(","CTrade ","FileOpen(","WebRequest("):
+              assert forbidden not in chart,forbidden
+          print("Research only: broker order API absent; closed bar and genuine tape gates present.")
+          PY
+
+  actual_windows_metaeditor:
+    needs: verify_reference_and_safety
+    runs-on: windows-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Re-run logic tests on Windows with IANA timezone database
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check --no-input tzdata
+          python -m unittest discover -s tests -p 'test_win_flow_exhaustion_reference.py' -v
+          python -m unittest discover -s tests -p 'test_win_mt5_tick_provenance.py' -v
+          python -m unittest discover -s tests -p 'test_win_flow_public_label_comparison.py' -v
+      - name: Obtain official MetaTrader 5 MetaEditor for source compilation ONLY
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = Join-Path $env:RUNNER_TEMP 'mt5setup.exe'
+          $installDir = Join-Path $env:RUNNER_TEMP 'NQMetaEditor'
+          $url = 'https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe'
+          Invoke-WebRequest -Uri $url -OutFile $installer -MaximumRedirection 4 -TimeoutSec 90
+          if ((Get-Item $installer).Length -lt 1000000) { throw 'Invalid MetaQuotes installer' }
+          $p=Start-Process -FilePath $installer -ArgumentList @('/auto',"/path:`"$installDir`"") -Wait -PassThru
+          Write-Host "Installer exit: $($p.ExitCode)"
+          $deadline=(Get-Date).AddSeconds(120)
+          do {
+            $editor=Get-ChildItem -Path $installDir -Filter metaeditor64.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            if ($editor) {break}
+            Start-Sleep -Seconds 3
+          } while ((Get-Date) -lt $deadline)
+          if (-not $editor) {throw 'MetaEditor not found after official installer'}
+          "METAEDITOR_EXE=$editor" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Compile MQL5 in MetaEditor and REQUIRE 0 errors and 0 warnings
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $src=(Resolve-Path '.\indicators\mt5\NQ_Win_Exaustao_Fluxo_Research.mq5').Path
+          $binary=[IO.Path]::ChangeExtension($src,'.ex5')
+          $log=[IO.Path]::ChangeExtension($src,'.log')
+          if (Test-Path $binary) { Remove-Item $binary -Force }
+          if (Test-Path $log) { Remove-Item $log -Force }
+          $p=Start-Process -FilePath $env:METAEDITOR_EXE -ArgumentList @("/compile:`"$src`"","/log") -Wait -PassThru
+          if (-not (Test-Path $log)) {throw 'No compiler diagnostic log generated'}
+          $result=Get-Content $log -Raw
+          Write-Host $result
+          if ($result -notmatch 'Result:\s*0 errors?,\s*0 warnings?') {
+            throw 'MetaEditor must report exactly 0 errors and 0 warnings'
+          }
+          if (-not (Test-Path $binary) -or (Get-Item $binary).Length -lt 3000) {
+            throw 'MetaEditor did not produce a valid nonempty EX5'
+          }
+          Write-Host "SUCCESSFUL_VALIDATED_EX5_BYTES=$((Get-Item $binary).Length)"
+          Write-Host "No broker account or market data accessed."
+      - name: Retain compiled original NQ independent visual indicator as research artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nq-win-exaustao-fluxo-validated-ex5
+          path: indicators/mt5/NQ_Win_Exaustao_Fluxo_Research.ex5
+          retention-days: 30
