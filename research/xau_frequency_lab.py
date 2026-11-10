@@ -149,6 +149,7 @@ def run_day(path: str | Path, day: str, *,
         "historical_account_profit_usd": None,
     }
     file_sha = None
+    bar_counts = {}
     policies_ = {}
     all_plans = {}
     for tf in (60, 300):
@@ -161,6 +162,7 @@ def run_day(path: str | Path, day: str, *,
             file_sha = audit["source_sha256"]
         elif file_sha != audit["source_sha256"]:
             raise ValueError("M1/M5 feed checksum mismatch")
+        bar_counts[tf] = len(bars)
         policies_[tf] = policies_for(tf, point)
         all_plans[tf] = {}
         for var in variants:
@@ -202,8 +204,8 @@ def run_day(path: str | Path, day: str, *,
                 raise ValueError("Greater costs cannot improve expected net P&L")
     out["source_sha256"] = file_sha
     out["quote_rows"] = len(quotes)
-    out["m1_bars"] = len(aggregate_real_quotes(path, 60, point)[0])
-    out["m5_bars"] = len(aggregate_real_quotes(path, 300, point)[0])
+    out["m1_bars"] = bar_counts[60]
+    out["m5_bars"] = bar_counts[300]
     return out
 
 
