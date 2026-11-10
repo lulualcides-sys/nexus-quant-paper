@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Audit prior and new models, 39 unit tests
+      - name: Audit prior and new models, 40 unit tests
         run: python -m unittest tests.test_indicator_fusion_bots tests.test_indicator_fusion_v2 tests.test_indicator_fusion_v3_frequency tests.test_indicator_fusion_v4_costaware -v
       - name: Observed GC=F M5 paper-only lot and cost sensitivity
         run: python -m research.run_indicator_fusion_v4_costaware
