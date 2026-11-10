@@ -34,3 +34,5 @@ Não usar sinais para operar automaticamente. Sem endpoint de ordens ou API MT5.
 Audit fix: when a position is open at a candle's start, its eventual intrabar exit does not authorize an entry at that candle's earlier open. The previous replay could retroactively enter after an intrabar stop/target. New test reproduces and guards this chronology error.
 
 Added no-fee and 7bps diagnostic controls alongside original 14/28bps scenarios. Approval thresholds stay strictly 14 and 28bps; no-fee profitability **never** counts as viability. Output includes gross closed PnL, estimated fees, stop/target/time exits. Fees are an all-in roundtrip estimate on GC=F proxy, not broker XAUUSD execution. These are not optimization or signal improvements.
+
+- Second chronology repair: gap through target at the candle open must execute target **before** later possible stop touch within the candle. Gap through stop fills at the adverse opening price. Stop-first remains the conservative fallback only when open has not crossed either level and OHLC intrabar order is ambiguous.
