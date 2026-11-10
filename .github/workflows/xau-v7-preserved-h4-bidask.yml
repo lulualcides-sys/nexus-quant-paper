@@ -1,0 +1,36 @@
+name: XAU V7 | preserved H4 vs real BID ASK spot quote research
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/xau_v7_preserved_h4_bidask.py'
+      - 'tests/test_xau_v7_preserved_h4_bidask.py'
+      - '.github/workflows/xau-v7-preserved-h4-bidask.yml'
+permissions:
+  contents: read
+jobs:
+  preserved-h4-source-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate H4 signal, next-open, minimum lot and bid-ask invariants
+        run: |
+          python -m unittest tests.test_xau_v7_preserved_h4_bidask -v
+      - name: Compare frozen original H4 gold rules on spot BID ASK April-Sep
+        run: |
+          python -m research.xau_v7_preserved_h4_bidask
+      - name: Upload actual audit outputs (never fabricate results)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xau-v7-original-h4-spot-bidask-research
+          path: |
+            research/results/xau_v7_preserved_h4.json
+            research/results/xau_v7_preserved_h4.md
+          if-no-files-found: warn
