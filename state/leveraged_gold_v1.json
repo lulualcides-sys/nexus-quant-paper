@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1794398400,
+  "h4_watermark": 1794412800,
   "books": {
     "lev_channel20": {
       "equity": 5171.743968811271,
@@ -10,7 +10,21 @@
       "today": "2026-11-11",
       "day_start_equity": 5171.743968811271,
       "frozen": false,
-      "position": null,
+      "position": {
+        "side": -1,
+        "entry": 4012.39990234375,
+        "start": 1794412800,
+        "qty": 2.577880617428147,
+        "stop": 4042.4929016113283,
+        "entry_risk": 30.092999267578122,
+        "mode": "green_runner",
+        "green_protected": false,
+        "peak_favorable": 21.89990234375,
+        "target": null,
+        "held_bars": 1,
+        "borrowed": 5171.743968811271,
+        "notional_leverage": 2.0
+      },
       "closed": [
         {
           "entry_ts": 1793347200,
