@@ -5,7 +5,7 @@
   "market": "XAUUSD",
   "strategy": "momentum60_lab",
   "source": "Yahoo GC=F proxy, no FBS fills",
-  "h4_watermark": 1794355200,
+  "h4_watermark": 1794384000,
   "equity": 5000.0,
   "position": null,
   "entries": [],
