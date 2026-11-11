@@ -63,6 +63,9 @@ jobs:
           if [[ "$MODE" == 'report' ]]; then
             # Fechamento não deve depender de feed do ouro após o pregão.
             python -m src.scheduled_closing
+            # Segundo resumo isolado: todas as familias historicamente positivas em PAPER.
+            # Sua propria marca diaria impede mensagens repetidas na recuperacao de 20h.
+            python -m src.xau_positive_daily
           else
             python -m src.runner --mode "$MODE"
           fi
