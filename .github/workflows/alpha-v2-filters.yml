@@ -1,0 +1,44 @@
+name: ALPHA V2 filters — independent research
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/alpha_v2/**'
+      - 'research/alpha/**'
+      - 'tests/test_alpha_v2.py'
+      - '.github/workflows/alpha-v2-filters.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: ALPHA V1 and V2 integrity tests only
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_lab.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v2.py' -v
+  filtered-backtest:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Real SHA256 checked M1; compare ALPHA V1 vs V2 on heldout months
+        run: python -m research.alpha_v2.run --out artifacts/alpha-v2
+      - name: Publish manifests, ledgers and result tables even on partial source failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v2-filters-${{ github.run_id }}
+          path: artifacts/alpha-v2/
+          retention-days: 30
+          if-no-files-found: warn
