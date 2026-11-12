@@ -1,0 +1,43 @@
+name: XAU V8 | original H4 full-year spot BID ASK transfer
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/xau_v8_h4_full_year.py'
+      - 'tests/test_xau_v8_h4_full_year.py'
+      - '.github/workflows/xau-v8-h4-full-year.yml'
+      - 'research/xau_v8_bootstrap_audit.py'
+      - 'tests/test_xau_v8_bootstrap_audit.py'
+permissions:
+  contents: read
+jobs:
+  old-h4-research-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify research protocol and execution invariants
+        run: |
+          python -m unittest tests.test_xau_v7_preserved_h4_bidask tests.test_xau_v8_h4_full_year tests.test_xau_v8_bootstrap_audit -v
+      - name: Replay annual XAUUSD BID ASK historical prices without changing bots
+        run: |
+          python -m research.xau_v8_h4_full_year
+      - name: Post-hoc bootstrap uncertainty audit using same closed trades
+        run: |
+          python -m research.xau_v8_bootstrap_audit
+      - name: Store reproducible annual research without passing data off as real orders
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xau-v8-annual-original-h4-bidask
+          path: |
+            research/results/xau_v8_h4_full_year.json
+            research/results/xau_v8_h4_full_year.md
+            research/results/xau_v8_bootstrap_audit.json
+            research/results/xau_v8_bootstrap_audit.md
+          if-no-files-found: warn

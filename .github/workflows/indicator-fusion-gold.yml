@@ -1,0 +1,32 @@
+name: Indicator Fusion GOLD research (isolated)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/indicator_fusion_bots.py'
+      - 'research/run_indicator_fusion.py'
+      - 'tests/test_indicator_fusion_bots.py'
+      - '.github/workflows/indicator-fusion-gold.yml'
+jobs:
+  paper-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests only for new experiment
+        run: python -m unittest tests.test_indicator_fusion_bots -v
+      - name: Backtest observed gold history - never broker orders
+        run: python -m research.run_indicator_fusion
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: indicator-fusion-gold-paper
+          path: research/results/indicator_fusion_latest.json
+          if-no-files-found: warn

@@ -1,0 +1,33 @@
+name: Indicator Fusion GOLD V3 - frequency and net-profit audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/indicator_fusion_v3_frequency.py'
+      - 'research/run_indicator_fusion_v3_frequency.py'
+      - 'tests/test_indicator_fusion_v3_frequency.py'
+      - '.github/workflows/indicator-fusion-v3.yml'
+permissions:
+  contents: read
+jobs:
+  audit-frequency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate no lookahead, no same-bar flips, cost and risk rules
+        run: python -m unittest tests.test_indicator_fusion_v3_frequency -v
+      - name: Observed XAU GC=F M5/M15 one-portfolio backtests and M1 diagnostic
+        run: python -m research.run_indicator_fusion_v3_frequency
+      - uses: actions/upload-artifact@v4
+        with:
+          name: indicator-fusion-v3-frequency-paper
+          path: |
+            research/results/indicator_fusion_v3_frequency_latest.json
+            research/results/xau_gc_f_observed_m5_20261110.json.gz
+          if-no-files-found: error

@@ -1,0 +1,32 @@
+name: Indicator Fusion GOLD V4 - lot-aware frequency cost research
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/indicator_fusion_v3_frequency.py'
+      - 'research/indicator_fusion_v4_costaware.py'
+      - 'research/run_indicator_fusion_v4_costaware.py'
+      - 'tests/test_indicator_fusion_v4_costaware.py'
+      - '.github/workflows/indicator-fusion-v4.yml'
+permissions:
+  contents: read
+jobs:
+  cost-frequency-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Audit prior and new models, 40 unit tests
+        run: python -m unittest tests.test_indicator_fusion_bots tests.test_indicator_fusion_v2 tests.test_indicator_fusion_v3_frequency tests.test_indicator_fusion_v4_costaware -v
+      - name: Observed GC=F M5 paper-only lot and cost sensitivity
+        run: python -m research.run_indicator_fusion_v4_costaware
+      - uses: actions/upload-artifact@v4
+        with:
+          name: indicator-fusion-v4-costaware-paper
+          path: research/results/indicator_fusion_v4_costaware_latest.json
+          if-no-files-found: error

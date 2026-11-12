@@ -1,0 +1,208 @@
+{
+  "posthoc_only": true,
+  "live_approved": false,
+  "not_new_market_data": true,
+  "bootstrap_not_probability_of_future_profit": true,
+  "by_strategy": {
+    "channel20": {
+      "slippage_per_side_0.15": {
+        "status": "diagnostic_only",
+        "days": 40,
+        "trades": 40,
+        "observed_net": 844.56,
+        "interval_95": [
+          -200.5,
+          1918.54
+        ],
+        "p_nonpositive": 0.0548,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 19,
+        "losses": 21,
+        "median_trade_net": -42.83,
+        "sum_winner_pnl": 2071.82,
+        "sum_loser_pnl": -1227.27
+      },
+      "slippage_per_side_0.75": {
+        "status": "diagnostic_only",
+        "days": 40,
+        "trades": 40,
+        "observed_net": 817.56,
+        "interval_95": [
+          -226.2,
+          1890.05
+        ],
+        "p_nonpositive": 0.0612,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 19,
+        "losses": 21,
+        "median_trade_net": -43.43,
+        "sum_winner_pnl": 2057.42,
+        "sum_loser_pnl": -1239.87
+      }
+    },
+    "channel55": {
+      "slippage_per_side_0.15": {
+        "status": "diagnostic_only",
+        "days": 33,
+        "trades": 34,
+        "observed_net": 1025.16,
+        "interval_95": [
+          45.34,
+          1985.34
+        ],
+        "p_nonpositive": 0.0198,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 18,
+        "losses": 16,
+        "median_trade_net": 72.2,
+        "sum_winner_pnl": 1964.85,
+        "sum_loser_pnl": -939.68
+      },
+      "slippage_per_side_0.75": {
+        "status": "diagnostic_only",
+        "days": 33,
+        "trades": 34,
+        "observed_net": 1001.16,
+        "interval_95": [
+          20.19,
+          1960.74
+        ],
+        "p_nonpositive": 0.0222,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 18,
+        "losses": 16,
+        "median_trade_net": 71.3,
+        "sum_winner_pnl": 1950.45,
+        "sum_loser_pnl": -949.28
+      }
+    },
+    "momentum100": {
+      "slippage_per_side_0.15": {
+        "status": "diagnostic_only",
+        "days": 32,
+        "trades": 33,
+        "observed_net": 309.68,
+        "interval_95": [
+          -555.22,
+          1198.36
+        ],
+        "p_nonpositive": 0.2452,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 15,
+        "losses": 18,
+        "median_trade_net": -39.07,
+        "sum_winner_pnl": 1376.85,
+        "sum_loser_pnl": -1067.17
+      },
+      "slippage_per_side_0.75": {
+        "status": "diagnostic_only",
+        "days": 32,
+        "trades": 33,
+        "observed_net": 285.68,
+        "interval_95": [
+          -578.63,
+          1174.09
+        ],
+        "p_nonpositive": 0.2608,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 15,
+        "losses": 18,
+        "median_trade_net": -39.67,
+        "sum_winner_pnl": 1364.85,
+        "sum_loser_pnl": -1079.17
+      }
+    },
+    "rsi_trend": {
+      "slippage_per_side_0.15": {
+        "status": "diagnostic_only",
+        "days": 47,
+        "trades": 49,
+        "observed_net": 1028.14,
+        "interval_95": [
+          -94.48,
+          2186.64
+        ],
+        "p_nonpositive": 0.0362,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 25,
+        "losses": 24,
+        "median_trade_net": 15.73,
+        "sum_winner_pnl": 2461.25,
+        "sum_loser_pnl": -1433.11
+      },
+      "slippage_per_side_0.75": {
+        "status": "diagnostic_only",
+        "days": 48,
+        "trades": 50,
+        "observed_net": 955.83,
+        "interval_95": [
+          -130.59,
+          2057.24
+        ],
+        "p_nonpositive": 0.044,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 25,
+        "losses": 25,
+        "median_trade_net": -13.52,
+        "sum_winner_pnl": 2456.25,
+        "sum_loser_pnl": -1500.42
+      }
+    },
+    "pullback20": {
+      "slippage_per_side_0.15": {
+        "status": "diagnostic_only",
+        "days": 32,
+        "trades": 32,
+        "observed_net": 689.4,
+        "interval_95": [
+          -256.7,
+          1663.69
+        ],
+        "p_nonpositive": 0.083,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 16,
+        "losses": 16,
+        "median_trade_net": 19.02,
+        "sum_winner_pnl": 1702.55,
+        "sum_loser_pnl": -1013.15
+      },
+      "slippage_per_side_0.75": {
+        "status": "diagnostic_only",
+        "days": 33,
+        "trades": 33,
+        "observed_net": 632.09,
+        "interval_95": [
+          -319.01,
+          1589.06
+        ],
+        "p_nonpositive": 0.1056,
+        "seed": 20261110,
+        "samples": 5000,
+        "warning": "Naive iid exit-day bootstrap after historical strategy selection; trading days correlated, so NOT a valid prospective probability or 95% guarantee",
+        "wins": 16,
+        "losses": 17,
+        "median_trade_net": -41.58,
+        "sum_winner_pnl": 1705.95,
+        "sum_loser_pnl": -1073.86
+      }
+    }
+  }
+}

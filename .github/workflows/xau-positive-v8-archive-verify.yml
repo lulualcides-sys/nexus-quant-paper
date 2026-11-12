@@ -1,0 +1,61 @@
+name: GOLD | verify preserved positive snapshots V8
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'research/indicator-fusion-gold-*'
+    paths:
+      - 'research/preserved/xau_v8_all_positive_h4_snapshots_20261110.json'
+      - 'research/preserved/XAU_MASTER_POSITIVES_AND_FORWARD_POLICY.md'
+      - 'tests/test_xau_v8_archive_snapshots.py'
+      - '.github/workflows/xau-positive-v8-archive-verify.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/preserved/xau_v8_all_positive_h4_snapshots_20261110.json'
+      - 'research/preserved/XAU_MASTER_POSITIVES_AND_FORWARD_POLICY.md'
+      - 'tests/test_xau_v8_archive_snapshots.py'
+      - '.github/workflows/xau-positive-v8-archive-verify.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-immutable-positive-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify historical archived positives, never live approve
+        run: |
+          python -m unittest tests.test_xau_all_positive_archived tests.test_xau_v8_archive_snapshots -v
+      - name: Download immutable original V8 research scorecards
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/v8-source
+          gh run download 42903579739 --repo "$GITHUB_REPOSITORY" \
+            --name xau-v8-annual-original-h4-bidask --dir /tmp/v8-source
+          test -s /tmp/v8-source/xau_v8_h4_full_year.json
+      - name: Check archive matches scorecards and source hash exactly
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          source=Path('/tmp/v8-source/xau_v8_h4_full_year.json')
+          preserved=Path('research/preserved/xau_v8_all_positive_h4_snapshots_20261110.json')
+          old=Path('research/preserved/xau_all_positive_original_robots_20261110.json')
+          raw=source.read_bytes(); annual=json.loads(raw); index=json.loads(preserved.read_bytes()); legacy=json.loads(old.read_bytes())
+          assert hashlib.sha256(raw).hexdigest()==index['source_integrity']['v8_json_sha256']
+          assert len(index['entries'])==30 and legacy['archived_positive_scenario_slots']==52
+          for row in index['entries']:
+              family=row['family']; label='capital_%s_slip_%s' % (row['virtual_start_usd'],row['slippage_usd_per_oz_each_side'])
+              score=annual['strategies'][family]['sizing_and_execution'][label]['overall']
+              assert score['net_usd']==row['net_usd']
+              assert score['closed_trades']==row['closed_trades']
+              assert score['profit_factor']==row['profit_factor']
+          assert not index['live_approved'] and index['not_independent_robots']
+          print('ARCHIVE_PASS: 52 original slots preserved; 30 V8 scenarios from 5 families matched to immutable historical source; none live approved')
+          PY
