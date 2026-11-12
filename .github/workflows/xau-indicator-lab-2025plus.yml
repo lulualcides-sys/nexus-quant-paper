@@ -1,0 +1,46 @@
+name: XAUUSD new indicator lab 2025+ all M1-M30
+on:
+  push:
+    branches:
+      - research/xau-new-indicators-2025plus-20261112
+    paths:
+      - 'robots/mt5/nexus_vector_retest/xau_indicator_lab_2025plus.py'
+      - 'robots/mt5/nexus_vector_retest/test_xau_indicator_lab_2025plus.py'
+      - '.github/workflows/xau-indicator-lab-2025plus.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  indicator-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned research dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Syntax and regression tests of new and preserved code
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/xau_indicator_lab_2025plus.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_indicator_lab_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_mtf_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_entry_risk_2025plus.py' -v
+      - name: Retrieve ONLY pinned 2025 XAUUSD history
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Evaluate all indicator strategies in 2025 and partial 2026
+        run: python -u robots/mt5/nexus_vector_retest/xau_indicator_lab_2025plus.py
+      - name: Preserve full metrics and report even after failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: XAUUSD-2025Plus-NewIndicators-M1-M30
+          path: robots/mt5/nexus_vector_retest/xau_new_indicators_2025plus_results/
+          if-no-files-found: warn
