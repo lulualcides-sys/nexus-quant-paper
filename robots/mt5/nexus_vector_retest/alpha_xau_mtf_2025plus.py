@@ -14,7 +14,7 @@ from research_oos import prepared, bars_for, download
 from points10k_2025 import source as load_2025
 from alpha_xau_longhold import simulate_xau
 from alpha_xau_entry_risk_2025plus import qualified_entry
-from alpha_xau_adaptive import trend_masks as compute_trend_masks
+from alpha_xau_adaptive import trend_masks as original_trend_masks
 
 TF_MINUTES = (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30)
 PROFILES = ("RUNNER_96H", "ENTRY_QUALITY", "BE_AFTER_TP2",
@@ -23,6 +23,47 @@ COST_GRID = (0.8, 1.2, 1.6)
 CUTOFF = pd.Timestamp("2025-01-01",tz="UTC")
 HORIZON_MINUTES = 384 * 15  # original M15 runner = 96h of TRADING candles
 OUT = Path(__file__).resolve().parent/"alpha_xau_mtf_2025plus_results"
+
+
+
+def compute_trend_masks(df):
+    """Vectorized parity implementation of original_trend_masks.
+
+    All input columns are evaluated on candle t or earlier. Six initial
+    candles remain false. Floating thresholds are unchanged.
+    """
+    n=len(df)
+    micro=np.zeros((2,n),dtype=bool)
+    strong=np.zeros((2,n),dtype=bool)
+    if n<=6:
+        return micro,strong
+    close=df.close.to_numpy(dtype=float)
+    fast=df.fema.to_numpy(dtype=float)
+    slow=df.sema.to_numpy(dtype=float)
+    atr=df.atr.to_numpy(dtype=float)
+    c1=np.roll(close,1)
+    c2=np.roll(close,2)
+    c3=np.roll(close,3)
+    f3=np.roll(fast,3)
+    f5=np.roll(fast,5)
+    valid=(np.isfinite(atr)&(atr>0)&np.isfinite(close)
+           &np.isfinite(fast)&np.isfinite(slow)
+           &np.isfinite(c1)&np.isfinite(c2)&np.isfinite(c3)
+           &np.isfinite(f3)&np.isfinite(f5))
+    valid[:6]=False
+    for idx,side in enumerate((1,-1)):
+        align=side*(fast-slow)
+        near=side*(close-fast)>=-0.15*atr
+        slope3=side*(fast-f3)
+        slope5=side*(fast-f5)
+        movement=side*(close-c3)
+        higher=((side*(c3-c2)>0).astype(np.int8)
+               +(side*(c2-c1)>0).astype(np.int8)
+               +(side*(c1-close)<0).astype(np.int8))
+        micro[idx]=valid&(align>=0)&near&(slope3>=.16*atr)&(
+            movement>=.35*atr)&(higher>=2)
+        strong[idx]=valid&near&(align>=.75*atr)&(slope5>=.25*atr)
+    return micro,strong
 
 
 def horizon_bars(tf_minutes):
