@@ -1,3 +1,7 @@
+## NEXUS VECTOR RETEST — novo EA Forex (experimental)
+
+Novo **Expert Advisor MT5**, distinto do VWAP, com **vetor matematico** para rompimento + reteste de estrutura; 5 pesos 25/25/20/15/15, TP1/TP2/TP3, SL, setas discretas, painel GREEN/RED/pontos e alerta sonoro. **Conta real bloqueada por padrão; 0,5% de risco por operação.** Código e instalação em [robots/mt5/nexus_vector_retest](robots/mt5/nexus_vector_retest/). Os testes não demonstram vantagem sobre o VWAP.
+
 ## NEXUS Futebol: resumo multimercado diário às 00h01 (25/10/2026)
 
 - O mesmo bot [@NexusQuantAlertasBot](https://t.me/NexusQuantAlertasBot) passa a enviar **um relatório esportivo por dia**, agendado para **00h01 America/Sao_Paulo** (03h01 UTC). É o fechamento **do dia anterior**; GitHub Actions pode atrasar.

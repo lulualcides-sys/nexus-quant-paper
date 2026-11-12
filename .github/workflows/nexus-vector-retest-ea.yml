@@ -1,0 +1,21 @@
+name: Nexus Vector Retest EA - vetores e seguranca
+on:
+  push:
+    paths:
+      - 'robots/mt5/nexus_vector_retest/**'
+      - '.github/workflows/nexus-vector-retest-ea.yml'
+  pull_request:
+    paths:
+      - 'robots/mt5/nexus_vector_retest/**'
+      - '.github/workflows/nexus-vector-retest-ea.yml'
+  workflow_dispatch:
+jobs:
+  vector-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate five-factor vector, closed bars, risk and execution guards
+        run: python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_*.py' -v
