@@ -1,0 +1,44 @@
+name: XAUUSD EMA21 preserved | inverse and long hold research
+on:
+  push:
+    branches: [research/xau-ema21-pullback-longhold-20261112]
+    paths:
+      - 'robots/mt5/nexus_vector_retest/alpha_xau_longhold.py'
+      - 'robots/mt5/nexus_vector_retest/test_alpha_xau_longhold.py'
+      - 'research/preserved/nexus_alpha_ema21_pullback_xau_m15_41641_20261112.md'
+      - '.github/workflows/xau-ema21-longhold.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install controlled dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Static check and targeted regression tests
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/alpha_xau_longhold.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p test_alpha_xau_longhold.py -v
+      - name: Download pinned independent 2025 public gold archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Run 2026 exploratory and 2025 independent audit without parameter fitting
+        run: python robots/mt5/nexus_vector_retest/alpha_xau_longhold.py
+      - name: Preserve every result even if runner fails
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: XAUUSD-EMA21-Original-vs-Inverse-Longhold-M15
+          path: robots/mt5/nexus_vector_retest/alpha_xau_longhold_results/
+          if-no-files-found: warn
