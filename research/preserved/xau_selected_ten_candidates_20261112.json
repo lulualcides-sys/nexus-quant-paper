@@ -730,5 +730,28 @@
     "XAU_SHOCK_EXHAUSTION_M15"
   ],
   "current_priority_is_for_research_only": true,
-  "current_priority_originals_untouched": true
+  "current_priority_originals_untouched": true,
+  "latest_session_research_archive": "research/preserved/xau_batch9_session_all_2025plus_20261112.json",
+  "latest_session_research_report": "research/preserved/xau_batch9_session_report_2025plus_20261112.md",
+  "latest_session_research_positive_points_both_2025_and_partial_2026": [
+    {
+      "model": "VWAP_EMA_RECLAIM",
+      "timeframe": "M30",
+      "net_points_2025_at_1_2": 36048.3,
+      "net_points_2026_partial_at_1_2": 11101.3,
+      "net_R_2026_partial": -2.024,
+      "watchlist_only": true
+    },
+    {
+      "model": "ASIA_TREND_BREAK",
+      "timeframe": "M30",
+      "net_points_2025_at_1_2": 45.7,
+      "net_points_2026_partial_at_1_2": 7335.8,
+      "net_R_2026_partial": -1.258,
+      "watchlist_only": true
+    }
+  ],
+  "latest_session_new_live_validated_count": 0,
+  "latest_session_adds_to_selected_ten": 0,
+  "latest_session_note": "Two new M30 variants positive in historical net points both recuts but negative in 2026 partial normalized R. Only research watchlist. Preserve ten selected and both top priorities unchanged."
 }
