@@ -14,10 +14,11 @@ from research_oos import prepared, bars_for, download
 from points10k_2025 import source as load_2025
 from alpha_xau_longhold import simulate_xau
 from alpha_xau_entry_risk_2025plus import qualified_entry
+from alpha_xau_adaptive import trend_masks as compute_trend_masks
 
 TF_MINUTES = (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30)
 PROFILES = ("RUNNER_96H", "ENTRY_QUALITY", "BE_AFTER_TP2",
-            "ENTRY_QUALITY_BE", "REVERSAL_BE")
+            "ENTRY_QUALITY_BE", "REVERSAL_BE", "CONDITIONAL_TREND_96H")
 COST_GRID = (0.8, 1.2, 1.6)
 CUTOFF = pd.Timestamp("2025-01-01",tz="UTC")
 HORIZON_MINUTES = 384 * 15  # original M15 runner = 96h of TRADING candles
@@ -30,7 +31,7 @@ def horizon_bars(tf_minutes):
     return HORIZON_MINUTES//tf_minutes
 
 
-def replay_one(df, signals, first, last, tf_minutes, profile):
+def replay_one(df, signals, first, last, tf_minutes, profile, masks=None):
     """One position at a time, same signals/tail embargo per timeframe.
 
     Executions: next-bar-open signal, stop first in same OHLC candle, partial
@@ -48,6 +49,10 @@ def replay_one(df, signals, first, last, tf_minutes, profile):
     filter_entry = profile in ("ENTRY_QUALITY","ENTRY_QUALITY_BE")
     simple_be = profile in ("BE_AFTER_TP2","ENTRY_QUALITY_BE")
     reversal_be = profile == "REVERSAL_BE"
+    conditional = profile == "CONDITIONAL_TREND_96H"
+    if conditional and masks is None:
+        masks = compute_trend_masks(df)
+    base_hold = 720//tf_minutes
     trades=[]
     last_close = first-1
     for i, side, source_stop, quality in signals:
@@ -73,6 +78,16 @@ def replay_one(df, signals, first, last, tf_minutes, profile):
         exitbar=entrybar+hold
         breakeven_armed=False
         for j in range(entrybar,entrybar+hold+1):
+            # Only extend beyond 12 candle-hours when the last CLOSED bar
+            # confirms microtrend or established strong trend, same direction.
+            if conditional and j>=entrybar+base_hold:
+                idx=0 if side>0 else 1
+                micro,strong=masks
+                if not (micro[idx,j-1] or strong[idx,j-1]):
+                    gross+=remain*side*(op[j]-entry)
+                    reason="TREND_OFF"
+                    exitbar=j
+                    break
             # Protection after TP2 starts at the NEXT OPEN, not within TP2 bar.
             if fills==2 and j>entrybar:
                 if simple_be or (reversal_be and j>=entrybar+3
@@ -147,6 +162,7 @@ def run_period(raw, label, tf_minutes):
     if df.index.min()<CUTOFF:
         raise ValueError("unexpected pre-2025 resampling")
     signals=events(df,"EMA21_PULLBACK")
+    trend=compute_trend_masks(df)
     bars=horizon_bars(tf_minutes)
     quarters=[]
     all_deals={model:[] for model in PROFILES}
@@ -157,7 +173,7 @@ def run_period(raw, label, tf_minutes):
             continue
         models={}
         for model in PROFILES:
-            trades=replay_one(df,signals,first,last,tf_minutes,model)
+            trades=replay_one(df,signals,first,last,tf_minutes,model,masks=trend)
             all_deals[model].extend(trades)
             models[model]={str(c):summarize(trades,c) for c in COST_GRID}
         if tf_minutes==15:
@@ -197,6 +213,7 @@ def main():
        warnings=[
          "Research only, historical periods already inspected, not untouched OOS.",
          "TP1=1R and TP2=1.5R; runner=last 1/3 at original stop or horizon.",
+         "Trend-conditional exits use last fully closed bar, extend only beyond 12 candle-hours when trend is present.",
          "Only XAUUSD 2025+; date blocks are UTC calendar quarters.",
          "Hypothetical cost; no broker bid/ask, swap, slippage, commission or actual execution.",
          "Different timeframes have different signal counts; raw point totals not directly comparable.",
