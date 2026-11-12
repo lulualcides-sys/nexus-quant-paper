@@ -40,7 +40,7 @@ def features(src):
     d["prev_low"]=d.low.shift(1)
     d["prev_high"]=d.high.shift(1)
     d["prev_vwap"]=d.vwap.shift(1)
-    d["same_day"]=day==day.shift(1) if hasattr(day,"shift") else day==np.roll(day,1)
+    d["same_day"]=np.r_[False,day[1:]==day[:-1]]
     d["utc_hour"]=hours
     d["body"]=(d.close-d.open)/(d.high-d.low).replace(0,np.nan)
     return d
