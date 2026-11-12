@@ -22,6 +22,8 @@ from src.feed import MARKETS, parse_yahoo
 from src.market_quality import validate_bars
 from src.strategies import make_indicators
 from research.screen_v2 import aggregate_hourly_to_h4
+from research.trade_attribution_27 import attribute_trades
+from research.frozen_tape_27 import save_tape
 from src import gold_forward as gold
 from src import leveraged_gold as leveraged
 from src import experimental_h1 as h1
@@ -29,6 +31,7 @@ from src import bb_rebound_mtf as m15
 from src import momentum60_shadow as mom
 
 OUT = Path("research/results/backtest_27_2026-11-01")
+TAPE_OUT = OUT.with_name("backtest_27_frozen_tape.json.gz")
 HIST_START = int(datetime(2025, 10, 24, tzinfo=timezone.utc).timestamp())
 # End date is exclusive. No future candles.
 HIST_END = int(datetime(2026, 11, 2, tzinfo=timezone.utc).timestamp())
@@ -131,6 +134,7 @@ def _ledger_result(group, name, book, capital, *, first, last, samples,
         "entries_observed":count, "closed_trades":len(closed),
         "open_at_end":book.get("position") is not None,
         "wins":wins, "losses":sum(p<0 for p in pnls),
+        "loss_attribution":attribute_trades(closed),
         "win_rate_pct":round(100*wins/len(closed),2) if closed else None,
         "profit_factor":round(gains/losses,3) if losses else None,
         "net_realized_usd":round(realized,2),
@@ -267,7 +271,7 @@ def all_ids():
     return ids
 
 
-def run(*, datasets=None, m15rows=None, obtain=True, stress=True):
+def run(*, datasets=None, m15rows=None, obtain=True, stress=True, capture_data=None):
     """No fabricated records; partial failures represented as unavailable."""
     expected=all_ids()
     feeds={}
@@ -292,6 +296,16 @@ def run(*, datasets=None, m15rows=None, obtain=True, stress=True):
         if m15rows is None: issues["USDCAD_M15"]="M15 não fornecido"
         for m in MARKETS:
             if m not in datasets: issues[m]="H1 não fornecido"
+    if capture_data is not None:
+        if not isinstance(capture_data, dict):
+            raise ValueError("capture_data must be a dict")
+        capture_data.clear()
+        capture_data["datasets"] = {
+            market: [dict(row) for row in rows] for market, rows in datasets.items()
+        }
+        capture_data["m15rows"] = (
+            [dict(row) for row in m15rows] if m15rows is not None else None
+        )
     fingerprints={}
     for m,rows in datasets.items():
         fingerprints[m]={"sha256":_fingerprint(rows),"bars":len(rows),
@@ -361,6 +375,7 @@ def markdown(result):
         "P&L apenas realizado em saídas; posições abertas e custos reais da corretora "
         "não aparecem na marcação a mercado.",
         "M15 usa janela diferente (histórico curto); não comparar diretamente valores absolutos.",
+        "Os candles exatos usados no replay ficam preservados como artefato gzip com SHA-256; comparar versões somente no mesmo tape.",
         "",
         "| Robô | Grupo | Período observado (UTC) | Entradas | Fechadas | V/D | P&L US$ | Custos ×2 US$ | DD realizado |",
         "|---|---|---|---:|---:|---:|---:|---:|---:|",
@@ -376,6 +391,24 @@ def markdown(result):
                      f"{value['entries_observed']} | {value['closed_trades']} | {vd} | "
                      f"{value['net_realized_usd']:+.2f} | {stressed} | "
                      f"{value['closed_only_drawdown_pct']:.2f}% |")
+    lines += ["", "## Atribuição descritiva das perdas por robô", "",
+              "O JSON registra saídas, horários UTC de entrada, meses de saída, "
+              "custos e as cinco piores operações. Atribuição descritiva "
+              "não estabelece causalidade nem justifica filtrar operações retrospectivamente.", "",
+              "| Robô | Expectativa US$/fech. | Maior origem de perdas | Perda US$ |",
+              "|---|---:|---|---:|"]
+    for key, value in result["robots"].items():
+        if value["status"] == "unavailable":
+            lines.append(f"| {key} | — | SEM DADOS | — |")
+            continue
+        diag = value["loss_attribution"]
+        losers = [(reason, row["total_losing_trades_abs_usd"])
+                  for reason, row in diag["by_exit_reason"].items()
+                  if row["total_losing_trades_abs_usd"] > 0]
+        reason, loss = max(losers, key=lambda item: item[1]) if losers else ("Sem perdas", 0.)
+        expectancy = diag["avg_net_usd"]
+        exp_label = f"{expectancy:+.5f}" if expectancy is not None else "—"
+        lines.append(f"| {key} | {exp_label} | {reason} | {loss:.2f} |")
     lines += ["","## Dados e limitações"]
     for market,meta in result["price_data"].items():
         lines.append(f"- {market}: {meta['bars']} candles; {meta['first']} a {meta['last']}; SHA-256 \x60{meta['sha256']}\x60")
@@ -388,8 +421,16 @@ def markdown(result):
 
 
 def main():
-    result=run()
+    captured={}
+    result=run(capture_data=captured)
     OUT.parent.mkdir(parents=True,exist_ok=True)
+    if result["price_data"]:
+        save_tape(
+            TAPE_OUT, datasets=captured["datasets"], m15rows=captured["m15rows"],
+            price_data=result["price_data"], created_utc=result["created_utc"],
+            hist_start=HIST_START, hist_end=HIST_END
+        )
+        print("FROZEN_OHLC_TAPE", str(TAPE_OUT), flush=True)
     OUT.with_suffix(".json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUT.with_suffix(".md").write_text(markdown(result),encoding="utf-8")
     print("BACKTEST_27_SUMMARY",json.dumps(
