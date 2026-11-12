@@ -1,0 +1,44 @@
+name: NEXUS CYCLES M5 | isolated research
+
+on:
+  pull_request:
+    paths:
+      - 'src/nexus_cycles_m5.py'
+      - 'research/nexus_cycles_m5_research.py'
+      - 'research/NEXUS_CYCLES_M5.md'
+      - 'tests/test_nexus_cycles_m5.py'
+      - '.github/workflows/nexus-cycles-m5-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline deterministic strategy tests
+        run: python -m unittest discover -s tests -p 'test_nexus_cycles_m5.py' -v
+      - name: Run preliminary Yahoo GC futures proxy experiment
+        shell: bash
+        run: |
+          mkdir -p reports/research
+          if python -m research.nexus_cycles_m5_research --yahoo-proxy --output reports/research/cycles_gc_proxy.json; then
+            echo "Unvalidated proxy research generated (NOT XAUUSD fills)."
+          else
+            printf '%s\n' '{"status":"DATA_UNAVAILABLE","profit_claim":false,"source":"Yahoo GC=F M5 proxy","reason":"fetch or data integrity failure; no synthetic market data substituted"}' > reports/research/cycles_gc_proxy_unavailable.json
+            echo "Yahoo unavailable; preserving explicit failure record."
+          fi
+      - name: Archive reproducible research result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-cycles-m5-unsafe-to-trade-research
+          path: reports/research/cycles_gc_proxy*.json
+          if-no-files-found: warn
+          retention-days: 14
