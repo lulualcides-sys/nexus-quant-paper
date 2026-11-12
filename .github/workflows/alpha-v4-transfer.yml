@@ -1,0 +1,43 @@
+name: ALPHA V4 backward transfer SOL — independent check
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/alpha_v4/**'
+      - 'tests/test_alpha_v4_transfer.py'
+      - '.github/workflows/alpha-v4-transfer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check source months and V4 no-lookahead/stop accounting
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_v4_transfer.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v4.py' -v
+  transfer:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Archived SOL 2026 Jan-Jun complete verified M1, run frozen V4
+        run: python -m research.alpha_v4.transfer --out artifacts/alpha-v4-transfer
+      - name: Record audit logs, hashes, CSV ledgers and JSON even if download fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v4-transfer-${{ github.run_id }}
+          path: artifacts/alpha-v4-transfer
+          if-no-files-found: warn
+          retention-days: 30
