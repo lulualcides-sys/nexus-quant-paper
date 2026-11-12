@@ -1,0 +1,48 @@
+name: XAUUSD batch7 entry quality 2025+ M1 M5 M15 M30 ONLY
+on:
+  push:
+    branches:
+      - research/xau-entry-quality-audit-batch7-20261112
+    paths:
+      - 'robots/mt5/nexus_vector_retest/xau_entry_quality_batch7_2025plus.py'
+      - 'robots/mt5/nexus_vector_retest/test_xau_entry_quality_batch7_2025plus.py'
+      - '.github/workflows/xau-entry-quality-batch7.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pinned numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Verify syntax causal gates and old exits unchanged
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/xau_entry_quality_batch7_2025plus.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_entry_quality_batch7_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_exit_risk_batch6_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_mtf_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_indicator_lab_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_statistical_regimes_batch5_2025plus.py' -v
+      - name: Fetch historical 2025 ONLY from pinned XAUUSD source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Evaluate four predeclared entry risk and quality gates versus frozen original 96h runner
+        run: python -u robots/mt5/nexus_vector_retest/xau_entry_quality_batch7_2025plus.py
+      - name: Archive all entry-quality performance, losses and stressed costs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xau-entry-quality-batch7-full
+          path: robots/mt5/nexus_vector_retest/xau_entry_quality_batch7_2025plus_results/
+          if-no-files-found: warn
