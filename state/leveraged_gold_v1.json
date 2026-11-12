@@ -2,12 +2,12 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1794412800,
+  "h4_watermark": 1794456000,
   "books": {
     "lev_channel20": {
       "equity": 5171.743968811271,
       "peak_equity": 5171.743968811271,
-      "today": "2026-11-11",
+      "today": "2026-11-12",
       "day_start_equity": 5171.743968811271,
       "frozen": false,
       "position": {
@@ -15,13 +15,13 @@
         "entry": 4012.39990234375,
         "start": 1794412800,
         "qty": 2.577880617428147,
-        "stop": 4042.4929016113283,
+        "stop": 3990.6930969238283,
         "entry_risk": 30.092999267578122,
         "mode": "green_runner",
-        "green_protected": false,
-        "peak_favorable": 21.89990234375,
+        "green_protected": true,
+        "peak_favorable": 51.7998046875,
         "target": null,
-        "held_bars": 1,
+        "held_bars": 3,
         "borrowed": 5171.743968811271,
         "notional_leverage": 2.0
       },
@@ -45,10 +45,24 @@
     "lev_momentum100": {
       "equity": 5095.482420660978,
       "peak_equity": 5095.482420660978,
-      "today": "2026-11-11",
+      "today": "2026-11-12",
       "day_start_equity": 5095.482420660978,
       "frozen": false,
-      "position": null,
+      "position": {
+        "side": -1,
+        "entry": 3984.199951171875,
+        "start": 1794441600,
+        "qty": 2.557844728230691,
+        "stop": 4014.081450805664,
+        "entry_risk": 29.88149963378906,
+        "mode": "green_runner",
+        "green_protected": false,
+        "peak_favorable": 23.599853515625,
+        "target": null,
+        "held_bars": 2,
+        "borrowed": 5095.482420660978,
+        "notional_leverage": 2.0
+      },
       "closed": [
         {
           "entry_ts": 1793246400,
@@ -69,7 +83,7 @@
     "lev_channel55": {
       "equity": 5171.743968811271,
       "peak_equity": 5171.743968811271,
-      "today": "2026-11-11",
+      "today": "2026-11-12",
       "day_start_equity": 5171.743968811271,
       "frozen": false,
       "position": null,
@@ -93,7 +107,7 @@
     "lev_momentum40": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-11-11",
+      "today": "2026-11-12",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -102,7 +116,7 @@
     "lev_trend_long": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-11-11",
+      "today": "2026-11-12",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
