@@ -170,6 +170,74 @@ def simulate_adaptive(df, signals, first, last, masks=None):
         prev_end = end
     return trades
 
+def simulate_conditional_runner(df, signals, first, last, masks=None):
+    """Keep the original two partials and original SL; gate ONLY >48-bar hold.
+
+    Unlike the rejected first adaptive experiment, there is NO moving stop,
+    NO TP3, and NO new early trend-loss exit. Beyond 48 completed M15 bars
+    a previously closed candle MUST confirm microtrend or strong trend;
+    otherwise exit at the next OPEN. Hard cap remains 384 bars.
+    """
+    if not 0 <= first < last <= len(df):
+        raise ValueError("invalid window")
+    if masks is None:
+        masks = trend_masks(df)
+    micro, strong = masks
+    op = df.open.to_numpy(dtype=float)
+    hi = df.high.to_numpy(dtype=float)
+    lo = df.low.to_numpy(dtype=float)
+    prev_end = first - 1
+    trades = []
+    for i, side, source_stop, _ in signals:
+        if i < first or i + MAX_HOLD + 1 >= last:
+            continue
+        entrybar = i+1
+        if entrybar <= prev_end+1:
+            continue
+        entry = float(op[entrybar])
+        risk = side*(entry-source_stop)
+        if not np.isfinite(risk) or risk <= 0:
+            continue
+        stop = float(source_stop)  # frozen stop from original signal
+        t1, t2 = entry+side*risk, entry+side*1.5*risk
+        remaining, taken, gross = 1., 0, 0.
+        reason, end = "TIME_MAX", entrybar+MAX_HOLD
+        for j in range(entrybar,entrybar+MAX_HOLD+1):
+            if j >= entrybar+BASE_HOLD:
+                prev = j-1  # last fully completed candle
+                idx = 0 if side > 0 else 1
+                trend = bool(micro[idx,prev] or strong[idx,prev])
+                if not trend:
+                    gross += remaining*side*(op[j]-entry)
+                    reason, end = "TREND_GATE_CLOSE", j
+                    break
+            if j == entrybar+MAX_HOLD:
+                gross += remaining*side*(op[j]-entry)
+                reason, end = "TIME_MAX", j
+                break
+            if (lo[j] <= stop if side>0 else hi[j] >= stop):
+                price = min(op[j],stop) if side>0 else max(op[j],stop)
+                gross += remaining*side*(price-entry)
+                reason, end = "SL", j
+                break
+            for k, target in enumerate((t1,t2)):
+                if k < taken:
+                    continue
+                if (hi[j] >= target if side>0 else lo[j] <= target):
+                    gross += side*(target-entry)/3.
+                    remaining -= 1./3
+                    taken = k+1
+                else:
+                    break
+        trades.append(dict(signal=i,entry=entrybar,exit=end,
+            side=int(side),reason=reason,duration_bars=end-entrybar,
+            extended=(end-entrybar>BASE_HOLD),
+            ever_runner=(end-entrybar>BASE_HOLD),
+            gross_pts=gross/POINT,net_pts=(gross-COST)/POINT))
+        prev_end = end
+    return trades
+
+
 def extended_stats(trades):
     row = stats(trades)
     if trades:
@@ -229,7 +297,8 @@ def replay(raw, name):
         alternatives = [
             ("BASE_48", simulate_xau(data,signals,first,last,48,runner=False)),
             ("FIXED_RUNNER_384", simulate_xau(data,signals,first,last,384,runner=True)),
-            ("ADAPTIVE_TREND", simulate_adaptive(data,signals,first,last,masks))]
+            ("ADAPTIVE_TREND_REJECTED", simulate_adaptive(data,signals,first,last,masks)),
+            ("CONDITIONAL_RUNNER", simulate_conditional_runner(data,signals,first,last,masks))]
         for model, trades in alternatives:
             row = dict(source=name,window=window,model=model,
                 start=str(data.index[first]),end=str(data.index[last-1]),
@@ -243,17 +312,21 @@ def main():
     raw26 = download()
     raw25, _ = year_2025()
     raw24, manifest24 = load_independent_year("2024")
+    raw23, manifest23 = load_independent_year("2023")
     result = dict(symbol="XAUUSD",timeframe="M15",status="RESEARCH_ONLY",
-        pinned_2024_commit=DATA_PIN, sha256_2024_manifest=manifest24,
+        pinned_years_commit=DATA_PIN, sha256_2024_manifest=manifest24,
+        sha256_2023_manifest=manifest23,
         point_assumed=POINT,cost_usd_per_ounce_roundtrip_assumed=COST,
         max_hold=MAX_HOLD,base_hold=BASE_HOLD,
         warnings=["2026 and 2025 have already been inspected/used for candidate selection.",
-          "2024 is an additional holdout; results cannot confirm live profitability.",
+          "2024 was inspected in the first adaptive iteration and is no longer pristine.",
+          "2023 is fresh for CONDITIONAL_RUNNER (2024 motivated a structural simplification).",
           "OHLC stop-first proxy, no broker tick, swap, spread variation or slippage.",
           "2024 and 2025 come from the same secondary source; not broker-independent."],
         cases=[replay(raw26,"2026_PREVIOUSLY_USED"),
                replay(raw25,"2025_PREVIOUSLY_USED"),
-               replay(raw24,"2024_HOLDOUT")])
+               replay(raw24,"2024_PREVIOUSLY_SEEN"),
+               replay(raw23,"2023_NEW_HOLDOUT")])
     RESULTS.mkdir(exist_ok=True,parents=True)
     (RESULTS/"results.json").write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n")
     lines=["# XAUUSD M15 — adaptive EMA21 trend-conditioned exits", "",
