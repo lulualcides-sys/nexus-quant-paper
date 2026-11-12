@@ -14,6 +14,23 @@ def sample(n=650):
     return d
 
 class TestXAUAllTFs(unittest.TestCase):
+    def test_vectorized_trend_masks_exactly_equal_original(self):
+        from alpha_xau_mtf_2025plus import compute_trend_masks
+        from alpha_xau_adaptive import trend_masks as reference
+        rng=np.random.default_rng(115)
+        n=220
+        f=sample(n)
+        f["close"]=100+rng.normal(0,2,n).cumsum()
+        f["fema"]=f["close"].ewm(span=21,adjust=False).mean()
+        f["sema"]=f["close"].ewm(span=55,adjust=False).mean()
+        f["atr"]=0.8+rng.random(n)
+        f.loc[56,"fema"]=float("nan")
+        f.loc[112,"close"]=float("nan")
+        a,b=reference(f)
+        c,d=compute_trend_masks(f)
+        self.assertTrue(np.array_equal(a,c))
+        self.assertTrue(np.array_equal(b,d))
+
     def test_all_native_minute_timeframes_covered(self):
         self.assertEqual(TF_MINUTES,(1,2,3,4,5,6,10,12,15,20,30))
         self.assertEqual(len(TF_MINUTES),11)
