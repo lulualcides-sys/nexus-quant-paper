@@ -284,7 +284,14 @@ def load_independent_year(year):
     return raw, digests
 
 def replay(raw, name):
-    data = prepared(bars_for(raw,15))
+    # Scoped by user to 2025 forward. Never include an earlier historical bar.
+    if raw.empty:
+        raise ValueError(f"empty dataset for {name}")
+    cutoff = pd.Timestamp("2025-01-01",tz="UTC")
+    scoped = raw.loc[raw.index >= cutoff]
+    if scoped.empty:
+        raise ValueError(f"no XAUUSD candles from 2025 onward for {name}")
+    data = prepared(bars_for(scoped,15))
     signals = events(data, "EMA21_PULLBACK")
     masks = trend_masks(data)
     count = (len(data)-WARM)//WINDOW
@@ -311,22 +318,20 @@ def main():
     from points10k_2025 import source as year_2025
     raw26 = download()
     raw25, _ = year_2025()
-    raw24, manifest24 = load_independent_year("2024")
-    raw23, manifest23 = load_independent_year("2023")
+    # Intentionally do not fetch or replay 2024 or earlier; preserve old
+    # reports as historical audit records without mixing them into new metrics.
     result = dict(symbol="XAUUSD",timeframe="M15",status="RESEARCH_ONLY",
-        pinned_years_commit=DATA_PIN, sha256_2024_manifest=manifest24,
-        sha256_2023_manifest=manifest23,
+        date_scope="2025-01-01 onward (UTC)",
+        pinned_2025_commit=DATA_PIN,
         point_assumed=POINT,cost_usd_per_ounce_roundtrip_assumed=COST,
         max_hold=MAX_HOLD,base_hold=BASE_HOLD,
-        warnings=["2026 and 2025 have already been inspected/used for candidate selection.",
-          "2024 was inspected in the first adaptive iteration and is no longer pristine.",
-          "2023 is fresh for CONDITIONAL_RUNNER (2024 motivated a structural simplification).",
-          "OHLC stop-first proxy, no broker tick, swap, spread variation or slippage.",
-          "2024 and 2025 come from the same secondary source; not broker-independent."],
-        cases=[replay(raw26,"2026_PREVIOUSLY_USED"),
-               replay(raw25,"2025_PREVIOUSLY_USED"),
-               replay(raw24,"2024_PREVIOUSLY_SEEN"),
-               replay(raw23,"2023_NEW_HOLDOUT")])
+        warnings=[
+            "2025/2026 have already been explored and are NOT fresh holdouts.",
+            "This restriction is user-defined; positivity after selecting years is NOT proof of a robust edge.",
+            "OHLC stop-first proxy; no MT5 tick-level verification, swap, dynamic spread or slippage.",
+            "XAUUSD-only. Prior archive years remain intact but excluded from this report."],
+        cases=[replay(raw25,"2025_SCOPED"),
+               replay(raw26,"2026_SCOPED")])
     RESULTS.mkdir(exist_ok=True,parents=True)
     (RESULTS/"results.json").write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n")
     lines=["# XAUUSD M15 — adaptive EMA21 trend-conditioned exits", "",
@@ -343,7 +348,12 @@ def main():
         for r in case["rows"]:
             lines.append("| "+ " | ".join(str(r[k]) for k in (
                 "source","window","model","N","net_pts","PF","mdd_pts","extended_n"))+" |")
-    lines+=["","2024 was not used to choose thresholds; parameters were fixed first.",
+    lines+=["","**Strict date scope: 2025-01-01 onward (UTC).** No earlier bars included.",
+            "2025 and 2026 results were used during development, so neither is untouched OOS.",
+            "BASE_48: three target partials; FIXED_RUNNER_384: last 1/3 always runner.",
+            "ADAPTIVE_TREND_REJECTED: stop/trend redesign, for audit only.",
+            "CONDITIONAL_RUNNER: original SL and first two partials; extend beyond",
+            "48 M15 bars only while the previous closed bar confirms directional trend.",
             "Drawdown is computed on closed-trade equity, not intratrade equity.",
             "Do not approve live trading without independent real-tick MT5 forward tests.",""]
     (RESULTS/"REPORT.md").write_text("\n".join(lines))
