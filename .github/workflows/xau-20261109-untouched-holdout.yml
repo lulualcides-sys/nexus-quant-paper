@@ -1,0 +1,93 @@
+name: XAUUSD | Predeclared 09-Nov chronological holdout
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - .github/workflows/xau-20261109-untouched-holdout.yml
+      - research/xau_quote_execution_backtest.py
+      - research/xau_quote_tracker_reference.py
+      - research/xau_dukascopy_replay.py
+      - tests/test_xau_quote_execution_backtest.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regression gate before historical download
+        run: |
+          python -m py_compile research/xau_quote_execution_backtest.py research/xau_quote_tracker_reference.py research/xau_dukascopy_replay.py
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+          python -m unittest discover -s tests -p 'test_xau_dukascopy_replay.py' -v
+      - name: Fixed single HOLDOUT 2026-11-09 12-17 UTC, Dukascopy bid/ask
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          npx --yes dukascopy-node@1.51.1 \
+            -i xauusd -from 2026-11-09T12:00Z -to 2026-11-09T17:00Z \
+            -t tick -f csv -dir "$RUNNER_TEMP/quotes" \
+            -fn xau_20261109 -bs 3 -bp 1500 -r 2
+          test -s "$RUNNER_TEMP/quotes/xau_20261109.csv"
+          head -n1 "$RUNNER_TEMP/quotes/xau_20261109.csv" | grep -q '^timestamp,askPrice,bidPrice'
+      - name: Execute untouched M1 and M5 signals with two predefined assumptions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for tf in M1 M5; do
+            for scenario in base friction; do
+              fee=0; slip=0
+              if [[ "$scenario" == friction ]]; then fee=0.30; slip=0.10; fi
+              python -m research.xau_quote_execution_backtest \
+                --ticks "$RUNNER_TEMP/quotes/xau_20261109.csv" \
+                --timeframe "$tf" --commission "$fee" --slippage "$slip" \
+                --output "$RUNNER_TEMP/evidence/xau_20261109_${tf}_${scenario}.json"
+            done
+          done
+      - name: Fail closed on absent quotes, incomplete or misleading reports
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"evidence"
+          for tf in ("M1","M5"):
+              base=json.loads((root/f"xau_20261109_{tf}_base.json").read_text())
+              friction=json.loads((root/f"xau_20261109_{tf}_friction.json").read_text())
+              for a in (base,friction):
+                  e=a["execution"]
+                  assert a["source"]["first_candle_utc"].startswith("2026-11-09")
+                  assert a["source"]["aggregated_closed_or_open_bars"] >= (50 if tf=="M5" else 200)
+                  assert a["source"]["source_rows"]>1000
+                  assert e["filled"] == e["closed"]
+                  assert e["planned_signals"] >= e["filled"]
+                  assert a["independently_validated_with_original_greenhouse"] is False
+                  assert a["not_live_or_broker_backtest"] is True
+              assert base["source"]["source_sha256"] == friction["source"]["source_sha256"]
+              assert base["execution"]["filled"] == friction["execution"]["filled"]
+              assert friction["execution"]["net_usd_per_oz"] <= base["execution"]["net_usd_per_oz"] + 1e-6
+              print("NOV9 HOLDOUT",tf,"quotes:",base["source"]["source_rows"],
+                    "signals:",friction["execution"]["planned_signals"],
+                    "fills:",friction["execution"]["filled"],
+                    "wins:",friction["execution"]["wins"],"losses:",friction["execution"]["losses"],
+                    "net_USD_per_oz:",friction["execution"]["net_usd_per_oz"],
+                    "profit_factor:",friction["execution"]["profit_factor"],
+                    "feed_hash:",base["source"]["source_sha256"])
+          PY
+      - name: Publish only evidence, no raw quote feed and no order placement
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-20261109-predeclared-holdout
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 15

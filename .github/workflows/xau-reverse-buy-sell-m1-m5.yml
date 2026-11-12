@@ -1,0 +1,129 @@
+name: XAUUSD | Reverse BUY SELL M1 M5 30-date paired counterfactual
+on:
+  push:
+    branches: [research/xauusd-quote-tracker-mt5-20261110]
+    paths:
+      - research/xau_inverted_tracker_experiment.py
+      - tests/test_xau_inverted_tracker_experiment.py
+      - .github/workflows/xau-reverse-buy-sell-m1-m5.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  historical_quote_pairs:
+    strategy:
+      fail-fast: false
+      matrix:
+        period: [july, august]
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate bid-ask stop/target rules and exact mirrored event timing
+        run: |
+          python -m py_compile research/xau_inverted_tracker_experiment.py
+          python -m unittest discover -s tests -p 'test_xau_inverted_tracker_experiment.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_frequency_lab.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Fixed historical quote dates original vs reversed, all six variants
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/comparison"
+          if [[ "${{ matrix.period }}" == "july" ]]; then
+            DAYS=(20260706 20260707 20260708 20260709 20260710
+                  20260713 20260714 20260715 20260716 20260717)
+          else
+            DAYS=(20260803 20260804 20260805 20260806 20260807
+                  20260810 20260811 20260812 20260813 20260814
+                  20260817 20260818 20260819 20260820 20260821
+                  20260824 20260825 20260826 20260827 20260828)
+          fi
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T12:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${d}" \
+              -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/quotes/xau_${d}.csv"
+            test -s "$file"
+            head -n1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_inverted_tracker_experiment \
+              --ticks "$file" --day "$d" \
+              --out "$RUNNER_TEMP/comparison/xau_${d}.json" \
+              --quarantine-out "$RUNNER_TEMP/comparison/quarantine_${d}.json"
+            test -f "$RUNNER_TEMP/comparison/xau_${d}.json" -o -f "$RUNNER_TEMP/comparison/quarantine_${d}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-inversion-${{ matrix.period }}
+          path: ${{ runner.temp }}/comparison/*.json
+          retention-days: 15
+  summary:
+    needs: [historical_quote_pairs]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download both paired quote-ledger artifacts, no raw tick redistribution
+        uses: actions/download-artifact@v4
+        with:
+          pattern: xau-inversion-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/comparison
+      - name: Compare identical signals and audit all variants, both periods
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_inverted_tracker_experiment \
+            --summarize --out "$RUNNER_TEMP/comparison"
+          python - <<'PY'
+          import json,os,pathlib
+          r=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/
+                        "comparison/inversion_scorecard.json").read_text())
+          assert not r["profitability_approved"]
+          assert r["not_a_prospective_future_holdout"]
+          assert len(r["variants"])==12
+          assert r["clean_days"]["july"]>=8
+          assert r["clean_days"]["august"]>=16
+          # Recover EXACT original negative numbers before trusting the
+          # counterfactual; if historical Dukascopy replays changed, fail.
+          expected={"reference_F50_M1":-53.365,
+                    "balanced_F50_M1":-44.065,
+                    "active_F50_M1":-149.145,
+                    "reference_F50_M5":-20.405}
+          for key,pnl in expected.items():
+              got=r["variants"][key]["august"]["original"]["net_usd_per_oz"]
+              assert abs(got-pnl)<=.003,(key,got,pnl)
+          for key,panel in r["variants"].items():
+              for name in ("july","august"):
+                  original=panel[name]["original"]
+                  inverted=panel[name]["inverted"]
+                  assert original["signals"]==inverted["signals"]
+                  assert original["filled"]<=original["signals"]
+                  assert inverted["filled"]<=inverted["signals"]
+                  print("PAIR",key,name,
+                        "original",original["net_usd_per_oz"],
+                        "inverted",inverted["net_usd_per_oz"],
+                        "original_fills",original["filled"],
+                        "inverse_fills",inverted["filled"])
+          PY
+      - name: Report research-only comparison and full paired ledgers
+        uses: actions/upload-artifact@v4
+        with:
+          name: xau-buy-sell-inversion-30-date-scorecard
+          path: |
+            ${{ runner.temp }}/comparison/inversion_scorecard.json
+            ${{ runner.temp }}/comparison/inversion_scorecard.md
+          retention-days: 30

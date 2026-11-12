@@ -1,0 +1,93 @@
+name: XAUUSD | August 20-session frozen M1 and M5 repeat test
+on:
+  push:
+    branches: [research/xauusd-quote-tracker-mt5-20261110]
+    paths:
+      - research/xau_august_frozen_replication.py
+      - tests/test_xau_august_frozen_replication.py
+      - research/xau_frequency_lab.py
+      - .github/workflows/xau-august-20-session-m1-m5.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  august_repeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test fixed research variants, safety of quote execution and reporting
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_frequency_lab.py research/xau_august_frozen_replication.py
+          python -m unittest discover -s tests -p 'test_xau_august_frozen_replication.py' -v
+          python -m unittest discover -s tests -p 'test_xau_frequency_lab.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_dukascopy_replay.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Get fixed August 2026 XAUUSD quotes with 20 precommitted weekday dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/out" "$RUNNER_TEMP/summary"
+          # AUGUST dates are EARLIER than Sep/Oct training; historical replication ONLY.
+          DAYS=(20260803 20260804 20260805 20260806 20260807
+                20260810 20260811 20260812 20260813 20260814
+                20260817 20260818 20260819 20260820 20260821
+                20260824 20260825 20260826 20260827 20260828)
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T12:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" \
+              -fn "xau_${d}" -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/quotes/xau_${d}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_frequency_lab \
+              --ticks "$f" --day "$d" \
+              --out "$RUNNER_TEMP/out/xau_${d}.json" \
+              --quarantine-out "$RUNNER_TEMP/out/quarantine_${d}.json" \
+              --day-id "$d"
+            test -f "$RUNNER_TEMP/out/xau_${d}.json" -o -f "$RUNNER_TEMP/out/quarantine_${d}.json"
+          done
+      - name: Independent per-half and aggregate evaluation for M1 and M5
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_august_frozen_replication \
+            --reports "$RUNNER_TEMP/out" --out "$RUNNER_TEMP/summary"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"summary"
+          data=json.loads((root/"august_2026_comparison.json").read_text())
+          assert data["any_strategy_approved_for_trading"] is False
+          assert data["not_a_future_holdout"] is True
+          assert len(data["predeclared_days"])==20
+          assert len(data["clean_days"])>=16
+          assert len(data["variants"])==12
+          for key,v in data["variants"].items():
+              s=v["double_friction"]["all"]
+              assert s["filled_count"]<=s["signal_count"]
+              assert s["source_days"]==len(data["clean_days"])
+              print("RESULT",key,"signals",s["signal_count"],
+                    "fills",s["filled_count"],"net",s["net_usd_per_oz"],
+                    "PF",s["profit_factor"],"CI",s["day_bootstrap_net_p025"],
+                    s["day_bootstrap_net_p975"])
+          PY
+      - name: Upload full candidate scorecard and raw-feed checksums, not raw quote data
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-august-20-session-M1-M5-full-scorecard
+          path: |
+            ${{ runner.temp }}/summary/*
+            ${{ runner.temp }}/out/*.json
+          retention-days: 15

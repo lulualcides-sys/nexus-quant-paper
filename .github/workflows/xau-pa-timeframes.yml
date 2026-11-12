@@ -1,0 +1,82 @@
+name: XAUUSD | three PA examples M1 M5 M15 with real quote replay
+on:
+  push:
+    branches: [research/xauusd-quote-tracker-mt5-20261110]
+    paths:
+      - research/xau_pa_timeframes.py
+      - tests/test_xau_pa_timeframes.py
+      - tests/test_xau_dukascopy_replay.py
+      - .github/workflows/xau-pa-timeframes.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  xau-three-timeframe-paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile and test PA setups and realistic quote execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_timeframes.py
+          python -m unittest discover -s tests -p 'test_xau_pa_timeframes.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_dukascopy_replay.py' -v
+      - name: Download FIXED 6 historical trading sessions of gold tick quotes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/results" "$RUNNER_TEMP/aggregate"
+          DAYS=(20261028 20261029 20261030 20261103 20261104 20261105)
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T12:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" \
+              -fn "xau_${d}" -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/quotes/xau_${d}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_timeframes \
+              --ticks "$f" --day "$d" \
+              --out "$RUNNER_TEMP/results/xau_${d}.json"
+          done
+      - name: Consolidate all M1 M5 M15 with double friction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_timeframes \
+            --reports "$RUNNER_TEMP/results" \
+            --out "$RUNNER_TEMP/aggregate/full_3_timeframes.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'aggregate'/'full_3_timeframes.json'
+          r=json.loads(p.read_text())
+          assert not r['approved_for_trading']
+          assert len(r['all_predeclared_days'])==6
+          assert {x['tf'] for x in r['results']}=={'M1','M5','M15'}
+          for a in r['results']:
+              print(a['tf'],a['costs'],a['segment'],
+                    "entries",a['entries'],
+                    "net US$/oz",a['net_usd_per_oz'],
+                    "PF",a['profit_factor'])
+          PY
+      - name: Preserve whole-session data hashes and all hypothetical trades
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-m1-m5-m15-actual-bidask-six-session-paper
+          path: |
+            ${{ runner.temp }}/results/*.json
+            ${{ runner.temp }}/aggregate/*.json
+          if-no-files-found: warn
+          retention-days: 30

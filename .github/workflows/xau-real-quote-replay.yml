@@ -1,0 +1,75 @@
+name: XAUUSD | Real Dukascopy bid/ask quote replay (research only)
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - research/xau_dukascopy_replay.py
+      - research/xau_quote_tracker_reference.py
+      - tests/test_xau_dukascopy_replay.py
+      - .github/workflows/xau-real-quote-replay.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  xau_real_quote_smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate quote parsing, anti-lookahead and safety without network
+        run: |
+          python -m unittest discover -s tests -p 'test_xau_dukascopy_replay.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Download FIXED historical XAUUSD tick window from public Dukascopy feed
+        run: |
+          mkdir -p "$RUNNER_TEMP/dukascopy"
+          # Two predeclared windows: no threshold selection using observed results.
+          for day in 2026-10-29 2026-11-03; do
+            shortday="${day//-/}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${day}T12:00Z" -to "${day}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/dukascopy" -fn "xau_${shortday}" \
+              -bs 3 -bp 1500 -r 2
+            test -s "$RUNNER_TEMP/dukascopy/xau_${shortday}.csv"
+            head -n 1 "$RUNNER_TEMP/dukascopy/xau_${shortday}.csv" | grep -q '^timestamp,askPrice,bidPrice'
+          done
+      - name: Reconstruct ONLY market quote activity and display signal counts
+        run: |
+          for day in 20261029 20261103; do
+            for tf in M1 M5; do
+              python -m research.xau_dukascopy_replay \
+                --ticks "$RUNNER_TEMP/dukascopy/xau_${day}.csv" \
+                --timeframe "$tf" --point 0.001 \
+                --output "$RUNNER_TEMP/reports/xau_${day}_${tf}.json"
+            done
+          done
+      - name: Audit provenance and no-fake-profit policy
+        run: |
+          python - <<'PY'
+          import json,os,pathlib
+          folder=pathlib.Path(os.environ["RUNNER_TEMP"])/"reports"
+          for path in sorted(folder.glob("*.json")):
+              data=json.loads(path.read_text())
+              assert data["source_rows"] > 1000
+              assert data["aggregated_closed_or_open_bars"] >= 50
+              assert data["profitability_untested"] is True
+              assert data["orders_sent"] == 0
+              assert data["bid_ask_quotes_not_trades"] is True
+              assert data["exact_original_tracker_match_verified"] is False
+              assert len(data["source_sha256"]) == 64
+              print(path.name, "bars:",data["aggregated_closed_or_open_bars"],
+                    "signals:",data["candidates_total"],"hash:",data["source_sha256"])
+          PY
+      - name: Retain provenance report, NOT raw Dukascopy ticks or broker credentials
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-real-dukascopy-quote-replay-research
+          path: ${{ runner.temp }}/reports/*.json
+          retention-days: 15

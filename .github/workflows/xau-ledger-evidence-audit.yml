@@ -1,0 +1,62 @@
+name: XAUUSD | Diagnose trade exits from verified evidence, no new download
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - research/xau_quote_evidence_audit.py
+      - tests/test_xau_quote_evidence_audit.py
+      - .github/workflows/xau-ledger-evidence-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit_exits_and_release_gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test accounting without a data download
+        run: |
+          python -m py_compile research/xau_quote_evidence_audit.py tests/test_xau_quote_evidence_audit.py
+          python -m unittest discover -s tests -p 'test_xau_quote_evidence_audit.py' -v
+      - name: Reuse immutable previous 14-session artifact (NO raw quote re-download)
+        uses: actions/download-artifact@v4
+        with:
+          name: xau-14-clean-session-quote-robustness-audit
+          path: ${{ runner.temp }}/prior_evidence
+          github-token: ${{ github.token }}
+          run-id: 42781887672
+      - name: Summarize why trades stopped and lock trading approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          filename="$(find "$RUNNER_TEMP/prior_evidence" -name 'xau_20261019_M1_base.json' -type f -print -quit)"
+          test -n "$filename"
+          directory="$(dirname "$filename")"
+          python -m research.xau_quote_evidence_audit \
+            --reports "$directory" \
+            --dates "20261019,20261020,20261021,20261022,20261023,20261026,20261027,20261028,20261029,20261030,20261102,20261103,20261104,20261105" \
+            --out "$RUNNER_TEMP/out"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads((Path(os.environ["RUNNER_TEMP"])/"out/xau_ledger_audit.json").read_text())
+          assert r["eligible_for_broker_orders"] is False
+          assert len(r["approval_fail_reasons"])>=2
+          a=r["strategies"]["M1"]["friction"]
+          b=r["strategies"]["M5"]["friction"]
+          assert a["filled"]==12 and b["filled"]==4
+          assert abs(a["net_usd_per_oz"]+22.13)<1e-4
+          assert abs(b["net_usd_per_oz"]-15.237)<1e-4
+          PY
+      - name: Publish exit breakdown and strict non-approval
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-exit-reason-and-approval-gate
+          path: ${{ runner.temp }}/out/*
+          retention-days: 30

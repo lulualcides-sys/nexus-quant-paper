@@ -1,0 +1,68 @@
+name: XAUUSD | Frozen frequency variants six-session evaluation
+on:
+  push:
+    branches: [research/xauusd-quote-tracker-mt5-20261110]
+    paths:
+      - research/xau_activity_variant_experiment.py
+      - tests/test_xau_activity_variant_experiment.py
+      - .github/workflows/xau-frozen-frequency-variants.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  controlled_variants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regression gate
+        run: |
+          python -m py_compile research/xau_activity_variant_experiment.py
+          python -m unittest discover -s tests -p 'test_xau_activity_variant_experiment.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_execution_backtest.py' -v
+          python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Download six predeclared days only, without tuning
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/results"
+          for d in 20261019 20261020 20261021 20261022 20261103 20261104; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T12:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" \
+              -fn "xau_${d}" -bs 3 -bp 1500 -r 2
+            test -s "$RUNNER_TEMP/quotes/xau_${d}.csv"
+            python -m research.xau_activity_variant_experiment \
+              --ticks "$RUNNER_TEMP/quotes/xau_${d}.csv" \
+              --day "$d" --out "$RUNNER_TEMP/results"
+          done
+      - name: Summarize train and evaluation independently
+        shell: bash
+        run: |
+          python -m research.xau_activity_variant_experiment \
+            --summary-dir "$RUNNER_TEMP/results" --out "$RUNNER_TEMP/results"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"results/comparison.json"
+          r=json.loads(p.read_text())
+          assert not r["approved_for_live"]
+          assert len(r["results"])==8
+          assert len(r["train_dates"])==4 and len(r["evaluation_dates"])==2
+          for k,v in r["results"].items():
+              assert v["train"]["filled"]<=v["train"]["signals"]
+              assert v["evaluation"]["filled"]<=v["evaluation"]["signals"]
+          PY
+      - name: Retain compact trade ledgers, not copyrighted raw quote files
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-frozen-variants-train-evaluation
+          path: ${{ runner.temp }}/results/*.json
+          retention-days: 30

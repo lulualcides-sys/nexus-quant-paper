@@ -1,0 +1,111 @@
+name: XAUUSD | Resume frozen training, repair unavailable forward hours
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - .github/workflows/xau-frequency-v2-holdout-repair.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  finish_unseen_windows_from_immutable_selection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reuse TRAIN and VALIDATION files from previous run, do not recompute
+        uses: actions/download-artifact@v4
+        with:
+          name: xau-frequency-v2-frozen-training-validation-forward
+          path: ${{ runner.temp }}/xau_lab
+          github-token: ${{ github.token }}
+          run-id: 42789286528
+      - name: Verify original TRAIN selection existed before new forward quote retrieval
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s "$RUNNER_TEMP/xau_lab/training_selection.json"
+          sha256sum "$RUNNER_TEMP/xau_lab/training_selection.json"
+          python - <<'PY'
+          import os, json
+          from pathlib import Path
+          from research.xau_frequency_scorecard import TRAIN,VALIDATION
+          d=Path(os.environ["RUNNER_TEMP"])/"xau_lab"
+          t=json.loads((d/"training_selection.json").read_text())
+          assert t["dataset"]=="TRAIN only: no validation or holdout accessed"
+          assert t["trading_approved"] is False
+          assert len(t["board"])==12
+          for day in TRAIN+VALIDATION:
+              assert (d/f"xau_{day}.json").exists() or (d/f"quarantine_{day}.json").exists(),day
+          assert not (d/"xau_20261109_07.json").exists()
+          assert not (d/"xau_20261110_00.json").exists()
+          print("Frozen selection preserved:",t["preselected_candidate"])
+          PY
+      - name: Quality-driven time shift only, use two untested five-hour windows
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/xau_quotes"
+          # Originally 09 Nov 18-23 UTC lacked 50 M5 bars (market-hour gap).
+          # Replace *before seeing results*: 09 Nov 07-12 UTC.
+          # 10 Nov 00-05 UTC is retained. No parameters may change.
+          for row in "20261109_07 2026-11-09T07:00Z 2026-11-09T12:00Z" \
+                     "20261110_00 2026-11-10T00:00Z 2026-11-10T05:00Z"; do
+            read -r id from to <<< "$row"
+            day="${id:0:8}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "$from" -to "$to" \
+              -t tick -f csv -dir "$RUNNER_TEMP/xau_quotes" \
+              -fn "xau_${id}" -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/xau_quotes/xau_${id}.csv"
+            test -s "$file"
+            head -n 1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_frequency_lab \
+              --ticks "$file" --day "$day" --day-id "$id" \
+              --out "$RUNNER_TEMP/xau_lab/xau_${id}.json" \
+              --quarantine-out "$RUNNER_TEMP/xau_lab/quarantine_${id}.json"
+            rm -f "$file"
+          done
+      - name: Independently score chronological validation and new unseen slices
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, json
+          from pathlib import Path
+          import research.xau_frequency_scorecard as score
+          d=Path(os.environ["RUNNER_TEMP"])/"xau_lab"
+          prior=json.loads((d/"training_selection.json").read_text())
+          # This exact scope substitution changes only a previously invalid
+          # market-hour window, NOT the strategy selection or thresholds.
+          assert score.FUTURE_HOLDOUT==("20261109_18","20261110_00")
+          score.FUTURE_HOLDOUT=("20261109_07","20261110_00")
+          outcome=score.final_assessment(d,prior)
+          (d/"heldout_scorecard.json").write_text(json.dumps(outcome,indent=2,ensure_ascii=False)+"\n")
+          assert outcome["train_selected_before_future_data"]==prior["preselected_candidate"]
+          assert outcome["future_days"]==2
+          assert outcome["approval_blocked"] is True
+          print("TRAIN selected:",prior["preselected_candidate"])
+          for row in prior["board"]:
+              x=row["double_friction"];print("TRAIN",row["name"],"signals",x["signal_count"],
+                   "fills",x["filled_count"],"double-friction net",x["net_usd_per_oz"])
+          for row in outcome["all_variant_validation_board"]:
+              x=row["double_friction"];print("VALIDATION",row["name"],"signals",x["signal_count"],
+                   "fills",x["filled_count"],"double-friction net",x["net_usd_per_oz"])
+          print("FORWARD SELECTED:",json.dumps(outcome["future_preselected_only"]))
+          print("BLOCK REASONS:",json.dumps(outcome["approval_reasons"]))
+          PY
+      - name: Preserve all results, losses, quarantines and frozen selection
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xau-frequency-v2-repaired-forward-preserved-selection
+          path: ${{ runner.temp }}/xau_lab/*.json
+          retention-days: 30

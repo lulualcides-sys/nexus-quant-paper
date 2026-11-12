@@ -1,0 +1,106 @@
+name: XAUUSD | Unapproved high-frequency MT5 visual preset compiler
+on:
+  push:
+    branches:
+      - research/xauusd-quote-tracker-mt5-20261110
+    paths:
+      - research/xau_quote_tracker_reference.py
+      - research/xau_frequency_lab.py
+      - tests/test_xau_quote_tracker_reference.py
+      - tests/test_xau_frequency_lab.py
+      - indicators/mt5/NQ_XAU_Quote_Tracker_Lab_Research.mq5
+      - docs/NQ_XAU_QUOTE_TRACKER_RESEARCH_2026-11-10.md
+      - .github/workflows/xau-mt5-research-preset-compile.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify_reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Static compilation of independent Python research module
+        run: python -m py_compile research/xau_quote_tracker_reference.py tests/test_xau_quote_tracker_reference.py
+      - name: Verify lab presets and strict reference tests
+        run: python -m unittest discover -s tests -p 'test_xau_frequency_lab.py' -v
+      - name: Adversarial closed-bar, CFD quote-activity, spread and CSV tests
+        run: python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Hard safety gate - no orders or fake exchange aggression
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          p=Path("research/xau_quote_tracker_reference.py")
+          tree=ast.parse(p.read_text())
+          banned={"order_send", "login", "positions_get", "history_deals_get"}
+          attrs={n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)}
+          assert not banned & attrs
+          source=Path("indicators/mt5/NQ_XAU_Quote_Tracker_Lab_Research.mq5").read_text()
+          assert "CopyTicksRange(" not in source
+          assert "BufferBuy[0]=EMPTY_VALUE" in source
+          assert "gLastOpen!=time[0]" in source
+          for s in ("OrderSend(", "CTrade ", "TICK_FLAG_BUY",
+                    "TICK_FLAG_SELL", "WebRequest(", "FileOpen("):
+              assert s not in source, s
+          print("SAFE: independent quote research without orders/real aggression claims")
+          PY
+  compile_official_mql5:
+    needs: verify_reference
+    runs-on: windows-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test offline quote reference on Windows
+        shell: pwsh
+        run: python -m unittest discover -s tests -p 'test_xau_quote_tracker_reference.py' -v
+      - name: Install official MetaTrader MetaEditor (no account or orders)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = Join-Path $env:RUNNER_TEMP 'mt5setup.exe'
+          $installDir = Join-Path $env:RUNNER_TEMP 'NQMetaEditor'
+          Invoke-WebRequest -Uri 'https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe' -OutFile $installer -MaximumRedirection 4 -TimeoutSec 90
+          if ((Get-Item $installer).Length -lt 1000000) { throw 'Invalid MetaQuotes installer' }
+          $p=Start-Process -FilePath $installer -ArgumentList @('/auto',"/path:`"$installDir`"") -Wait -PassThru
+          Write-Host "Official installer exit: $($p.ExitCode)"
+          $deadline=(Get-Date).AddSeconds(120)
+          do {
+            $editor=Get-ChildItem -Path $installDir -Filter metaeditor64.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            if ($editor) { break }
+            Start-Sleep -Seconds 3
+          } while ((Get-Date) -lt $deadline)
+          if (-not $editor) { throw 'MetaEditor64 not found' }
+          "METAEDITOR_EXE=$editor" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Compile XAUUSD MQ5 with ZERO errors and ZERO warnings
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $src=(Resolve-Path '.\indicators\mt5\NQ_XAU_Quote_Tracker_Lab_Research.mq5').Path
+          $binary=[IO.Path]::ChangeExtension($src,'.ex5')
+          $log=[IO.Path]::ChangeExtension($src,'.log')
+          if (Test-Path $binary) { Remove-Item $binary -Force }
+          if (Test-Path $log) { Remove-Item $log -Force }
+          $p=Start-Process -FilePath $env:METAEDITOR_EXE -ArgumentList @("/compile:`"$src`"","/log") -Wait -PassThru
+          if (-not (Test-Path $log)) { throw 'No compiler diagnostic log' }
+          $result=Get-Content $log -Raw
+          Write-Host $result
+          if ($result -notmatch 'Result:\s*0 errors?,\s*0 warnings?') {
+            throw 'MetaEditor did not confirm 0 errors and 0 warnings'
+          }
+          if (-not (Test-Path $binary) -or (Get-Item $binary).Length -lt 3000) {
+            throw 'Validated EX5 missing or empty'
+          }
+          Write-Host "VALIDATED_XAU_EX5_BYTES=$((Get-Item $binary).Length)"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: nq-xauusd-quote-tracker-LAB-experimental-EX5
+          path: indicators/mt5/NQ_XAU_Quote_Tracker_Lab_Research.ex5
+          retention-days: 30
