@@ -1,0 +1,40 @@
+name: WIN MT5 | Windows one-click smoke test
+on:
+  push:
+    branches:
+      - research/win-liquidity-sweep-m1m5-20261109
+    paths:
+      - executar_WIN_MT5_somente_leitura.cmd
+      - research/mt5_readonly_collector.py
+      - tests/test_mt5_readonly_collector.py
+      - .github/workflows/win-mt5-windows-smoke.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows_offline_test:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify local one-click launcher offline smoke test
+        shell: cmd
+        run: call executar_WIN_MT5_somente_leitura.cmd --self-test
+      - name: Verify launcher automatically creates isolated venv and installs official MT5 Python wheel
+        shell: cmd
+        run: call executar_WIN_MT5_somente_leitura.cmd --setup-only
+      - name: Verify no trading functions or credentials are referenced
+        shell: pwsh
+        run: |
+          @'
+          import ast
+          from pathlib import Path
+          tree=ast.parse(Path("research/mt5_readonly_collector.py").read_text(encoding="utf-8"))
+          forbidden={"order_send","order_check","login","account_info","positions_get"}
+          names={x.attr for x in ast.walk(tree) if isinstance(x,ast.Attribute)}
+          assert not names.intersection(forbidden), names.intersection(forbidden)
+          print("Read-only collector without trading calls verified")
+          '@ | python -

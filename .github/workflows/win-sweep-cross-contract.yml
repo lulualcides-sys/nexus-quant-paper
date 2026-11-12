@@ -1,0 +1,45 @@
+name: WIN Sweep | Two Contracts & Rico Cost Sensitivity
+on:
+  push:
+    branches:
+      - research/win-liquidity-sweep-m1m5-20261109
+    paths:
+      - research/win_j26_pinned.py
+      - research/win_mt5_history_import.py
+      - research/win_sweep_cross_contract_costs.py
+      - research/win_liquidity_sweep.py
+      - research/win_price_data.py
+      - tests/test_win_sweep_cost_transfer.py
+      - tests/test_win_mt5_history_import.py
+      - .github/workflows/win-sweep-cross-contract.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract_transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile model, source audit and independent-cost research
+        run: |
+          python -m py_compile research/win_j26_pinned.py research/win_sweep_cross_contract_costs.py
+      - name: Audit pinned data parser, exposure and economic cost gates
+        run: |
+          python -m unittest discover -s tests -p 'test_win_sweep_cost_transfer.py' -v
+          python -m unittest discover -s tests -p 'test_win_mt5_history_import.py' -v
+          python -m unittest discover -s tests -p 'test_win_liquidity_sweep.py' -v
+      - name: Execute cross-contract WINQ26 / WINJ26 replay with fixed cost scenarios
+        run: python -m research.win_sweep_cross_contract_costs
+      - name: Upload immutable research results (no raw vendor data)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-sweep-other-expiry-rico-cost-research
+          path: |
+            research/results/win_sweep_cross_contract_costs.json
+            research/results/win_sweep_cross_contract_costs.md
+          retention-days: 30
