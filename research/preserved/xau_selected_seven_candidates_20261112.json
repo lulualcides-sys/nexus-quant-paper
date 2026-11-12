@@ -40,7 +40,9 @@
         "2025": 2039.4,
         "2026_partial": 287.2
       },
-      "validation_status": "PRESERVED_RESEARCH_CANDIDATE"
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
+      "eligible_timeframe_for_current_work": true,
+      "current_scope_status": "RESEARCH_ONLY_TIMEFRAME_ALLOWED"
     },
     {
       "slot": 2,
@@ -84,7 +86,9 @@
         "2025": 3200.5,
         "2026_partial": 15362.8
       },
-      "validation_status": "PRESERVED_RESEARCH_CANDIDATE"
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
+      "eligible_timeframe_for_current_work": true,
+      "current_scope_status": "RESEARCH_ONLY_TIMEFRAME_ALLOWED"
     },
     {
       "slot": 3,
@@ -131,7 +135,9 @@
         "No actual broker ticks, fills, spread, swap or live results"
       ],
       "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
-      "approved_for_live": false
+      "approved_for_live": false,
+      "eligible_timeframe_for_current_work": false,
+      "current_scope_status": "HISTORICAL_ONLY_TIMEFRAME_DISALLOWED_RETEST_REQUIRED"
     },
     {
       "slot": 4,
@@ -172,7 +178,9 @@
       "concentration_risk": "2025 Q2 -10029.6 pts, 2025 Q4 +20621.9 pts, 2026 Q3 -3716.6 pts at assumed 0.8 USD/oz cost; not consistent each quarter",
       "data_caveat": "2026 historical data only Q2–Q3, distinct 2025/2026 feeds, already explored (not true holdout)",
       "research_status": "SAVED_CANDIDATE_ONLY",
-      "approved_for_live": false
+      "approved_for_live": false,
+      "eligible_timeframe_for_current_work": false,
+      "current_scope_status": "HISTORICAL_ONLY_TIMEFRAME_DISALLOWED_RETEST_REQUIRED"
     },
     {
       "slot": 5,
@@ -259,7 +267,9 @@
         }
       ],
       "research_status": "USER_SELECTED_PRESERVED_RESEARCH_CANDIDATE_NOT_BROKER_TESTED",
-      "ready_for_live_trading": false
+      "ready_for_live_trading": false,
+      "eligible_timeframe_for_current_work": false,
+      "current_scope_status": "HISTORICAL_ONLY_TIMEFRAME_DISALLOWED_RETEST_REQUIRED"
     },
     {
       "slot": 6,
@@ -346,7 +356,9 @@
         }
       ],
       "research_status": "USER_SELECTED_PRESERVED_RESEARCH_CANDIDATE_NOT_BROKER_TESTED",
-      "ready_for_live_trading": false
+      "ready_for_live_trading": false,
+      "eligible_timeframe_for_current_work": false,
+      "current_scope_status": "HISTORICAL_ONLY_TIMEFRAME_DISALLOWED_RETEST_REQUIRED"
     },
     {
       "slot": 7,
@@ -433,7 +445,9 @@
         }
       ],
       "research_status": "USER_SELECTED_PRESERVED_RESEARCH_CANDIDATE_NOT_BROKER_TESTED",
-      "ready_for_live_trading": false
+      "ready_for_live_trading": false,
+      "eligible_timeframe_for_current_work": true,
+      "current_scope_status": "RESEARCH_ONLY_TIMEFRAME_ALLOWED"
     }
   ],
   "previous_register": "research/preserved/xau_selected_four_candidates_20261112.json",
@@ -447,5 +461,10 @@
     "Quoted points are price points not portfolio profits, no broker tick/contract specifications, spread, commissions, swap, slippage or intratrade drawdown",
     "Require MQL5 implementation and compile, actual broker Bid/Ask real-tick backtest, prospective frozen-parameter demo validation before live use"
   ],
-  "code_integrations": "NONE; the latest code remains in draft PR #78 and does not alter preserved previously selected models"
+  "code_integrations": "NONE; the latest code remains in draft PR #78 and does not alter preserved previously selected models",
+  "current_policy": "ONLY M1 M5 M15 M30. Do not use M12/M20 in current active research or execution, despite archival results.",
+  "current_policy_authoritative_file": "research/preserved/xau_authoritative_timeframes_m1_m5_m15_m30_20261112.json",
+  "latest_scope_correction_on": "2026-11-12",
+  "current_timeframe_eligible_count": 3,
+  "archived_timeframe_disallowed_count": 4
 }
