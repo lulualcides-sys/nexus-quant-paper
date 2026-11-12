@@ -1,0 +1,91 @@
+{
+  "record_date": "2026-11-12",
+  "scope": {
+    "symbol": "XAUUSD",
+    "from_utc": "2025-01-01T00:00:00Z",
+    "timeframes_tested": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M10",
+      "M12",
+      "M15",
+      "M20",
+      "M30"
+    ],
+    "year_2026_partial": true
+  },
+  "source_commit": "0df47b2e3704703b6dbc9fbfd632518b13402e65",
+  "code_branch": "research/xau-ema21-m1-to-m30-2025plus-20261112",
+  "source_report": "research/preserved/xau_ema21_full_m1_m30_2025plus_20261112.md",
+  "source_workflow_run": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43224188824",
+  "assumptions": {
+    "per_point_price_usd": 0.01,
+    "roundtrip_cost_usd_per_ounce": 0.8,
+    "stress_test_cost_usd_per_ounce": 1.2,
+    "simulation": "OHLC stop-first replay, next open, not broker tick/MetaTrader test",
+    "holding_limit": "96 hours of trading candles",
+    "tp1_r": 1,
+    "tp2_r": 1.5,
+    "last_third": "runner until original stop or time"
+  },
+  "profiles": [
+    {
+      "timeframe": "M15",
+      "profile": "RUNNER_96H",
+      "preservation_status": "primary_research_candidate_not_live_approved",
+      "net_points_2025": 14839.4,
+      "net_points_2026_partial": 6527.2,
+      "profit_factor_2025": 1.138,
+      "profit_factor_2026_partial": 1.082,
+      "trades_2025": 320,
+      "trades_2026_partial": 156,
+      "mdd_closed_trade_points_2025": 16345.8,
+      "mdd_closed_trade_points_2026_partial": 21230.4,
+      "net_points_at_1_20_cost_2025": 2039.4,
+      "net_points_at_1_20_cost_2026_partial": 287.2
+    },
+    {
+      "timeframe": "M15",
+      "profile": "ENTRY_QUALITY_BE",
+      "preservation_status": "secondary_research_candidate_not_live_approved",
+      "net_points_2025": 6211.4,
+      "net_points_2026_partial": 15749.4,
+      "profit_factor_2025": 1.076,
+      "profit_factor_2026_partial": 1.223,
+      "trades_2025": 261,
+      "trades_2026_partial": 162,
+      "mdd_closed_trade_points_2025": 11582.1,
+      "mdd_closed_trade_points_2026_partial": 11414.6,
+      "net_points_at_1_20_cost_2025": -4228.6,
+      "net_points_at_1_20_cost_2026_partial": 9269.4
+    },
+    {
+      "timeframe": "M20",
+      "profile": "ENTRY_QUALITY_BE",
+      "preservation_status": "secondary_research_candidate_cost_sensitive_not_live_approved",
+      "net_points_2025": 10287,
+      "net_points_2026_partial": 3298.7,
+      "profit_factor_2025": 1.123,
+      "profit_factor_2026_partial": 1.043,
+      "trades_2025": 217,
+      "trades_2026_partial": 123,
+      "mdd_closed_trade_points_2025": 10885.9,
+      "mdd_closed_trade_points_2026_partial": 16844.9,
+      "net_points_at_1_20_cost_2025": 1607,
+      "net_points_at_1_20_cost_2026_partial": -1621.3
+    }
+  ],
+  "rejected_profiles_note": "Conditional trend extension negative across all 11 timeframes in 2025; not promoted",
+  "status": "PRESERVED_RESEARCH_ONLY",
+  "approved_for_real_trading": false,
+  "warnings": [
+    "2025 and 2026 have been used in earlier exploration, not untouched OOS",
+    "No broker-specific bid/ask, dynamic spread, swap, slippage or commission",
+    "No actual MT5 EA compilation or execution validation",
+    "Previously approved bots and production code unchanged"
+  ]
+}
