@@ -57,9 +57,9 @@ def compute_trend_masks(df):
         slope3=side*(fast-f3)
         slope5=side*(fast-f5)
         movement=side*(close-c3)
-        higher=((side*(c3-c2)>0).astype(np.int8)
-               +(side*(c2-c1)>0).astype(np.int8)
-               +(side*(c1-close)<0).astype(np.int8))
+        higher=((side*(c2-c3)>0).astype(np.int8)
+               +(side*(c1-c2)>0).astype(np.int8)
+               +(side*(close-c1)>0).astype(np.int8))
         micro[idx]=valid&(align>=0)&near&(slope3>=.16*atr)&(
             movement>=.35*atr)&(higher>=2)
         strong[idx]=valid&near&(align>=.75*atr)&(slope5>=.25*atr)
