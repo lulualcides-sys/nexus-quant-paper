@@ -2,8 +2,8 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794436200,
-  "equity": 1001.6555707205653,
+  "watermark_m15": 1794447000,
+  "equity": 1000.54920002245,
   "position": null,
   "closed": [
     {
@@ -197,8 +197,20 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.4272362952641782
+    },
+    {
+      "entry_ts": 1794437100,
+      "exit_ts": 1794438000,
+      "entry": 1.4252400398254395,
+      "exit": 1.423817373663801,
+      "side": 1,
+      "net_usd": -1.10637,
+      "cost_usd": 0.10553,
+      "exit_type": "STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.423817373663801
     }
   ],
-  "last_entry_h1": 1794330000,
+  "last_entry_h1": 1794430800,
   "last_reason": "Aguardando toque e retorno na SMA20 do M15"
 }
