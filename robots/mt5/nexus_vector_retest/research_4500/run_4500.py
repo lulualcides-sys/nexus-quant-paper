@@ -48,7 +48,9 @@ def normalized(raw):
     d=raw.copy()
     d.columns=[str(c).strip().lower() for c in d.columns]
     print("H1_COLS",list(d.columns),flush=True)
-    if "datetime" in d.columns:
+    if "time_utc" in d.columns:
+        series=d.pop("time_utc")
+    elif "datetime" in d.columns:
         series=d.pop("datetime")
     elif "time" in d.columns:
         series=d.pop("time")
