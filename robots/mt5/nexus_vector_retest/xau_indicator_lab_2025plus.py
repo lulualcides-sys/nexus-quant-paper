@@ -158,7 +158,7 @@ def build_signals(frame, kind, baseline=None):
         lvl_long=fast
         lvl_short=fast
     elif kind=="KELTNER_SQUEEZE":
-        squeeze=frame.squeeze.to_numpy(dtype=bool)
+        squeeze=frame["squeeze"].to_numpy(dtype=bool)
         prev_sq=np.roll(squeeze,1)
         prev_sq[0]=False
         upper=frame.bb_upper.to_numpy(dtype=float)
