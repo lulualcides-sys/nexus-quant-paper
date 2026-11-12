@@ -1,0 +1,180 @@
+{
+  "register_date_utc": "2026-11-12",
+  "symbol": "XAUUSD",
+  "from_utc": "2025-01-01T00:00:00Z",
+  "selected_count": 4,
+  "selected_candidates": [
+    {
+      "slot": 1,
+      "id": "XAU_EMA21_RUNNER_M15",
+      "strategy": "EMA21_BASE",
+      "timeframe": "M15",
+      "data_source_code": "robots/mt5/nexus_vector_retest/alpha_xau_mtf_2025plus.py",
+      "reference_branch": "research/xau-ema21-m1-to-m30-2025plus-20261112",
+      "parameters": {
+        "ema_fast": 21,
+        "ema_slow": 55,
+        "stop": "signal candle extreme or EMA21 +0.12 ATR14",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "partial_size_each": 0.3333333333333333,
+        "runner": "remaining 1/3, original SL or 384 M15 bars"
+      },
+      "historic_2025": {
+        "trades": 320,
+        "estimated_net_points_at_0_80": 14839.4,
+        "pf_at_0_80": 1.138,
+        "drawdown_closed_points": 16345.8
+      },
+      "historic_2026_partial": {
+        "trades": 156,
+        "estimated_net_points_at_0_80": 6527.2,
+        "pf_at_0_80": 1.082,
+        "drawdown_closed_points": 21230.4
+      },
+      "stress_cost_1_20_estimated_net_pts": {
+        "2025": 2039.4,
+        "2026_partial": 287.2
+      },
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE"
+    },
+    {
+      "slot": 2,
+      "id": "XAU_EMA21_RSI_MACD_M30",
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M30",
+      "data_source_code": "robots/mt5/nexus_vector_retest/xau_indicator_lab_2025plus.py",
+      "reference_branch": "research/xau-new-indicators-2025plus-20261112",
+      "parameters": {
+        "ema_fast": 21,
+        "ema_slow": 55,
+        "rsi_period": 14,
+        "macd": [
+          12,
+          26,
+          9
+        ],
+        "long_gate": "52 < RSI < 78 and MACD histogram > 0",
+        "short_gate": "22 < RSI < 48 and MACD histogram < 0",
+        "signal": "closed-candle EMA21 pullback",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "partial_size_each": 0.3333333333333333,
+        "runner": "remaining 1/3, original stop or 192 M30 bars"
+      },
+      "historic_2025": {
+        "trades": 113,
+        "estimated_net_points_at_0_80": 12240.5,
+        "pf_at_0_80": 1.2,
+        "drawdown_closed_points": 12275
+      },
+      "historic_2026_partial": {
+        "trades": 54,
+        "estimated_net_points_at_0_80": 19682.8,
+        "pf_at_0_80": 1.518,
+        "drawdown_closed_points": 17735.3
+      },
+      "stress_cost_1_60_estimated_net_pts": {
+        "2025": 3200.5,
+        "2026_partial": 15362.8
+      },
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE"
+    },
+    {
+      "slot": 3,
+      "id": "XAU_HULL21_PULLBACK_M20",
+      "strategy": "HULL21_PULLBACK",
+      "timeframe": "M20",
+      "source_branch": "research/xau-indicators-batch2-2025plus-20261112",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_indicator_batch2_2025plus.py",
+      "reference_report": "research/preserved/xau_indicator_batch2_full_2025plus_20261112.json",
+      "parameters": {
+        "hma_period": 21,
+        "fast_wma": 10,
+        "slow_wma": 21,
+        "final_wma": 5,
+        "ema_context": 55,
+        "confirmation": "closed candle Hull slope and Hull retest with aligned EMA55, body greater than 0.15 directional candle range",
+        "atr_period": 14,
+        "stop": "min(signal low,HMA)-0.12 ATR for long; max(signal high,HMA)+0.12 ATR for short",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "runner": "last 1/3 at original SL or 288 M20 bars (96 hours of trading candles)"
+      },
+      "historic_2025": {
+        "trades": 254,
+        "net_pts_cost_0_8": 27277.8,
+        "pf_cost_0_8": 1.261,
+        "mdd_closed_trade_pts": 15180.4,
+        "net_pts_cost_1_2": 17117.8,
+        "net_pts_cost_1_6": 6957.8
+      },
+      "historic_2026_partial": {
+        "trades": 130,
+        "net_pts_cost_0_8": 22320.3,
+        "pf_cost_0_8": 1.272,
+        "mdd_closed_trade_pts": 14593.1,
+        "net_pts_cost_1_2": 17120.3,
+        "net_pts_cost_1_6": 11920.3
+      },
+      "research_risks": [
+        "2025Q1 negative -7105.8 points; 2025Q4 +22694.9 points (~83% of whole year gains)",
+        "2026 dataset only Q2 and Q3",
+        "No actual broker ticks, fills, spread, swap or live results"
+      ],
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
+      "approved_for_live": false
+    },
+    {
+      "slot": 4,
+      "id": "XAU_ASIA_SWEEP_RECLAIM_M12",
+      "strategy": "ASIA_SWEEP_RECLAIM",
+      "timeframe": "M12",
+      "source_branch": "research/xau-liquidity-session-2025plus-20261112",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_liquidity_session_2025plus.py",
+      "reference_report": "research/preserved/xau_liquidity_session_m1_m30_2025plus_20261112.json",
+      "parameters": {
+        "session": "completed Asia 00:00–06:00 UTC; signal allowed 07:00–19:00 UTC",
+        "long": "low below Asia low by >0.08 ATR14 then closed > Asia low +0.03 ATR14, directional body >0.14 range",
+        "short": "high above Asia high by >0.08 ATR14 then closed below Asia high -0.03 ATR14, bearish body < -0.14 range",
+        "stop": "min(signal low, Asia low)-0.12 ATR14 long, max(signal high, Asia high)+0.12 ATR14 short",
+        "entry": "next-bar open; at most one signal per UTC day",
+        "tp_r": [
+          1,
+          1.5
+        ],
+        "runner": "remaining third up to 480 M12 candles (96 hours trading bars)"
+      },
+      "history_2025": {
+        "trades": 87,
+        "net_pts_cost_0_8": 13382.9,
+        "pf_cost_0_8": 1.411,
+        "mdd_closed_trades_pts": 16098.1,
+        "net_pts_cost_1_2": 9902.9,
+        "net_pts_cost_1_6": 6422.9
+      },
+      "history_2026_partial": {
+        "trades": 72,
+        "net_pts_cost_0_8": 9446.1,
+        "pf_cost_0_8": 1.215,
+        "mdd_closed_trades_pts": 11846.6,
+        "net_pts_cost_1_2": 6566.1,
+        "net_pts_cost_1_6": 3686.1
+      },
+      "concentration_risk": "2025 Q2 -10029.6 pts, 2025 Q4 +20621.9 pts, 2026 Q3 -3716.6 pts at assumed 0.8 USD/oz cost; not consistent each quarter",
+      "data_caveat": "2026 historical data only Q2–Q3, distinct 2025/2026 feeds, already explored (not true holdout)",
+      "research_status": "SAVED_CANDIDATE_ONLY",
+      "approved_for_live": false
+    }
+  ],
+  "predecessor": "research/preserved/xau_selected_three_candidates_20261112.json",
+  "research_assumptions": "only XAUUSD 2025+, OHLC next bar open, stop-first, costs 0.8/1.2/1.6 USD/oz hypothetical, point 0.01 assumed",
+  "approved_for_real_trading": false,
+  "open_validation": "no live trading; MQL5 build, broker tick Bid/Ask, commission, slippage/swap, forward demo with frozen specs needed"
+}
