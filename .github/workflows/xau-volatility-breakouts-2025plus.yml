@@ -1,0 +1,48 @@
+name: XAUUSD 2025+ volatility breakout batch4 all M1-M30
+on:
+  push:
+    branches:
+      - research/xau-volatility-breakouts-batch4-20261112
+    paths:
+      - 'robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus.py'
+      - 'robots/mt5/nexus_vector_retest/test_xau_volatility_breakouts_2025plus.py'
+      - '.github/workflows/xau-volatility-breakouts-2025plus.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install fixed research dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Verify syntax causal independence and original baseline regressions
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_volatility_breakouts_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_mtf_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_indicator_lab_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_indicator_batch2_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_liquidity_session_2025plus.py' -v
+      - name: Fetch only pinned 2025 XAUUSD M1 from GitHub
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Backtest non-repainting intraday volatility patterns 2025+ M1-M30
+        run: python -u robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus.py
+      - name: Archive all positive and negative research results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: XAUUSD-Volatility-Batch4-2025Plus-M1-M30
+          path: robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus_results/
+          if-no-files-found: warn
