@@ -104,8 +104,10 @@ def _close(b, market, bar, price, why):
     b["position"] = None
 
 
-def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=True):
+def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=True, bar_seconds=3600):
     """Stop checks before trailing; execute entry-bar stops, never re-enter."""
+    if bar_seconds not in (60, 300, 900, 1800, 3600):
+        raise ValueError("Unsupported research candle interval")
     row = bars[i]
     previous = bars[i - 1]
     p = b["position"]
@@ -138,11 +140,11 @@ def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=T
         return
 
     # No new entry across a holiday/weekend or incomplete hourly interval.
-    if row["time"] - previous["time"] != 3600:
+    if row["time"] - previous["time"] != bar_seconds:
         b["diagnostics"]["gap"] += 1
         b["last_reason"] = "Sem entrada: lacuna entre candles"
         return
-    if b["last_exit_ts"] is not None and row["time"] - b["last_exit_ts"] < 2 * 3600:
+    if b["last_exit_ts"] is not None and row["time"] - b["last_exit_ts"] < 2 * bar_seconds:
         b["diagnostics"]["cooldown"] += 1
         b["last_reason"] = "Sem entrada: proteção após saída"
         return
@@ -178,7 +180,7 @@ def step(b, market, strategy, bars, ind, i, *, signal_fn=None, allow_new_entry=T
     b["last_reason"] = "Entrada experimental COMPRA" if side > 0 else "Entrada experimental VENDA"
     # Enter at candle OPEN: this same complete candle can hit the stop.
     # Existing-position path checks it without another entry.
-    step(b, market, strategy, bars, ind, i, allow_new_entry=False)
+    step(b, market, strategy, bars, ind, i, allow_new_entry=False, bar_seconds=bar_seconds)
 
 
 def reconcile_subhour_watermark(state,market,stamps,mark):

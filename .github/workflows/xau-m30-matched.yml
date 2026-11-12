@@ -1,0 +1,77 @@
+name: XAUUSD | M30 original bots + matched M1 M5 M15 and exit-horizon A-B
+on:
+  push:
+    branches: [research/xau-all-original-28-m1-m5-m15-20261110]
+    paths:
+      - 'research/xau_m30_matched.py'
+      - 'tests/test_xau_m30_matched.py'
+      - '.github/workflows/xau-m30-matched.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  test-original-logic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate M30 conversion and strict historical reference
+        run: |
+          python -m py_compile research/xau_m30_matched.py
+          python -m unittest discover -s tests -p 'test_xau_m30_matched.py' -v
+          python -m unittest discover -s tests -p 'test_xau_all_original_3tf.py' -v
+          python -m unittest discover -s tests -p 'test_experimental_h1.py' -v
+  frozen-M30-matched:
+    needs: test-original-logic
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reuse 24 original frozen XAUUSD quote sessions (NO re-download)
+        uses: actions/download-artifact@v4
+        with:
+          name: XAU-all-original-27-plus-ATLAS-M1-M5-M15-84-scorecards
+          run-id: 42847239203
+          repository: lulualcides-sys/nexus-quant-paper
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/frozen-xau
+      - name: Recheck exact previous SHA256 and render M30, M1 M5 matched and alternatives
+        run: |
+          python -m research.xau_m30_matched \
+            --frozen-artifact "$RUNNER_TEMP/frozen-xau" \
+            --output "$RUNNER_TEMP/xau-m30/XAU-M1-M5-M15-M30-ORIGINAL-28.json"
+      - name: Guard exact same 28 original identities, no missing outputs
+        run: |
+          python - <<'PY'
+          import os,json
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'xau-m30'/'XAU-M1-M5-M15-M30-ORIGINAL-28.json'
+          doc=json.loads(p.read_text())
+          assert set(doc['timeframes'])=={'M1','M5','M15','M30'}
+          assert doc['source_original_json_sha256']=='3c5871014a7abf2c2abc68d1d28f3ea92bd289523f9b472d8aeb01031f6db6c7'
+          assert doc['original_signal_rules_not_changed']
+          assert doc['date_window_matched']
+          for tf,frame in doc['timeframes'].items():
+            rows=frame['original_time_exits']
+            assert len(rows)==28
+            assert frame['original_summary']['unique_families']==16
+            assert frame['original_summary']['slots']==28
+          assert doc['timeframes']['M1']['time_exit_multiplier_only']==15
+          assert doc['timeframes']['M5']['time_exit_multiplier_only']==3
+          print('ALL_ORIGINALS_M30_MATCHED_VERIFIED',doc['calendar_matched_start_utc'])
+          PY
+      - name: Artifact all individual outcomes and clock-exit research comparisons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: XAU-original-28-M1-M5-M15-M30-frozen-matched-and-clock-A-B
+          path: ${{ runner.temp }}/xau-m30/*
+          retention-days: 30
+          if-no-files-found: warn
