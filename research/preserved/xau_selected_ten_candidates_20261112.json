@@ -723,5 +723,12 @@
     "XAU_EFFICIENCY_ER20_BREAK_M30",
     "XAU_SHOCK_EXHAUSTION_M15"
   ],
-  "latest_batch8_decision": "No new candidates selected; preserve 10 and 18 research variants in old archives; avoid repeated tuning on reused data."
+  "latest_batch8_decision": "No new candidates selected; preserve 10 and 18 research variants in old archives; avoid repeated tuning on reused data.",
+  "current_priority_selection_file": "research/preserved/xau_top_two_priority_er20_m30_shock_m15_20261112.json",
+  "current_priority_candidate_ids": [
+    "XAU_EFFICIENCY_ER20_BREAK_M30",
+    "XAU_SHOCK_EXHAUSTION_M15"
+  ],
+  "current_priority_is_for_research_only": true,
+  "current_priority_originals_untouched": true
 }
