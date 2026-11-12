@@ -26,7 +26,7 @@ M1_URL=("https://raw.githubusercontent.com/getdata-finance/"
         "adcd99e7e0abee51e9a5eef123935e68a8d8aa30/XAUUSD_1m.csv")
 # Separate source only because six months of M1 cannot yield 4500 H1 candles.
 H1_URL=("https://huggingface.co/datasets/vichetkao/xauusd_dataset_2026/"
-        "resolve/8ee2bd6/data/bars_reference/xauusd_H1.parquet")
+        "resolve/8ee2bd6/data/training/xauusd_H1_labeled.parquet")
 BARS=4500
 WARM=220
 HOLD=48
@@ -210,7 +210,7 @@ def main():
                                     "last_1350":metric_oos})
             print("RESULT",tf,label,"ALL",metric,"LAST_1350",metric_oos,flush=True)
         result["cases"].append(entry)
-    (OUT/"results_4500.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    (OUT/"results_4500.json").write_text(json.dumps(result,ensure_ascii=False,indent=2,default=lambda x: x.item() if hasattr(x,"item") else str(x))+"\n",encoding="utf-8")
     lines=["# Backtest histórico exploratório — XAUUSD / 4.500 candles por período","",
            "**Modelo:** Nexus Vector Retest (proxy Python do EA, NÃO EA compilado).",
            "**Fontes:** M1–M30 GitHub XAUUSD M1 SHA256 fixo; H1 HuggingFace parquet de outra origem, SHA256 gravado no JSON.",
