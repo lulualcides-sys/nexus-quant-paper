@@ -67,6 +67,36 @@ class TestXAUAllTFs(unittest.TestCase):
         for name in PROFILES:
             self.assertEqual(replay_one(f,[(470,1,98.,.8)],0,len(f),30,name),[])
 
+    def test_conditional_trend_closes_after_base_horizon_if_flat(self):
+        f=sample()
+        mask=(np.zeros((2,len(f)),dtype=bool),
+              np.zeros((2,len(f)),dtype=bool))
+        t=replay_one(f,[(1,1,98.,.8)],0,len(f),30,
+                     "CONDITIONAL_TREND_96H",masks=mask)
+        self.assertEqual(len(t),1)
+        self.assertEqual(t[0]["reason"],"TREND_OFF")
+        self.assertEqual(t[0]["exit"],26)  # entry 2 + 24 M30 bars
+
+    def test_conditional_trend_extends_only_when_prior_closed_bar_valid(self):
+        f=sample()
+        micro=np.zeros((2,len(f)),dtype=bool)
+        strong=np.zeros((2,len(f)),dtype=bool)
+        micro[0,1:]=True
+        t=replay_one(f,[(1,1,98.,.8)],0,len(f),30,
+                     "CONDITIONAL_TREND_96H",masks=(micro,strong))
+        self.assertEqual(t[0]["reason"],"TIME")
+        self.assertEqual(t[0]["exit"],194)
+
+    def test_conditional_trend_exits_on_next_open_after_trend_loss(self):
+        f=sample()
+        micro=np.zeros((2,len(f)),dtype=bool)
+        strong=np.zeros((2,len(f)),dtype=bool)
+        micro[0,1:26]=True
+        t=replay_one(f,[(1,1,98.,.8)],0,len(f),30,
+                     "CONDITIONAL_TREND_96H",masks=(micro,strong))
+        self.assertEqual(t[0]["reason"],"TREND_OFF")
+        self.assertEqual(t[0]["exit"],27)  # first prior closed bar not trending
+
     def test_cost_stress_subtracts_exactly_N_roundtrips(self):
         trades=[dict(gross_pts=180.,entry=0,exit=20),
                 dict(gross_pts=-70.,entry=22,exit=44)]
