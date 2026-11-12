@@ -1,0 +1,26 @@
+name: Nexus Vector Retest - pesquisa exploratoria OOS XAUUSD
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'robots/mt5/nexus_vector_retest/research_oos.py'
+      - '.github/workflows/nexus-vector-retest-oos.yml'
+jobs:
+  historical-proxy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned pandas
+        run: python -m pip install --disable-pip-version-check pandas==2.3.3
+      - name: Verify historical source hash and compare both strategies OOS
+        run: python robots/mt5/nexus_vector_retest/research_oos.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nexus-vector-retest-oos-xauusd
+          path: robots/mt5/nexus_vector_retest/research_results/
+          if-no-files-found: warn

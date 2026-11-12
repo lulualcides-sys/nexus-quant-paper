@@ -33,3 +33,7 @@
 **26 testes sintéticos locais passaram.** O workflow deste diretorio faz testes estatics focados. **Nao foi compilado nem executado no MT5; nao foi demonstrado ser melhor que o VWAP.** O codigo e entregue como candidato para teste, nao estrategia lucrativa validada.
 
 Manter o VWAP atual intacto, sem merge de logica no indicador. Revisar especialmente preenchimentos parciais, margem, historico MQL5 e regras de volume do broker antes de conta real.
+
+## Pesquisa histórica verificável
+
+O script [research_oos.py](research_oos.py) baixa um CSV XAUUSD M1 de commit fixo, checa SHA256 e compara **proxy do robô Vector Retest** e **proxy VWAP** no mesmo histórico M5/M15/M30, com custo fixo equivalente, entrada na abertura seguinte, stop-primeiro e TP em 3 parcelas. **Não é compilação/executação MQL5 real, não valida Forex e não representa a versão VWAP do usuário.** Os 30% finais de cada série são reservados para validação fora da amostra; não reotimizar em cima desse período. O [workflow de pesquisa](../../../.github/workflows/nexus-vector-retest-oos.yml) publica relatório e JSON como artefatos, sem substituir estratégias anteriores.
