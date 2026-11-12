@@ -713,5 +713,15 @@
   "related_historical_positive_variants_unique_count": 18,
   "related_historical_positive_variants_stress_1_6_count": 12,
   "related_tested_variant_comparisons_total": 50,
-  "scope_note": "18 variants historically positive both periods after hypothetical 1.2/oz cost; most are variants of same 5 underlying strategies, NOT 18 independent validated trading robots. All losing configurations in archive. None newly live approved."
+  "scope_note": "18 variants historically positive both periods after hypothetical 1.2/oz cost; most are variants of same 5 underlying strategies, NOT 18 independent validated trading robots. All losing configurations in archive. None newly live approved.",
+  "latest_unsuccessful_research_batch": "research/preserved/xau_batch8_independent_all_2025plus_20261112.json",
+  "latest_unsuccessful_research_report": "research/preserved/xau_batch8_independent_report_2025plus_20261112.md",
+  "latest_batch8_new_models_tested": 4,
+  "latest_batch8_new_model_timeframe_comparisons": 16,
+  "latest_batch8_new_research_models_positive_both": 0,
+  "latest_batch8_controls_preserved": [
+    "XAU_EFFICIENCY_ER20_BREAK_M30",
+    "XAU_SHOCK_EXHAUSTION_M15"
+  ],
+  "latest_batch8_decision": "No new candidates selected; preserve 10 and 18 research variants in old archives; avoid repeated tuning on reused data."
 }
