@@ -1,0 +1,41 @@
+name: ALPHA 10 M1 M5 — isolated research
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/alpha/**'
+      - 'tests/test_alpha_lab.py'
+      - '.github/workflows/alpha-10-research.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Causality and financial-engine integrity tests
+        run: python -m unittest discover -s tests -p "test_alpha_lab.py" -v
+  research-backtest:
+    runs-on: ubuntu-latest
+    needs: unit
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch verified real SPOT M1 archives; run frozen backtests (never trading)
+        run: python -m research.alpha.run --out artifacts/alpha
+      - name: Archive source manifest, scenario ledgers and reports (even on download errors)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-research-audit-${{ github.run_id }}
+          path: artifacts/alpha/
+          if-no-files-found: warn
+          retention-days: 30
