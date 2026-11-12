@@ -1,0 +1,88 @@
+{
+  "created_on": "2026-11-12",
+  "symbol": "XAUUSD",
+  "purpose": "User-selected top TWO historical point-performance candidates from latest batch8 (existing entries, no new robots).",
+  "allowed_native_timeframes": [
+    "M1",
+    "M5",
+    "M15",
+    "M30"
+  ],
+  "assumed_point_increment_usd_per_oz": 0.01,
+  "assumed_roundtrip_cost_usd_per_oz": [
+    1.2,
+    1.6
+  ],
+  "historical_periods": "2025 complete; 2026 partial Q2/Q3 separate feeds",
+  "selected_count": 2,
+  "rank_is_research_validation_priority_not_proven_profit": true,
+  "selected": [
+    {
+      "priority": 1,
+      "id": "XAU_EFFICIENCY_ER20_BREAK_M30",
+      "model": "ER20_M30_FROZEN",
+      "timeframe": "M30",
+      "strategy_original_registry": "research/preserved/xau_selected_ten_candidates_20261112.json",
+      "original_slot": 7,
+      "summary_2025": {
+        "trades": 110,
+        "net_points_cost_1_2": 35238.5,
+        "net_points_cost_1_6": 30838.5,
+        "net_R_cost_1_2": 23.729,
+        "PF_points_cost_1_2": 1.446,
+        "PF_R_cost_1_2": 1.39
+      },
+      "summary_2026_partial": {
+        "trades": 52,
+        "net_points_cost_1_2": 27790.4,
+        "net_points_cost_1_6": 25710.4,
+        "net_R_cost_1_2": 11.623,
+        "PF_points_cost_1_2": 1.438,
+        "PF_R_cost_1_2": 1.372
+      },
+      "original_strategy_and_exit_unchanged": true,
+      "predeclared_screen_passed": false,
+      "approved_for_live": false,
+      "reason_for_research_priority": "Higher observed trade counts 110/52 and positive in R even with stressed hypothetical cost1.6"
+    },
+    {
+      "priority": 2,
+      "id": "XAU_SHOCK_EXHAUSTION_M15",
+      "model": "SHOCK_M15_FROZEN",
+      "timeframe": "M15",
+      "strategy_original_registry": "research/preserved/xau_selected_ten_candidates_20261112.json",
+      "original_slot": 9,
+      "summary_2025": {
+        "trades": 90,
+        "net_points_cost_1_2": 23640.8,
+        "net_points_cost_1_6": 20040.8,
+        "net_R_cost_1_2": 27.857,
+        "PF_points_cost_1_2": 1.424,
+        "PF_R_cost_1_2": 1.539
+      },
+      "summary_2026_partial": {
+        "trades": 45,
+        "net_points_cost_1_2": 13113.5,
+        "net_points_cost_1_6": 11313.5,
+        "net_R_cost_1_2": 11.682,
+        "PF_points_cost_1_2": 1.321,
+        "PF_R_cost_1_2": 1.554
+      },
+      "original_strategy_and_exit_unchanged": true,
+      "predeclared_screen_passed": false,
+      "approved_for_live": false,
+      "reason_for_research_priority": "Higher observed risk-adjusted PF, but insufficient operations 90/45 and nonuniform quarterly performance"
+    }
+  ],
+  "previous_ten_preserved": "research/preserved/xau_selected_ten_candidates_20261112.json",
+  "source_full_batch8": "research/preserved/xau_batch8_independent_all_2025plus_20261112.json",
+  "source_positive_variant_archive": "research/preserved/xau_positive_variants_all_batches6_7_20261112.json",
+  "risks": [
+    "Neither is live validated with broker real ticks, Bid/Ask, variable spread, commission, swap, slippage, lot round, intratrade drawdown, or forward demo",
+    "Not a new independent out-of-sample: historic years reused across many previous research runs",
+    "ER20 M30 has negative quarter 2026Q3; Shock M15 small samples under original 100/50 target, negative quarters 2025Q2 and 2026Q3",
+    "Do not confuse points with dollars or account percentage; real XAUUSD contract point varies by broker"
+  ],
+  "decision": "Keep unchanged, prioritize forward demo and MT5 broker real ticks, no deployment, not promoting live.",
+  "approved_for_live": false
+}
