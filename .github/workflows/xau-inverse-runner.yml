@@ -1,0 +1,35 @@
+name: XAUUSD inverse vs wide-TP runner 10k
+on:
+  push:
+    paths:
+      - 'robots/mt5/nexus_vector_retest/inverse_runner.py'
+      - '.github/workflows/xau-inverse-runner.yml'
+  workflow_dispatch:
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Historical XAUUSD 2025 pinned CSV
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pandas==2.3.3
+      - name: Compare inverted and original with large targets and trailing
+        env:
+          EXTERNAL_GOLD_ROOT: thirdparty/gold
+        run: python robots/mt5/nexus_vector_retest/inverse_runner.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: XAUUSD-Inverse-Runner-10K
+          path: robots/mt5/nexus_vector_retest/inverse_runner_results/
+          if-no-files-found: warn
