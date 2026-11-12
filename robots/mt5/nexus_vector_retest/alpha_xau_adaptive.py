@@ -173,9 +173,8 @@ def simulate_adaptive(df, signals, first, last, masks=None):
 def extended_stats(trades):
     row = stats(trades)
     if trades:
-        durations = [x.get("duration_bars", x["exit"]-x["entry"])
-                     if "duration_bars" in x or ("exit" in x and "entry" in x)
-                     else 0 for x in trades]
+        durations = [x["duration_bars"] if "duration_bars" in x
+                     else x["exit"]-x["entry"] for x in trades]
         row.update(extended_n=sum(x.get("extended", d>BASE_HOLD)
                                   for x,d in zip(trades,durations)),
                    trend_runner_n=sum(x.get("ever_runner", False) for x in trades),
