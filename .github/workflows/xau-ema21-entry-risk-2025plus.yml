@@ -1,0 +1,46 @@
+name: XAUUSD EMA21 2025+ entry-quality and risk validation
+on:
+  push:
+    branches:
+      - research/xau-ema21-entry-risk-2025plus-20261112
+    paths:
+      - 'robots/mt5/nexus_vector_retest/alpha_xau_entry_risk_2025plus.py'
+      - 'robots/mt5/nexus_vector_retest/test_alpha_xau_entry_risk_2025plus.py'
+      - '.github/workflows/xau-ema21-entry-risk-2025plus.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Syntax and isolated regression tests
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/alpha_xau_entry_risk_2025plus.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_entry_risk_2025plus.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_longhold.py' -v
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_adaptive.py' -v
+      - name: Fetch pinned 2025 data only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Run XAUUSD 2025+ equivalent baseline and risk research
+        run: python robots/mt5/nexus_vector_retest/alpha_xau_entry_risk_2025plus.py
+      - name: Preserve reports even if research fails
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: XAUUSD-EMA21-2025Plus-EntryRisk
+          path: robots/mt5/nexus_vector_retest/alpha_xau_entry_risk_results/
+          if-no-files-found: warn
