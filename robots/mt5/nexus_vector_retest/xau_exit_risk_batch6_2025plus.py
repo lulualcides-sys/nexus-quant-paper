@@ -295,7 +295,7 @@ def main():
            "No simultaneous-portfolio combination, correlation-adjusted leverage or real equity drawdown.",
            "TRAIl stop uses only previously closed candles, BE reuses original engine.",
            "Even if preliminary screen passes, never approve live without broker ticks/forward demo."],
-        annual_evaluations:evaluated,
+        annual_evaluations=evaluated,
         comparisons=comparisons,
         shortlisted=shortlist,
         approved_for_live=False)
