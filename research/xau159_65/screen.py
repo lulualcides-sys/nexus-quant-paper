@@ -131,26 +131,34 @@ def main():
     if any(len(v)<20000 for v in masks.values()):
         raise ValueError("Not enough data for full train/OOS months: "+str({k:len(v) for k,v in masks.items()}))
     grid=[]
+    hours=df.index.hour.to_numpy()
     for fam in ("FADE","TREND","RECLAIM","BREAK"):
-        values={"FADE":(.25,.55,.85),"TREND":(.04,.16,.32),
+        values={"FADE":(.25,.60,1.0),"TREND":(.04,.16,.32),
                 "RECLAIM":(.07,.20,.38),"BREAK":(.02,.10,.23)}[fam]
         for t in values:
-            for tp,sl in ((.60,1.05),(.78,1.15),(1.0,1.4)):
-                cfg={"family":fam,"threshold":t,"score_min":.43,
-                     "tp_atr":tp,"sl_atr":sl,"maxhold":16,"cooldown":2}
-                dire=signals(df,fam,t,.43)
-                tr=run(df,dire,tp,sl,16,2,TRAIN,masks)
-                grid.append({"cfg":cfg,"train":stats(tr,TRAIN)})
+            for scoremin in (.43,.62):
+                rawdire=signals(df,fam,t,scoremin)
+                for session in ("all","liquid_7_20_utc"):
+                    dire=rawdire.copy()
+                    if session!="all":dire[(hours<7)|(hours>=20)]=0
+                    for tp,sl in ((.85,1.0),(1.10,1.10),(1.35,1.25)):
+                        cfg={"family":fam,"threshold":t,"score_min":scoremin,
+                             "session":session,"tp_atr":tp,"sl_atr":sl,
+                             "maxhold":16,"cooldown":3}
+                        tr=run(df,dire,tp,sl,16,3,TRAIN,masks)
+                        grid.append({"cfg":cfg,"train":stats(tr,TRAIN)})
     # Selection based exclusively on training months, NOT the unseen July/August.
     def quality(x):
         tr=x["train"];m=tr["monthly"]
         return (int(tr["passes_all"]),
-                int((tr["pf"] or 0)>1),min(i["entries"] for i in m),
-                tr["net_r"])
+                int((tr["pf"] or 0)>1 and all(i["entries"]>=159 for i in m)),
+                int(all(i["entries"]>=159 for i in m)),
+                tr["net_r"],min(i["entries"] for i in m))
     grid.sort(key=quality,reverse=True)
     top=grid[:5]
     for row in top:
         c=row["cfg"];dire=signals(df,c["family"],c["threshold"],c["score_min"])
+        if c["session"]!="all":dire[(hours<7)|(hours>=20)]=0
         row["oos"]=stats(run(df,dire,c["tp_atr"],c["sl_atr"],c["maxhold"],c["cooldown"],OOS,masks),OOS)
     best=top[0]
     approved=bool(best["train"]["passes_all"] and best["oos"]["passes_all"])
