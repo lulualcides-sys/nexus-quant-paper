@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "market": "XAUUSD",
-  "h4_watermark": 1794470400,
+  "h4_watermark": 1794484800,
   "paper_only": true,
   "books": {
     "rsi_trend": {
@@ -41,17 +41,8 @@
       ]
     },
     "channel20": {
-      "equity": 4960.779673715821,
-      "position": {
-        "side": -1,
-        "entry": 4012.39990234375,
-        "start": 1794412800,
-        "i": 328,
-        "held_bars": 4,
-        "qty": 0.5192373668976684,
-        "stop": 4084.054698251767,
-        "target": 3887.0040095047198
-      },
+      "equity": 5024.454323942805,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793347200,
@@ -62,6 +53,16 @@
           "net_usd": -39.22033,
           "cost_usd": 1.72033,
           "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1794412800,
+          "exit_ts": 1794484800,
+          "side": -1,
+          "entry": 4012.399902,
+          "exit": 3887.00401,
+          "net_usd": 63.67465,
+          "cost_usd": 1.43558,
+          "exit_type": "TARGET"
         }
       ]
     },
@@ -92,17 +93,8 @@
       ]
     },
     "momentum100": {
-      "equity": 5063.9222113306605,
-      "position": {
-        "side": -1,
-        "entry": 3984.199951171875,
-        "start": 1794441600,
-        "i": 326,
-        "held_bars": 3,
-        "qty": 0.5527600106881669,
-        "stop": 4052.908641834387,
-        "target": 3863.9597425124794
-      },
+      "equity": 5128.867838261718,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793246400,
@@ -112,6 +104,16 @@
           "exit": 3942.096642,
           "net_usd": 63.92221,
           "cost_usd": 1.70279,
+          "exit_type": "TARGET"
+        },
+        {
+          "entry_ts": 1794441600,
+          "exit_ts": 1794484800,
+          "side": -1,
+          "entry": 3984.199951,
+          "exit": 3863.959743,
+          "net_usd": 64.94563,
+          "cost_usd": 1.51835,
           "exit_type": "TARGET"
         }
       ]
