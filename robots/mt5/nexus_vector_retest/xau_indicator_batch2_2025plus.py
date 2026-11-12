@@ -151,7 +151,7 @@ def create_signals(frame,model,baseline=None):
         risk=direction*(op[i+1]-stop)
         if .12*a<=risk<=3.0*a:
             signals.append((int(i),direction,float(stop),
-                            float(min(1.,abs(body[i]))))
+                            float(min(1.,abs(body[i])))))
     return signals
 
 
