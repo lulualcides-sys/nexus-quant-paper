@@ -82,7 +82,14 @@ def indicators(frame):
     slow=weighted_moving_average(close,21)
     hull=weighted_moving_average(2*fast-slow,5)
     d["hma21"]=hull
-    trend,stband=supertrend_direction(close,high,low,atr,factor=3.)
+    # Actual Supertrend ATR(10), separate from the frozen runner's ATR(14).
+    prev_close=np.r_[close[0],close[:-1]]
+    true_range=np.maximum(high-low,np.maximum(
+        np.abs(high-prev_close),np.abs(low-prev_close)))
+    atr10=pd.Series(true_range,index=d.index).ewm(
+        alpha=1/10,adjust=False).mean().to_numpy()
+    d["atr10_supertrend"]=atr10
+    trend,stband=supertrend_direction(close,high,low,atr10,factor=3.)
     d["supertrend_side"]=trend
     d["supertrend_band"]=stband
     return d
