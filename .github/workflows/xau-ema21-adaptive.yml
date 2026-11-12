@@ -26,20 +26,20 @@ jobs:
           python -m py_compile robots/mt5/nexus_vector_retest/alpha_xau_adaptive.py
           python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_longhold.py' -v
           python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_alpha_xau_adaptive.py' -v
-      - name: Fetch 2024 holdout and 2025 previously seen data pinned at a fixed git commit
+      - name: Fetch pinned 2023 fresh holdout, 2024 inspected, and 2025 prior data
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p thirdparty
           git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
           git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
-          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2024 XAUUSD/1m/2025
-      - name: XAUUSD M15 historical fixed comparison, including unused 2024 holdout
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2023 XAUUSD/1m/2024 XAUUSD/1m/2025
+      - name: XAUUSD M15 fixed comparison, including fresh 2023 holdout
         run: python robots/mt5/nexus_vector_retest/alpha_xau_adaptive.py
       - name: Always upload research results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: XAUUSD-EMA21-AdaptiveTrend-2024-2026
+          name: XAUUSD-EMA21-ConditionalRunner-2023-2026
           path: robots/mt5/nexus_vector_retest/alpha_xau_adaptive_results/
           if-no-files-found: warn
