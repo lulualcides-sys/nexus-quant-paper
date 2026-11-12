@@ -1,0 +1,4187 @@
+{
+  "archive_date": "2026-11-12",
+  "status": "RESEARCH_ONLY_NO_LIVE",
+  "scope": {
+    "symbol": "XAUUSD",
+    "start": "2025-01-01T00:00:00Z",
+    "year_2026_partial": true,
+    "source_2025_commit": "b2cfdc571ffac9eff9f2132ea6946da559d29af2",
+    "year_2026_sha256": "a587597bbf88c2d868a00a4e0019cd705cee6ca4f20b0485d6b745f19fcc8225"
+  },
+  "source": {
+    "branch": "research/xau-indicators-batch2-2025plus-20261112",
+    "workflow": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43232369781",
+    "result": "completed_success",
+    "code": "robots/mt5/nexus_vector_retest/xau_indicator_batch2_2025plus.py"
+  },
+  "config": {
+    "timeframes": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M10",
+      "M12",
+      "M15",
+      "M20",
+      "M30"
+    ],
+    "models": [
+      "EMA21_BASE",
+      "SUPERTREND_10_3",
+      "CCI20_RECLAIM",
+      "WILLIAMS_R14_RECLAIM",
+      "HULL21_PULLBACK"
+    ],
+    "horizon": "96 hours of closed trading candles; proportional candles per TF",
+    "execution": "next bar opening; original stop; stop-first within ambiguous OHLC, gaps conservative",
+    "cost_usd_per_ounce_roundtrip": [
+      0.8,
+      1.2,
+      1.6
+    ],
+    "point_assumed": 0.01,
+    "runner": "2 partial targets at 1R and 1.5R, remaining third to SL or time"
+  },
+  "screened_candidates": [
+    {
+      "tf": "M20",
+      "model": "HULL21_PULLBACK",
+      "n25": 254,
+      "n26": 130,
+      "net25": 17117.8,
+      "net26": 17120.3,
+      "pf25": 1.155,
+      "pf26": 1.2,
+      "screen_pass": true
+    }
+  ],
+  "observations": [
+    "HULL21_PULLBACK M20 was positive 2025 and available 2026 in simulated OHLC costs, but 2025Q1 lost 7,105.8 points and 2025Q4 contributed 22,694.9 points.",
+    "SUPERTREND_10_3 M3 positive both years but below frequency criterion (95 operations in 2025, 49 in 2026) and 2025 becomes negative under assumed 1.6 USD/oz costs.",
+    "All periods previously studied in other models; extensive comparison suffers selection/multiple testing bias.",
+    "Cannot extrapolate to cash returns or live earnings without broker ticks, bid/ask, volume, commissions, swap, slippage or intratrade drawdown."
+  ],
+  "archived_priority_candidates_still_exactly_two": "research/preserved/xau_two_priority_candidates_for_mt5_validation_20261112.json",
+  "approved_for_live": false,
+  "annual_metrics": [
+    {
+      "year": "2025",
+      "tf": "M1",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -181351.3,
+            "PF": 0.37,
+            "win_pct": 11.87,
+            "mdd_pts": 185555.5,
+            "avg_hold": 152.5
+          },
+          "1.2": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -263551.3,
+            "PF": 0.274,
+            "win_pct": 6.03,
+            "mdd_pts": 267635.5,
+            "avg_hold": 152.5
+          },
+          "1.6": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -345751.3,
+            "PF": 0.216,
+            "win_pct": 3.45,
+            "mdd_pts": 349760.9,
+            "avg_hold": 152.5
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 244,
+            "gross_pts": -19354.4,
+            "net_pts": -38874.4,
+            "PF": 0.456,
+            "win_pct": 27.05,
+            "mdd_pts": 38874.4,
+            "avg_hold": 337.9
+          },
+          "1.2": {
+            "N": 244,
+            "gross_pts": -19354.4,
+            "net_pts": -48634.4,
+            "PF": 0.384,
+            "win_pct": 20.9,
+            "mdd_pts": 48634.4,
+            "avg_hold": 337.9
+          },
+          "1.6": {
+            "N": 244,
+            "gross_pts": -19354.4,
+            "net_pts": -58394.4,
+            "PF": 0.329,
+            "win_pct": 15.16,
+            "mdd_pts": 58394.4,
+            "avg_hold": 337.9
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 1590,
+            "gross_pts": 7143,
+            "net_pts": -120057,
+            "PF": 0.452,
+            "win_pct": 13.27,
+            "mdd_pts": 123418.8,
+            "avg_hold": 177.9
+          },
+          "1.2": {
+            "N": 1590,
+            "gross_pts": 7143,
+            "net_pts": -183657,
+            "PF": 0.336,
+            "win_pct": 6.73,
+            "mdd_pts": 186963.2,
+            "avg_hold": 177.9
+          },
+          "1.6": {
+            "N": 1590,
+            "gross_pts": 7143,
+            "net_pts": -247257,
+            "PF": 0.266,
+            "win_pct": 4.21,
+            "mdd_pts": 250523.2,
+            "avg_hold": 177.9
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 1394,
+            "gross_pts": 22942.8,
+            "net_pts": -88577.2,
+            "PF": 0.57,
+            "win_pct": 16.57,
+            "mdd_pts": 94781.2,
+            "avg_hold": 226.4
+          },
+          "1.2": {
+            "N": 1394,
+            "gross_pts": 22942.8,
+            "net_pts": -144337.2,
+            "PF": 0.433,
+            "win_pct": 9.18,
+            "mdd_pts": 150501.2,
+            "avg_hold": 226.4
+          },
+          "1.6": {
+            "N": 1394,
+            "gross_pts": 22942.8,
+            "net_pts": -200097.2,
+            "PF": 0.347,
+            "win_pct": 5.6,
+            "mdd_pts": 206221.2,
+            "avg_hold": 226.4
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 1582,
+            "gross_pts": 7953.9,
+            "net_pts": -118606.1,
+            "PF": 0.501,
+            "win_pct": 14.54,
+            "mdd_pts": 125592.5,
+            "avg_hold": 203.4
+          },
+          "1.2": {
+            "N": 1582,
+            "gross_pts": 7953.9,
+            "net_pts": -181886.1,
+            "PF": 0.381,
+            "win_pct": 8.6,
+            "mdd_pts": 188792.5,
+            "avg_hold": 203.4
+          },
+          "1.6": {
+            "N": 1582,
+            "gross_pts": 7953.9,
+            "net_pts": -245166.1,
+            "PF": 0.305,
+            "win_pct": 5.44,
+            "mdd_pts": 251992.5,
+            "avg_hold": 203.4
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M1",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -34015.1,
+            "PF": 0.717,
+            "win_pct": 27.46,
+            "mdd_pts": 34153.1,
+            "avg_hold": 244
+          },
+          "1.2": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -59215.1,
+            "PF": 0.577,
+            "win_pct": 17.14,
+            "mdd_pts": 59308.7,
+            "avg_hold": 244
+          },
+          "1.6": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -84415.1,
+            "PF": 0.478,
+            "win_pct": 11.43,
+            "mdd_pts": 84468.7,
+            "avg_hold": 244
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 89,
+            "gross_pts": -7319.2,
+            "net_pts": -14439.2,
+            "PF": 0.575,
+            "win_pct": 37.08,
+            "mdd_pts": 19106.5,
+            "avg_hold": 405.3
+          },
+          "1.2": {
+            "N": 89,
+            "gross_pts": -7319.2,
+            "net_pts": -17999.2,
+            "PF": 0.504,
+            "win_pct": 35.96,
+            "mdd_pts": 21426.5,
+            "avg_hold": 405.3
+          },
+          "1.6": {
+            "N": 89,
+            "gross_pts": -7319.2,
+            "net_pts": -21559.2,
+            "PF": 0.441,
+            "win_pct": 34.83,
+            "mdd_pts": 23746.5,
+            "avg_hold": 405.3
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 653,
+            "gross_pts": 11453.8,
+            "net_pts": -40786.2,
+            "PF": 0.642,
+            "win_pct": 24.35,
+            "mdd_pts": 44841.8,
+            "avg_hold": 218.2
+          },
+          "1.2": {
+            "N": 653,
+            "gross_pts": 11453.8,
+            "net_pts": -66906.2,
+            "PF": 0.505,
+            "win_pct": 14.09,
+            "mdd_pts": 69520.6,
+            "avg_hold": 218.2
+          },
+          "1.6": {
+            "N": 653,
+            "gross_pts": 11453.8,
+            "net_pts": -93026.2,
+            "PF": 0.412,
+            "win_pct": 8.73,
+            "mdd_pts": 95600.6,
+            "avg_hold": 218.2
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 691,
+            "gross_pts": 8063.8,
+            "net_pts": -47216.2,
+            "PF": 0.627,
+            "win_pct": 26.92,
+            "mdd_pts": 50776.6,
+            "avg_hold": 220.7
+          },
+          "1.2": {
+            "N": 691,
+            "gross_pts": 8063.8,
+            "net_pts": -74856.2,
+            "PF": 0.495,
+            "win_pct": 17.37,
+            "mdd_pts": 75080.5,
+            "avg_hold": 220.7
+          },
+          "1.6": {
+            "N": 691,
+            "gross_pts": 8063.8,
+            "net_pts": -102496.2,
+            "PF": 0.404,
+            "win_pct": 9.7,
+            "mdd_pts": 102654.3,
+            "avg_hold": 220.7
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 795,
+            "gross_pts": 8667.9,
+            "net_pts": -54932.1,
+            "PF": 0.657,
+            "win_pct": 29.06,
+            "mdd_pts": 55113.9,
+            "avg_hold": 193.9
+          },
+          "1.2": {
+            "N": 795,
+            "gross_pts": 8667.9,
+            "net_pts": -86732.1,
+            "PF": 0.529,
+            "win_pct": 18.87,
+            "mdd_pts": 86857.9,
+            "avg_hold": 193.9
+          },
+          "1.6": {
+            "N": 795,
+            "gross_pts": 8667.9,
+            "net_pts": -118532.1,
+            "PF": 0.439,
+            "win_pct": 11.7,
+            "mdd_pts": 118617.9,
+            "avg_hold": 193.9
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 1147,
+            "gross_pts": 19771.9,
+            "net_pts": -71988.1,
+            "PF": 0.621,
+            "win_pct": 22.49,
+            "mdd_pts": 86261.6,
+            "avg_hold": 134.2
+          },
+          "1.2": {
+            "N": 1147,
+            "gross_pts": 19771.9,
+            "net_pts": -117868.1,
+            "PF": 0.482,
+            "win_pct": 14.04,
+            "mdd_pts": 124893.7,
+            "avg_hold": 134.2
+          },
+          "1.6": {
+            "N": 1147,
+            "gross_pts": 19771.9,
+            "net_pts": -163748.1,
+            "PF": 0.389,
+            "win_pct": 9.59,
+            "mdd_pts": 170733.7,
+            "avg_hold": 134.2
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 91,
+            "gross_pts": 11282.9,
+            "net_pts": 4002.9,
+            "PF": 1.125,
+            "win_pct": 35.16,
+            "mdd_pts": 9087.2,
+            "avg_hold": 441.6
+          },
+          "1.2": {
+            "N": 91,
+            "gross_pts": 11282.9,
+            "net_pts": 362.9,
+            "PF": 1.011,
+            "win_pct": 30.77,
+            "mdd_pts": 9927.2,
+            "avg_hold": 441.6
+          },
+          "1.6": {
+            "N": 91,
+            "gross_pts": 11282.9,
+            "net_pts": -3277.1,
+            "PF": 0.911,
+            "win_pct": 26.37,
+            "mdd_pts": 10767.2,
+            "avg_hold": 441.6
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 1020,
+            "gross_pts": 14693.5,
+            "net_pts": -66906.5,
+            "PF": 0.613,
+            "win_pct": 17.75,
+            "mdd_pts": 70396.9,
+            "avg_hold": 130.2
+          },
+          "1.2": {
+            "N": 1020,
+            "gross_pts": 14693.5,
+            "net_pts": -107706.5,
+            "PF": 0.482,
+            "win_pct": 10.49,
+            "mdd_pts": 111076.9,
+            "avg_hold": 130.2
+          },
+          "1.6": {
+            "N": 1020,
+            "gross_pts": 14693.5,
+            "net_pts": -148506.5,
+            "PF": 0.395,
+            "win_pct": 7.35,
+            "mdd_pts": 151763.6,
+            "avg_hold": 130.2
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 1176,
+            "gross_pts": -4801.4,
+            "net_pts": -98881.4,
+            "PF": 0.522,
+            "win_pct": 20.58,
+            "mdd_pts": 103664.1,
+            "avg_hold": 123.9
+          },
+          "1.2": {
+            "N": 1176,
+            "gross_pts": -4801.4,
+            "net_pts": -145921.4,
+            "PF": 0.407,
+            "win_pct": 12.5,
+            "mdd_pts": 149984.1,
+            "avg_hold": 123.9
+          },
+          "1.6": {
+            "N": 1176,
+            "gross_pts": -4801.4,
+            "net_pts": -192961.4,
+            "PF": 0.331,
+            "win_pct": 8.84,
+            "mdd_pts": 196304.1,
+            "avg_hold": 123.9
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 1103,
+            "gross_pts": 11547.3,
+            "net_pts": -76692.7,
+            "PF": 0.604,
+            "win_pct": 23.57,
+            "mdd_pts": 81213.4,
+            "avg_hold": 143.2
+          },
+          "1.2": {
+            "N": 1103,
+            "gross_pts": 11547.3,
+            "net_pts": -120812.7,
+            "PF": 0.474,
+            "win_pct": 14.42,
+            "mdd_pts": 125238,
+            "avg_hold": 143.2
+          },
+          "1.6": {
+            "N": 1103,
+            "gross_pts": 11547.3,
+            "net_pts": -164932.7,
+            "PF": 0.387,
+            "win_pct": 8.79,
+            "mdd_pts": 169295.4,
+            "avg_hold": 143.2
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M2",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 402,
+            "gross_pts": 23086.9,
+            "net_pts": -9073.1,
+            "PF": 0.912,
+            "win_pct": 34.08,
+            "mdd_pts": 22065.5,
+            "avg_hold": 192.9
+          },
+          "1.2": {
+            "N": 402,
+            "gross_pts": 23086.9,
+            "net_pts": -25153.1,
+            "PF": 0.779,
+            "win_pct": 28.86,
+            "mdd_pts": 33145.5,
+            "avg_hold": 192.9
+          },
+          "1.6": {
+            "N": 402,
+            "gross_pts": 23086.9,
+            "net_pts": -41233.1,
+            "PF": 0.672,
+            "win_pct": 20.15,
+            "mdd_pts": 45023.4,
+            "avg_hold": 192.9
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 50,
+            "gross_pts": 2901.7,
+            "net_pts": -1098.3,
+            "PF": 0.958,
+            "win_pct": 42,
+            "mdd_pts": 9736.8,
+            "avg_hold": 413.8
+          },
+          "1.2": {
+            "N": 50,
+            "gross_pts": 2901.7,
+            "net_pts": -3098.3,
+            "PF": 0.887,
+            "win_pct": 42,
+            "mdd_pts": 11056.8,
+            "avg_hold": 413.8
+          },
+          "1.6": {
+            "N": 50,
+            "gross_pts": 2901.7,
+            "net_pts": -5098.3,
+            "PF": 0.822,
+            "win_pct": 42,
+            "mdd_pts": 12376.8,
+            "avg_hold": 413.8
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 383,
+            "gross_pts": 28275.8,
+            "net_pts": -2364.2,
+            "PF": 0.973,
+            "win_pct": 33.42,
+            "mdd_pts": 17824.2,
+            "avg_hold": 177.8
+          },
+          "1.2": {
+            "N": 383,
+            "gross_pts": 28275.8,
+            "net_pts": -17684.2,
+            "PF": 0.82,
+            "win_pct": 26.89,
+            "mdd_pts": 21875.2,
+            "avg_hold": 177.8
+          },
+          "1.6": {
+            "N": 383,
+            "gross_pts": 28275.8,
+            "net_pts": -33004.2,
+            "PF": 0.7,
+            "win_pct": 19.58,
+            "mdd_pts": 35799.6,
+            "avg_hold": 177.8
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 453,
+            "gross_pts": 16744.6,
+            "net_pts": -19495.4,
+            "PF": 0.824,
+            "win_pct": 32.89,
+            "mdd_pts": 25140.6,
+            "avg_hold": 163.6
+          },
+          "1.2": {
+            "N": 453,
+            "gross_pts": 16744.6,
+            "net_pts": -37615.4,
+            "PF": 0.695,
+            "win_pct": 23.84,
+            "mdd_pts": 42457,
+            "avg_hold": 163.6
+          },
+          "1.6": {
+            "N": 453,
+            "gross_pts": 16744.6,
+            "net_pts": -55735.4,
+            "PF": 0.596,
+            "win_pct": 15.01,
+            "mdd_pts": 60337,
+            "avg_hold": 163.6
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 414,
+            "gross_pts": 42302.2,
+            "net_pts": 9182.2,
+            "PF": 1.091,
+            "win_pct": 40.82,
+            "mdd_pts": 19357.6,
+            "avg_hold": 185.5
+          },
+          "1.2": {
+            "N": 414,
+            "gross_pts": 42302.2,
+            "net_pts": -7377.8,
+            "PF": 0.934,
+            "win_pct": 33.09,
+            "mdd_pts": 27277.6,
+            "avg_hold": 185.5
+          },
+          "1.6": {
+            "N": 414,
+            "gross_pts": 42302.2,
+            "net_pts": -23937.8,
+            "PF": 0.806,
+            "win_pct": 26.09,
+            "mdd_pts": 35207.5,
+            "avg_hold": 185.5
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 969,
+            "gross_pts": 2107.1,
+            "net_pts": -75412.9,
+            "PF": 0.61,
+            "win_pct": 24.36,
+            "mdd_pts": 97279.9,
+            "avg_hold": 101.2
+          },
+          "1.2": {
+            "N": 969,
+            "gross_pts": 2107.1,
+            "net_pts": -114172.9,
+            "PF": 0.492,
+            "win_pct": 14.96,
+            "mdd_pts": 127076.1,
+            "avg_hold": 101.2
+          },
+          "1.6": {
+            "N": 969,
+            "gross_pts": 2107.1,
+            "net_pts": -152932.9,
+            "PF": 0.409,
+            "win_pct": 10.22,
+            "mdd_pts": 159801.5,
+            "avg_hold": 101.2
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 95,
+            "gross_pts": 13623.3,
+            "net_pts": 6023.3,
+            "PF": 1.162,
+            "win_pct": 34.74,
+            "mdd_pts": 10967.8,
+            "avg_hold": 323.5
+          },
+          "1.2": {
+            "N": 95,
+            "gross_pts": 13623.3,
+            "net_pts": 2223.3,
+            "PF": 1.056,
+            "win_pct": 32.63,
+            "mdd_pts": 12167.8,
+            "avg_hold": 323.5
+          },
+          "1.6": {
+            "N": 95,
+            "gross_pts": 13623.3,
+            "net_pts": -1576.7,
+            "PF": 0.963,
+            "win_pct": 28.42,
+            "mdd_pts": 13367.8,
+            "avg_hold": 323.5
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 787,
+            "gross_pts": 42837.6,
+            "net_pts": -20122.4,
+            "PF": 0.839,
+            "win_pct": 24.14,
+            "mdd_pts": 34054,
+            "avg_hold": 106.7
+          },
+          "1.2": {
+            "N": 787,
+            "gross_pts": 42837.6,
+            "net_pts": -51602.4,
+            "PF": 0.657,
+            "win_pct": 15.76,
+            "mdd_pts": 59349.5,
+            "avg_hold": 106.7
+          },
+          "1.6": {
+            "N": 787,
+            "gross_pts": 42837.6,
+            "net_pts": -83082.4,
+            "PF": 0.532,
+            "win_pct": 12.07,
+            "mdd_pts": 84669.5,
+            "avg_hold": 106.7
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 959,
+            "gross_pts": -1212.7,
+            "net_pts": -77932.7,
+            "PF": 0.585,
+            "win_pct": 24.19,
+            "mdd_pts": 84476.5,
+            "avg_hold": 95.9
+          },
+          "1.2": {
+            "N": 959,
+            "gross_pts": -1212.7,
+            "net_pts": -116292.7,
+            "PF": 0.467,
+            "win_pct": 16.48,
+            "mdd_pts": 122796.5,
+            "avg_hold": 95.9
+          },
+          "1.6": {
+            "N": 959,
+            "gross_pts": -1212.7,
+            "net_pts": -154652.7,
+            "PF": 0.385,
+            "win_pct": 11.05,
+            "mdd_pts": 161116.5,
+            "avg_hold": 95.9
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 930,
+            "gross_pts": 7984.6,
+            "net_pts": -66415.4,
+            "PF": 0.628,
+            "win_pct": 28.06,
+            "mdd_pts": 70696.1,
+            "avg_hold": 111.5
+          },
+          "1.2": {
+            "N": 930,
+            "gross_pts": 7984.6,
+            "net_pts": -103615.4,
+            "PF": 0.499,
+            "win_pct": 18.92,
+            "mdd_pts": 107816.1,
+            "avg_hold": 111.5
+          },
+          "1.6": {
+            "N": 930,
+            "gross_pts": 7984.6,
+            "net_pts": -140815.4,
+            "PF": 0.41,
+            "win_pct": 12.15,
+            "mdd_pts": 144973.1,
+            "avg_hold": 111.5
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M3",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 388,
+            "gross_pts": 3465.7,
+            "net_pts": -27574.3,
+            "PF": 0.77,
+            "win_pct": 35.57,
+            "mdd_pts": 33543.6,
+            "avg_hold": 128.7
+          },
+          "1.2": {
+            "N": 388,
+            "gross_pts": 3465.7,
+            "net_pts": -43094.3,
+            "PF": 0.669,
+            "win_pct": 31.19,
+            "mdd_pts": 44388,
+            "avg_hold": 128.7
+          },
+          "1.6": {
+            "N": 388,
+            "gross_pts": 3465.7,
+            "net_pts": -58614.3,
+            "PF": 0.585,
+            "win_pct": 25,
+            "mdd_pts": 59868,
+            "avg_hold": 128.7
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 49,
+            "gross_pts": 19596.5,
+            "net_pts": 15676.5,
+            "PF": 1.537,
+            "win_pct": 48.98,
+            "mdd_pts": 8107.3,
+            "avg_hold": 435.7
+          },
+          "1.2": {
+            "N": 49,
+            "gross_pts": 19596.5,
+            "net_pts": 13716.5,
+            "PF": 1.454,
+            "win_pct": 48.98,
+            "mdd_pts": 8347.3,
+            "avg_hold": 435.7
+          },
+          "1.6": {
+            "N": 49,
+            "gross_pts": 19596.5,
+            "net_pts": 11756.5,
+            "PF": 1.377,
+            "win_pct": 48.98,
+            "mdd_pts": 8587.3,
+            "avg_hold": 435.7
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 322,
+            "gross_pts": 13130.5,
+            "net_pts": -12629.5,
+            "PF": 0.857,
+            "win_pct": 31.68,
+            "mdd_pts": 23770.1,
+            "avg_hold": 138.3
+          },
+          "1.2": {
+            "N": 322,
+            "gross_pts": 13130.5,
+            "net_pts": -25509.5,
+            "PF": 0.738,
+            "win_pct": 25.47,
+            "mdd_pts": 33493.5,
+            "avg_hold": 138.3
+          },
+          "1.6": {
+            "N": 322,
+            "gross_pts": 13130.5,
+            "net_pts": -38389.5,
+            "PF": 0.642,
+            "win_pct": 19.25,
+            "mdd_pts": 44693.5,
+            "avg_hold": 138.3
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 372,
+            "gross_pts": 10467.2,
+            "net_pts": -19292.8,
+            "PF": 0.818,
+            "win_pct": 36.83,
+            "mdd_pts": 29066.6,
+            "avg_hold": 129.9
+          },
+          "1.2": {
+            "N": 372,
+            "gross_pts": 10467.2,
+            "net_pts": -34172.8,
+            "PF": 0.705,
+            "win_pct": 29.84,
+            "mdd_pts": 35466.5,
+            "avg_hold": 129.9
+          },
+          "1.6": {
+            "N": 372,
+            "gross_pts": 10467.2,
+            "net_pts": -49052.8,
+            "PF": 0.613,
+            "win_pct": 22.31,
+            "mdd_pts": 50306.5,
+            "avg_hold": 129.9
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 294,
+            "gross_pts": 31002.2,
+            "net_pts": 7482.2,
+            "PF": 1.077,
+            "win_pct": 38.78,
+            "mdd_pts": 21127.2,
+            "avg_hold": 173.4
+          },
+          "1.2": {
+            "N": 294,
+            "gross_pts": 31002.2,
+            "net_pts": -4277.8,
+            "PF": 0.959,
+            "win_pct": 35.71,
+            "mdd_pts": 22953.7,
+            "avg_hold": 173.4
+          },
+          "1.6": {
+            "N": 294,
+            "gross_pts": 31002.2,
+            "net_pts": -16037.8,
+            "PF": 0.858,
+            "win_pct": 29.93,
+            "mdd_pts": 25584.6,
+            "avg_hold": 173.4
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 786,
+            "gross_pts": 11202.9,
+            "net_pts": -51677.1,
+            "PF": 0.713,
+            "win_pct": 26.08,
+            "mdd_pts": 66111.3,
+            "avg_hold": 92.3
+          },
+          "1.2": {
+            "N": 786,
+            "gross_pts": 11202.9,
+            "net_pts": -83117.1,
+            "PF": 0.594,
+            "win_pct": 17.94,
+            "mdd_pts": 90944.9,
+            "avg_hold": 92.3
+          },
+          "1.6": {
+            "N": 786,
+            "gross_pts": 11202.9,
+            "net_pts": -114557.1,
+            "PF": 0.505,
+            "win_pct": 12.21,
+            "mdd_pts": 121428.9,
+            "avg_hold": 92.3
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 72,
+            "gross_pts": 7522.8,
+            "net_pts": 1762.8,
+            "PF": 1.056,
+            "win_pct": 36.11,
+            "mdd_pts": 11907.5,
+            "avg_hold": 212.5
+          },
+          "1.2": {
+            "N": 72,
+            "gross_pts": 7522.8,
+            "net_pts": -1117.2,
+            "PF": 0.966,
+            "win_pct": 34.72,
+            "mdd_pts": 14027.5,
+            "avg_hold": 212.5
+          },
+          "1.6": {
+            "N": 72,
+            "gross_pts": 7522.8,
+            "net_pts": -3997.2,
+            "PF": 0.886,
+            "win_pct": 30.56,
+            "mdd_pts": 16147.5,
+            "avg_hold": 212.5
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 672,
+            "gross_pts": 18646.3,
+            "net_pts": -35113.7,
+            "PF": 0.756,
+            "win_pct": 25.89,
+            "mdd_pts": 47876.5,
+            "avg_hold": 90.7
+          },
+          "1.2": {
+            "N": 672,
+            "gross_pts": 18646.3,
+            "net_pts": -61993.7,
+            "PF": 0.624,
+            "win_pct": 17.11,
+            "mdd_pts": 69556.5,
+            "avg_hold": 90.7
+          },
+          "1.6": {
+            "N": 672,
+            "gross_pts": 18646.3,
+            "net_pts": -88873.7,
+            "PF": 0.528,
+            "win_pct": 11.16,
+            "mdd_pts": 96190.2,
+            "avg_hold": 90.7
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 777,
+            "gross_pts": 9499.4,
+            "net_pts": -52660.6,
+            "PF": 0.696,
+            "win_pct": 27.03,
+            "mdd_pts": 69250.3,
+            "avg_hold": 88.1
+          },
+          "1.2": {
+            "N": 777,
+            "gross_pts": 9499.4,
+            "net_pts": -83740.6,
+            "PF": 0.576,
+            "win_pct": 18.66,
+            "mdd_pts": 93513,
+            "avg_hold": 88.1
+          },
+          "1.6": {
+            "N": 777,
+            "gross_pts": 9499.4,
+            "net_pts": -114820.6,
+            "PF": 0.487,
+            "win_pct": 14.16,
+            "mdd_pts": 122175.1,
+            "avg_hold": 88.1
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 707,
+            "gross_pts": 31128.6,
+            "net_pts": -25431.4,
+            "PF": 0.834,
+            "win_pct": 28.43,
+            "mdd_pts": 37658.3,
+            "avg_hold": 109.9
+          },
+          "1.2": {
+            "N": 707,
+            "gross_pts": 31128.6,
+            "net_pts": -53711.4,
+            "PF": 0.691,
+            "win_pct": 21.5,
+            "mdd_pts": 58519.3,
+            "avg_hold": 109.9
+          },
+          "1.6": {
+            "N": 707,
+            "gross_pts": 31128.6,
+            "net_pts": -81991.4,
+            "PF": 0.584,
+            "win_pct": 15.98,
+            "mdd_pts": 86310,
+            "avg_hold": 109.9
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M4",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 375,
+            "gross_pts": 7501,
+            "net_pts": -22499,
+            "PF": 0.819,
+            "win_pct": 35.47,
+            "mdd_pts": 23849.5,
+            "avg_hold": 94.9
+          },
+          "1.2": {
+            "N": 375,
+            "gross_pts": 7501,
+            "net_pts": -37499,
+            "PF": 0.72,
+            "win_pct": 31.2,
+            "mdd_pts": 37499,
+            "avg_hold": 94.9
+          },
+          "1.6": {
+            "N": 375,
+            "gross_pts": 7501,
+            "net_pts": -52499,
+            "PF": 0.637,
+            "win_pct": 27.73,
+            "mdd_pts": 52499,
+            "avg_hold": 94.9
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 40,
+            "gross_pts": -23141.7,
+            "net_pts": -26341.7,
+            "PF": 0.33,
+            "win_pct": 30,
+            "mdd_pts": 29695.8,
+            "avg_hold": 160.5
+          },
+          "1.2": {
+            "N": 40,
+            "gross_pts": -23141.7,
+            "net_pts": -27941.7,
+            "PF": 0.309,
+            "win_pct": 30,
+            "mdd_pts": 31255.8,
+            "avg_hold": 160.5
+          },
+          "1.6": {
+            "N": 40,
+            "gross_pts": -23141.7,
+            "net_pts": -29541.7,
+            "PF": 0.289,
+            "win_pct": 30,
+            "mdd_pts": 32815.8,
+            "avg_hold": 160.5
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 314,
+            "gross_pts": 7052.6,
+            "net_pts": -18067.4,
+            "PF": 0.799,
+            "win_pct": 37.58,
+            "mdd_pts": 23927.6,
+            "avg_hold": 96
+          },
+          "1.2": {
+            "N": 314,
+            "gross_pts": 7052.6,
+            "net_pts": -30627.4,
+            "PF": 0.688,
+            "win_pct": 32.17,
+            "mdd_pts": 34213.5,
+            "avg_hold": 96
+          },
+          "1.6": {
+            "N": 314,
+            "gross_pts": 7052.6,
+            "net_pts": -43187.4,
+            "PF": 0.597,
+            "win_pct": 26.11,
+            "mdd_pts": 44773.5,
+            "avg_hold": 96
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 346,
+            "gross_pts": 4464.2,
+            "net_pts": -23215.8,
+            "PF": 0.789,
+            "win_pct": 37.28,
+            "mdd_pts": 34109,
+            "avg_hold": 104
+          },
+          "1.2": {
+            "N": 346,
+            "gross_pts": 4464.2,
+            "net_pts": -37055.8,
+            "PF": 0.688,
+            "win_pct": 33.24,
+            "mdd_pts": 42987.6,
+            "avg_hold": 104
+          },
+          "1.6": {
+            "N": 346,
+            "gross_pts": 4464.2,
+            "net_pts": -50895.8,
+            "PF": 0.604,
+            "win_pct": 26.88,
+            "mdd_pts": 54734.6,
+            "avg_hold": 104
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 289,
+            "gross_pts": 36782.9,
+            "net_pts": 13662.9,
+            "PF": 1.15,
+            "win_pct": 40.48,
+            "mdd_pts": 19618.9,
+            "avg_hold": 131.5
+          },
+          "1.2": {
+            "N": 289,
+            "gross_pts": 36782.9,
+            "net_pts": 2102.9,
+            "PF": 1.021,
+            "win_pct": 37.72,
+            "mdd_pts": 22578.9,
+            "avg_hold": 131.5
+          },
+          "1.6": {
+            "N": 289,
+            "gross_pts": 36782.9,
+            "net_pts": -9457.1,
+            "PF": 0.911,
+            "win_pct": 32.53,
+            "mdd_pts": 25538.9,
+            "avg_hold": 131.5
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -45316.6,
+            "PF": 0.729,
+            "win_pct": 29.06,
+            "mdd_pts": 59207.3,
+            "avg_hold": 81.7
+          },
+          "1.2": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -73116.6,
+            "PF": 0.611,
+            "win_pct": 21.58,
+            "mdd_pts": 81967.3,
+            "avg_hold": 81.7
+          },
+          "1.6": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -100916.6,
+            "PF": 0.521,
+            "win_pct": 15.68,
+            "mdd_pts": 108065,
+            "avg_hold": 81.7
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 67,
+            "gross_pts": 6994.6,
+            "net_pts": 1634.6,
+            "PF": 1.047,
+            "win_pct": 37.31,
+            "mdd_pts": 9185.9,
+            "avg_hold": 211.2
+          },
+          "1.2": {
+            "N": 67,
+            "gross_pts": 6994.6,
+            "net_pts": -1045.4,
+            "PF": 0.971,
+            "win_pct": 37.31,
+            "mdd_pts": 9745.9,
+            "avg_hold": 211.2
+          },
+          "1.6": {
+            "N": 67,
+            "gross_pts": 6994.6,
+            "net_pts": -3725.4,
+            "PF": 0.902,
+            "win_pct": 35.82,
+            "mdd_pts": 10305.9,
+            "avg_hold": 211.2
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 546,
+            "gross_pts": 19477.9,
+            "net_pts": -24202.1,
+            "PF": 0.794,
+            "win_pct": 30.95,
+            "mdd_pts": 35892.9,
+            "avg_hold": 89.2
+          },
+          "1.2": {
+            "N": 546,
+            "gross_pts": 19477.9,
+            "net_pts": -46042.1,
+            "PF": 0.655,
+            "win_pct": 21.25,
+            "mdd_pts": 53505.8,
+            "avg_hold": 89.2
+          },
+          "1.6": {
+            "N": 546,
+            "gross_pts": 19477.9,
+            "net_pts": -67882.1,
+            "PF": 0.552,
+            "win_pct": 14.47,
+            "mdd_pts": 75065.8,
+            "avg_hold": 89.2
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 640,
+            "gross_pts": 23474.8,
+            "net_pts": -27725.2,
+            "PF": 0.804,
+            "win_pct": 33.44,
+            "mdd_pts": 38462.3,
+            "avg_hold": 86.4
+          },
+          "1.2": {
+            "N": 640,
+            "gross_pts": 23474.8,
+            "net_pts": -53325.2,
+            "PF": 0.666,
+            "win_pct": 24.06,
+            "mdd_pts": 57942.3,
+            "avg_hold": 86.4
+          },
+          "1.6": {
+            "N": 640,
+            "gross_pts": 23474.8,
+            "net_pts": -78925.2,
+            "PF": 0.562,
+            "win_pct": 17.5,
+            "mdd_pts": 79047.1,
+            "avg_hold": 86.4
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 696,
+            "gross_pts": 13859.8,
+            "net_pts": -41820.2,
+            "PF": 0.754,
+            "win_pct": 31.32,
+            "mdd_pts": 67849.2,
+            "avg_hold": 85.7
+          },
+          "1.2": {
+            "N": 696,
+            "gross_pts": 13859.8,
+            "net_pts": -69660.2,
+            "PF": 0.633,
+            "win_pct": 24.86,
+            "mdd_pts": 88649.2,
+            "avg_hold": 85.7
+          },
+          "1.6": {
+            "N": 696,
+            "gross_pts": 13859.8,
+            "net_pts": -97500.2,
+            "PF": 0.54,
+            "win_pct": 17.67,
+            "mdd_pts": 109449.2,
+            "avg_hold": 85.7
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M5",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": 1666.6,
+            "PF": 1.018,
+            "win_pct": 38.52,
+            "mdd_pts": 30183.1,
+            "avg_hold": 117.2
+          },
+          "1.2": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": -8613.4,
+            "PF": 0.914,
+            "win_pct": 35.8,
+            "mdd_pts": 36183.1,
+            "avg_hold": 117.2
+          },
+          "1.6": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": -18893.4,
+            "PF": 0.823,
+            "win_pct": 31.91,
+            "mdd_pts": 42183.1,
+            "avg_hold": 117.2
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 29,
+            "gross_pts": -5173.4,
+            "net_pts": -7493.4,
+            "PF": 0.69,
+            "win_pct": 34.48,
+            "mdd_pts": 9143.2,
+            "avg_hold": 144.1
+          },
+          "1.2": {
+            "N": 29,
+            "gross_pts": -5173.4,
+            "net_pts": -8653.4,
+            "PF": 0.653,
+            "win_pct": 34.48,
+            "mdd_pts": 9383.2,
+            "avg_hold": 144.1
+          },
+          "1.6": {
+            "N": 29,
+            "gross_pts": -5173.4,
+            "net_pts": -9813.4,
+            "PF": 0.619,
+            "win_pct": 34.48,
+            "mdd_pts": 10216.6,
+            "avg_hold": 144.1
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 301,
+            "gross_pts": 20850.5,
+            "net_pts": -3229.5,
+            "PF": 0.966,
+            "win_pct": 35.88,
+            "mdd_pts": 37777.7,
+            "avg_hold": 73.8
+          },
+          "1.2": {
+            "N": 301,
+            "gross_pts": 20850.5,
+            "net_pts": -15269.5,
+            "PF": 0.852,
+            "win_pct": 31.89,
+            "mdd_pts": 43657.7,
+            "avg_hold": 73.8
+          },
+          "1.6": {
+            "N": 301,
+            "gross_pts": 20850.5,
+            "net_pts": -27309.5,
+            "PF": 0.756,
+            "win_pct": 27.24,
+            "mdd_pts": 49537.7,
+            "avg_hold": 73.8
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 314,
+            "gross_pts": -10675.9,
+            "net_pts": -35795.9,
+            "PF": 0.684,
+            "win_pct": 38.22,
+            "mdd_pts": 37572.6,
+            "avg_hold": 89.6
+          },
+          "1.2": {
+            "N": 314,
+            "gross_pts": -10675.9,
+            "net_pts": -48355.9,
+            "PF": 0.601,
+            "win_pct": 35.35,
+            "mdd_pts": 50092.6,
+            "avg_hold": 89.6
+          },
+          "1.6": {
+            "N": 314,
+            "gross_pts": -10675.9,
+            "net_pts": -60915.9,
+            "PF": 0.53,
+            "win_pct": 29.94,
+            "mdd_pts": 62612.6,
+            "avg_hold": 89.6
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 249,
+            "gross_pts": 37528.6,
+            "net_pts": 17608.6,
+            "PF": 1.189,
+            "win_pct": 39.36,
+            "mdd_pts": 17520.8,
+            "avg_hold": 119.6
+          },
+          "1.2": {
+            "N": 249,
+            "gross_pts": 37528.6,
+            "net_pts": 7648.6,
+            "PF": 1.077,
+            "win_pct": 36.55,
+            "mdd_pts": 20880.8,
+            "avg_hold": 119.6
+          },
+          "1.6": {
+            "N": 249,
+            "gross_pts": 37528.6,
+            "net_pts": -2311.4,
+            "PF": 0.978,
+            "win_pct": 34.14,
+            "mdd_pts": 24240.8,
+            "avg_hold": 119.6
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 571,
+            "gross_pts": 22273.1,
+            "net_pts": -23406.9,
+            "PF": 0.851,
+            "win_pct": 30.47,
+            "mdd_pts": 37567.1,
+            "avg_hold": 85.1
+          },
+          "1.2": {
+            "N": 571,
+            "gross_pts": 22273.1,
+            "net_pts": -46246.9,
+            "PF": 0.734,
+            "win_pct": 23.12,
+            "mdd_pts": 53167.1,
+            "avg_hold": 85.1
+          },
+          "1.6": {
+            "N": 571,
+            "gross_pts": 22273.1,
+            "net_pts": -69086.9,
+            "PF": 0.641,
+            "win_pct": 17.69,
+            "mdd_pts": 75856.6,
+            "avg_hold": 85.1
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 60,
+            "gross_pts": -10736,
+            "net_pts": -15536,
+            "PF": 0.521,
+            "win_pct": 35,
+            "mdd_pts": 17403.8,
+            "avg_hold": 154
+          },
+          "1.2": {
+            "N": 60,
+            "gross_pts": -10736,
+            "net_pts": -17936,
+            "PF": 0.473,
+            "win_pct": 35,
+            "mdd_pts": 19763.8,
+            "avg_hold": 154
+          },
+          "1.6": {
+            "N": 60,
+            "gross_pts": -10736,
+            "net_pts": -20336,
+            "PF": 0.428,
+            "win_pct": 35,
+            "mdd_pts": 22123.8,
+            "avg_hold": 154
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 441,
+            "gross_pts": 31847.7,
+            "net_pts": -3432.3,
+            "PF": 0.967,
+            "win_pct": 33.11,
+            "mdd_pts": 21458.2,
+            "avg_hold": 92.5
+          },
+          "1.2": {
+            "N": 441,
+            "gross_pts": 31847.7,
+            "net_pts": -21072.3,
+            "PF": 0.82,
+            "win_pct": 24.94,
+            "mdd_pts": 33836.4,
+            "avg_hold": 92.5
+          },
+          "1.6": {
+            "N": 441,
+            "gross_pts": 31847.7,
+            "net_pts": -38712.3,
+            "PF": 0.704,
+            "win_pct": 19.95,
+            "mdd_pts": 48061.7,
+            "avg_hold": 92.5
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 547,
+            "gross_pts": 35791.8,
+            "net_pts": -7968.2,
+            "PF": 0.939,
+            "win_pct": 33.82,
+            "mdd_pts": 35602.3,
+            "avg_hold": 84.5
+          },
+          "1.2": {
+            "N": 547,
+            "gross_pts": 35791.8,
+            "net_pts": -29848.2,
+            "PF": 0.796,
+            "win_pct": 25.41,
+            "mdd_pts": 50962.3,
+            "avg_hold": 84.5
+          },
+          "1.6": {
+            "N": 547,
+            "gross_pts": 35791.8,
+            "net_pts": -51728.2,
+            "PF": 0.683,
+            "win_pct": 19.93,
+            "mdd_pts": 68056.9,
+            "avg_hold": 84.5
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 569,
+            "gross_pts": 32852.3,
+            "net_pts": -12667.7,
+            "PF": 0.911,
+            "win_pct": 33.92,
+            "mdd_pts": 39350.2,
+            "avg_hold": 88
+          },
+          "1.2": {
+            "N": 569,
+            "gross_pts": 32852.3,
+            "net_pts": -35427.7,
+            "PF": 0.777,
+            "win_pct": 25.83,
+            "mdd_pts": 57910.2,
+            "avg_hold": 88
+          },
+          "1.6": {
+            "N": 569,
+            "gross_pts": 32852.3,
+            "net_pts": -58187.7,
+            "PF": 0.67,
+            "win_pct": 18.45,
+            "mdd_pts": 76470.2,
+            "avg_hold": 88
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M6",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 278,
+            "gross_pts": 10520.4,
+            "net_pts": -11719.6,
+            "PF": 0.887,
+            "win_pct": 43.53,
+            "mdd_pts": 25833.7,
+            "avg_hold": 86.4
+          },
+          "1.2": {
+            "N": 278,
+            "gross_pts": 10520.4,
+            "net_pts": -22839.6,
+            "PF": 0.792,
+            "win_pct": 42.45,
+            "mdd_pts": 31433.7,
+            "avg_hold": 86.4
+          },
+          "1.6": {
+            "N": 278,
+            "gross_pts": 10520.4,
+            "net_pts": -33959.6,
+            "PF": 0.709,
+            "win_pct": 36.69,
+            "mdd_pts": 40501.1,
+            "avg_hold": 86.4
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 22,
+            "gross_pts": -10722.2,
+            "net_pts": -12482.2,
+            "PF": 0.471,
+            "win_pct": 36.36,
+            "mdd_pts": 16296.8,
+            "avg_hold": 160.3
+          },
+          "1.2": {
+            "N": 22,
+            "gross_pts": -10722.2,
+            "net_pts": -13362.2,
+            "PF": 0.447,
+            "win_pct": 36.36,
+            "mdd_pts": 16936.8,
+            "avg_hold": 160.3
+          },
+          "1.6": {
+            "N": 22,
+            "gross_pts": -10722.2,
+            "net_pts": -14242.2,
+            "PF": 0.424,
+            "win_pct": 36.36,
+            "mdd_pts": 17576.8,
+            "avg_hold": 160.3
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 243,
+            "gross_pts": 16038.4,
+            "net_pts": -3401.6,
+            "PF": 0.953,
+            "win_pct": 41.98,
+            "mdd_pts": 21126.1,
+            "avg_hold": 78.5
+          },
+          "1.2": {
+            "N": 243,
+            "gross_pts": 16038.4,
+            "net_pts": -13121.6,
+            "PF": 0.831,
+            "win_pct": 37.45,
+            "mdd_pts": 27301.6,
+            "avg_hold": 78.5
+          },
+          "1.6": {
+            "N": 243,
+            "gross_pts": 16038.4,
+            "net_pts": -22841.6,
+            "PF": 0.729,
+            "win_pct": 32.51,
+            "mdd_pts": 34301.6,
+            "avg_hold": 78.5
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 311,
+            "gross_pts": -22920.1,
+            "net_pts": -47800.1,
+            "PF": 0.587,
+            "win_pct": 39.23,
+            "mdd_pts": 49182.5,
+            "avg_hold": 70
+          },
+          "1.2": {
+            "N": 311,
+            "gross_pts": -22920.1,
+            "net_pts": -60240.1,
+            "PF": 0.512,
+            "win_pct": 36.66,
+            "mdd_pts": 61582.5,
+            "avg_hold": 70
+          },
+          "1.6": {
+            "N": 311,
+            "gross_pts": -22920.1,
+            "net_pts": -72680.1,
+            "PF": 0.448,
+            "win_pct": 31.51,
+            "mdd_pts": 73982.5,
+            "avg_hold": 70
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 247,
+            "gross_pts": 25887.9,
+            "net_pts": 6127.9,
+            "PF": 1.057,
+            "win_pct": 38.06,
+            "mdd_pts": 22318.7,
+            "avg_hold": 97.5
+          },
+          "1.2": {
+            "N": 247,
+            "gross_pts": 25887.9,
+            "net_pts": -3752.1,
+            "PF": 0.967,
+            "win_pct": 36.44,
+            "mdd_pts": 24391.6,
+            "avg_hold": 97.5
+          },
+          "1.6": {
+            "N": 247,
+            "gross_pts": 25887.9,
+            "net_pts": -13632.1,
+            "PF": 0.886,
+            "win_pct": 35.22,
+            "mdd_pts": 28391.6,
+            "avg_hold": 97.5
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 410,
+            "gross_pts": 33421.3,
+            "net_pts": 621.3,
+            "PF": 1.005,
+            "win_pct": 37.56,
+            "mdd_pts": 31798.3,
+            "avg_hold": 69.4
+          },
+          "1.2": {
+            "N": 410,
+            "gross_pts": 33421.3,
+            "net_pts": -15778.7,
+            "PF": 0.886,
+            "win_pct": 33.66,
+            "mdd_pts": 43638.3,
+            "avg_hold": 69.4
+          },
+          "1.6": {
+            "N": 410,
+            "gross_pts": 33421.3,
+            "net_pts": -32178.7,
+            "PF": 0.786,
+            "win_pct": 27.32,
+            "mdd_pts": 56068.1,
+            "avg_hold": 69.4
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 36,
+            "gross_pts": -4283.3,
+            "net_pts": -7163.3,
+            "PF": 0.721,
+            "win_pct": 27.78,
+            "mdd_pts": 16174.7,
+            "avg_hold": 111.6
+          },
+          "1.2": {
+            "N": 36,
+            "gross_pts": -4283.3,
+            "net_pts": -8603.3,
+            "PF": 0.678,
+            "win_pct": 27.78,
+            "mdd_pts": 17054.7,
+            "avg_hold": 111.6
+          },
+          "1.6": {
+            "N": 36,
+            "gross_pts": -4283.3,
+            "net_pts": -10043.3,
+            "PF": 0.638,
+            "win_pct": 27.78,
+            "mdd_pts": 17934.7,
+            "avg_hold": 111.6
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 319,
+            "gross_pts": 29042.8,
+            "net_pts": 3522.8,
+            "PF": 1.043,
+            "win_pct": 39.81,
+            "mdd_pts": 17995.8,
+            "avg_hold": 73.1
+          },
+          "1.2": {
+            "N": 319,
+            "gross_pts": 29042.8,
+            "net_pts": -9237.2,
+            "PF": 0.896,
+            "win_pct": 32.6,
+            "mdd_pts": 26875.8,
+            "avg_hold": 73.1
+          },
+          "1.6": {
+            "N": 319,
+            "gross_pts": 29042.8,
+            "net_pts": -21997.2,
+            "PF": 0.776,
+            "win_pct": 26.96,
+            "mdd_pts": 35755.8,
+            "avg_hold": 73.1
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 379,
+            "gross_pts": 34234,
+            "net_pts": 3914,
+            "PF": 1.034,
+            "win_pct": 39.84,
+            "mdd_pts": 21826.1,
+            "avg_hold": 69.1
+          },
+          "1.2": {
+            "N": 379,
+            "gross_pts": 34234,
+            "net_pts": -11246,
+            "PF": 0.909,
+            "win_pct": 34.83,
+            "mdd_pts": 25449,
+            "avg_hold": 69.1
+          },
+          "1.6": {
+            "N": 379,
+            "gross_pts": 34234,
+            "net_pts": -26406,
+            "PF": 0.802,
+            "win_pct": 29.02,
+            "mdd_pts": 31373.2,
+            "avg_hold": 69.1
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 452,
+            "gross_pts": 22838.2,
+            "net_pts": -13321.8,
+            "PF": 0.911,
+            "win_pct": 35.4,
+            "mdd_pts": 50121.6,
+            "avg_hold": 63.1
+          },
+          "1.2": {
+            "N": 452,
+            "gross_pts": 22838.2,
+            "net_pts": -31401.8,
+            "PF": 0.805,
+            "win_pct": 29.87,
+            "mdd_pts": 62944.2,
+            "avg_hold": 63.1
+          },
+          "1.6": {
+            "N": 452,
+            "gross_pts": 22838.2,
+            "net_pts": -49481.8,
+            "PF": 0.716,
+            "win_pct": 25.22,
+            "mdd_pts": 77503.9,
+            "avg_hold": 63.1
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M10",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 242,
+            "gross_pts": 691.4,
+            "net_pts": -18668.6,
+            "PF": 0.833,
+            "win_pct": 45.87,
+            "mdd_pts": 30352.8,
+            "avg_hold": 53
+          },
+          "1.2": {
+            "N": 242,
+            "gross_pts": 691.4,
+            "net_pts": -28348.6,
+            "PF": 0.757,
+            "win_pct": 45.04,
+            "mdd_pts": 35792.8,
+            "avg_hold": 53
+          },
+          "1.6": {
+            "N": 242,
+            "gross_pts": 691.4,
+            "net_pts": -38028.6,
+            "PF": 0.689,
+            "win_pct": 42.98,
+            "mdd_pts": 41232.8,
+            "avg_hold": 53
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 14,
+            "gross_pts": 7411,
+            "net_pts": 6291,
+            "PF": 1.326,
+            "win_pct": 28.57,
+            "mdd_pts": 10450.8,
+            "avg_hold": 183.8
+          },
+          "1.2": {
+            "N": 14,
+            "gross_pts": 7411,
+            "net_pts": 5731,
+            "PF": 1.291,
+            "win_pct": 28.57,
+            "mdd_pts": 10850.8,
+            "avg_hold": 183.8
+          },
+          "1.6": {
+            "N": 14,
+            "gross_pts": 7411,
+            "net_pts": 5171,
+            "PF": 1.257,
+            "win_pct": 28.57,
+            "mdd_pts": 11250.8,
+            "avg_hold": 183.8
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 213,
+            "gross_pts": -29295.6,
+            "net_pts": -46335.6,
+            "PF": 0.49,
+            "win_pct": 41.78,
+            "mdd_pts": 50214.1,
+            "avg_hold": 45.4
+          },
+          "1.2": {
+            "N": 213,
+            "gross_pts": -29295.6,
+            "net_pts": -54855.6,
+            "PF": 0.428,
+            "win_pct": 40.38,
+            "mdd_pts": 58654.1,
+            "avg_hold": 45.4
+          },
+          "1.6": {
+            "N": 213,
+            "gross_pts": -29295.6,
+            "net_pts": -63375.6,
+            "PF": 0.373,
+            "win_pct": 35.68,
+            "mdd_pts": 67094.1,
+            "avg_hold": 45.4
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 235,
+            "gross_pts": -28041.4,
+            "net_pts": -46841.4,
+            "PF": 0.595,
+            "win_pct": 35.74,
+            "mdd_pts": 47140.5,
+            "avg_hold": 51.2
+          },
+          "1.2": {
+            "N": 235,
+            "gross_pts": -28041.4,
+            "net_pts": -56241.4,
+            "PF": 0.538,
+            "win_pct": 35.74,
+            "mdd_pts": 56500.5,
+            "avg_hold": 51.2
+          },
+          "1.6": {
+            "N": 235,
+            "gross_pts": -28041.4,
+            "net_pts": -65641.4,
+            "PF": 0.487,
+            "win_pct": 34.89,
+            "mdd_pts": 65860.5,
+            "avg_hold": 51.2
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 219,
+            "gross_pts": 769.2,
+            "net_pts": -16750.8,
+            "PF": 0.851,
+            "win_pct": 34.25,
+            "mdd_pts": 22961.1,
+            "avg_hold": 64.4
+          },
+          "1.2": {
+            "N": 219,
+            "gross_pts": 769.2,
+            "net_pts": -25510.8,
+            "PF": 0.784,
+            "win_pct": 33.33,
+            "mdd_pts": 27523.8,
+            "avg_hold": 64.4
+          },
+          "1.6": {
+            "N": 219,
+            "gross_pts": 769.2,
+            "net_pts": -34270.8,
+            "PF": 0.724,
+            "win_pct": 31.51,
+            "mdd_pts": 35131.1,
+            "avg_hold": 64.4
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 365,
+            "gross_pts": 17470.7,
+            "net_pts": -11729.3,
+            "PF": 0.914,
+            "win_pct": 36.44,
+            "mdd_pts": 31223.9,
+            "avg_hold": 63.8
+          },
+          "1.2": {
+            "N": 365,
+            "gross_pts": 17470.7,
+            "net_pts": -26329.3,
+            "PF": 0.82,
+            "win_pct": 31.23,
+            "mdd_pts": 40757.3,
+            "avg_hold": 63.8
+          },
+          "1.6": {
+            "N": 365,
+            "gross_pts": 17470.7,
+            "net_pts": -40929.3,
+            "PF": 0.738,
+            "win_pct": 26.85,
+            "mdd_pts": 50699.7,
+            "avg_hold": 63.8
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 28,
+            "gross_pts": -13158,
+            "net_pts": -15398,
+            "PF": 0.231,
+            "win_pct": 32.14,
+            "mdd_pts": 16279.3,
+            "avg_hold": 61.5
+          },
+          "1.2": {
+            "N": 28,
+            "gross_pts": -13158,
+            "net_pts": -16518,
+            "PF": 0.205,
+            "win_pct": 32.14,
+            "mdd_pts": 17359.3,
+            "avg_hold": 61.5
+          },
+          "1.6": {
+            "N": 28,
+            "gross_pts": -13158,
+            "net_pts": -17638,
+            "PF": 0.181,
+            "win_pct": 32.14,
+            "mdd_pts": 18439.3,
+            "avg_hold": 61.5
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 279,
+            "gross_pts": 36816.1,
+            "net_pts": 14496.1,
+            "PF": 1.19,
+            "win_pct": 41.58,
+            "mdd_pts": 15530.3,
+            "avg_hold": 65.9
+          },
+          "1.2": {
+            "N": 279,
+            "gross_pts": 36816.1,
+            "net_pts": 3336.1,
+            "PF": 1.04,
+            "win_pct": 36.92,
+            "mdd_pts": 22412.1,
+            "avg_hold": 65.9
+          },
+          "1.6": {
+            "N": 279,
+            "gross_pts": 36816.1,
+            "net_pts": -7823.9,
+            "PF": 0.914,
+            "win_pct": 32.26,
+            "mdd_pts": 29972.1,
+            "avg_hold": 65.9
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 346,
+            "gross_pts": 41373.9,
+            "net_pts": 13693.9,
+            "PF": 1.126,
+            "win_pct": 42.2,
+            "mdd_pts": 13384.9,
+            "avg_hold": 63.9
+          },
+          "1.2": {
+            "N": 346,
+            "gross_pts": 41373.9,
+            "net_pts": -146.1,
+            "PF": 0.999,
+            "win_pct": 36.99,
+            "mdd_pts": 19010.4,
+            "avg_hold": 63.9
+          },
+          "1.6": {
+            "N": 346,
+            "gross_pts": 41373.9,
+            "net_pts": -13986.1,
+            "PF": 0.889,
+            "win_pct": 29.77,
+            "mdd_pts": 26754.6,
+            "avg_hold": 63.9
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 401,
+            "gross_pts": 28043.5,
+            "net_pts": -4036.5,
+            "PF": 0.971,
+            "win_pct": 35.66,
+            "mdd_pts": 41746.4,
+            "avg_hold": 58.2
+          },
+          "1.2": {
+            "N": 401,
+            "gross_pts": 28043.5,
+            "net_pts": -20076.5,
+            "PF": 0.864,
+            "win_pct": 31.42,
+            "mdd_pts": 54802.6,
+            "avg_hold": 58.2
+          },
+          "1.6": {
+            "N": 401,
+            "gross_pts": 28043.5,
+            "net_pts": -36116.5,
+            "PF": 0.773,
+            "win_pct": 26.68,
+            "mdd_pts": 68602.6,
+            "avg_hold": 58.2
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M12",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 217,
+            "gross_pts": 10128.9,
+            "net_pts": -7231.1,
+            "PF": 0.928,
+            "win_pct": 44.7,
+            "mdd_pts": 18762.8,
+            "avg_hold": 49
+          },
+          "1.2": {
+            "N": 217,
+            "gross_pts": 10128.9,
+            "net_pts": -15911.1,
+            "PF": 0.848,
+            "win_pct": 44.24,
+            "mdd_pts": 21322.8,
+            "avg_hold": 49
+          },
+          "1.6": {
+            "N": 217,
+            "gross_pts": 10128.9,
+            "net_pts": -24591.1,
+            "PF": 0.775,
+            "win_pct": 43.32,
+            "mdd_pts": 24971.3,
+            "avg_hold": 49
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 17,
+            "gross_pts": -17443.4,
+            "net_pts": -18803.4,
+            "PF": 0.254,
+            "win_pct": 17.65,
+            "mdd_pts": 18803.4,
+            "avg_hold": 77.2
+          },
+          "1.2": {
+            "N": 17,
+            "gross_pts": -17443.4,
+            "net_pts": -19483.4,
+            "PF": 0.243,
+            "win_pct": 17.65,
+            "mdd_pts": 19483.4,
+            "avg_hold": 77.2
+          },
+          "1.6": {
+            "N": 17,
+            "gross_pts": -17443.4,
+            "net_pts": -20163.4,
+            "PF": 0.234,
+            "win_pct": 17.65,
+            "mdd_pts": 20163.4,
+            "avg_hold": 77.2
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 159,
+            "gross_pts": -15836.8,
+            "net_pts": -28556.8,
+            "PF": 0.591,
+            "win_pct": 46.54,
+            "mdd_pts": 33113.1,
+            "avg_hold": 48.7
+          },
+          "1.2": {
+            "N": 159,
+            "gross_pts": -15836.8,
+            "net_pts": -34916.8,
+            "PF": 0.524,
+            "win_pct": 45.28,
+            "mdd_pts": 38074.8,
+            "avg_hold": 48.7
+          },
+          "1.6": {
+            "N": 159,
+            "gross_pts": -15836.8,
+            "net_pts": -41276.8,
+            "PF": 0.462,
+            "win_pct": 44.65,
+            "mdd_pts": 43637.6,
+            "avg_hold": 48.7
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 212,
+            "gross_pts": -33862.5,
+            "net_pts": -50822.5,
+            "PF": 0.536,
+            "win_pct": 37.26,
+            "mdd_pts": 52586,
+            "avg_hold": 46
+          },
+          "1.2": {
+            "N": 212,
+            "gross_pts": -33862.5,
+            "net_pts": -59302.5,
+            "PF": 0.484,
+            "win_pct": 36.79,
+            "mdd_pts": 60786,
+            "avg_hold": 46
+          },
+          "1.6": {
+            "N": 212,
+            "gross_pts": -33862.5,
+            "net_pts": -67782.5,
+            "PF": 0.437,
+            "win_pct": 35.85,
+            "mdd_pts": 68986,
+            "avg_hold": 46
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 168,
+            "gross_pts": 25084.4,
+            "net_pts": 11644.4,
+            "PF": 1.122,
+            "win_pct": 43.45,
+            "mdd_pts": 24579,
+            "avg_hold": 70.3
+          },
+          "1.2": {
+            "N": 168,
+            "gross_pts": 25084.4,
+            "net_pts": 4924.4,
+            "PF": 1.05,
+            "win_pct": 43.45,
+            "mdd_pts": 26539,
+            "avg_hold": 70.3
+          },
+          "1.6": {
+            "N": 168,
+            "gross_pts": 25084.4,
+            "net_pts": -1795.6,
+            "PF": 0.983,
+            "win_pct": 41.67,
+            "mdd_pts": 28499,
+            "avg_hold": 70.3
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": 14839.4,
+            "PF": 1.138,
+            "win_pct": 42.5,
+            "mdd_pts": 16345.8,
+            "avg_hold": 55.3
+          },
+          "1.2": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": 2039.4,
+            "PF": 1.018,
+            "win_pct": 39.06,
+            "mdd_pts": 17905.8,
+            "avg_hold": 55.3
+          },
+          "1.6": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": -10760.6,
+            "PF": 0.913,
+            "win_pct": 34.06,
+            "mdd_pts": 23945.6,
+            "avg_hold": 55.3
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 23,
+            "gross_pts": 3754.2,
+            "net_pts": 1914.2,
+            "PF": 1.121,
+            "win_pct": 47.83,
+            "mdd_pts": 6955.3,
+            "avg_hold": 150.1
+          },
+          "1.2": {
+            "N": 23,
+            "gross_pts": 3754.2,
+            "net_pts": 994.2,
+            "PF": 1.061,
+            "win_pct": 47.83,
+            "mdd_pts": 7235.3,
+            "avg_hold": 150.1
+          },
+          "1.6": {
+            "N": 23,
+            "gross_pts": 3754.2,
+            "net_pts": 74.2,
+            "PF": 1.004,
+            "win_pct": 47.83,
+            "mdd_pts": 7515.3,
+            "avg_hold": 150.1
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 295,
+            "gross_pts": 3120.6,
+            "net_pts": -20479.4,
+            "PF": 0.798,
+            "win_pct": 36.27,
+            "mdd_pts": 31747.9,
+            "avg_hold": 43.3
+          },
+          "1.2": {
+            "N": 295,
+            "gross_pts": 3120.6,
+            "net_pts": -32279.4,
+            "PF": 0.704,
+            "win_pct": 31.86,
+            "mdd_pts": 42554.4,
+            "avg_hold": 43.3
+          },
+          "1.6": {
+            "N": 295,
+            "gross_pts": 3120.6,
+            "net_pts": -44079.4,
+            "PF": 0.625,
+            "win_pct": 27.46,
+            "mdd_pts": 53394.4,
+            "avg_hold": 43.3
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 307,
+            "gross_pts": 14010,
+            "net_pts": -10550,
+            "PF": 0.911,
+            "win_pct": 35.5,
+            "mdd_pts": 28906.3,
+            "avg_hold": 53.7
+          },
+          "1.2": {
+            "N": 307,
+            "gross_pts": 14010,
+            "net_pts": -22830,
+            "PF": 0.819,
+            "win_pct": 31.6,
+            "mdd_pts": 37564.6,
+            "avg_hold": 53.7
+          },
+          "1.6": {
+            "N": 307,
+            "gross_pts": 14010,
+            "net_pts": -35110,
+            "PF": 0.74,
+            "win_pct": 28.34,
+            "mdd_pts": 46324.6,
+            "avg_hold": 53.7
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 319,
+            "gross_pts": 25672.6,
+            "net_pts": 152.6,
+            "PF": 1.001,
+            "win_pct": 36.36,
+            "mdd_pts": 18505.4,
+            "avg_hold": 57.3
+          },
+          "1.2": {
+            "N": 319,
+            "gross_pts": 25672.6,
+            "net_pts": -12607.4,
+            "PF": 0.909,
+            "win_pct": 33.23,
+            "mdd_pts": 23158.1,
+            "avg_hold": 57.3
+          },
+          "1.6": {
+            "N": 319,
+            "gross_pts": 25672.6,
+            "net_pts": -25367.4,
+            "PF": 0.828,
+            "win_pct": 31.03,
+            "mdd_pts": 32812.8,
+            "avg_hold": 57.3
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M15",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": 6527.2,
+            "PF": 1.082,
+            "win_pct": 43.59,
+            "mdd_pts": 21230.4,
+            "avg_hold": 55.4
+          },
+          "1.2": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": 287.2,
+            "PF": 1.003,
+            "win_pct": 43.59,
+            "mdd_pts": 21830.4,
+            "avg_hold": 55.4
+          },
+          "1.6": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": -5952.8,
+            "PF": 0.931,
+            "win_pct": 41.67,
+            "mdd_pts": 25036.1,
+            "avg_hold": 55.4
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 12,
+            "gross_pts": 1057.5,
+            "net_pts": 97.5,
+            "PF": 1.006,
+            "win_pct": 41.67,
+            "mdd_pts": 7488.9,
+            "avg_hold": 119.3
+          },
+          "1.2": {
+            "N": 12,
+            "gross_pts": 1057.5,
+            "net_pts": -382.5,
+            "PF": 0.976,
+            "win_pct": 41.67,
+            "mdd_pts": 7688.9,
+            "avg_hold": 119.3
+          },
+          "1.6": {
+            "N": 12,
+            "gross_pts": 1057.5,
+            "net_pts": -862.5,
+            "PF": 0.948,
+            "win_pct": 41.67,
+            "mdd_pts": 7888.9,
+            "avg_hold": 119.3
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 146,
+            "gross_pts": 10836.4,
+            "net_pts": -843.6,
+            "PF": 0.987,
+            "win_pct": 42.47,
+            "mdd_pts": 18174.1,
+            "avg_hold": 45.8
+          },
+          "1.2": {
+            "N": 146,
+            "gross_pts": 10836.4,
+            "net_pts": -6683.6,
+            "PF": 0.901,
+            "win_pct": 41.78,
+            "mdd_pts": 21574.1,
+            "avg_hold": 45.8
+          },
+          "1.6": {
+            "N": 146,
+            "gross_pts": 10836.4,
+            "net_pts": -12523.6,
+            "PF": 0.824,
+            "win_pct": 41.78,
+            "mdd_pts": 24974.1,
+            "avg_hold": 45.8
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 178,
+            "gross_pts": 1047.6,
+            "net_pts": -13192.4,
+            "PF": 0.847,
+            "win_pct": 39.33,
+            "mdd_pts": 28551.3,
+            "avg_hold": 44.7
+          },
+          "1.2": {
+            "N": 178,
+            "gross_pts": 1047.6,
+            "net_pts": -20312.4,
+            "PF": 0.776,
+            "win_pct": 39.33,
+            "mdd_pts": 34431.3,
+            "avg_hold": 44.7
+          },
+          "1.6": {
+            "N": 178,
+            "gross_pts": 1047.6,
+            "net_pts": -27432.4,
+            "PF": 0.711,
+            "win_pct": 39.33,
+            "mdd_pts": 40311.3,
+            "avg_hold": 44.7
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 154,
+            "gross_pts": 29822.2,
+            "net_pts": 17502.2,
+            "PF": 1.225,
+            "win_pct": 40.26,
+            "mdd_pts": 12159.8,
+            "avg_hold": 61.1
+          },
+          "1.2": {
+            "N": 154,
+            "gross_pts": 29822.2,
+            "net_pts": 11342.2,
+            "PF": 1.139,
+            "win_pct": 39.61,
+            "mdd_pts": 14119.8,
+            "avg_hold": 61.1
+          },
+          "1.6": {
+            "N": 154,
+            "gross_pts": 29822.2,
+            "net_pts": 5182.2,
+            "PF": 1.061,
+            "win_pct": 38.31,
+            "mdd_pts": 16079.8,
+            "avg_hold": 61.1
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 276,
+            "gross_pts": 17065.9,
+            "net_pts": -5014.1,
+            "PF": 0.957,
+            "win_pct": 38.77,
+            "mdd_pts": 18043.8,
+            "avg_hold": 46.6
+          },
+          "1.2": {
+            "N": 276,
+            "gross_pts": 17065.9,
+            "net_pts": -16054.1,
+            "PF": 0.871,
+            "win_pct": 36.23,
+            "mdd_pts": 21262,
+            "avg_hold": 46.6
+          },
+          "1.6": {
+            "N": 276,
+            "gross_pts": 17065.9,
+            "net_pts": -27094.1,
+            "PF": 0.794,
+            "win_pct": 34.42,
+            "mdd_pts": 28980.8,
+            "avg_hold": 46.6
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 21,
+            "gross_pts": -5068,
+            "net_pts": -6748,
+            "PF": 0.646,
+            "win_pct": 42.86,
+            "mdd_pts": 11004.5,
+            "avg_hold": 98
+          },
+          "1.2": {
+            "N": 21,
+            "gross_pts": -5068,
+            "net_pts": -7588,
+            "PF": 0.611,
+            "win_pct": 42.86,
+            "mdd_pts": 11324.5,
+            "avg_hold": 98
+          },
+          "1.6": {
+            "N": 21,
+            "gross_pts": -5068,
+            "net_pts": -8428,
+            "PF": 0.579,
+            "win_pct": 42.86,
+            "mdd_pts": 11644.5,
+            "avg_hold": 98
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 216,
+            "gross_pts": 35734.4,
+            "net_pts": 18454.4,
+            "PF": 1.249,
+            "win_pct": 38.89,
+            "mdd_pts": 17092.2,
+            "avg_hold": 43.5
+          },
+          "1.2": {
+            "N": 216,
+            "gross_pts": 35734.4,
+            "net_pts": 9814.4,
+            "PF": 1.123,
+            "win_pct": 33.8,
+            "mdd_pts": 20892.2,
+            "avg_hold": 43.5
+          },
+          "1.6": {
+            "N": 216,
+            "gross_pts": 35734.4,
+            "net_pts": 1174.4,
+            "PF": 1.014,
+            "win_pct": 28.24,
+            "mdd_pts": 25562.2,
+            "avg_hold": 43.5
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 263,
+            "gross_pts": 23639.9,
+            "net_pts": 2599.9,
+            "PF": 1.024,
+            "win_pct": 38.02,
+            "mdd_pts": 19910.3,
+            "avg_hold": 44
+          },
+          "1.2": {
+            "N": 263,
+            "gross_pts": 23639.9,
+            "net_pts": -7920.1,
+            "PF": 0.932,
+            "win_pct": 33.46,
+            "mdd_pts": 25430.3,
+            "avg_hold": 44
+          },
+          "1.6": {
+            "N": 263,
+            "gross_pts": 23639.9,
+            "net_pts": -18440.1,
+            "PF": 0.85,
+            "win_pct": 29.66,
+            "mdd_pts": 31963,
+            "avg_hold": 44
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 254,
+            "gross_pts": 47597.8,
+            "net_pts": 27277.8,
+            "PF": 1.261,
+            "win_pct": 42.91,
+            "mdd_pts": 15180.4,
+            "avg_hold": 53.2
+          },
+          "1.2": {
+            "N": 254,
+            "gross_pts": 47597.8,
+            "net_pts": 17117.8,
+            "PF": 1.155,
+            "win_pct": 39.76,
+            "mdd_pts": 17860.4,
+            "avg_hold": 53.2
+          },
+          "1.6": {
+            "N": 254,
+            "gross_pts": 47597.8,
+            "net_pts": 6957.8,
+            "PF": 1.059,
+            "win_pct": 35.43,
+            "mdd_pts": 21404.8,
+            "avg_hold": 53.2
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M20",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 136,
+            "gross_pts": 16637.7,
+            "net_pts": 5757.7,
+            "PF": 1.072,
+            "win_pct": 43.38,
+            "mdd_pts": 18472.3,
+            "avg_hold": 44.8
+          },
+          "1.2": {
+            "N": 136,
+            "gross_pts": 16637.7,
+            "net_pts": 317.7,
+            "PF": 1.004,
+            "win_pct": 43.38,
+            "mdd_pts": 18912.3,
+            "avg_hold": 44.8
+          },
+          "1.6": {
+            "N": 136,
+            "gross_pts": 16637.7,
+            "net_pts": -5122.3,
+            "PF": 0.941,
+            "win_pct": 43.38,
+            "mdd_pts": 19352.3,
+            "avg_hold": 44.8
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 7,
+            "gross_pts": 10051.6,
+            "net_pts": 9491.6,
+            "PF": 1.673,
+            "win_pct": 28.57,
+            "mdd_pts": 10058.8,
+            "avg_hold": 88.9
+          },
+          "1.2": {
+            "N": 7,
+            "gross_pts": 10051.6,
+            "net_pts": 9211.6,
+            "PF": 1.644,
+            "win_pct": 28.57,
+            "mdd_pts": 10178.8,
+            "avg_hold": 88.9
+          },
+          "1.6": {
+            "N": 7,
+            "gross_pts": 10051.6,
+            "net_pts": 8931.6,
+            "PF": 1.616,
+            "win_pct": 28.57,
+            "mdd_pts": 10298.8,
+            "avg_hold": 88.9
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 107,
+            "gross_pts": 3085.5,
+            "net_pts": -5474.5,
+            "PF": 0.905,
+            "win_pct": 40.19,
+            "mdd_pts": 19817.9,
+            "avg_hold": 37.3
+          },
+          "1.2": {
+            "N": 107,
+            "gross_pts": 3085.5,
+            "net_pts": -9754.5,
+            "PF": 0.837,
+            "win_pct": 40.19,
+            "mdd_pts": 22019.9,
+            "avg_hold": 37.3
+          },
+          "1.6": {
+            "N": 107,
+            "gross_pts": 3085.5,
+            "net_pts": -14034.5,
+            "PF": 0.776,
+            "win_pct": 37.38,
+            "mdd_pts": 24299.9,
+            "avg_hold": 37.3
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 136,
+            "gross_pts": 3485.2,
+            "net_pts": -7394.8,
+            "PF": 0.896,
+            "win_pct": 41.91,
+            "mdd_pts": 18025.5,
+            "avg_hold": 43.4
+          },
+          "1.2": {
+            "N": 136,
+            "gross_pts": 3485.2,
+            "net_pts": -12834.8,
+            "PF": 0.827,
+            "win_pct": 41.91,
+            "mdd_pts": 21105.5,
+            "avg_hold": 43.4
+          },
+          "1.6": {
+            "N": 136,
+            "gross_pts": 3485.2,
+            "net_pts": -18274.8,
+            "PF": 0.763,
+            "win_pct": 41.91,
+            "mdd_pts": 24229.6,
+            "avg_hold": 43.4
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 130,
+            "gross_pts": 32720.3,
+            "net_pts": 22320.3,
+            "PF": 1.272,
+            "win_pct": 38.46,
+            "mdd_pts": 14593.1,
+            "avg_hold": 49.5
+          },
+          "1.2": {
+            "N": 130,
+            "gross_pts": 32720.3,
+            "net_pts": 17120.3,
+            "PF": 1.2,
+            "win_pct": 38.46,
+            "mdd_pts": 15651.6,
+            "avg_hold": 49.5
+          },
+          "1.6": {
+            "N": 130,
+            "gross_pts": 32720.3,
+            "net_pts": 11920.3,
+            "PF": 1.135,
+            "win_pct": 37.69,
+            "mdd_pts": 17091.6,
+            "avg_hold": 49.5
+          }
+        }
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -9214.4,
+            "PF": 0.917,
+            "win_pct": 39.25,
+            "mdd_pts": 19391.1,
+            "avg_hold": 35.2
+          },
+          "1.2": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -17774.4,
+            "PF": 0.848,
+            "win_pct": 38.79,
+            "mdd_pts": 25511.1,
+            "avg_hold": 35.2
+          },
+          "1.6": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -26334.4,
+            "PF": 0.784,
+            "win_pct": 35.98,
+            "mdd_pts": 31806.2,
+            "avg_hold": 35.2
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 6,
+            "gross_pts": -7391.5,
+            "net_pts": -7871.5,
+            "PF": 0.197,
+            "win_pct": 33.33,
+            "mdd_pts": 9797.9,
+            "avg_hold": 87
+          },
+          "1.2": {
+            "N": 6,
+            "gross_pts": -7391.5,
+            "net_pts": -8111.5,
+            "PF": 0.185,
+            "win_pct": 33.33,
+            "mdd_pts": 9957.9,
+            "avg_hold": 87
+          },
+          "1.6": {
+            "N": 6,
+            "gross_pts": -7391.5,
+            "net_pts": -8351.5,
+            "PF": 0.175,
+            "win_pct": 33.33,
+            "mdd_pts": 10117.9,
+            "avg_hold": 87
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 156,
+            "gross_pts": 13074.5,
+            "net_pts": 594.5,
+            "PF": 1.008,
+            "win_pct": 40.38,
+            "mdd_pts": 25784.1,
+            "avg_hold": 35.4
+          },
+          "1.2": {
+            "N": 156,
+            "gross_pts": 13074.5,
+            "net_pts": -5645.5,
+            "PF": 0.929,
+            "win_pct": 37.82,
+            "mdd_pts": 27132.2,
+            "avg_hold": 35.4
+          },
+          "1.6": {
+            "N": 156,
+            "gross_pts": 13074.5,
+            "net_pts": -11885.5,
+            "PF": 0.857,
+            "win_pct": 37.18,
+            "mdd_pts": 29612.2,
+            "avg_hold": 35.4
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 203,
+            "gross_pts": 7337.5,
+            "net_pts": -8902.5,
+            "PF": 0.901,
+            "win_pct": 39.41,
+            "mdd_pts": 22157,
+            "avg_hold": 31.9
+          },
+          "1.2": {
+            "N": 203,
+            "gross_pts": 7337.5,
+            "net_pts": -17022.5,
+            "PF": 0.82,
+            "win_pct": 39.41,
+            "mdd_pts": 26985.8,
+            "avg_hold": 31.9
+          },
+          "1.6": {
+            "N": 203,
+            "gross_pts": 7337.5,
+            "net_pts": -25142.5,
+            "PF": 0.748,
+            "win_pct": 37.44,
+            "mdd_pts": 31853.3,
+            "avg_hold": 31.9
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 244,
+            "gross_pts": 20524.5,
+            "net_pts": 1004.5,
+            "PF": 1.007,
+            "win_pct": 37.7,
+            "mdd_pts": 33691.4,
+            "avg_hold": 33.2
+          },
+          "1.2": {
+            "N": 244,
+            "gross_pts": 20524.5,
+            "net_pts": -8755.5,
+            "PF": 0.94,
+            "win_pct": 36.89,
+            "mdd_pts": 38771.4,
+            "avg_hold": 33.2
+          },
+          "1.6": {
+            "N": 244,
+            "gross_pts": 20524.5,
+            "net_pts": -18515.5,
+            "PF": 0.878,
+            "win_pct": 35.66,
+            "mdd_pts": 44771.6,
+            "avg_hold": 33.2
+          }
+        }
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M30",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 21289.6,
+            "PF": 1.29,
+            "win_pct": 43.81,
+            "mdd_pts": 13847.5,
+            "avg_hold": 37.8
+          },
+          "1.2": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 17089.6,
+            "PF": 1.226,
+            "win_pct": 43.81,
+            "mdd_pts": 15047.5,
+            "avg_hold": 37.8
+          },
+          "1.6": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 12889.6,
+            "PF": 1.165,
+            "win_pct": 43.81,
+            "mdd_pts": 16247.5,
+            "avg_hold": 37.8
+          }
+        },
+        "SUPERTREND_10_3": {
+          "0.8": {
+            "N": 1,
+            "gross_pts": -4139.2,
+            "net_pts": -4219.2,
+            "PF": 0,
+            "win_pct": 0,
+            "mdd_pts": 4219.2,
+            "avg_hold": 45
+          },
+          "1.2": {
+            "N": 1,
+            "gross_pts": -4139.2,
+            "net_pts": -4259.2,
+            "PF": 0,
+            "win_pct": 0,
+            "mdd_pts": 4259.2,
+            "avg_hold": 45
+          },
+          "1.6": {
+            "N": 1,
+            "gross_pts": -4139.2,
+            "net_pts": -4299.2,
+            "PF": 0,
+            "win_pct": 0,
+            "mdd_pts": 4299.2,
+            "avg_hold": 45
+          }
+        },
+        "CCI20_RECLAIM": {
+          "0.8": {
+            "N": 85,
+            "gross_pts": 24119.1,
+            "net_pts": 17319.1,
+            "PF": 1.283,
+            "win_pct": 37.65,
+            "mdd_pts": 14975.4,
+            "avg_hold": 30.9
+          },
+          "1.2": {
+            "N": 85,
+            "gross_pts": 24119.1,
+            "net_pts": 13919.1,
+            "PF": 1.22,
+            "win_pct": 37.65,
+            "mdd_pts": 15775.4,
+            "avg_hold": 30.9
+          },
+          "1.6": {
+            "N": 85,
+            "gross_pts": 24119.1,
+            "net_pts": 10519.1,
+            "PF": 1.161,
+            "win_pct": 37.65,
+            "mdd_pts": 16575.4,
+            "avg_hold": 30.9
+          }
+        },
+        "WILLIAMS_R14_RECLAIM": {
+          "0.8": {
+            "N": 95,
+            "gross_pts": 46520.8,
+            "net_pts": 38920.8,
+            "PF": 1.538,
+            "win_pct": 37.89,
+            "mdd_pts": 18983.8,
+            "avg_hold": 41.9
+          },
+          "1.2": {
+            "N": 95,
+            "gross_pts": 46520.8,
+            "net_pts": 35120.8,
+            "PF": 1.47,
+            "win_pct": 37.89,
+            "mdd_pts": 19703.8,
+            "avg_hold": 41.9
+          },
+          "1.6": {
+            "N": 95,
+            "gross_pts": 46520.8,
+            "net_pts": 31320.8,
+            "PF": 1.406,
+            "win_pct": 37.89,
+            "mdd_pts": 20423.8,
+            "avg_hold": 41.9
+          }
+        },
+        "HULL21_PULLBACK": {
+          "0.8": {
+            "N": 118,
+            "gross_pts": -689.8,
+            "net_pts": -10129.8,
+            "PF": 0.905,
+            "win_pct": 37.29,
+            "mdd_pts": 31098.6,
+            "avg_hold": 34.4
+          },
+          "1.2": {
+            "N": 118,
+            "gross_pts": -689.8,
+            "net_pts": -14849.8,
+            "PF": 0.865,
+            "win_pct": 37.29,
+            "mdd_pts": 32978.6,
+            "avg_hold": 34.4
+          },
+          "1.6": {
+            "N": 118,
+            "gross_pts": -689.8,
+            "net_pts": -19569.8,
+            "PF": 0.827,
+            "win_pct": 37.29,
+            "mdd_pts": 34858.6,
+            "avg_hold": 34.4
+          }
+        }
+      }
+    }
+  ],
+  "quarterly_metrics": [
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -38728,
+        "SUPERTREND_10_3": -7213.6,
+        "CCI20_RECLAIM": -30438.7,
+        "WILLIAMS_R14_RECLAIM": -29385.7,
+        "HULL21_PULLBACK": -38768.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -62033.6,
+        "SUPERTREND_10_3": -9068.9,
+        "CCI20_RECLAIM": -31505.3,
+        "WILLIAMS_R14_RECLAIM": -44958.9,
+        "HULL21_PULLBACK": -24701.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -60593.1,
+        "SUPERTREND_10_3": -2038.7,
+        "CCI20_RECLAIM": -34556.3,
+        "WILLIAMS_R14_RECLAIM": -8184.4,
+        "HULL21_PULLBACK": -18903.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": -19996.7,
+        "SUPERTREND_10_3": -20553.2,
+        "CCI20_RECLAIM": -23556.8,
+        "WILLIAMS_R14_RECLAIM": -6048.1,
+        "HULL21_PULLBACK": -36232.2
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M1",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -8957.1,
+        "SUPERTREND_10_3": 1688.7,
+        "CCI20_RECLAIM": -22299.1,
+        "WILLIAMS_R14_RECLAIM": -28566.2,
+        "HULL21_PULLBACK": -26369.7
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M1",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -25057.9,
+        "SUPERTREND_10_3": -16127.9,
+        "CCI20_RECLAIM": -18487.2,
+        "WILLIAMS_R14_RECLAIM": -18650,
+        "HULL21_PULLBACK": -28562.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -26144.5,
+        "SUPERTREND_10_3": -1994.3,
+        "CCI20_RECLAIM": -18791.4,
+        "WILLIAMS_R14_RECLAIM": -28514.1,
+        "HULL21_PULLBACK": -21096
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -27803.5,
+        "SUPERTREND_10_3": -118.5,
+        "CCI20_RECLAIM": -6775,
+        "WILLIAMS_R14_RECLAIM": -44102.7,
+        "HULL21_PULLBACK": -30653.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -27782.2,
+        "SUPERTREND_10_3": 1011.6,
+        "CCI20_RECLAIM": -21351.9,
+        "WILLIAMS_R14_RECLAIM": -16969.3,
+        "HULL21_PULLBACK": -17946.3
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 9742,
+        "SUPERTREND_10_3": 5104,
+        "CCI20_RECLAIM": -19988.3,
+        "WILLIAMS_R14_RECLAIM": -9295.3,
+        "HULL21_PULLBACK": -6996.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M2",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -8301.4,
+        "SUPERTREND_10_3": -4740.1,
+        "CCI20_RECLAIM": -2938.7,
+        "WILLIAMS_R14_RECLAIM": -14410.6,
+        "HULL21_PULLBACK": 7581.5
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M2",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -771.7,
+        "SUPERTREND_10_3": 3641.9,
+        "CCI20_RECLAIM": 574.5,
+        "WILLIAMS_R14_RECLAIM": -5084.8,
+        "HULL21_PULLBACK": 1600.7
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -21682.7,
+        "SUPERTREND_10_3": -5436.7,
+        "CCI20_RECLAIM": -9190.2,
+        "WILLIAMS_R14_RECLAIM": -17401.4,
+        "HULL21_PULLBACK": -17712.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -48940.2,
+        "SUPERTREND_10_3": 17944.2,
+        "CCI20_RECLAIM": -8092.8,
+        "WILLIAMS_R14_RECLAIM": -36105,
+        "HULL21_PULLBACK": -25287.7
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -19000.9,
+        "SUPERTREND_10_3": 411.1,
+        "CCI20_RECLAIM": -13269.6,
+        "WILLIAMS_R14_RECLAIM": -17466.2,
+        "HULL21_PULLBACK": -22258.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 14210.8,
+        "SUPERTREND_10_3": -6895.3,
+        "CCI20_RECLAIM": 10430.1,
+        "WILLIAMS_R14_RECLAIM": -6960.1,
+        "HULL21_PULLBACK": -1156
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M3",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -16602.5,
+        "SUPERTREND_10_3": 3290.2,
+        "CCI20_RECLAIM": -1730.2,
+        "WILLIAMS_R14_RECLAIM": 1959.4,
+        "HULL21_PULLBACK": 12133.4
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M3",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -10971.8,
+        "SUPERTREND_10_3": 12386.3,
+        "CCI20_RECLAIM": -10899.3,
+        "WILLIAMS_R14_RECLAIM": -21252.2,
+        "HULL21_PULLBACK": -4651.2
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -22832.5,
+        "SUPERTREND_10_3": -3278.8,
+        "CCI20_RECLAIM": -14848.4,
+        "WILLIAMS_R14_RECLAIM": -9468.9,
+        "HULL21_PULLBACK": -21028.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -29253.6,
+        "SUPERTREND_10_3": -4753.5,
+        "CCI20_RECLAIM": -10925.8,
+        "WILLIAMS_R14_RECLAIM": -44991.9,
+        "HULL21_PULLBACK": 2938.3
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -7370,
+        "SUPERTREND_10_3": -3555.7,
+        "CCI20_RECLAIM": -16474.4,
+        "WILLIAMS_R14_RECLAIM": -11065.8,
+        "HULL21_PULLBACK": -15477.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 7779.1,
+        "SUPERTREND_10_3": 13350.9,
+        "CCI20_RECLAIM": 7134.8,
+        "WILLIAMS_R14_RECLAIM": 12866.1,
+        "HULL21_PULLBACK": 8136.4
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M4",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -8767.7,
+        "SUPERTREND_10_3": -14876.4,
+        "CCI20_RECLAIM": -11287,
+        "WILLIAMS_R14_RECLAIM": -21954.4,
+        "HULL21_PULLBACK": 19988.3
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M4",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -13731.3,
+        "SUPERTREND_10_3": -11465.3,
+        "CCI20_RECLAIM": -6780.4,
+        "WILLIAMS_R14_RECLAIM": -1261.4,
+        "HULL21_PULLBACK": -6325.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -23677.3,
+        "SUPERTREND_10_3": 700.7,
+        "CCI20_RECLAIM": -14996.8,
+        "WILLIAMS_R14_RECLAIM": -20348.9,
+        "HULL21_PULLBACK": -18924.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -21409.6,
+        "SUPERTREND_10_3": -4379.1,
+        "CCI20_RECLAIM": -9973,
+        "WILLIAMS_R14_RECLAIM": -12618.7,
+        "HULL21_PULLBACK": -34021.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -8936.8,
+        "SUPERTREND_10_3": 6150.1,
+        "CCI20_RECLAIM": -3580.5,
+        "WILLIAMS_R14_RECLAIM": -1674.9,
+        "HULL21_PULLBACK": -8225.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 8707.2,
+        "SUPERTREND_10_3": -837.1,
+        "CCI20_RECLAIM": 4348.3,
+        "WILLIAMS_R14_RECLAIM": 6917.4,
+        "HULL21_PULLBACK": 19351.8
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M5",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -14938.8,
+        "SUPERTREND_10_3": -1068.8,
+        "CCI20_RECLAIM": -22226.1,
+        "WILLIAMS_R14_RECLAIM": -14369.9,
+        "HULL21_PULLBACK": 19366.7
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M5",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": 16605.4,
+        "SUPERTREND_10_3": -6424.6,
+        "CCI20_RECLAIM": 18996.6,
+        "WILLIAMS_R14_RECLAIM": -21426.1,
+        "HULL21_PULLBACK": -1758
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -3991.9,
+        "SUPERTREND_10_3": -298.8,
+        "CCI20_RECLAIM": -9350.5,
+        "WILLIAMS_R14_RECLAIM": -15176.4,
+        "HULL21_PULLBACK": -16304.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -20490.6,
+        "SUPERTREND_10_3": -7747.5,
+        "CCI20_RECLAIM": -9337.3,
+        "WILLIAMS_R14_RECLAIM": -12809.1,
+        "HULL21_PULLBACK": -3450.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -4407.3,
+        "SUPERTREND_10_3": -3957.4,
+        "CCI20_RECLAIM": 149.8,
+        "WILLIAMS_R14_RECLAIM": -2001.7,
+        "HULL21_PULLBACK": -15713.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 5482.8,
+        "SUPERTREND_10_3": -3532.2,
+        "CCI20_RECLAIM": 15105.7,
+        "WILLIAMS_R14_RECLAIM": 22019,
+        "HULL21_PULLBACK": 22801
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M6",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -12399.4,
+        "SUPERTREND_10_3": -11181.6,
+        "CCI20_RECLAIM": -16929.9,
+        "WILLIAMS_R14_RECLAIM": -23356.6,
+        "HULL21_PULLBACK": 7330.3
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M6",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": 679.8,
+        "SUPERTREND_10_3": -1300.6,
+        "CCI20_RECLAIM": 13528.3,
+        "WILLIAMS_R14_RECLAIM": -24443.5,
+        "HULL21_PULLBACK": -1202.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -9645.1,
+        "SUPERTREND_10_3": -170.9,
+        "CCI20_RECLAIM": 3414.1,
+        "WILLIAMS_R14_RECLAIM": -2187,
+        "HULL21_PULLBACK": -18489.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -3660,
+        "SUPERTREND_10_3": -5036.9,
+        "CCI20_RECLAIM": 4264.3,
+        "WILLIAMS_R14_RECLAIM": 6465.4,
+        "HULL21_PULLBACK": -16764
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -11043.7,
+        "SUPERTREND_10_3": -6361.6,
+        "CCI20_RECLAIM": -5101.6,
+        "WILLIAMS_R14_RECLAIM": 1344.9,
+        "HULL21_PULLBACK": -6689.7
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 24970.1,
+        "SUPERTREND_10_3": 4406.2,
+        "CCI20_RECLAIM": 946.1,
+        "WILLIAMS_R14_RECLAIM": -1709.3,
+        "HULL21_PULLBACK": 28621
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M10",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -18497.2,
+        "SUPERTREND_10_3": -9846.6,
+        "CCI20_RECLAIM": -33101.1,
+        "WILLIAMS_R14_RECLAIM": -23549.4,
+        "HULL21_PULLBACK": 4036.6
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M10",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -171.4,
+        "SUPERTREND_10_3": 16137.6,
+        "CCI20_RECLAIM": -13234.5,
+        "WILLIAMS_R14_RECLAIM": -23291.9,
+        "HULL21_PULLBACK": -20787.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": 260,
+        "SUPERTREND_10_3": -4743.5,
+        "CCI20_RECLAIM": 4567.2,
+        "WILLIAMS_R14_RECLAIM": 737.9,
+        "HULL21_PULLBACK": -16300.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -9899.7,
+        "SUPERTREND_10_3": -2866.4,
+        "CCI20_RECLAIM": 7394.6,
+        "WILLIAMS_R14_RECLAIM": -6211.1,
+        "HULL21_PULLBACK": -2670.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -12273.1,
+        "SUPERTREND_10_3": -2097.4,
+        "CCI20_RECLAIM": -2840.6,
+        "WILLIAMS_R14_RECLAIM": 2973.9,
+        "HULL21_PULLBACK": -17892.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 10183.5,
+        "SUPERTREND_10_3": -5690.7,
+        "CCI20_RECLAIM": 5374.9,
+        "WILLIAMS_R14_RECLAIM": 16193.2,
+        "HULL21_PULLBACK": 32827.2
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M12",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": 6110,
+        "SUPERTREND_10_3": -8735.1,
+        "CCI20_RECLAIM": -21450.2,
+        "WILLIAMS_R14_RECLAIM": -27726.9,
+        "HULL21_PULLBACK": 15540.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M12",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -13341.1,
+        "SUPERTREND_10_3": -10068.2,
+        "CCI20_RECLAIM": -7106.6,
+        "WILLIAMS_R14_RECLAIM": -23095.7,
+        "HULL21_PULLBACK": -3896.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": 1925.7,
+        "SUPERTREND_10_3": 4483.4,
+        "CCI20_RECLAIM": 113.2,
+        "WILLIAMS_R14_RECLAIM": 6789.3,
+        "HULL21_PULLBACK": -9813.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": 2059.4,
+        "SUPERTREND_10_3": 1722.3,
+        "CCI20_RECLAIM": -14635.2,
+        "WILLIAMS_R14_RECLAIM": -15187.7,
+        "HULL21_PULLBACK": 10136.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -3041.2,
+        "SUPERTREND_10_3": 1374.6,
+        "CCI20_RECLAIM": -3406.9,
+        "WILLIAMS_R14_RECLAIM": 480.1,
+        "HULL21_PULLBACK": -4413
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": 13895.6,
+        "SUPERTREND_10_3": -5666.1,
+        "CCI20_RECLAIM": -2550.5,
+        "WILLIAMS_R14_RECLAIM": -2631.6,
+        "HULL21_PULLBACK": 4243.3
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M15",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": -3842.5,
+        "SUPERTREND_10_3": 7586.3,
+        "CCI20_RECLAIM": -12260.2,
+        "WILLIAMS_R14_RECLAIM": 3815.6,
+        "HULL21_PULLBACK": 6533.2
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M15",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": 10369.7,
+        "SUPERTREND_10_3": -7488.9,
+        "CCI20_RECLAIM": 11416.6,
+        "WILLIAMS_R14_RECLAIM": -17008,
+        "HULL21_PULLBACK": 10969
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": -2279.8,
+        "SUPERTREND_10_3": -612.9,
+        "CCI20_RECLAIM": 4074.7,
+        "WILLIAMS_R14_RECLAIM": 6961,
+        "HULL21_PULLBACK": -7105.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -1824,
+        "SUPERTREND_10_3": 688.4,
+        "CCI20_RECLAIM": -5324,
+        "WILLIAMS_R14_RECLAIM": -1201.7,
+        "HULL21_PULLBACK": 9662.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -282.4,
+        "SUPERTREND_10_3": 3174.8,
+        "CCI20_RECLAIM": 33.5,
+        "WILLIAMS_R14_RECLAIM": -2739.2,
+        "HULL21_PULLBACK": 2025.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": -628,
+        "SUPERTREND_10_3": -9998.3,
+        "CCI20_RECLAIM": 19670.2,
+        "WILLIAMS_R14_RECLAIM": -420.1,
+        "HULL21_PULLBACK": 22694.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M20",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": 7364.7,
+        "SUPERTREND_10_3": 2937.9,
+        "CCI20_RECLAIM": -2447.2,
+        "WILLIAMS_R14_RECLAIM": -5561.1,
+        "HULL21_PULLBACK": 17744.8
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M20",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -1607,
+        "SUPERTREND_10_3": 6553.7,
+        "CCI20_RECLAIM": -3027.2,
+        "WILLIAMS_R14_RECLAIM": -1833.8,
+        "HULL21_PULLBACK": 4575.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q1",
+      "results": {
+        "EMA21_BASE": 1803.8,
+        "SUPERTREND_10_3": -378,
+        "CCI20_RECLAIM": 5573.3,
+        "WILLIAMS_R14_RECLAIM": 2487.1,
+        "HULL21_PULLBACK": 5212.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q2",
+      "results": {
+        "EMA21_BASE": -2633.3,
+        "SUPERTREND_10_3": 0,
+        "CCI20_RECLAIM": -19093.2,
+        "WILLIAMS_R14_RECLAIM": -6357.2,
+        "HULL21_PULLBACK": -14800.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q3",
+      "results": {
+        "EMA21_BASE": -4228.8,
+        "SUPERTREND_10_3": -560.3,
+        "CCI20_RECLAIM": 4004.8,
+        "WILLIAMS_R14_RECLAIM": -5566.9,
+        "HULL21_PULLBACK": -9565.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q4",
+      "results": {
+        "EMA21_BASE": -4156.1,
+        "SUPERTREND_10_3": -6933.2,
+        "CCI20_RECLAIM": 10109.5,
+        "WILLIAMS_R14_RECLAIM": 534.4,
+        "HULL21_PULLBACK": 20157.5
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M30",
+      "quarter": "2026Q2",
+      "results": {
+        "EMA21_BASE": 26594.9,
+        "SUPERTREND_10_3": 0,
+        "CCI20_RECLAIM": 2974,
+        "WILLIAMS_R14_RECLAIM": 15657.6,
+        "HULL21_PULLBACK": 4107.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M30",
+      "quarter": "2026Q3",
+      "results": {
+        "EMA21_BASE": -5305.3,
+        "SUPERTREND_10_3": -4219.2,
+        "CCI20_RECLAIM": 14345.1,
+        "WILLIAMS_R14_RECLAIM": 23263.1,
+        "HULL21_PULLBACK": -14237.7
+      }
+    }
+  ]
+}
