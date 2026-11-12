@@ -1,0 +1,31 @@
+name: Tracker | REA Public Gallery Consistency Audit
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - research/greenhouse_public_gallery_decode.py
+      - .github/workflows/tracker-public-gallery-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect_claims:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Decode public 3-4 November reenacted candles and signals without executing page scripts
+        run: |
+          python -m py_compile research/greenhouse_public_gallery_decode.py
+          python -m research.greenhouse_public_gallery_decode
+      - name: Preserve only public promotional signal catalog
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-03-04-november-public-gallery-audit
+          path: research/results/tracker_public_gallery_2026_11_03_04.json
+          retention-days: 14

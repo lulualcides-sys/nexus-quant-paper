@@ -1,0 +1,38 @@
+name: NQ Vector Exhaustion | Independent MT5 Indicator Research
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - indicators/mt5/**
+      - research/vector_exhaustion_reference.py
+      - research/run_vector_exhaustion_winq26.py
+      - tests/test_vector_exhaustion_reference.py
+      - .github/workflows/nq-vector-indicator-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile Python deterministic mirror and replay
+        run: python -m py_compile research/vector_exhaustion_reference.py research/run_vector_exhaustion_winq26.py
+      - name: Validate public geometry, no repaint, trading risk, and no order-routing tokens
+        run: python -m unittest discover -s tests -p 'test_vector_exhaustion_reference.py' -v
+      - name: Replay frozen independent model on pinned WINQ26 third-party candles
+        run: python -m research.run_vector_exhaustion_winq26
+      - name: Save auditable historical report and ledger without vendor prices
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nq-vector-exhaustion-winq26-independent-research
+          path: |
+            research/results/nq_vector_independent_winq26.json
+            research/results/nq_vector_independent_winq26.md
+          retention-days: 30

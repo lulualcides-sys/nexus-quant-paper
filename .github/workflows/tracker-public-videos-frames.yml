@@ -1,0 +1,40 @@
+name: Tracker Public Videos | Frame-by-frame Sample Audit
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - research/greenhouse_public_video_frame_audit.py
+      - .github/workflows/tracker-public-videos-frames.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  examine_public_video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Ensure FFmpeg is present for frame sampling
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          ffprobe -version | head -n 1
+          ffmpeg -version | head -n 1
+      - name: Download only explicitly linked public promotional videos, inspect at selected timestamps and delete local copies
+        run: |
+          python -m py_compile research/greenhouse_public_video_frame_audit.py
+          python -u -m research.greenhouse_public_video_frame_audit
+      - name: Save only factual metadata (no video or image copies)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-public-video-durations-and-source-receipts
+          path: research/results/tracker_public_video_metadata.json
+          retention-days: 14

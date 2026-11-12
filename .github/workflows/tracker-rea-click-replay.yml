@@ -1,0 +1,89 @@
+name: Tracker REA | Public 43-signal interactive replay
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - .github/workflows/tracker-rea-click-replay.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build strictly read-only public gallery click sequence for REA
+        run: |
+          python - <<'PY'
+          import shutil,json
+          chrome=shutil.which("google-chrome") or shutil.which("chromium")
+          if not chrome:raise SystemExit("Chrome missing")
+          scenario={
+            "browser":{"mode":"launch","executable_path":chrome},
+            "start_url":{"url":"https://lojadagreenhouse.com.br/ofertatracker/"},
+            "actions":[
+              {"step_id":"load-public-replay","action":"wait_for_timeout","duration_ms":1500},
+              {"step_id":"select-second-public-signal","action":"click",
+               "locator":{"kind":"role","role":"button","name":"Próximo"},"timeout_ms":10000},
+              {"step_id":"second-signal-settle","action":"wait_for_timeout","duration_ms":500},
+              {"step_id":"select-third-public-signal","action":"click",
+               "locator":{"kind":"role","role":"button","name":"Próximo"},"timeout_ms":10000}
+            ],
+            "capture":{"after_each_step":["accessibility","url"],
+                       "at_end":["accessibility","url"],
+                       "events":["network"]},
+            "command_timeout_ms":20000
+          }
+          open("tracker_rea_public_replay.json","w",encoding="utf-8").write(json.dumps(scenario))
+          print("PUBLIC_ONLY_CLICK_REPLAY_SCENARIO_CREATED")
+          PY
+      - name: REA interact with two publicly visible signal-pagination buttons (no trading or forms)
+        shell: bash
+        run: |
+          set +e
+          timeout 300s npx -y rea-agents@latest capture-browser-scenario tracker_rea_public_replay.json --json > tracker_rea_public_replay_result.json 2>tracker_rea_public_replay_err.txt
+          code=$?
+          echo "REA_REPLAY_EXIT_CODE=$code"
+          tail -c 1200 tracker_rea_public_replay_err.txt
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          p=Path('tracker_rea_public_replay_result.json')
+          if not p.exists() or not p.stat().st_size:
+              print('No REA replay evidence created')
+              raise SystemExit(0)
+          try:
+              obj=json.loads(p.read_text(encoding='utf-8'))
+          except Exception as e:
+              print('REA_REPLAY_PARSE_ERROR',str(e));raise SystemExit(0)
+          if obj.get('code'):
+              print('REA_REPLAY_ERROR',obj.get('code'),obj.get('message'));raise SystemExit(0)
+          norm=obj.get('normalized_result',{})
+          s=norm.get('steps',[])
+          print('REA_REPLAY_ACTION_OUTCOMES',[{'id':x.get('step_id'),'status':x.get('status'),'error':x.get('error')} for x in s])
+          print('REA_REPLAY_CAPTURE_BYTES',p.stat().st_size)
+          for step in s:
+              artifacts=step.get('artifacts') or {}
+              acc=artifacts.get('accessibility') or {}
+              payload=json.dumps(acc,ensure_ascii=False)
+              matches=sorted(set(re.findall(r'Sinal\s*\d+\s*de\s*\d+',payload,re.I)))
+              print('REA_REPLAY_VISIBLE_SIGNAL_LABEL',step.get('step_id'),matches[:8])
+          PY
+          exit 0
+      - name: Store browser result for manual verification; no user credentials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-rea-public-replay-capture
+          path: |
+            tracker_rea_public_replay_result.json
+            tracker_rea_public_replay_err.txt
+          retention-days: 14

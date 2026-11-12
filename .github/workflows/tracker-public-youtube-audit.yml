@@ -1,0 +1,38 @@
+name: Tracker public YouTube lessons | Media Evidence Audit
+on:
+  push:
+    branches:
+      - research/vector-exhaustion-mt5-20261109
+    paths:
+      - research/greenhouse_public_youtube_audit.py
+      - .github/workflows/tracker-public-youtube-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public_youtube:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install media metadata tools
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          fi
+          python -m pip install --disable-pip-version-check yt-dlp
+      - name: Attempt only public YouTube videos actually embedded in Greenhouse offer; keep audio/video ephemeral
+        run: |
+          python -m py_compile research/greenhouse_public_youtube_audit.py
+          python -u -m research.greenhouse_public_youtube_audit
+      - name: Upload metadata only, no video copies
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-public-youtube-video-metadata
+          path: research/results/tracker_public_youtube_audit.json
+          retention-days: 14
