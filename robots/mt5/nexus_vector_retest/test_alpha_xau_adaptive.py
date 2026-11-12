@@ -103,6 +103,40 @@ class TestAdaptiveXAU(unittest.TestCase):
         t=simulate_adaptive(f,[(1,1,98.,1.),(2,1,98.,1.)],0,N,(a,b))
         self.assertEqual(len(t),1)
 
+    def test_conditional_runner_closes_at_48_without_trend(self):
+        from alpha_xau_adaptive import simulate_conditional_runner
+        f=sample();f.loc[3,"high"]=104.5
+        t=simulate_conditional_runner(f,[(1,1,98.,1.)],0,N)
+        self.assertEqual(t[0]["reason"],"TREND_GATE_CLOSE")
+        self.assertEqual(t[0]["duration_bars"],48)
+        self.assertFalse(t[0]["extended"])
+        self.assertAlmostEqual(t[0]["net_pts"],(2+3)/3*100-80)
+
+    def test_conditional_runner_only_extends_when_trend(self):
+        from alpha_xau_adaptive import simulate_conditional_runner
+        f=sample();f.loc[3,"high"]=103.1
+        a,b=forced_masks();b[0,1:]=True
+        t=simulate_conditional_runner(f,[(1,1,98.,1.)],0,N,(a,b))
+        self.assertEqual(t[0]["reason"],"TIME_MAX")
+        self.assertTrue(t[0]["extended"])
+        self.assertEqual(t[0]["duration_bars"],384)
+
+    def test_conditional_runner_exits_on_next_open_after_trend_lost(self):
+        from alpha_xau_adaptive import simulate_conditional_runner
+        f=sample();f.loc[3,"high"]=103.1
+        a,b=forced_masks();a[0,1:60]=True
+        t=simulate_conditional_runner(f,[(1,1,98.,1.)],0,N,(a,b))
+        self.assertEqual(t[0]["reason"],"TREND_GATE_CLOSE")
+        self.assertEqual(t[0]["exit"],61)
+
+    def test_conditional_runner_keeps_initial_stop(self):
+        from alpha_xau_adaptive import simulate_conditional_runner
+        f=sample();f.loc[3,"high"]=105.;f.loc[3,"low"]=97.
+        a,b=forced_masks();b[0,1:]=True
+        t=simulate_conditional_runner(f,[(1,1,98.,1.)],0,N,(a,b))
+        self.assertEqual(t[0]["reason"],"SL")
+        self.assertAlmostEqual(t[0]["net_pts"],-280.)
+
     def test_extended_stats(self):
         t=[dict(gross_pts=200.,net_pts=120.,extended=True,
                 ever_runner=True,duration_bars=70,reason="TREND_LOST"),
