@@ -1,0 +1,79 @@
+name: "NEXUS V5 | H4 quality gates versus unchanged V4 controls"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/nexus_m1m5/v4_system.py"
+      - "research/nexus_m1m5/v5_*.py"
+      - "tests/test_nexus_m1m5_v5.py"
+      - "docs/NEXUS-V5-QUALITY-GATE.md"
+      - ".github/workflows/nexus-v5-quality-gate.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-v5-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: All V1-V5 causality, risk and ledger regressions
+        run: |
+          python -m unittest discover -s tests -p "test_nexus_m1m5_lab.py" -v
+          python -m unittest discover -s tests -p "test_nexus_m1m5_v2.py" -v
+          python -m unittest discover -s tests -p "test_nexus_m1m5_v3.py" -v
+          python -m unittest discover -s tests -p "test_nexus_m1m5_v4.py" -v
+          python -m unittest discover -s tests -p "test_nexus_m1m5_v5.py" -v
+      - name: Compile all research code
+        run: python -m compileall -q research/nexus_m1m5
+  fee-stress-30-months:
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 130
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Restore independent 2024 validated archives
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/nexus_v4_backfill/
+          key: nexus-v4-independent-2024-m5-official-first-use
+      - name: Restore 2025-2026 validated archives
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/nexus_m1m5_v3/
+          key: nexus-v4-2025-01-2026-06-m5-official-v1
+          restore-keys: |
+            nexus-v3-2025-01-2026-06-public-monthly
+      - name: Merge safe cached files (always revalidate official checksum)
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from shutil import copy2
+          dst = Path(".cache/nexus_v5")
+          for source in (Path(".cache/nexus_v4_backfill"), Path(".cache/nexus_m1m5_v3")):
+              if not source.exists(): continue
+              for file in source.rglob("*"):
+                  if not file.is_file(): continue
+                  target = dst / file.relative_to(source)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  if not target.exists(): copy2(file, target)
+          PY
+      - name: Replay 30 months with original V4 control plus 2 frozen H4 vetoes
+        run: python -m research.nexus_m1m5.v5_run --out artifacts/nexus-v5
+      - name: Export all trades, costs, veto reasons and net results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-v5-h4-quality-${{ github.run_id }}
+          path: artifacts/nexus-v5/
+          if-no-files-found: warn
+          retention-days: 30

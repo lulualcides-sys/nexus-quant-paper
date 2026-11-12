@@ -1,0 +1,52 @@
+name: "NEXUS M1/M5 V3 | macro hourly risk study"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/nexus_m1m5/**"
+      - "tests/test_nexus_m1m5_v3.py"
+      - "docs/NEXUS-M1M5-V3-HOURLY-RISK.md"
+      - ".github/workflows/nexus-m1m5-v3.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-m1m5-v3-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m unittest discover -s tests -p "test_nexus_m1m5_lab.py" -v
+      - run: python -m unittest discover -s tests -p "test_nexus_m1m5_v2.py" -v
+      - run: python -m unittest discover -s tests -p "test_nexus_m1m5_v3.py" -v
+      - run: python -m compileall -q research/nexus_m1m5 tests/test_nexus_m1m5_v3.py
+  historical-v3:
+    needs: regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 160
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Cache Binance checksum verified M1/M5 monthlies
+        uses: actions/cache@v4
+        with:
+          path: .cache/nexus_m1m5_v3/
+          key: nexus-v3-2025-01-2026-06-public-monthly
+      - name: Produce frozen V3 historical risk and macro entry audit
+        run: python -m research.nexus_m1m5.v3_run --out artifacts/nexus-m1m5-v3
+      - name: Always export ledger and diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-m1m5-v3-results-${{ github.run_id }}
+          path: artifacts/nexus-m1m5-v3/
+          if-no-files-found: warn
+          retention-days: 30
