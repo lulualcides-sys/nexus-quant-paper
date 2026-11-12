@@ -1,0 +1,87 @@
+name: XAUUSD Price Action WIN concept | M1 M5 June historical replay
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_price_action_m1m5.py
+      - research/xau_pa_scorecard.py
+      - tests/test_xau_price_action_m1m5.py
+      - tests/test_xau_pa_scorecard.py
+      - .github/workflows/xau-price-action-june-m1-m5.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  xau_price_action_backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify no-lookahead, real BID ASK execution and risk controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_price_action_m1m5.py research/xau_pa_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_scorecard.py' -v
+      - name: Fixed ten June dates 12-17 UTC, one real XAUUSD quote tape per date
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/xau_quotes" "$RUNNER_TEMP/evidence" "$RUNNER_TEMP/scorecard"
+          DAYS=(20260608 20260609 20260610 20260611 20260612
+                20260615 20260616 20260617 20260618 20260619)
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T12:00Z" -to "${date}T17:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/xau_quotes" -fn "gold_${d}" \
+              -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/xau_quotes/gold_${d}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_price_action_m1m5 \
+              --ticks "$f" --day "$d" \
+              --output "$RUNNER_TEMP/evidence/xau_pa_${d}.json" \
+              --quarantine-output "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+            test -f "$RUNNER_TEMP/evidence/xau_pa_${d}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+          done
+      - name: Chronological two-week M1 and M5 PA summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_scorecard \
+            --folder "$RUNNER_TEMP/evidence" \
+            --out "$RUNNER_TEMP/scorecard"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          path=Path(os.environ["RUNNER_TEMP"])/"scorecard/xau_pa_june_scorecard.json"
+          r=json.loads(path.read_text())
+          assert r["approval_blocked"] and r["not_a_mt5_broker_backtest"]
+          assert r["strictly_historical_not_future_holdout"]
+          assert len(r["clean_dates"])>=8
+          for tf in ("M1","M5"):
+              all=r["tf"][tf]["all"]
+              assert all["filled"]<=all["signals"]
+              assert all["filled"]==all["wins"]+all["losses"] if all["filled"] else True
+              assert abs(all["net_usd_per_oz"] -
+                  (r["tf"][tf]["first_week"]["net_usd_per_oz"]+
+                   r["tf"][tf]["second_week"]["net_usd_per_oz"])) < .001
+              print("FINAL",tf,all)
+          PY
+      - name: Upload provenance, ledgers and both weeks; never distribute raw Dukascopy quotes
+        uses: actions/upload-artifact@v4
+        with:
+          name: xauusd-price-action-gold-M1-M5-june-research
+          path: |
+            ${{ runner.temp }}/scorecard/*.json
+            ${{ runner.temp }}/scorecard/*.md
+            ${{ runner.temp }}/evidence/*.json
+          retention-days: 30

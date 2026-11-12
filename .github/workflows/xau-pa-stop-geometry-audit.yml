@@ -1,0 +1,110 @@
+name: XAUUSD PA | audit stop placement on same M1 entries
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_stop_geometry_audit.py
+      - research/xau_pa_stop_geometry_scorecard.py
+      - tests/test_xau_pa_stop_geometry_audit.py
+      - .github/workflows/xau-pa-stop-geometry-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original_and_counterfactual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    strategy:
+      fail-fast: false
+      matrix:
+        period: [june, july]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm original engine, retest stop geometry and no signal changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_stop_geometry_audit.py research/xau_pa_stop_geometry_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_stop_geometry_audit.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_m5_context_m1_v6.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+      - name: Replay unchanged M1 entries and one stop geometry correction using same real BID ASK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/ticks" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.period }}" == "june" ]]; then
+            DAYS=(20260622 20260623 20260624 20260625 20260626)
+          else
+            DAYS=(20260727 20260728 20260729 20260730 20260731)
+          fi
+          for d in "${DAYS[@]}"; do
+            date="${d:0:4}-${d:4:2}-${d:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/ticks" -fn "xau_${d}" \
+              -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/ticks/xau_${d}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_stop_geometry_audit \
+              --ticks "$f" --day "$d" \
+              --out "$RUNNER_TEMP/evidence/stop_geom_${d}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+            test -f "$RUNNER_TEMP/evidence/stop_geom_${d}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${d}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-stop-geometry-${{ matrix.period }}-exact-trades
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  audit:
+    needs: [original_and_counterfactual]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-stop-geometry-*-exact-trades
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Compare exact v6 stop placement and one hypothetical technical correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_stop_geometry_scorecard \
+            --folder "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/report"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"report/xau_pa_stop_geometry.json"
+          r=json.loads(p.read_text())
+          assert not r["auto_trade_approved"] and not r["actual_broker_mt5_test"]
+          assert not r["profits_real"] and r["user_stop_red_win_still_undocumented"]
+          assert len(r["clean_dates"]["june"])>=4
+          assert len(r["clean_dates"]["july"])>=4
+          print("STOP_LEVEL_COUNT",r["geometry"])
+          for period in ("june","july"):
+              for model in ("unchanged_v6","line_stop_check"):
+                  x=r["result"][model]["double"][period]
+                  print("STOP_REPLAY",period,model,
+                        "signals",x["signals"],"fills",x["filled"],
+                        "wins",x["wins"],"losses",x["losses"],
+                        "net",x["net_usd_per_oz"],"stops",x["stops"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-stop-placement-exact-v6-audit-scorecard
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30

@@ -1,0 +1,115 @@
+name: XAUUSD Price Action | Stop Win Red vs unauthorized 20-bar time exit
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_price_action_m1m5.py
+      - research/xau_pa_exit_fidelity_audit.py
+      - research/xau_pa_exit_fidelity_scorecard.py
+      - tests/test_xau_pa_exit_fidelity_audit.py
+      - .github/workflows/xau-pa-exit-fidelity.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [june, july]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regression original v6 vs no forced 20-bar exit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_exit_fidelity_audit.py research/xau_pa_exit_fidelity_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_exit_fidelity_audit.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_stop_geometry_audit.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_m5_context_m1_v6.py' -v
+          python -m unittest discover -s tests -p 'test_xau_price_action_m1m5.py' -v
+      - name: Quote-by-quote M1 same signal, costs, target and stop, only time exit changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.block }}" == "june" ]]; then
+            DAYS=(20260622 20260623 20260624 20260625 20260626)
+          else
+            DAYS=(20260727 20260728 20260729 20260730 20260731)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            file="$RUNNER_TEMP/quotes/xau_${day}.csv"
+            test -s "$file"
+            head -n1 "$file" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_exit_fidelity_audit \
+              --ticks "$file" --day "$day" \
+              --out "$RUNNER_TEMP/evidence/time_exit_${day}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/time_exit_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-original-vs-stop-win-red-${{ matrix.block }}-ledgers
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  audit:
+    needs: [replay]
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-original-vs-stop-win-red-*-ledgers
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Aggregate both historical panels without optimizing on outcome
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_exit_fidelity_scorecard \
+            --input "$RUNNER_TEMP/evidence" --output "$RUNNER_TEMP/report"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          f=Path(os.environ["RUNNER_TEMP"])/"report/xau_pa_time_exit_scorecard.json"
+          r=json.loads(f.read_text())
+          assert not r["auto_trading_approved"] and not r["no_live_broker_execution"] is False
+          assert r["same_signals_and_prices_for_arms"]
+          assert len(r["clean_days"]["june"])>=4
+          assert len(r["clean_days"]["july"])>=4
+          print("QUOTE_SOURCE_DIAGNOSTIC",r["quote_integrity"])
+          for month in ("june","july"):
+              for mode in ("existing_20_bar_time_exit","stop_win_red_until_session_end"):
+                  x=r["results"][mode]["double"][month]
+                  print("TIME_EXIT_AUDIT",month,mode,
+                        "signals",x["signals"],"fills",x["filled"],
+                        "wins",x["wins"],"losses",x["losses"],
+                        "net_usd_per_oz",x["net_usd_per_oz"],
+                        "STOPS",x["stop_exits"],
+                        "TARGETS",x["target_exits"],
+                        "TIMES",x["time_exits"],
+                        "END",x["session_end_exits"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-time-exit-vs-stop-red-win-full-report
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30

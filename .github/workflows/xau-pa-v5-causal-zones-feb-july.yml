@@ -1,0 +1,112 @@
+name: XAUUSD PA v5 | rolling causal S R versus fixed zones
+on:
+  push:
+    branches: [research/xauusd-price-action-m1m5-20261110]
+    paths:
+      - research/xau_pa_rolling_zones_v5.py
+      - research/xau_pa_rolling_zones_v5_scorecard.py
+      - tests/test_xau_pa_rolling_zones_v5.py
+      - .github/workflows/xau-pa-v5-causal-zones-feb-july.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        month: [february, july]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Assert no future marks, no quote-lookahead and one global position
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/xau_pa_rolling_zones_v5.py research/xau_pa_rolling_zones_v5_scorecard.py
+          python -m unittest discover -s tests -p 'test_xau_pa_rolling_zones_v5.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_fidelity_v4.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_manual_rules_v3.py' -v
+          python -m unittest discover -s tests -p 'test_xau_pa_shared_execution.py' -v
+      - name: Get 09-21 UTC historical Dukascopy XAUUSD bid ask quotes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/quotes" "$RUNNER_TEMP/evidence"
+          if [[ "${{ matrix.month }}" == "february" ]]; then
+            DAYS=(20260209 20260210 20260211 20260212 20260213)
+          else
+            DAYS=(20260720 20260721 20260722 20260723 20260724)
+          fi
+          for day in "${DAYS[@]}"; do
+            date="${day:0:4}-${day:4:2}-${day:6:2}"
+            npx --yes dukascopy-node@1.51.1 \
+              -i xauusd -from "${date}T09:00Z" -to "${date}T21:00Z" \
+              -t tick -f csv -dir "$RUNNER_TEMP/quotes" -fn "xau_${day}" \
+              -bs 3 -bp 1500 -r 2
+            f="$RUNNER_TEMP/quotes/xau_${day}.csv"
+            test -s "$f"
+            head -n1 "$f" | grep -q '^timestamp,askPrice,bidPrice'
+            python -m research.xau_pa_rolling_zones_v5 \
+              --ticks "$f" --day "$day" --mode proxy \
+              --out "$RUNNER_TEMP/evidence/xau_pa_v5_${day}.json" \
+              --quarantine "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+            test -f "$RUNNER_TEMP/evidence/xau_pa_v5_${day}.json" -o -f "$RUNNER_TEMP/evidence/quarantine_${day}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-v5-frozen-${{ matrix.month }}-quote-ledgers
+          path: ${{ runner.temp }}/evidence/*.json
+          retention-days: 30
+  audit:
+    needs: [backtest]
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: xau-pa-v5-frozen-*-quote-ledgers
+          merge-multiple: true
+          path: ${{ runner.temp }}/evidence
+      - name: Compute unselected control versus causal zone result M1 M5 SHARED
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.xau_pa_rolling_zones_v5_scorecard \
+            --evidence "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/report"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ["RUNNER_TEMP"])/"report/xau_pa_v5_rolling_scorecard.json").read_text())
+          assert not d["approved_for_live"] and not d["verified_mt5_broker_execution"]
+          assert d["no_real_user_drawings_supplied"] and d["one_global_symbol_lock"]
+          assert len(d["clean_days"]["february"])>=4 and len(d["clean_days"]["july"])>=4
+          for tf,modes in d["results"].items():
+              assert set(modes)=={"v4_fixed","v5_rolling"}
+              for month in ("february","july"):
+                  for mode,scenarios in modes.items():
+                      stats=scenarios["double"][month]
+                      assert stats["filled"]<=stats["signals"]
+                      print("V5_RESULT",tf,month,mode,
+                            "signals",stats["signals"],"fills",stats["filled"],
+                            "wins",stats["wins"],"losses",stats["losses"],
+                            "net",stats["net_usd_per_oz"],
+                            "range",stats["by_setup"]["range_rejection"],
+                            "stops",stats["executed_exit_reasons"].get("STOP",0))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xau-pa-v5-blind-comparison-M1-M5-shared-report
+          path: ${{ runner.temp }}/report/*
+          retention-days: 30
