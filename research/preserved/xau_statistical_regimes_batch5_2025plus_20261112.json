@@ -1,0 +1,2532 @@
+{
+  "archive_date": "2026-11-12",
+  "symbol": "XAUUSD",
+  "from_utc": "2025-01-01T00:00:00Z",
+  "strictly_allowed_timeframes": [
+    "M1",
+    "M5",
+    "M15",
+    "M30"
+  ],
+  "data_2026": "PARTIAL: only available Q2/Q3",
+  "source_2025_pin": "b2cfdc571ffac9eff9f2132ea6946da559d29af2",
+  "source_2026_sha256": "a587597bbf88c2d868a00a4e0019cd705cee6ca4f20b0485d6b745f19fcc8225",
+  "source_code_branch": "research/xau-statistical-regimes-batch5-20261112",
+  "source_code_file": "robots/mt5/nexus_vector_retest/xau_statistical_regimes_batch5_2025plus.py",
+  "workflow": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43252710669",
+  "workflow_conclusion": "success",
+  "models": [
+    "EMA21_BASE",
+    "ZSCORE80_REENTRY",
+    "VR5_REVERSION",
+    "SHOCK_EXHAUSTION",
+    "CHOP14_EXPANSION"
+  ],
+  "costs_assumed_usd_per_ounce_roundtrip": [
+    0.8,
+    1.2,
+    1.6
+  ],
+  "price_point_assumed": 0.01,
+  "method": "OHLC signal on closed candle; next open fill; stop-first ambiguous bars and conservative gaps; partial TP1=1R, TP2=1.5R, last third runner original SL or 96 trading-candle hours; one position per strategy at a time",
+  "count": {
+    "timeframe_year_cases": 8,
+    "model_timeframe_comparisons": 20,
+    "quarter_windows": 24
+  },
+  "predeclared_screen": {
+    "n2025_min": 100,
+    "n2026_partial_min": 50,
+    "positive_both_years_at_cost1_2": true,
+    "pf_both_gt": 1.1,
+    "positive_quarters_2025_at_least": 3,
+    "positive_quarters_2026_partial_at_least": 1
+  },
+  "screened_passed_candidates": [],
+  "summary_findings": [
+    "No new model passed complete fixed screen at 1.2 USD/oz cost.",
+    "Shock Exhaustion M5 positive in both years under assumed 0.8 cost (+17,994.8 and +8,295.2 pts) but PF 2026 at cost1.2 only 1.073; 2026Q3 loses -13,529.2 pts at cost0.8.",
+    "Shock Exhaustion M15 positive under 0.8 (+27,240.8 and +14,913.5 pts) and even at 1.6 (+20,040.8 and +11,313.5), but only 90 and 45 trades, fewer than threshold 100 and 50, and 2026Q3 -6,821 pts at 0.8.",
+    "Shock Exhaustion M30 positive 2025 (+35,046 pts at 0.8) but 2026 partial negative (-20,733.3).",
+    "Z-Score M1 positive 2025 at 0.8, but deeply negative 2026 and negative at higher costs 2025.",
+    "Multiple previously explored XAUUSD strategy/timeframe combinations create substantial data-snooping bias."
+  ],
+  "limitations": [
+    "Historical OHLC proxy, not native MetaTrader5 every-tick Strategy Tester or broker execution.",
+    "2026 partial Q2/Q3; historical feeds differ across 2025/26.",
+    "2025/2026 already examined by other models, not genuinely untouched OOS.",
+    "No broker tick Bid/Ask, dynamic spread, commission, slippage, swap, tick value, volume or intratrade drawdown.",
+    "Net points are not account profits; no risk-adjusted portfolio backtest.",
+    "Previous seven user-selected research ideas and eligible timeframe policy untouched.",
+    "Future demo forward without parameter tuning is required before considering any live trading."
+  ],
+  "status": "RESEARCH_ONLY_NOT_SELECTED",
+  "approved_for_live": false,
+  "previous_registry": "research/preserved/xau_selected_seven_candidates_20261112.json",
+  "policy_registry": "research/preserved/xau_authoritative_timeframes_m1_m5_m15_m30_20261112.json",
+  "annual_cases": [
+    {
+      "tf": "M1",
+      "year": "2025",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -181351.3,
+            "PF": 0.37,
+            "win_pct": 11.87,
+            "mdd_pts": 185555.5,
+            "avg_hold": 152.5
+          },
+          "1.2": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -263551.3,
+            "PF": 0.274,
+            "win_pct": 6.03,
+            "mdd_pts": 267635.5,
+            "avg_hold": 152.5
+          },
+          "1.6": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -345751.3,
+            "PF": 0.216,
+            "win_pct": 3.45,
+            "mdd_pts": 349760.9,
+            "avg_hold": 152.5
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 844,
+            "gross_pts": 89351.2,
+            "net_pts": 21831.2,
+            "PF": 1.153,
+            "win_pct": 25.83,
+            "mdd_pts": 18277.6,
+            "avg_hold": 390.1
+          },
+          "1.2": {
+            "N": 844,
+            "gross_pts": 89351.2,
+            "net_pts": -11928.8,
+            "PF": 0.929,
+            "win_pct": 17.77,
+            "mdd_pts": 36415.4,
+            "avg_hold": 390.1
+          },
+          "1.6": {
+            "N": 844,
+            "gross_pts": 89351.2,
+            "net_pts": -45688.8,
+            "PF": 0.769,
+            "win_pct": 13.15,
+            "mdd_pts": 65535.4,
+            "avg_hold": 390.1
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 868,
+            "gross_pts": 44804.2,
+            "net_pts": -24635.8,
+            "PF": 0.836,
+            "win_pct": 21.2,
+            "mdd_pts": 24666.1,
+            "avg_hold": 332.7
+          },
+          "1.2": {
+            "N": 868,
+            "gross_pts": 44804.2,
+            "net_pts": -59355.8,
+            "PF": 0.668,
+            "win_pct": 13.94,
+            "mdd_pts": 59355.8,
+            "avg_hold": 332.7
+          },
+          "1.6": {
+            "N": 868,
+            "gross_pts": 44804.2,
+            "net_pts": -94075.8,
+            "PF": 0.551,
+            "win_pct": 9.68,
+            "mdd_pts": 94075.8,
+            "avg_hold": 332.7
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 663,
+            "gross_pts": 8459.6,
+            "net_pts": -44580.4,
+            "PF": 0.685,
+            "win_pct": 27.75,
+            "mdd_pts": 54743.3,
+            "avg_hold": 350.4
+          },
+          "1.2": {
+            "N": 663,
+            "gross_pts": 8459.6,
+            "net_pts": -71100.4,
+            "PF": 0.561,
+            "win_pct": 17.95,
+            "mdd_pts": 75799.3,
+            "avg_hold": 350.4
+          },
+          "1.6": {
+            "N": 663,
+            "gross_pts": 8459.6,
+            "net_pts": -97620.4,
+            "PF": 0.471,
+            "win_pct": 13.88,
+            "mdd_pts": 101599.3,
+            "avg_hold": 350.4
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 1096,
+            "gross_pts": 20580.1,
+            "net_pts": -67099.9,
+            "PF": 0.596,
+            "win_pct": 17.43,
+            "mdd_pts": 67155.1,
+            "avg_hold": 255.1
+          },
+          "1.2": {
+            "N": 1096,
+            "gross_pts": 20580.1,
+            "net_pts": -110939.9,
+            "PF": 0.457,
+            "win_pct": 10.86,
+            "mdd_pts": 110955.1,
+            "avg_hold": 255.1
+          },
+          "1.6": {
+            "N": 1096,
+            "gross_pts": 20580.1,
+            "net_pts": -154779.9,
+            "PF": 0.367,
+            "win_pct": 6.75,
+            "mdd_pts": 154779.9,
+            "avg_hold": 255.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "year": "2026",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -34015.1,
+            "PF": 0.717,
+            "win_pct": 27.46,
+            "mdd_pts": 34153.1,
+            "avg_hold": 244
+          },
+          "1.2": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -59215.1,
+            "PF": 0.577,
+            "win_pct": 17.14,
+            "mdd_pts": 59308.7,
+            "avg_hold": 244
+          },
+          "1.6": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -84415.1,
+            "PF": 0.478,
+            "win_pct": 11.43,
+            "mdd_pts": 84468.7,
+            "avg_hold": 244
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 552,
+            "gross_pts": -14039.4,
+            "net_pts": -58199.4,
+            "PF": 0.629,
+            "win_pct": 34.96,
+            "mdd_pts": 62985,
+            "avg_hold": 290.4
+          },
+          "1.2": {
+            "N": 552,
+            "gross_pts": -14039.4,
+            "net_pts": -80279.4,
+            "PF": 0.533,
+            "win_pct": 28.62,
+            "mdd_pts": 85025,
+            "avg_hold": 290.4
+          },
+          "1.6": {
+            "N": 552,
+            "gross_pts": -14039.4,
+            "net_pts": -102359.4,
+            "PF": 0.457,
+            "win_pct": 22.83,
+            "mdd_pts": 107065,
+            "avg_hold": 290.4
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 533,
+            "gross_pts": -3413.5,
+            "net_pts": -46053.5,
+            "PF": 0.663,
+            "win_pct": 32.08,
+            "mdd_pts": 52330.8,
+            "avg_hold": 255.6
+          },
+          "1.2": {
+            "N": 533,
+            "gross_pts": -3413.5,
+            "net_pts": -67373.5,
+            "PF": 0.556,
+            "win_pct": 26.64,
+            "mdd_pts": 73450.8,
+            "avg_hold": 255.6
+          },
+          "1.6": {
+            "N": 533,
+            "gross_pts": -3413.5,
+            "net_pts": -88693.5,
+            "PF": 0.473,
+            "win_pct": 19.32,
+            "mdd_pts": 94570.8,
+            "avg_hold": 255.6
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 287,
+            "gross_pts": 12078.3,
+            "net_pts": -10881.7,
+            "PF": 0.877,
+            "win_pct": 34.84,
+            "mdd_pts": 25319,
+            "avg_hold": 412.3
+          },
+          "1.2": {
+            "N": 287,
+            "gross_pts": 12078.3,
+            "net_pts": -22361.7,
+            "PF": 0.768,
+            "win_pct": 31.36,
+            "mdd_pts": 29457.4,
+            "avg_hold": 412.3
+          },
+          "1.6": {
+            "N": 287,
+            "gross_pts": 12078.3,
+            "net_pts": -33841.7,
+            "PF": 0.676,
+            "win_pct": 25.44,
+            "mdd_pts": 40537.4,
+            "avg_hold": 412.3
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 522,
+            "gross_pts": 35822.7,
+            "net_pts": -5937.3,
+            "PF": 0.944,
+            "win_pct": 32.38,
+            "mdd_pts": 26590,
+            "avg_hold": 262.5
+          },
+          "1.2": {
+            "N": 522,
+            "gross_pts": 35822.7,
+            "net_pts": -26817.3,
+            "PF": 0.779,
+            "win_pct": 21.46,
+            "mdd_pts": 39150,
+            "avg_hold": 262.5
+          },
+          "1.6": {
+            "N": 522,
+            "gross_pts": 35822.7,
+            "net_pts": -47697.3,
+            "PF": 0.655,
+            "win_pct": 13.79,
+            "mdd_pts": 51863.6,
+            "avg_hold": 262.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2025",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -45316.6,
+            "PF": 0.729,
+            "win_pct": 29.06,
+            "mdd_pts": 59207.3,
+            "avg_hold": 81.7
+          },
+          "1.2": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -73116.6,
+            "PF": 0.611,
+            "win_pct": 21.58,
+            "mdd_pts": 81967.3,
+            "avg_hold": 81.7
+          },
+          "1.6": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -100916.6,
+            "PF": 0.521,
+            "win_pct": 15.68,
+            "mdd_pts": 108065,
+            "avg_hold": 81.7
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 519,
+            "gross_pts": -25221.5,
+            "net_pts": -66741.5,
+            "PF": 0.632,
+            "win_pct": 35.65,
+            "mdd_pts": 66860.9,
+            "avg_hold": 110.9
+          },
+          "1.2": {
+            "N": 519,
+            "gross_pts": -25221.5,
+            "net_pts": -87501.5,
+            "PF": 0.552,
+            "win_pct": 31.79,
+            "mdd_pts": 87580.9,
+            "avg_hold": 110.9
+          },
+          "1.6": {
+            "N": 519,
+            "gross_pts": -25221.5,
+            "net_pts": -108261.5,
+            "PF": 0.484,
+            "win_pct": 26.01,
+            "mdd_pts": 108300.9,
+            "avg_hold": 110.9
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 328,
+            "gross_pts": -9410.5,
+            "net_pts": -35650.5,
+            "PF": 0.653,
+            "win_pct": 37.5,
+            "mdd_pts": 36507.8,
+            "avg_hold": 128
+          },
+          "1.2": {
+            "N": 328,
+            "gross_pts": -9410.5,
+            "net_pts": -48770.5,
+            "PF": 0.562,
+            "win_pct": 33.23,
+            "mdd_pts": 49511.6,
+            "avg_hold": 128
+          },
+          "1.6": {
+            "N": 328,
+            "gross_pts": -9410.5,
+            "net_pts": -61890.5,
+            "PF": 0.486,
+            "win_pct": 27.74,
+            "mdd_pts": 62551.6,
+            "avg_hold": 128
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 190,
+            "gross_pts": 33194.8,
+            "net_pts": 17994.8,
+            "PF": 1.302,
+            "win_pct": 46.32,
+            "mdd_pts": 10584.3,
+            "avg_hold": 153.6
+          },
+          "1.2": {
+            "N": 190,
+            "gross_pts": 33194.8,
+            "net_pts": 10394.8,
+            "PF": 1.163,
+            "win_pct": 42.11,
+            "mdd_pts": 12904.3,
+            "avg_hold": 153.6
+          },
+          "1.6": {
+            "N": 190,
+            "gross_pts": 33194.8,
+            "net_pts": 2794.8,
+            "PF": 1.041,
+            "win_pct": 33.68,
+            "mdd_pts": 16284.1,
+            "avg_hold": 153.6
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 437,
+            "gross_pts": 47897.2,
+            "net_pts": 12937.2,
+            "PF": 1.126,
+            "win_pct": 37.53,
+            "mdd_pts": 20989.7,
+            "avg_hold": 104
+          },
+          "1.2": {
+            "N": 437,
+            "gross_pts": 47897.2,
+            "net_pts": -4542.8,
+            "PF": 0.96,
+            "win_pct": 29.75,
+            "mdd_pts": 28269.7,
+            "avg_hold": 104
+          },
+          "1.6": {
+            "N": 437,
+            "gross_pts": 47897.2,
+            "net_pts": -22022.8,
+            "PF": 0.826,
+            "win_pct": 24.94,
+            "mdd_pts": 35549.7,
+            "avg_hold": 104
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2026",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": 1666.6,
+            "PF": 1.018,
+            "win_pct": 38.52,
+            "mdd_pts": 30183.1,
+            "avg_hold": 117.2
+          },
+          "1.2": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": -8613.4,
+            "PF": 0.914,
+            "win_pct": 35.8,
+            "mdd_pts": 36183.1,
+            "avg_hold": 117.2
+          },
+          "1.6": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": -18893.4,
+            "PF": 0.823,
+            "win_pct": 31.91,
+            "mdd_pts": 42183.1,
+            "avg_hold": 117.2
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 212,
+            "gross_pts": 8196.5,
+            "net_pts": -8763.5,
+            "PF": 0.932,
+            "win_pct": 38.68,
+            "mdd_pts": 45981,
+            "avg_hold": 138.9
+          },
+          "1.2": {
+            "N": 212,
+            "gross_pts": 8196.5,
+            "net_pts": -17243.5,
+            "PF": 0.871,
+            "win_pct": 38.21,
+            "mdd_pts": 50581,
+            "avg_hold": 138.9
+          },
+          "1.6": {
+            "N": 212,
+            "gross_pts": 8196.5,
+            "net_pts": -25723.5,
+            "PF": 0.815,
+            "win_pct": 36.32,
+            "mdd_pts": 55181,
+            "avg_hold": 138.9
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 211,
+            "gross_pts": -16117.2,
+            "net_pts": -32997.2,
+            "PF": 0.696,
+            "win_pct": 37.91,
+            "mdd_pts": 43194.1,
+            "avg_hold": 93.3
+          },
+          "1.2": {
+            "N": 211,
+            "gross_pts": -16117.2,
+            "net_pts": -41437.2,
+            "PF": 0.636,
+            "win_pct": 35.55,
+            "mdd_pts": 50794.1,
+            "avg_hold": 93.3
+          },
+          "1.6": {
+            "N": 211,
+            "gross_pts": -16117.2,
+            "net_pts": -49877.2,
+            "PF": 0.582,
+            "win_pct": 35.07,
+            "mdd_pts": 58394.1,
+            "avg_hold": 93.3
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 101,
+            "gross_pts": 16375.2,
+            "net_pts": 8295.2,
+            "PF": 1.148,
+            "win_pct": 42.57,
+            "mdd_pts": 18686.2,
+            "avg_hold": 190.9
+          },
+          "1.2": {
+            "N": 101,
+            "gross_pts": 16375.2,
+            "net_pts": 4255.2,
+            "PF": 1.073,
+            "win_pct": 42.57,
+            "mdd_pts": 19886.2,
+            "avg_hold": 190.9
+          },
+          "1.6": {
+            "N": 101,
+            "gross_pts": 16375.2,
+            "net_pts": 215.2,
+            "PF": 1.004,
+            "win_pct": 42.57,
+            "mdd_pts": 21121,
+            "avg_hold": 190.9
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 252,
+            "gross_pts": -23704.6,
+            "net_pts": -43864.6,
+            "PF": 0.619,
+            "win_pct": 31.75,
+            "mdd_pts": 43918.4,
+            "avg_hold": 81.3
+          },
+          "1.2": {
+            "N": 252,
+            "gross_pts": -23704.6,
+            "net_pts": -53944.6,
+            "PF": 0.558,
+            "win_pct": 30.56,
+            "mdd_pts": 53958.4,
+            "avg_hold": 81.3
+          },
+          "1.6": {
+            "N": 252,
+            "gross_pts": -23704.6,
+            "net_pts": -64024.6,
+            "PF": 0.505,
+            "win_pct": 27.38,
+            "mdd_pts": 64024.6,
+            "avg_hold": 81.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2025",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": 14839.4,
+            "PF": 1.138,
+            "win_pct": 42.5,
+            "mdd_pts": 16345.8,
+            "avg_hold": 55.3
+          },
+          "1.2": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": 2039.4,
+            "PF": 1.018,
+            "win_pct": 39.06,
+            "mdd_pts": 17905.8,
+            "avg_hold": 55.3
+          },
+          "1.6": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": -10760.6,
+            "PF": 0.913,
+            "win_pct": 34.06,
+            "mdd_pts": 23945.6,
+            "avg_hold": 55.3
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 222,
+            "gross_pts": 47983.2,
+            "net_pts": 30223.2,
+            "PF": 1.273,
+            "win_pct": 41.89,
+            "mdd_pts": 20078.8,
+            "avg_hold": 75
+          },
+          "1.2": {
+            "N": 222,
+            "gross_pts": 47983.2,
+            "net_pts": 21343.2,
+            "PF": 1.184,
+            "win_pct": 39.19,
+            "mdd_pts": 24467.9,
+            "avg_hold": 75
+          },
+          "1.6": {
+            "N": 222,
+            "gross_pts": 47983.2,
+            "net_pts": 12463.2,
+            "PF": 1.103,
+            "win_pct": 36.94,
+            "mdd_pts": 30022.7,
+            "avg_hold": 75
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 147,
+            "gross_pts": 21124.8,
+            "net_pts": 9364.8,
+            "PF": 1.121,
+            "win_pct": 40.14,
+            "mdd_pts": 22009.1,
+            "avg_hold": 81.5
+          },
+          "1.2": {
+            "N": 147,
+            "gross_pts": 21124.8,
+            "net_pts": 3484.8,
+            "PF": 1.043,
+            "win_pct": 39.46,
+            "mdd_pts": 25729.1,
+            "avg_hold": 81.5
+          },
+          "1.6": {
+            "N": 147,
+            "gross_pts": 21124.8,
+            "net_pts": -2395.2,
+            "PF": 0.972,
+            "win_pct": 39.46,
+            "mdd_pts": 29449.1,
+            "avg_hold": 81.5
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 90,
+            "gross_pts": 34440.8,
+            "net_pts": 27240.8,
+            "PF": 1.505,
+            "win_pct": 47.78,
+            "mdd_pts": 21373.7,
+            "avg_hold": 99.8
+          },
+          "1.2": {
+            "N": 90,
+            "gross_pts": 34440.8,
+            "net_pts": 23640.8,
+            "PF": 1.424,
+            "win_pct": 47.78,
+            "mdd_pts": 22613.7,
+            "avg_hold": 99.8
+          },
+          "1.6": {
+            "N": 90,
+            "gross_pts": 34440.8,
+            "net_pts": 20040.8,
+            "PF": 1.348,
+            "win_pct": 47.78,
+            "mdd_pts": 23853.7,
+            "avg_hold": 99.8
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 177,
+            "gross_pts": 37210,
+            "net_pts": 23050,
+            "PF": 1.279,
+            "win_pct": 42.37,
+            "mdd_pts": 23012.2,
+            "avg_hold": 78.7
+          },
+          "1.2": {
+            "N": 177,
+            "gross_pts": 37210,
+            "net_pts": 15970,
+            "PF": 1.184,
+            "win_pct": 40.11,
+            "mdd_pts": 24412.2,
+            "avg_hold": 78.7
+          },
+          "1.6": {
+            "N": 177,
+            "gross_pts": 37210,
+            "net_pts": 8890,
+            "PF": 1.098,
+            "win_pct": 38.42,
+            "mdd_pts": 25888.6,
+            "avg_hold": 78.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2026",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": 6527.2,
+            "PF": 1.082,
+            "win_pct": 43.59,
+            "mdd_pts": 21230.4,
+            "avg_hold": 55.4
+          },
+          "1.2": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": 287.2,
+            "PF": 1.003,
+            "win_pct": 43.59,
+            "mdd_pts": 21830.4,
+            "avg_hold": 55.4
+          },
+          "1.6": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": -5952.8,
+            "PF": 0.931,
+            "win_pct": 41.67,
+            "mdd_pts": 25036.1,
+            "avg_hold": 55.4
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 116,
+            "gross_pts": 11218.9,
+            "net_pts": 1938.9,
+            "PF": 1.018,
+            "win_pct": 39.66,
+            "mdd_pts": 23721.1,
+            "avg_hold": 78.8
+          },
+          "1.2": {
+            "N": 116,
+            "gross_pts": 11218.9,
+            "net_pts": -2701.1,
+            "PF": 0.975,
+            "win_pct": 39.66,
+            "mdd_pts": 25401.1,
+            "avg_hold": 78.8
+          },
+          "1.6": {
+            "N": 116,
+            "gross_pts": 11218.9,
+            "net_pts": -7341.1,
+            "PF": 0.934,
+            "win_pct": 39.66,
+            "mdd_pts": 27081.1,
+            "avg_hold": 78.8
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 81,
+            "gross_pts": -12078.1,
+            "net_pts": -18558.1,
+            "PF": 0.761,
+            "win_pct": 41.98,
+            "mdd_pts": 27831.9,
+            "avg_hold": 63.7
+          },
+          "1.2": {
+            "N": 81,
+            "gross_pts": -12078.1,
+            "net_pts": -21798.1,
+            "PF": 0.725,
+            "win_pct": 41.98,
+            "mdd_pts": 29378.3,
+            "avg_hold": 63.7
+          },
+          "1.6": {
+            "N": 81,
+            "gross_pts": -12078.1,
+            "net_pts": -25038.1,
+            "PF": 0.692,
+            "win_pct": 41.98,
+            "mdd_pts": 31578.3,
+            "avg_hold": 63.7
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 45,
+            "gross_pts": 18513.5,
+            "net_pts": 14913.5,
+            "PF": 1.374,
+            "win_pct": 46.67,
+            "mdd_pts": 10915.6,
+            "avg_hold": 102.8
+          },
+          "1.2": {
+            "N": 45,
+            "gross_pts": 18513.5,
+            "net_pts": 13113.5,
+            "PF": 1.321,
+            "win_pct": 46.67,
+            "mdd_pts": 11875.6,
+            "avg_hold": 102.8
+          },
+          "1.6": {
+            "N": 45,
+            "gross_pts": 18513.5,
+            "net_pts": 11313.5,
+            "PF": 1.271,
+            "win_pct": 46.67,
+            "mdd_pts": 12835.6,
+            "avg_hold": 102.8
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 128,
+            "gross_pts": -34359.9,
+            "net_pts": -44599.9,
+            "PF": 0.591,
+            "win_pct": 36.72,
+            "mdd_pts": 44599.9,
+            "avg_hold": 42.2
+          },
+          "1.2": {
+            "N": 128,
+            "gross_pts": -34359.9,
+            "net_pts": -49719.9,
+            "PF": 0.558,
+            "win_pct": 36.72,
+            "mdd_pts": 49719.9,
+            "avg_hold": 42.2
+          },
+          "1.6": {
+            "N": 128,
+            "gross_pts": -34359.9,
+            "net_pts": -54839.9,
+            "PF": 0.526,
+            "win_pct": 36.72,
+            "mdd_pts": 54839.9,
+            "avg_hold": 42.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2025",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -9214.4,
+            "PF": 0.917,
+            "win_pct": 39.25,
+            "mdd_pts": 19391.1,
+            "avg_hold": 35.2
+          },
+          "1.2": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -17774.4,
+            "PF": 0.848,
+            "win_pct": 38.79,
+            "mdd_pts": 25511.1,
+            "avg_hold": 35.2
+          },
+          "1.6": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -26334.4,
+            "PF": 0.784,
+            "win_pct": 35.98,
+            "mdd_pts": 31806.2,
+            "avg_hold": 35.2
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 197,
+            "gross_pts": -43611.4,
+            "net_pts": -59371.4,
+            "PF": 0.633,
+            "win_pct": 35.03,
+            "mdd_pts": 73631,
+            "avg_hold": 35.9
+          },
+          "1.2": {
+            "N": 197,
+            "gross_pts": -43611.4,
+            "net_pts": -67251.4,
+            "PF": 0.598,
+            "win_pct": 33.5,
+            "mdd_pts": 79820.4,
+            "avg_hold": 35.9
+          },
+          "1.6": {
+            "N": 197,
+            "gross_pts": -43611.4,
+            "net_pts": -75131.4,
+            "PF": 0.564,
+            "win_pct": 32.49,
+            "mdd_pts": 86842.8,
+            "avg_hold": 35.9
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 95,
+            "gross_pts": -2854.1,
+            "net_pts": -10454.1,
+            "PF": 0.856,
+            "win_pct": 34.74,
+            "mdd_pts": 33008.2,
+            "avg_hold": 44.6
+          },
+          "1.2": {
+            "N": 95,
+            "gross_pts": -2854.1,
+            "net_pts": -14254.1,
+            "PF": 0.811,
+            "win_pct": 34.74,
+            "mdd_pts": 35008.2,
+            "avg_hold": 44.6
+          },
+          "1.6": {
+            "N": 95,
+            "gross_pts": -2854.1,
+            "net_pts": -18054.1,
+            "PF": 0.768,
+            "win_pct": 34.74,
+            "mdd_pts": 37008.2,
+            "avg_hold": 44.6
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 51,
+            "gross_pts": 39126,
+            "net_pts": 35046,
+            "PF": 2.046,
+            "win_pct": 54.9,
+            "mdd_pts": 9486.7,
+            "avg_hold": 79.6
+          },
+          "1.2": {
+            "N": 51,
+            "gross_pts": 39126,
+            "net_pts": 33006,
+            "PF": 1.959,
+            "win_pct": 54.9,
+            "mdd_pts": 9686.7,
+            "avg_hold": 79.6
+          },
+          "1.6": {
+            "N": 51,
+            "gross_pts": 39126,
+            "net_pts": 30966,
+            "PF": 1.876,
+            "win_pct": 54.9,
+            "mdd_pts": 9886.7,
+            "avg_hold": 79.6
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 122,
+            "gross_pts": -16647.5,
+            "net_pts": -26407.5,
+            "PF": 0.72,
+            "win_pct": 43.44,
+            "mdd_pts": 45618.1,
+            "avg_hold": 37.5
+          },
+          "1.2": {
+            "N": 122,
+            "gross_pts": -16647.5,
+            "net_pts": -31287.5,
+            "PF": 0.678,
+            "win_pct": 42.62,
+            "mdd_pts": 48898.1,
+            "avg_hold": 37.5
+          },
+          "1.6": {
+            "N": 122,
+            "gross_pts": -16647.5,
+            "net_pts": -36167.5,
+            "PF": 0.638,
+            "win_pct": 40.98,
+            "mdd_pts": 52178.1,
+            "avg_hold": 37.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2026",
+      "summary": {
+        "EMA21_BASE": {
+          "0.8": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 21289.6,
+            "PF": 1.29,
+            "win_pct": 43.81,
+            "mdd_pts": 13847.5,
+            "avg_hold": 37.8
+          },
+          "1.2": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 17089.6,
+            "PF": 1.226,
+            "win_pct": 43.81,
+            "mdd_pts": 15047.5,
+            "avg_hold": 37.8
+          },
+          "1.6": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 12889.6,
+            "PF": 1.165,
+            "win_pct": 43.81,
+            "mdd_pts": 16247.5,
+            "avg_hold": 37.8
+          }
+        },
+        "ZSCORE80_REENTRY": {
+          "0.8": {
+            "N": 85,
+            "gross_pts": 5708.5,
+            "net_pts": -1091.5,
+            "PF": 0.99,
+            "win_pct": 35.29,
+            "mdd_pts": 42735.4,
+            "avg_hold": 43.3
+          },
+          "1.2": {
+            "N": 85,
+            "gross_pts": 5708.5,
+            "net_pts": -4491.5,
+            "PF": 0.96,
+            "win_pct": 35.29,
+            "mdd_pts": 44495.4,
+            "avg_hold": 43.3
+          },
+          "1.6": {
+            "N": 85,
+            "gross_pts": 5708.5,
+            "net_pts": -7891.5,
+            "PF": 0.931,
+            "win_pct": 35.29,
+            "mdd_pts": 46532.9,
+            "avg_hold": 43.3
+          }
+        },
+        "VR5_REVERSION": {
+          "0.8": {
+            "N": 40,
+            "gross_pts": 13217.2,
+            "net_pts": 10017.2,
+            "PF": 1.248,
+            "win_pct": 55,
+            "mdd_pts": 17920.1,
+            "avg_hold": 49.8
+          },
+          "1.2": {
+            "N": 40,
+            "gross_pts": 13217.2,
+            "net_pts": 8417.2,
+            "PF": 1.205,
+            "win_pct": 55,
+            "mdd_pts": 18920.1,
+            "avg_hold": 49.8
+          },
+          "1.6": {
+            "N": 40,
+            "gross_pts": 13217.2,
+            "net_pts": 6817.2,
+            "PF": 1.163,
+            "win_pct": 55,
+            "mdd_pts": 19920.1,
+            "avg_hold": 49.8
+          }
+        },
+        "SHOCK_EXHAUSTION": {
+          "0.8": {
+            "N": 33,
+            "gross_pts": -18093.3,
+            "net_pts": -20733.3,
+            "PF": 0.549,
+            "win_pct": 33.33,
+            "mdd_pts": 26412.5,
+            "avg_hold": 34.4
+          },
+          "1.2": {
+            "N": 33,
+            "gross_pts": -18093.3,
+            "net_pts": -22053.3,
+            "PF": 0.529,
+            "win_pct": 33.33,
+            "mdd_pts": 27252.5,
+            "avg_hold": 34.4
+          },
+          "1.6": {
+            "N": 33,
+            "gross_pts": -18093.3,
+            "net_pts": -23373.3,
+            "PF": 0.51,
+            "win_pct": 33.33,
+            "mdd_pts": 28092.5,
+            "avg_hold": 34.4
+          }
+        },
+        "CHOP14_EXPANSION": {
+          "0.8": {
+            "N": 54,
+            "gross_pts": -19500.5,
+            "net_pts": -23820.5,
+            "PF": 0.696,
+            "win_pct": 25.93,
+            "mdd_pts": 29230.3,
+            "avg_hold": 40
+          },
+          "1.2": {
+            "N": 54,
+            "gross_pts": -19500.5,
+            "net_pts": -25980.5,
+            "PF": 0.675,
+            "win_pct": 25.93,
+            "mdd_pts": 30070.3,
+            "avg_hold": 40
+          },
+          "1.6": {
+            "N": 54,
+            "gross_pts": -19500.5,
+            "net_pts": -28140.5,
+            "PF": 0.655,
+            "win_pct": 25.93,
+            "mdd_pts": 30910.3,
+            "avg_hold": 40
+          }
+        }
+      }
+    }
+  ],
+  "quarters_at_assumed_cost_0_8": [
+    {
+      "tf": "M1",
+      "year": "2025",
+      "quarter": "2025Q1",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 469,
+          "gross_pts": -1208,
+          "net_pts": -38728,
+          "PF": 0.291,
+          "win_pct": 7.04,
+          "mdd_pts": 39097,
+          "avg_hold": 163.9
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 280,
+          "gross_pts": 8158,
+          "net_pts": -14242,
+          "PF": 0.616,
+          "win_pct": 13.93,
+          "mdd_pts": 18277.6,
+          "avg_hold": 285.2
+        },
+        "VR5_REVERSION": {
+          "N": 276,
+          "gross_pts": 6143,
+          "net_pts": -15937,
+          "PF": 0.529,
+          "win_pct": 11.59,
+          "mdd_pts": 20655.5,
+          "avg_hold": 250.4
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 116,
+          "gross_pts": 12241.9,
+          "net_pts": 2961.9,
+          "PF": 1.195,
+          "win_pct": 24.14,
+          "mdd_pts": 4996.8,
+          "avg_hold": 564.9
+        },
+        "CHOP14_EXPANSION": {
+          "N": 226,
+          "gross_pts": 4839.2,
+          "net_pts": -13240.8,
+          "PF": 0.482,
+          "win_pct": 9.73,
+          "mdd_pts": 16154.6,
+          "avg_hold": 307.7
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "year": "2025",
+      "quarter": "2025Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 571,
+          "gross_pts": -16353.6,
+          "net_pts": -62033.6,
+          "PF": 0.245,
+          "win_pct": 17.16,
+          "mdd_pts": 64648.4,
+          "avg_hold": 139.3
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 200,
+          "gross_pts": 36655.9,
+          "net_pts": 20655.9,
+          "PF": 1.564,
+          "win_pct": 35.5,
+          "mdd_pts": 6382.6,
+          "avg_hold": 418.8
+        },
+        "VR5_REVERSION": {
+          "N": 128,
+          "gross_pts": 22595.5,
+          "net_pts": 12355.5,
+          "PF": 1.543,
+          "win_pct": 31.25,
+          "mdd_pts": 5833.9,
+          "avg_hold": 597.4
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 215,
+          "gross_pts": -13349.7,
+          "net_pts": -30549.7,
+          "PF": 0.414,
+          "win_pct": 28.84,
+          "mdd_pts": 33620.7,
+          "avg_hold": 241.7
+        },
+        "CHOP14_EXPANSION": {
+          "N": 258,
+          "gross_pts": 9787.5,
+          "net_pts": -10852.5,
+          "PF": 0.719,
+          "win_pct": 23.26,
+          "mdd_pts": 20201.2,
+          "avg_hold": 276
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "year": "2025",
+      "quarter": "2025Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 591,
+          "gross_pts": -13313.1,
+          "net_pts": -60593.1,
+          "PF": 0.2,
+          "win_pct": 5.75,
+          "mdd_pts": 63175.5,
+          "avg_hold": 131.1
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 215,
+          "gross_pts": 9341.4,
+          "net_pts": -7858.6,
+          "PF": 0.762,
+          "win_pct": 22.79,
+          "mdd_pts": 11884.6,
+          "avg_hold": 390.6
+        },
+        "VR5_REVERSION": {
+          "N": 192,
+          "gross_pts": 9974.4,
+          "net_pts": -5385.6,
+          "PF": 0.796,
+          "win_pct": 19.27,
+          "mdd_pts": 12193.8,
+          "avg_hold": 398.5
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 173,
+          "gross_pts": 2377.4,
+          "net_pts": -11462.6,
+          "PF": 0.589,
+          "win_pct": 19.08,
+          "mdd_pts": 13554.2,
+          "avg_hold": 344.2
+        },
+        "CHOP14_EXPANSION": {
+          "N": 276,
+          "gross_pts": 147.4,
+          "net_pts": -21932.6,
+          "PF": 0.416,
+          "win_pct": 10.14,
+          "mdd_pts": 24951.2,
+          "avg_hold": 260.1
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "year": "2025",
+      "quarter": "2025Q4",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 424,
+          "gross_pts": 13923.3,
+          "net_pts": -19996.7,
+          "PF": 0.734,
+          "win_pct": 18.63,
+          "mdd_pts": 39351.1,
+          "avg_hold": 187.7
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 149,
+          "gross_pts": 35195.9,
+          "net_pts": 23275.9,
+          "PF": 1.653,
+          "win_pct": 39.6,
+          "mdd_pts": 10001.3,
+          "avg_hold": 547.9
+        },
+        "VR5_REVERSION": {
+          "N": 272,
+          "gross_pts": 6091.4,
+          "net_pts": -15668.6,
+          "PF": 0.767,
+          "win_pct": 27.57,
+          "mdd_pts": 22777,
+          "avg_hold": 245.1
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 159,
+          "gross_pts": 7190.1,
+          "net_pts": -5529.9,
+          "PF": 0.881,
+          "win_pct": 38.36,
+          "mdd_pts": 19769.8,
+          "avg_hold": 347.8
+        },
+        "CHOP14_EXPANSION": {
+          "N": 336,
+          "gross_pts": 5806,
+          "net_pts": -21074,
+          "PF": 0.673,
+          "win_pct": 24.11,
+          "mdd_pts": 21780.9,
+          "avg_hold": 199.5
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "year": "2026",
+      "quarter": "2026Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 287,
+          "gross_pts": 14002.9,
+          "net_pts": -8957.1,
+          "PF": 0.851,
+          "win_pct": 28.57,
+          "mdd_pts": 27865.1,
+          "avg_hold": 272.6
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 286,
+          "gross_pts": -16374.9,
+          "net_pts": -39254.9,
+          "PF": 0.534,
+          "win_pct": 34.62,
+          "mdd_pts": 51944.1,
+          "avg_hold": 286.6
+        },
+        "VR5_REVERSION": {
+          "N": 288,
+          "gross_pts": -2373.5,
+          "net_pts": -25413.5,
+          "PF": 0.671,
+          "win_pct": 32.64,
+          "mdd_pts": 34219.4,
+          "avg_hold": 231.3
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 131,
+          "gross_pts": 8495.5,
+          "net_pts": -1984.5,
+          "PF": 0.957,
+          "win_pct": 34.35,
+          "mdd_pts": 18782.2,
+          "avg_hold": 478.9
+        },
+        "CHOP14_EXPANSION": {
+          "N": 189,
+          "gross_pts": 34406.3,
+          "net_pts": 19286.3,
+          "PF": 1.429,
+          "win_pct": 35.98,
+          "mdd_pts": 17639.1,
+          "avg_hold": 391
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "year": "2026",
+      "quarter": "2026Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 343,
+          "gross_pts": 2382.1,
+          "net_pts": -25057.9,
+          "PF": 0.582,
+          "win_pct": 26.53,
+          "mdd_pts": 25057.9,
+          "avg_hold": 220.1
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 266,
+          "gross_pts": 2335.6,
+          "net_pts": -18944.4,
+          "PF": 0.739,
+          "win_pct": 35.34,
+          "mdd_pts": 29606.1,
+          "avg_hold": 294.4
+        },
+        "VR5_REVERSION": {
+          "N": 245,
+          "gross_pts": -1040,
+          "net_pts": -20640,
+          "PF": 0.654,
+          "win_pct": 31.43,
+          "mdd_pts": 27092.1,
+          "avg_hold": 284.2
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 156,
+          "gross_pts": 3582.8,
+          "net_pts": -8897.2,
+          "PF": 0.789,
+          "win_pct": 35.26,
+          "mdd_pts": 25319,
+          "avg_hold": 356.4
+        },
+        "CHOP14_EXPANSION": {
+          "N": 333,
+          "gross_pts": 1416.4,
+          "net_pts": -25223.6,
+          "PF": 0.585,
+          "win_pct": 30.33,
+          "mdd_pts": 26590,
+          "avg_hold": 189.5
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2025",
+      "quarter": "2025Q1",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 197,
+          "gross_pts": -7917.3,
+          "net_pts": -23677.3,
+          "PF": 0.331,
+          "win_pct": 18.78,
+          "mdd_pts": 23711.8,
+          "avg_hold": 67.7
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 110,
+          "gross_pts": 33.9,
+          "net_pts": -8766.1,
+          "PF": 0.649,
+          "win_pct": 32.73,
+          "mdd_pts": 11866,
+          "avg_hold": 124.8
+        },
+        "VR5_REVERSION": {
+          "N": 89,
+          "gross_pts": -628.4,
+          "net_pts": -7748.4,
+          "PF": 0.547,
+          "win_pct": 37.08,
+          "mdd_pts": 9849.8,
+          "avg_hold": 122.8
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 62,
+          "gross_pts": -633.6,
+          "net_pts": -5593.6,
+          "PF": 0.543,
+          "win_pct": 46.77,
+          "mdd_pts": 9621.8,
+          "avg_hold": 102
+        },
+        "CHOP14_EXPANSION": {
+          "N": 87,
+          "gross_pts": 13602,
+          "net_pts": 6642,
+          "PF": 1.538,
+          "win_pct": 39.08,
+          "mdd_pts": 6950.3,
+          "avg_hold": 146.3
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2025",
+      "quarter": "2025Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 186,
+          "gross_pts": -6529.6,
+          "net_pts": -21409.6,
+          "PF": 0.56,
+          "win_pct": 37.1,
+          "mdd_pts": 21466.6,
+          "avg_hold": 73.2
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 125,
+          "gross_pts": -4678.4,
+          "net_pts": -14678.4,
+          "PF": 0.726,
+          "win_pct": 36.8,
+          "mdd_pts": 26223.8,
+          "avg_hold": 118.8
+        },
+        "VR5_REVERSION": {
+          "N": 59,
+          "gross_pts": 7881.1,
+          "net_pts": 3161.1,
+          "PF": 1.159,
+          "win_pct": 38.98,
+          "mdd_pts": 7624.9,
+          "avg_hold": 163.6
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 44,
+          "gross_pts": 5459.8,
+          "net_pts": 1939.8,
+          "PF": 1.113,
+          "win_pct": 47.73,
+          "mdd_pts": 9234,
+          "avg_hold": 132.5
+        },
+        "CHOP14_EXPANSION": {
+          "N": 107,
+          "gross_pts": 10364.2,
+          "net_pts": 1804.2,
+          "PF": 1.065,
+          "win_pct": 41.12,
+          "mdd_pts": 15252.6,
+          "avg_hold": 113
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2025",
+      "quarter": "2025Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 167,
+          "gross_pts": 4423.2,
+          "net_pts": -8936.8,
+          "PF": 0.709,
+          "win_pct": 28.74,
+          "mdd_pts": 12718.3,
+          "avg_hold": 88.1
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 139,
+          "gross_pts": -2758.3,
+          "net_pts": -13878.3,
+          "PF": 0.622,
+          "win_pct": 34.53,
+          "mdd_pts": 13878.3,
+          "avg_hold": 106
+        },
+        "VR5_REVERSION": {
+          "N": 92,
+          "gross_pts": -388.1,
+          "net_pts": -7748.1,
+          "PF": 0.692,
+          "win_pct": 29.35,
+          "mdd_pts": 11202.5,
+          "avg_hold": 126.7
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 45,
+          "gross_pts": 7958.2,
+          "net_pts": 4358.2,
+          "PF": 1.369,
+          "win_pct": 40,
+          "mdd_pts": 5907.7,
+          "avg_hold": 186.2
+        },
+        "CHOP14_EXPANSION": {
+          "N": 131,
+          "gross_pts": 4793.6,
+          "net_pts": -5686.4,
+          "PF": 0.765,
+          "win_pct": 31.3,
+          "mdd_pts": 11247.9,
+          "avg_hold": 75.3
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2025",
+      "quarter": "2025Q4",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 145,
+          "gross_pts": 20307.2,
+          "net_pts": 8707.2,
+          "PF": 1.166,
+          "win_pct": 33.1,
+          "mdd_pts": 13748.4,
+          "avg_hold": 104.5
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 145,
+          "gross_pts": -17818.6,
+          "net_pts": -29418.6,
+          "PF": 0.554,
+          "win_pct": 37.93,
+          "mdd_pts": 30038.5,
+          "avg_hold": 98.3
+        },
+        "VR5_REVERSION": {
+          "N": 88,
+          "gross_pts": -16275.2,
+          "net_pts": -23315.2,
+          "PF": 0.426,
+          "win_pct": 45.45,
+          "mdd_pts": 24419.7,
+          "avg_hold": 110.6
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 39,
+          "gross_pts": 20410.5,
+          "net_pts": 17290.5,
+          "PF": 1.94,
+          "win_pct": 51.28,
+          "mdd_pts": 5954.5,
+          "avg_hold": 221.8
+        },
+        "CHOP14_EXPANSION": {
+          "N": 112,
+          "gross_pts": 19137.4,
+          "net_pts": 10177.4,
+          "PF": 1.267,
+          "win_pct": 40.18,
+          "mdd_pts": 16708.7,
+          "avg_hold": 96.1
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2026",
+      "quarter": "2026Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 154,
+          "gross_pts": -2618.8,
+          "net_pts": -14938.8,
+          "PF": 0.754,
+          "win_pct": 36.36,
+          "mdd_pts": 30183.1,
+          "avg_hold": 98.6
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 113,
+          "gross_pts": -16203.8,
+          "net_pts": -25243.8,
+          "PF": 0.693,
+          "win_pct": 34.51,
+          "mdd_pts": 36857.3,
+          "avg_hold": 132
+        },
+        "VR5_REVERSION": {
+          "N": 111,
+          "gross_pts": -6171.3,
+          "net_pts": -15051.3,
+          "PF": 0.763,
+          "win_pct": 36.04,
+          "mdd_pts": 39698.9,
+          "avg_hold": 88.4
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 46,
+          "gross_pts": 25504.3,
+          "net_pts": 21824.3,
+          "PF": 1.916,
+          "win_pct": 45.65,
+          "mdd_pts": 6352.6,
+          "avg_hold": 233.2
+        },
+        "CHOP14_EXPANSION": {
+          "N": 109,
+          "gross_pts": -4998.5,
+          "net_pts": -13718.5,
+          "PF": 0.77,
+          "win_pct": 29.36,
+          "mdd_pts": 30842.7,
+          "avg_hold": 105.7
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "year": "2026",
+      "quarter": "2026Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 103,
+          "gross_pts": 24845.4,
+          "net_pts": 16605.4,
+          "PF": 1.508,
+          "win_pct": 41.75,
+          "mdd_pts": 11751.3,
+          "avg_hold": 145.2
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 99,
+          "gross_pts": 24400.3,
+          "net_pts": 16480.3,
+          "PF": 1.353,
+          "win_pct": 43.43,
+          "mdd_pts": 15211.6,
+          "avg_hold": 146.8
+        },
+        "VR5_REVERSION": {
+          "N": 100,
+          "gross_pts": -9946,
+          "net_pts": -17946,
+          "PF": 0.601,
+          "win_pct": 40,
+          "mdd_pts": 28627.3,
+          "avg_hold": 98.7
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 55,
+          "gross_pts": -9129.2,
+          "net_pts": -13529.2,
+          "PF": 0.58,
+          "win_pct": 40,
+          "mdd_pts": 18686.2,
+          "avg_hold": 155.5
+        },
+        "CHOP14_EXPANSION": {
+          "N": 143,
+          "gross_pts": -18706.1,
+          "net_pts": -30146.1,
+          "PF": 0.457,
+          "win_pct": 33.57,
+          "mdd_pts": 30199.9,
+          "avg_hold": 62.6
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2025",
+      "quarter": "2025Q1",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 62,
+          "gross_pts": 6885.7,
+          "net_pts": 1925.7,
+          "PF": 1.125,
+          "win_pct": 41.94,
+          "mdd_pts": 6252.1,
+          "avg_hold": 70.9
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 40,
+          "gross_pts": 18773.1,
+          "net_pts": 15573.1,
+          "PF": 2.47,
+          "win_pct": 50,
+          "mdd_pts": 2807.1,
+          "avg_hold": 106.6
+        },
+        "VR5_REVERSION": {
+          "N": 30,
+          "gross_pts": 9820.1,
+          "net_pts": 7420.1,
+          "PF": 1.819,
+          "win_pct": 40,
+          "mdd_pts": 3697.8,
+          "avg_hold": 91.9
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 18,
+          "gross_pts": 3961.2,
+          "net_pts": 2521.2,
+          "PF": 1.445,
+          "win_pct": 61.11,
+          "mdd_pts": 4415.5,
+          "avg_hold": 112.3
+        },
+        "CHOP14_EXPANSION": {
+          "N": 37,
+          "gross_pts": 11494.1,
+          "net_pts": 8534.1,
+          "PF": 2.029,
+          "win_pct": 51.35,
+          "mdd_pts": 3530.6,
+          "avg_hold": 94.9
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2025",
+      "quarter": "2025Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 69,
+          "gross_pts": 7579.4,
+          "net_pts": 2059.4,
+          "PF": 1.07,
+          "win_pct": 40.58,
+          "mdd_pts": 10593.1,
+          "avg_hold": 67.5
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 55,
+          "gross_pts": 20976.8,
+          "net_pts": 16576.8,
+          "PF": 1.558,
+          "win_pct": 43.64,
+          "mdd_pts": 10498.5,
+          "avg_hold": 79.4
+        },
+        "VR5_REVERSION": {
+          "N": 40,
+          "gross_pts": -660.3,
+          "net_pts": -3860.3,
+          "PF": 0.846,
+          "win_pct": 35,
+          "mdd_pts": 16402.2,
+          "avg_hold": 65.7
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 32,
+          "gross_pts": -5972.3,
+          "net_pts": -8532.3,
+          "PF": 0.626,
+          "win_pct": 40.62,
+          "mdd_pts": 16164.9,
+          "avg_hold": 53.2
+        },
+        "CHOP14_EXPANSION": {
+          "N": 41,
+          "gross_pts": 10503.9,
+          "net_pts": 7223.9,
+          "PF": 1.347,
+          "win_pct": 48.78,
+          "mdd_pts": 10155.9,
+          "avg_hold": 86.5
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2025",
+      "quarter": "2025Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 88,
+          "gross_pts": 3998.8,
+          "net_pts": -3041.2,
+          "PF": 0.864,
+          "win_pct": 43.18,
+          "mdd_pts": 8431.2,
+          "avg_hold": 51.3
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 72,
+          "gross_pts": -4166.9,
+          "net_pts": -9926.9,
+          "PF": 0.609,
+          "win_pct": 40.28,
+          "mdd_pts": 11357.3,
+          "avg_hold": 54.9
+        },
+        "VR5_REVERSION": {
+          "N": 36,
+          "gross_pts": 4193.2,
+          "net_pts": 1313.2,
+          "PF": 1.08,
+          "win_pct": 38.89,
+          "mdd_pts": 7483,
+          "avg_hold": 88.1
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 19,
+          "gross_pts": 7503.7,
+          "net_pts": 5983.7,
+          "PF": 1.624,
+          "win_pct": 36.84,
+          "mdd_pts": 6061.3,
+          "avg_hold": 99.1
+        },
+        "CHOP14_EXPANSION": {
+          "N": 52,
+          "gross_pts": 3523.6,
+          "net_pts": -636.4,
+          "PF": 0.963,
+          "win_pct": 34.62,
+          "mdd_pts": 8860.5,
+          "avg_hold": 67.2
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2025",
+      "quarter": "2025Q4",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 101,
+          "gross_pts": 21975.6,
+          "net_pts": 13895.6,
+          "PF": 1.344,
+          "win_pct": 43.56,
+          "mdd_pts": 16345.8,
+          "avg_hold": 40.8
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 55,
+          "gross_pts": 12400.2,
+          "net_pts": 8000.2,
+          "PF": 1.177,
+          "win_pct": 36.36,
+          "mdd_pts": 16556.7,
+          "avg_hold": 73.9
+        },
+        "VR5_REVERSION": {
+          "N": 41,
+          "gross_pts": 7771.8,
+          "net_pts": 4491.8,
+          "PF": 1.169,
+          "win_pct": 46.34,
+          "mdd_pts": 15884.4,
+          "avg_hold": 83.6
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 21,
+          "gross_pts": 28948.2,
+          "net_pts": 27268.2,
+          "PF": 2.721,
+          "win_pct": 57.14,
+          "mdd_pts": 7501.5,
+          "avg_hold": 160.8
+        },
+        "CHOP14_EXPANSION": {
+          "N": 47,
+          "gross_pts": 11688.3,
+          "net_pts": 7928.3,
+          "PF": 1.218,
+          "win_pct": 38.3,
+          "mdd_pts": 23012.2,
+          "avg_hold": 71.7
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2026",
+      "quarter": "2026Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 88,
+          "gross_pts": 3197.5,
+          "net_pts": -3842.5,
+          "PF": 0.925,
+          "win_pct": 37.5,
+          "mdd_pts": 21230.4,
+          "avg_hold": 48.9
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 66,
+          "gross_pts": -4690.7,
+          "net_pts": -9970.7,
+          "PF": 0.855,
+          "win_pct": 37.88,
+          "mdd_pts": 23721.1,
+          "avg_hold": 69.4
+        },
+        "VR5_REVERSION": {
+          "N": 42,
+          "gross_pts": -3379,
+          "net_pts": -6739,
+          "PF": 0.838,
+          "win_pct": 45.24,
+          "mdd_pts": 13160.9,
+          "avg_hold": 73
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 20,
+          "gross_pts": 23334.5,
+          "net_pts": 21734.5,
+          "PF": 2.295,
+          "win_pct": 50,
+          "mdd_pts": 5398,
+          "avg_hold": 126.5
+        },
+        "CHOP14_EXPANSION": {
+          "N": 68,
+          "gross_pts": -19432,
+          "net_pts": -24872,
+          "PF": 0.61,
+          "win_pct": 33.82,
+          "mdd_pts": 37134.8,
+          "avg_hold": 40.1
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "year": "2026",
+      "quarter": "2026Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 68,
+          "gross_pts": 15809.7,
+          "net_pts": 10369.7,
+          "PF": 1.362,
+          "win_pct": 51.47,
+          "mdd_pts": 9957.6,
+          "avg_hold": 63.8
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 50,
+          "gross_pts": 15909.6,
+          "net_pts": 11909.6,
+          "PF": 1.319,
+          "win_pct": 42,
+          "mdd_pts": 11451.5,
+          "avg_hold": 91.2
+        },
+        "VR5_REVERSION": {
+          "N": 39,
+          "gross_pts": -8699.1,
+          "net_pts": -11819.1,
+          "PF": 0.672,
+          "win_pct": 38.46,
+          "mdd_pts": 15428.6,
+          "avg_hold": 53.7
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 25,
+          "gross_pts": -4821,
+          "net_pts": -6821,
+          "PF": 0.705,
+          "win_pct": 44,
+          "mdd_pts": 10808.4,
+          "avg_hold": 83.7
+        },
+        "CHOP14_EXPANSION": {
+          "N": 60,
+          "gross_pts": -14927.9,
+          "net_pts": -19727.9,
+          "PF": 0.564,
+          "win_pct": 40,
+          "mdd_pts": 24318,
+          "avg_hold": 44.6
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2025",
+      "quarter": "2025Q1",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 47,
+          "gross_pts": 5563.8,
+          "net_pts": 1803.8,
+          "PF": 1.127,
+          "win_pct": 48.94,
+          "mdd_pts": 3762.3,
+          "avg_hold": 39.9
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 45,
+          "gross_pts": -579.9,
+          "net_pts": -4179.9,
+          "PF": 0.774,
+          "win_pct": 37.78,
+          "mdd_pts": 7427.1,
+          "avg_hold": 38.2
+        },
+        "VR5_REVERSION": {
+          "N": 22,
+          "gross_pts": 4757.8,
+          "net_pts": 2997.8,
+          "PF": 1.275,
+          "win_pct": 36.36,
+          "mdd_pts": 5316.1,
+          "avg_hold": 53
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 15,
+          "gross_pts": 7550,
+          "net_pts": 6350,
+          "PF": 2.203,
+          "win_pct": 60,
+          "mdd_pts": 2117.5,
+          "avg_hold": 77.8
+        },
+        "CHOP14_EXPANSION": {
+          "N": 27,
+          "gross_pts": 633,
+          "net_pts": -1527,
+          "PF": 0.877,
+          "win_pct": 51.85,
+          "mdd_pts": 4757.5,
+          "avg_hold": 35.8
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2025",
+      "quarter": "2025Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 49,
+          "gross_pts": 1286.7,
+          "net_pts": -2633.3,
+          "PF": 0.906,
+          "win_pct": 38.78,
+          "mdd_pts": 15559.3,
+          "avg_hold": 38.1
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 45,
+          "gross_pts": 1075.8,
+          "net_pts": -2524.2,
+          "PF": 0.934,
+          "win_pct": 37.78,
+          "mdd_pts": 15397.7,
+          "avg_hold": 38.4
+        },
+        "VR5_REVERSION": {
+          "N": 22,
+          "gross_pts": -2240.9,
+          "net_pts": -4000.9,
+          "PF": 0.81,
+          "win_pct": 27.27,
+          "mdd_pts": 8066.9,
+          "avg_hold": 33.4
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 12,
+          "gross_pts": 22981.9,
+          "net_pts": 22021.9,
+          "PF": 5.739,
+          "win_pct": 66.67,
+          "mdd_pts": 2580.6,
+          "avg_hold": 102.4
+        },
+        "CHOP14_EXPANSION": {
+          "N": 33,
+          "gross_pts": -26567.8,
+          "net_pts": -29207.8,
+          "PF": 0.172,
+          "win_pct": 30.3,
+          "mdd_pts": 29481.5,
+          "avg_hold": 24.1
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2025",
+      "quarter": "2025Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 57,
+          "gross_pts": 331.2,
+          "net_pts": -4228.8,
+          "PF": 0.829,
+          "win_pct": 36.84,
+          "mdd_pts": 8421,
+          "avg_hold": 35
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 54,
+          "gross_pts": -14436.7,
+          "net_pts": -18756.7,
+          "PF": 0.454,
+          "win_pct": 35.19,
+          "mdd_pts": 20123.2,
+          "avg_hold": 35.8
+        },
+        "VR5_REVERSION": {
+          "N": 31,
+          "gross_pts": -13344.7,
+          "net_pts": -15824.7,
+          "PF": 0.288,
+          "win_pct": 32.26,
+          "mdd_pts": 15852.2,
+          "avg_hold": 39.3
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 15,
+          "gross_pts": 1504.2,
+          "net_pts": 304.2,
+          "PF": 1.02,
+          "win_pct": 40,
+          "mdd_pts": 9486.7,
+          "avg_hold": 68.5
+        },
+        "CHOP14_EXPANSION": {
+          "N": 30,
+          "gross_pts": 4612.2,
+          "net_pts": 2212.2,
+          "PF": 1.16,
+          "win_pct": 50,
+          "mdd_pts": 7962.9,
+          "avg_hold": 45.7
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2025",
+      "quarter": "2025Q4",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 61,
+          "gross_pts": 723.9,
+          "net_pts": -4156.1,
+          "PF": 0.907,
+          "win_pct": 34.43,
+          "mdd_pts": 12815.4,
+          "avg_hold": 29.2
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 53,
+          "gross_pts": -29670.6,
+          "net_pts": -33910.6,
+          "PF": 0.52,
+          "win_pct": 30.19,
+          "mdd_pts": 46352.6,
+          "avg_hold": 32.1
+        },
+        "VR5_REVERSION": {
+          "N": 20,
+          "gross_pts": 7973.6,
+          "net_pts": 6373.6,
+          "PF": 1.343,
+          "win_pct": 45,
+          "mdd_pts": 10906.8,
+          "avg_hold": 55.9
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 9,
+          "gross_pts": 7090,
+          "net_pts": 6370,
+          "PF": 1.741,
+          "win_pct": 55.56,
+          "mdd_pts": 5798.7,
+          "avg_hold": 70.8
+        },
+        "CHOP14_EXPANSION": {
+          "N": 32,
+          "gross_pts": 4675.1,
+          "net_pts": 2115.1,
+          "PF": 1.065,
+          "win_pct": 43.75,
+          "mdd_pts": 17078.8,
+          "avg_hold": 45.2
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2026",
+      "quarter": "2026Q2",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 42,
+          "gross_pts": 29954.9,
+          "net_pts": 26594.9,
+          "PF": 1.85,
+          "win_pct": 52.38,
+          "mdd_pts": 10596.4,
+          "avg_hold": 49.2
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 40,
+          "gross_pts": -6339.1,
+          "net_pts": -9539.1,
+          "PF": 0.852,
+          "win_pct": 35,
+          "mdd_pts": 36326.7,
+          "avg_hold": 44.4
+        },
+        "VR5_REVERSION": {
+          "N": 14,
+          "gross_pts": 20921.4,
+          "net_pts": 19801.4,
+          "PF": 3.809,
+          "win_pct": 78.57,
+          "mdd_pts": 4865.6,
+          "avg_hold": 55.6
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 14,
+          "gross_pts": 1929.3,
+          "net_pts": 809.3,
+          "PF": 1.045,
+          "win_pct": 35.71,
+          "mdd_pts": 11710.3,
+          "avg_hold": 36.8
+        },
+        "CHOP14_EXPANSION": {
+          "N": 27,
+          "gross_pts": -5656.6,
+          "net_pts": -7816.6,
+          "PF": 0.824,
+          "win_pct": 25.93,
+          "mdd_pts": 29230.3,
+          "avg_hold": 38.7
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "year": "2026",
+      "quarter": "2026Q3",
+      "summary": {
+        "EMA21_BASE": {
+          "N": 63,
+          "gross_pts": -265.3,
+          "net_pts": -5305.3,
+          "PF": 0.874,
+          "win_pct": 38.1,
+          "mdd_pts": 13847.5,
+          "avg_hold": 30.2
+        },
+        "ZSCORE80_REENTRY": {
+          "N": 45,
+          "gross_pts": 12047.6,
+          "net_pts": 8447.6,
+          "PF": 1.186,
+          "win_pct": 35.56,
+          "mdd_pts": 12263.9,
+          "avg_hold": 42.3
+        },
+        "VR5_REVERSION": {
+          "N": 26,
+          "gross_pts": -7704.2,
+          "net_pts": -9784.2,
+          "PF": 0.707,
+          "win_pct": 42.31,
+          "mdd_pts": 16286.5,
+          "avg_hold": 46.6
+        },
+        "SHOCK_EXHAUSTION": {
+          "N": 19,
+          "gross_pts": -20022.6,
+          "net_pts": -21542.6,
+          "PF": 0.224,
+          "win_pct": 31.58,
+          "mdd_pts": 21542.6,
+          "avg_hold": 32.7
+        },
+        "CHOP14_EXPANSION": {
+          "N": 27,
+          "gross_pts": -13843.9,
+          "net_pts": -16003.9,
+          "PF": 0.529,
+          "win_pct": 25.93,
+          "mdd_pts": 24536.1,
+          "avg_hold": 41.2
+        }
+      }
+    }
+  ],
+  "screening": {
+    "cases": 8,
+    "comparisons": 20,
+    "shortlisted": []
+  }
+}
