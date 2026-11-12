@@ -1,0 +1,38 @@
+name: ALPHA65 — 12-month historical secondary source transfer 2025
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'research/alpha65/run_extended.py'
+      - '.github/workflows/alpha65-extended-2025.yml'
+jobs:
+  historical-2025:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout secondary daily XAUUSD source at immutable Git commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --depth 1 --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2024 XAUUSD/1m/2025
+          git -C thirdparty/gold rev-parse HEAD
+          find thirdparty/gold/XAUUSD/1m/2025 -name '*.csv' | wc -l
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned research libraries
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Causal strategies, 12 separate monthly holdout checks
+        env:
+          ALPHA65_EXTERNAL_GOLD_ROOT: thirdparty/gold
+        run: python research/alpha65/run_extended.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Alpha65-OOS-12-month-2025-unverified-OHLC
+          path: research/alpha65/results_extended_2025/
+          if-no-files-found: warn
