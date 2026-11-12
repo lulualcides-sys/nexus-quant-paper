@@ -218,9 +218,25 @@
       "timeframe": "M30",
       "current_scope_status": "USER_SAVED_EXPERIMENTAL_RESEARCH_ONLY_INSUFFICIENT_TRADE_COUNT",
       "ready_for_live": false
+    },
+    {
+      "slot": 11,
+      "id": "XAU_VWAP_EMA_RECLAIM_M30",
+      "strategy": "VWAP_EMA_RECLAIM",
+      "timeframe": "M30",
+      "current_scope_status": "POINT_POSITIVE_BOTH_RESEARCH_ONLY_NEGATIVE_R_2026",
+      "ready_for_live": false
+    },
+    {
+      "slot": 12,
+      "id": "XAU_ASIA_TREND_BREAK_M30",
+      "strategy": "ASIA_TREND_BREAK",
+      "timeframe": "M30",
+      "current_scope_status": "POINT_POSITIVE_BOTH_RESEARCH_ONLY_NEGATIVE_R_2026",
+      "ready_for_live": false
     }
   ],
-  "allowed_strategy_configurations_count": 6,
+  "allowed_strategy_configurations_count": 8,
   "historical_only_outside_policy": [
     {
       "slot": 3,
@@ -1172,12 +1188,15 @@
     "No real cash PnL, spread, broker Bid/Ask, swap, slippage or forward demo validation"
   ],
   "approved_for_real_trading": false,
-  "latest_selected_registry": "research/preserved/xau_selected_ten_candidates_20261112.json",
+  "latest_selected_registry": "research/preserved/xau_selected_twelve_candidates_20261112.json",
   "all_nine_user_saved_ideas_preserved": true,
-  "total_user_saved_ideas": 10,
+  "total_user_saved_ideas": 12,
   "saved_ideas_on_non_allowed_timeframes_remain_historical_only": 4,
   "latest_updates_on": "2026-11-12",
   "added_two_not_homologated": true,
   "current_prior_tf_research_validation": "Existing three + two Shock Exhaustion entries are saved research only, no broker real-tick or forward test.",
-  "all_ten_user_saved_ideas_preserved": true
+  "all_ten_user_saved_ideas_preserved": true,
+  "all_twelve_user_saved_ideas_preserved": true,
+  "latest_batch9_additions_are_research_only": true,
+  "latest_batch9_screen_passed_count": 0
 }
