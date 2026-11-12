@@ -17,7 +17,7 @@ OUT = Path(__file__).resolve().parent / "alpha_xau_entry_risk_results"
 MIN_DATE = pd.Timestamp("2025-01-01", tz="UTC")
 MAX_HOLD = 384
 COST_GRID = (0.8, 1.2, 1.6)
-PROFILES = ("RUNNER384_ORIGINAL", "ENTRY_QUALITY", "BREAKEVEN_AFTER_TP2", "ENTRY_QUALITY_BE")
+PROFILES = ("RUNNER384_ORIGINAL", "ENTRY_QUALITY", "BREAKEVEN_AFTER_TP2", "ENTRY_QUALITY_BE", "REVERSAL_GATED_BE")
 
 
 def qualified_entry(frame, i, side, risk):
@@ -55,8 +55,11 @@ def simulate_profile(frame, signals, first, last, profile):
     hi = frame.high.to_numpy(dtype=float)
     lo = frame.low.to_numpy(dtype=float)
     cl = frame.close.to_numpy(dtype=float)
+    fema = frame.fema.to_numpy(dtype=float)
+    atr = frame.atr.to_numpy(dtype=float)
     use_gate = profile in ("ENTRY_QUALITY", "ENTRY_QUALITY_BE")
     use_be = profile in ("BREAKEVEN_AFTER_TP2", "ENTRY_QUALITY_BE")
+    reversal_be = profile == "REVERSAL_GATED_BE"
     prev_end = first-1
     out = []
     for i, side, source_stop, quality in signals:
@@ -75,6 +78,7 @@ def simulate_profile(frame, signals, first, last, profile):
         targets = [entry+side*risk, entry+side*1.5*risk]
         remain, filled_tps, gross = 1., 0, 0.
         be_pending = False
+        be_armed = False
         reason = "TIME"
         end = entrybar+MAX_HOLD
         for j in range(entrybar,entrybar+MAX_HOLD+1):
@@ -82,11 +86,23 @@ def simulate_profile(frame, signals, first, last, profile):
                 # Can be tightened at the next OPEN; never widen initial SL.
                 stop = max(stop, entry) if side>0 else min(stop, entry)
                 be_pending = False
+                be_armed = True
+            # New conservative candidate: protect the runner ONLY after TP2 and
+            # two fully closed candles confirm a material EMA21 reversal.
+            # No unconditional breakeven, no extra entry restriction.
+            if reversal_be and filled_tps==2 and j>=entrybar+3:
+                if (np.isfinite([cl[j-1],cl[j-2],fema[j-1],
+                                 fema[j-2],atr[j-1]]).all()
+                    and atr[j-1]>0
+                    and side*(cl[j-1]-fema[j-1]) < -0.25*atr[j-1]
+                    and side*(cl[j-2]-fema[j-2]) < 0):
+                    stop = max(stop,entry) if side>0 else min(stop,entry)
+                    be_armed = True
             stopped = (lo[j] <= stop if side>0 else hi[j] >= stop)
             if stopped:
                 fill = min(op[j], stop) if side>0 else max(op[j],stop)
                 gross += remain*side*(fill-entry)
-                reason = "SL_AFTER_TP2" if use_be and filled_tps==2 else "SL"
+                reason = "SL_AFTER_TP2" if be_armed and filled_tps==2 else "SL"
                 end = j
                 break
             for k in range(filled_tps,2):
@@ -229,7 +245,9 @@ def main():
       "trade a trade antes da comparação (sem alterar regras ou snapshots).",
       "Perfis: original Runner384; qualidade de entrada EMA21/55 com inclinação",
       "e risco normalizado por ATR; breakeven apenas no candle seguinte ao TP2;",
-      "e combinação das duas mudanças. SL sempre precede TPs no candle ambíguo.",
+      "e combinação das duas mudanças. REVERSAL_GATED_BE: proteger a última",
+      "parcela somente após TP2 e duas barras fechadas sinalizando reversão",
+      "significativa da EMA21. SL sempre precede TP em candle ambíguo.",
       "Custos hipotéticos 0,8 / 1,2 / 1,6 USD por onça por operação.",
       "2025 e 2026 já eram conhecidos: isto NÃO é OOS novo.", "",
       "| Janela | Modelo | Operações | Pts líquidos (0,8) | PF (0,8) | MDD pts | Pts líquidos (1,2) |",
