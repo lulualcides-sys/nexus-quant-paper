@@ -12,6 +12,14 @@ def sample():
        atr=[1.]*N, fema=[100.]*N, sema=[100.]*N))
     return d
 
+def bullish_followthrough(f):
+    f.loc[3,"high"]=103.1
+    f.loc[4:,["open","high","low","close"]]=[100.5,100.6,100.4,100.5]
+
+def bearish_followthrough(f):
+    f.loc[3,"low"]=96.9
+    f.loc[4:,["open","high","low","close"]]=[99.5,99.6,99.4,99.5]
+
 def forced_masks():
     return np.zeros((2,N),dtype=bool), np.zeros((2,N),dtype=bool)
 
@@ -30,7 +38,7 @@ class TestAdaptiveXAU(unittest.TestCase):
         self.assertAlmostEqual(t[0]["net_pts"],220.)
 
     def test_trend_holds_runner_but_hard_caps_at_384(self):
-        f=sample();f.loc[3,"high"]=103.1
+        f=sample();bullish_followthrough(f)
         a,b=forced_masks();a[0,1:]=True
         t=simulate_adaptive(f,[(1,1,98.,1.)],0,N,(a,b))
         self.assertEqual(t[0]["reason"],"TIME_MAX")
@@ -39,7 +47,7 @@ class TestAdaptiveXAU(unittest.TestCase):
         self.assertTrue(t[0]["ever_runner"])
 
     def test_two_closed_bars_trend_loss_next_open(self):
-        f=sample();f.loc[3,"high"]=103.1
+        f=sample();bullish_followthrough(f)
         a,b=forced_masks();a[0,1:60]=True
         t=simulate_adaptive(f,[(1,1,98.,1.)],0,N,(a,b))
         self.assertEqual(t[0]["reason"],"TREND_LOST")
@@ -61,7 +69,7 @@ class TestAdaptiveXAU(unittest.TestCase):
         self.assertAlmostEqual(t[0]["net_pts"],-480.)
 
     def test_short_direction_can_extend(self):
-        f=sample();f.loc[3,"low"]=96.9
+        f=sample();bearish_followthrough(f)
         a,b=forced_masks();a[1,1:]=True
         t=simulate_adaptive(f,[(1,-1,102.,1.)],0,N,(a,b))
         self.assertTrue(t[0]["ever_runner"])
@@ -90,7 +98,7 @@ class TestAdaptiveXAU(unittest.TestCase):
         self.assertEqual(t,[])
 
     def test_two_signals_do_not_overlap(self):
-        f=sample();f.loc[3,"high"]=103.1
+        f=sample();bullish_followthrough(f)
         a,b=forced_masks();a[0,1:]=True
         t=simulate_adaptive(f,[(1,1,98.,1.),(2,1,98.,1.)],0,N,(a,b))
         self.assertEqual(len(t),1)
