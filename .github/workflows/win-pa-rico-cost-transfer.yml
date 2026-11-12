@@ -1,0 +1,41 @@
+name: WIN Price Action | Rico costs and other expiry
+on:
+  push:
+    branches:
+      - research/win-price-action-m1m5-20261109
+    paths:
+      - research/win_pa_rico_cost_transfer.py
+      - research/win_pa_winj26_replication.py
+      - research/win_price_action.py
+      - tests/test_win_pa_rico_cost_transfer.py
+      - .github/workflows/win-pa-rico-cost-transfer.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  independent_cost_check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile price action and other contract PINNED import
+        run: |
+          python -m py_compile research/win_pa_rico_cost_transfer.py research/win_pa_winj26_replication.py
+      - name: Deterministic bot and cost transfer tests
+        run: |
+          python -m unittest discover -s tests -p 'test_win_price_action.py' -v
+          python -m unittest discover -s tests -p 'test_win_pa_rico_cost_transfer.py' -v
+      - name: Compare PINNED WINQ26 to WINJ26 under frozen Rico cost scenarios
+        run: python -m research.win_pa_rico_cost_transfer
+      - name: Store comparison and trade ledgers
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-price-action-rico-other-contract-research
+          path: |
+            research/results/win_pa_rico_cost_transfer.json
+            research/results/win_pa_rico_cost_transfer.md
+          retention-days: 30

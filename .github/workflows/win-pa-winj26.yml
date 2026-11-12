@@ -1,0 +1,34 @@
+name: WIN Price Action | Other contract WINJ26
+on:
+  push:
+    branches:
+      - research/win-price-action-m1m5-20261109
+    paths:
+      - research/win_pa_winj26_replication.py
+      - research/win_pa_variant_screen.py
+      - .github/workflows/win-pa-winj26.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  other_contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile independent-contract runner
+        run: python -m py_compile research/win_pa_winj26_replication.py
+      - name: Evaluate WINJ26 real CSV pinned by Git blob SHA
+        run: python -m research.win_pa_winj26_replication
+      - name: Attach independently auditable output
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-pa-winj26-replication
+          path: |
+            research/results/win_pa_winj26_research.json
+            research/results/win_pa_winj26_research.md
+          retention-days: 30

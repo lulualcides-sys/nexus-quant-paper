@@ -1,0 +1,27 @@
+name: WIN Price Action M1-M5 tests
+on:
+  pull_request:
+    paths:
+      - research/win_price_action.py
+      - research/win_price_data.py
+      - tests/test_win_price_action.py
+      - .github/workflows/win-price-action-ci.yml
+  push:
+    branches:
+      - research/win-price-action-m1m5-20261109
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile strategy
+        run: python -m py_compile research/win_price_action.py tests/test_win_price_action.py
+      - name: Focused unit tests
+        run: python -m unittest discover -s tests -p 'test_win_price_action.py' -v
