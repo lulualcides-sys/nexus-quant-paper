@@ -1,5 +1,8 @@
 # NEXUS VECTOR RETEST EA v1.00 — MT5
 
+> **RESULTADO DE PESQUISA — NÃO APROVADO PARA OPERAÇÃO:** O teste exploratório XAUUSD de 30% final fora da amostra resultou **negativo** para o Vector Retest em M5 (−20,56 R, PF 0,773; 141 operações), M15 (−7,28 R, PF 0,773; 51 operações) e M30 (−1,15 R, PF 0,845; 14 operações). O VWAP proxy teve +7,70 R e PF 1,333 em M15. Esta comparação é em Python OHLC, não comprova a performance do EA compilado, mas **não justifica ativá-lo em dinheiro real**. [Relatório completo](research_results/REPORT_2026-11-12.md).
+
+
 **Novo robo automatico original**, independente do Nexus VWAP e do Nexus Vector H1. Estrategia de rompimento + reteste confirmado, nao usa VWAP como sinal.
 
 ## Setup e vetor matematico
