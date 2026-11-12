@@ -1,0 +1,85 @@
+name: "NEXUS V4 | H1 signals M5 fills and fee stress"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/nexus_m1m5/v4_*.py"
+      - "tests/test_nexus_m1m5_v4.py"
+      - "docs/NEXUS-M1M5-V4-HOURLY-ENTRY.md"
+      - ".github/workflows/nexus-m1m5-v4.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-v4-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  offline-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Strict v4 causal and fee regression
+        run: python -m unittest discover -s tests -p "test_nexus_m1m5_v4.py" -v
+      - name: V1 baseline stays unchanged
+        run: python -m unittest discover -s tests -p "test_nexus_m1m5_lab.py" -v
+      - name: V2 regression stays unchanged
+        run: python -m unittest discover -s tests -p "test_nexus_m1m5_v2.py" -v
+      - name: V3 regression stays unchanged
+        run: python -m unittest discover -s tests -p "test_nexus_m1m5_v3.py" -v
+      - name: Validate Python compilation without third-party dependencies
+        run: python -m compileall -q research/nexus_m1m5 tests/test_nexus_m1m5_v4.py
+  verified-history:
+    needs: offline-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Reuse official Binance M5 public archive checksum cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/nexus_m1m5_v3/
+          key: nexus-v4-2025-01-2026-06-m5-official-v1
+          restore-keys: |
+            nexus-v3-2025-01-2026-06-public-monthly
+      - name: Reproduce frozen V4 research on SHA256 verified public Binance spot M5
+        run: python -m research.nexus_m1m5.v4_run --out artifacts/nexus-m1m5-v4
+      - name: Publish ledger plus metrics even if validation fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-v4-research-${{ github.run_id }}
+          path: artifacts/nexus-m1m5-v4/
+          if-no-files-found: warn
+          retention-days: 30
+
+  independent-backfill-2024:
+    needs: offline-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Cache independently verified Binance spot M5 2024 archives
+        uses: actions/cache@v4
+        with:
+          path: .cache/nexus_v4_backfill/
+          key: nexus-v4-independent-2024-m5-official-first-use
+      - name: Replay identical frozen V4 parameters on unexamined 2024 data, excluding anomalous 2023
+        run: python -m research.nexus_m1m5.v4_backfill --out artifacts/nexus-v4-backfill
+      - name: Upload complete independent historical backfill ledger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-v4-backfill-${{ github.run_id }}
+          path: artifacts/nexus-v4-backfill/
+          if-no-files-found: warn
+          retention-days: 30
