@@ -1,0 +1,1151 @@
+{
+  "updated_at": "2026-11-12",
+  "symbol": "XAUUSD",
+  "policy_id": "XAUUSD_NATIVE_TIMEFRAME_POLICY_20261112",
+  "allowed_timeframes": [
+    "M1",
+    "M5",
+    "M15",
+    "M30"
+  ],
+  "prohibited_timeframes": [
+    "M2",
+    "M3",
+    "M4",
+    "M6",
+    "M10",
+    "M12",
+    "M20"
+  ],
+  "requirement": "Only M1/M5/M15/M30 for new bots, indicators, testing and active candidates. Treat all other TF old results as historical and not as transferable.",
+  "allowed_strategy_configurations": [
+    {
+      "slot": 1,
+      "id": "XAU_EMA21_RUNNER_M15",
+      "strategy": "EMA21_BASE",
+      "timeframe": "M15",
+      "data_source_code": "robots/mt5/nexus_vector_retest/alpha_xau_mtf_2025plus.py",
+      "reference_branch": "research/xau-ema21-m1-to-m30-2025plus-20261112",
+      "parameters": {
+        "ema_fast": 21,
+        "ema_slow": 55,
+        "stop": "signal candle extreme or EMA21 +0.12 ATR14",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "partial_size_each": 0.3333333333333333,
+        "runner": "remaining 1/3, original SL or 384 M15 bars"
+      },
+      "historic_2025": {
+        "trades": 320,
+        "estimated_net_points_at_0_80": 14839.4,
+        "pf_at_0_80": 1.138,
+        "drawdown_closed_points": 16345.8
+      },
+      "historic_2026_partial": {
+        "trades": 156,
+        "estimated_net_points_at_0_80": 6527.2,
+        "pf_at_0_80": 1.082,
+        "drawdown_closed_points": 21230.4
+      },
+      "stress_cost_1_20_estimated_net_pts": {
+        "2025": 2039.4,
+        "2026_partial": 287.2
+      },
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
+      "timeframe_policy_status": "IN_ALLOWED_TIMEFRAME_RESEARCH_ONLY",
+      "active_eligible_under_timeframe_policy": true,
+      "note_timeframe_policy": "Original signal and timeframe preserved in currently permitted scope; execution validation not performed"
+    },
+    {
+      "slot": 2,
+      "id": "XAU_EMA21_RSI_MACD_M30",
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M30",
+      "data_source_code": "robots/mt5/nexus_vector_retest/xau_indicator_lab_2025plus.py",
+      "reference_branch": "research/xau-new-indicators-2025plus-20261112",
+      "parameters": {
+        "ema_fast": 21,
+        "ema_slow": 55,
+        "rsi_period": 14,
+        "macd": [
+          12,
+          26,
+          9
+        ],
+        "long_gate": "52 < RSI < 78 and MACD histogram > 0",
+        "short_gate": "22 < RSI < 48 and MACD histogram < 0",
+        "signal": "closed-candle EMA21 pullback",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "partial_size_each": 0.3333333333333333,
+        "runner": "remaining 1/3, original stop or 192 M30 bars"
+      },
+      "historic_2025": {
+        "trades": 113,
+        "estimated_net_points_at_0_80": 12240.5,
+        "pf_at_0_80": 1.2,
+        "drawdown_closed_points": 12275
+      },
+      "historic_2026_partial": {
+        "trades": 54,
+        "estimated_net_points_at_0_80": 19682.8,
+        "pf_at_0_80": 1.518,
+        "drawdown_closed_points": 17735.3
+      },
+      "stress_cost_1_60_estimated_net_pts": {
+        "2025": 3200.5,
+        "2026_partial": 15362.8
+      },
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
+      "timeframe_policy_status": "IN_ALLOWED_TIMEFRAME_RESEARCH_ONLY",
+      "active_eligible_under_timeframe_policy": true,
+      "note_timeframe_policy": "Original signal and timeframe preserved in currently permitted scope; execution validation not performed"
+    },
+    {
+      "slot": 7,
+      "id": "XAU_EFFICIENCY_ER20_BREAK_M30",
+      "label": "Kaufman efficiency ratio ER20 breakout",
+      "strategy": "EFFICIENCY_ER20_BREAK",
+      "timeframe": "M30",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus.py",
+      "source_branch": "research/xau-volatility-breakouts-batch4-20261112",
+      "verified_ci_run": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43245678768",
+      "original_research_results": "research/preserved/xau_volatility_patterns_m1_m30_2025plus_20261112.json",
+      "parameters": {
+        "pattern": "Kaufman efficiency ratio over 20 closed bars >=0.38; signal candle closes beyond previous 12-bar high/low by 0.10 ATR14 with directional body >0.30",
+        "stop": "min(signal low,prior12 high)-0.12 ATR14 long; max(signal high,prior12 low)+0.12 ATR14 short",
+        "execution": "Closed candle signal, enter next bar open; stop-first if ambiguous OHLC, gaps unfavorable",
+        "targets_r": [
+          1,
+          1.5
+        ],
+        "tp_partial_size_each": 0.3333333333333333,
+        "runner_remaining": 0.3333333333333333,
+        "runner_max_trading_minutes": 5760,
+        "runner_max_bars": 192,
+        "assumed_point_price_usd": 0.01
+      },
+      "historical_2025": {
+        "trades": 110,
+        "net_points_at_cost_0_8": 39638.5,
+        "profit_factor_at_cost_0_8": 1.518,
+        "max_drawdown_closed_trade_points_at_cost_0_8": 11535.4,
+        "net_points_at_cost_1_2": 35238.5,
+        "net_points_at_cost_1_6": 30838.5
+      },
+      "historical_2026_partial": {
+        "trades": 52,
+        "net_points_at_cost_0_8": 29870.4,
+        "profit_factor_at_cost_0_8": 1.48,
+        "max_drawdown_closed_trade_points_at_cost_0_8": 22095.6,
+        "net_points_at_cost_1_2": 27790.4,
+        "net_points_at_cost_1_6": 25710.4
+      },
+      "quarterly_net_at_cost_0_8": [
+        {
+          "year": "2025",
+          "quarter": "2025Q1",
+          "estimated_net_pts_at_0_8": -3376.3,
+          "trades": 26,
+          "pf": 0.735
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q2",
+          "estimated_net_pts_at_0_8": 2623.4,
+          "trades": 31,
+          "pf": 1.09
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q3",
+          "estimated_net_pts_at_0_8": 11596.8,
+          "trades": 26,
+          "pf": 2.3
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q4",
+          "estimated_net_pts_at_0_8": 28794.6,
+          "trades": 27,
+          "pf": 2.121
+        },
+        {
+          "year": "2026",
+          "quarter": "2026Q2",
+          "estimated_net_pts_at_0_8": 42485.9,
+          "trades": 20,
+          "pf": 3.599
+        },
+        {
+          "year": "2026",
+          "quarter": "2026Q3",
+          "estimated_net_pts_at_0_8": -12615.6,
+          "trades": 32,
+          "pf": 0.725
+        }
+      ],
+      "research_status": "USER_SELECTED_PRESERVED_RESEARCH_CANDIDATE_NOT_BROKER_TESTED",
+      "ready_for_live_trading": false,
+      "timeframe_policy_status": "IN_ALLOWED_TIMEFRAME_RESEARCH_ONLY",
+      "active_eligible_under_timeframe_policy": true,
+      "note_timeframe_policy": "Original signal and timeframe preserved in currently permitted scope; execution validation not performed"
+    }
+  ],
+  "allowed_strategy_configurations_count": 3,
+  "historical_only_outside_policy": [
+    {
+      "slot": 3,
+      "id": "XAU_HULL21_PULLBACK_M20",
+      "strategy": "HULL21_PULLBACK",
+      "timeframe": "M20",
+      "source_branch": "research/xau-indicators-batch2-2025plus-20261112",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_indicator_batch2_2025plus.py",
+      "reference_report": "research/preserved/xau_indicator_batch2_full_2025plus_20261112.json",
+      "parameters": {
+        "hma_period": 21,
+        "fast_wma": 10,
+        "slow_wma": 21,
+        "final_wma": 5,
+        "ema_context": 55,
+        "confirmation": "closed candle Hull slope and Hull retest with aligned EMA55, body greater than 0.15 directional candle range",
+        "atr_period": 14,
+        "stop": "min(signal low,HMA)-0.12 ATR for long; max(signal high,HMA)+0.12 ATR for short",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "runner": "last 1/3 at original SL or 288 M20 bars (96 hours of trading candles)"
+      },
+      "historic_2025": {
+        "trades": 254,
+        "net_pts_cost_0_8": 27277.8,
+        "pf_cost_0_8": 1.261,
+        "mdd_closed_trade_pts": 15180.4,
+        "net_pts_cost_1_2": 17117.8,
+        "net_pts_cost_1_6": 6957.8
+      },
+      "historic_2026_partial": {
+        "trades": 130,
+        "net_pts_cost_0_8": 22320.3,
+        "pf_cost_0_8": 1.272,
+        "mdd_closed_trade_pts": 14593.1,
+        "net_pts_cost_1_2": 17120.3,
+        "net_pts_cost_1_6": 11920.3
+      },
+      "research_risks": [
+        "2025Q1 negative -7105.8 points; 2025Q4 +22694.9 points (~83% of whole year gains)",
+        "2026 dataset only Q2 and Q3",
+        "No actual broker ticks, fills, spread, swap or live results"
+      ],
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE",
+      "approved_for_live": false,
+      "timeframe_policy_status": "HISTORICAL_ONLY_TIMEFRAME_NOT_ALLOWED",
+      "active_eligible_under_timeframe_policy": false,
+      "note_timeframe_policy": "Original M12/M20 performance remains in archival research only. This is NOT an allowed current timeframe; no automatic migration or transfer of profits to permitted timeframes."
+    },
+    {
+      "slot": 4,
+      "id": "XAU_ASIA_SWEEP_RECLAIM_M12",
+      "strategy": "ASIA_SWEEP_RECLAIM",
+      "timeframe": "M12",
+      "source_branch": "research/xau-liquidity-session-2025plus-20261112",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_liquidity_session_2025plus.py",
+      "reference_report": "research/preserved/xau_liquidity_session_m1_m30_2025plus_20261112.json",
+      "parameters": {
+        "session": "completed Asia 00:00–06:00 UTC; signal allowed 07:00–19:00 UTC",
+        "long": "low below Asia low by >0.08 ATR14 then closed > Asia low +0.03 ATR14, directional body >0.14 range",
+        "short": "high above Asia high by >0.08 ATR14 then closed below Asia high -0.03 ATR14, bearish body < -0.14 range",
+        "stop": "min(signal low, Asia low)-0.12 ATR14 long, max(signal high, Asia high)+0.12 ATR14 short",
+        "entry": "next-bar open; at most one signal per UTC day",
+        "tp_r": [
+          1,
+          1.5
+        ],
+        "runner": "remaining third up to 480 M12 candles (96 hours trading bars)"
+      },
+      "history_2025": {
+        "trades": 87,
+        "net_pts_cost_0_8": 13382.9,
+        "pf_cost_0_8": 1.411,
+        "mdd_closed_trades_pts": 16098.1,
+        "net_pts_cost_1_2": 9902.9,
+        "net_pts_cost_1_6": 6422.9
+      },
+      "history_2026_partial": {
+        "trades": 72,
+        "net_pts_cost_0_8": 9446.1,
+        "pf_cost_0_8": 1.215,
+        "mdd_closed_trades_pts": 11846.6,
+        "net_pts_cost_1_2": 6566.1,
+        "net_pts_cost_1_6": 3686.1
+      },
+      "concentration_risk": "2025 Q2 -10029.6 pts, 2025 Q4 +20621.9 pts, 2026 Q3 -3716.6 pts at assumed 0.8 USD/oz cost; not consistent each quarter",
+      "data_caveat": "2026 historical data only Q2–Q3, distinct 2025/2026 feeds, already explored (not true holdout)",
+      "research_status": "SAVED_CANDIDATE_ONLY",
+      "approved_for_live": false,
+      "timeframe_policy_status": "HISTORICAL_ONLY_TIMEFRAME_NOT_ALLOWED",
+      "active_eligible_under_timeframe_policy": false,
+      "note_timeframe_policy": "Original M12/M20 performance remains in archival research only. This is NOT an allowed current timeframe; no automatic migration or transfer of profits to permitted timeframes."
+    },
+    {
+      "slot": 5,
+      "id": "XAU_INSIDE_MOTHER_BREAK_M12",
+      "label": "Inside mother bar breakout",
+      "strategy": "INSIDE_MOTHER_BREAK",
+      "timeframe": "M12",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus.py",
+      "source_branch": "research/xau-volatility-breakouts-batch4-20261112",
+      "verified_ci_run": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43245678768",
+      "original_research_results": "research/preserved/xau_volatility_patterns_m1_m30_2025plus_20261112.json",
+      "parameters": {
+        "pattern": "Closed candle i-1 fully inside mother candle i-2; candle i closes beyond mother high or low with >=0.05 ATR14 buffer and directional body >0.18 range",
+        "stop": "min(signal low,mother low)-0.12 ATR14 long; max(signal high,mother high)+0.12 ATR14 short",
+        "execution": "Closed candle signal, enter next bar open; stop-first if ambiguous OHLC, gaps unfavorable",
+        "targets_r": [
+          1,
+          1.5
+        ],
+        "tp_partial_size_each": 0.3333333333333333,
+        "runner_remaining": 0.3333333333333333,
+        "runner_max_trading_minutes": 5760,
+        "runner_max_bars": 480,
+        "assumed_point_price_usd": 0.01
+      },
+      "historical_2025": {
+        "trades": 231,
+        "net_points_at_cost_0_8": 49676,
+        "profit_factor_at_cost_0_8": 1.523,
+        "max_drawdown_closed_trade_points_at_cost_0_8": 12991.2,
+        "net_points_at_cost_1_2": 40436,
+        "net_points_at_cost_1_6": 31196
+      },
+      "historical_2026_partial": {
+        "trades": 108,
+        "net_points_at_cost_0_8": 27358,
+        "profit_factor_at_cost_0_8": 1.321,
+        "max_drawdown_closed_trade_points_at_cost_0_8": 24022.2,
+        "net_points_at_cost_1_2": 23038,
+        "net_points_at_cost_1_6": 18718
+      },
+      "quarterly_net_at_cost_0_8": [
+        {
+          "year": "2025",
+          "quarter": "2025Q1",
+          "estimated_net_pts_at_0_8": -816.4,
+          "trades": 65,
+          "pf": 0.96
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q2",
+          "estimated_net_pts_at_0_8": 6715,
+          "trades": 58,
+          "pf": 1.209
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q3",
+          "estimated_net_pts_at_0_8": 2479.1,
+          "trades": 57,
+          "pf": 1.112
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q4",
+          "estimated_net_pts_at_0_8": 41298.3,
+          "trades": 51,
+          "pf": 3.012
+        },
+        {
+          "year": "2026",
+          "quarter": "2026Q2",
+          "estimated_net_pts_at_0_8": 8089.3,
+          "trades": 58,
+          "pf": 1.166
+        },
+        {
+          "year": "2026",
+          "quarter": "2026Q3",
+          "estimated_net_pts_at_0_8": 19268.7,
+          "trades": 50,
+          "pf": 1.529
+        }
+      ],
+      "research_status": "USER_SELECTED_PRESERVED_RESEARCH_CANDIDATE_NOT_BROKER_TESTED",
+      "ready_for_live_trading": false,
+      "timeframe_policy_status": "HISTORICAL_ONLY_TIMEFRAME_NOT_ALLOWED",
+      "active_eligible_under_timeframe_policy": false,
+      "note_timeframe_policy": "Original M12/M20 performance remains in archival research only. This is NOT an allowed current timeframe; no automatic migration or transfer of profits to permitted timeframes."
+    },
+    {
+      "slot": 6,
+      "id": "XAU_VOL_COMPRESSION_RELEASE_M20",
+      "label": "Volatility compression and release",
+      "strategy": "VOL_COMPRESSION_RELEASE",
+      "timeframe": "M20",
+      "source_script": "robots/mt5/nexus_vector_retest/xau_volatility_breakouts_2025plus.py",
+      "source_branch": "research/xau-volatility-breakouts-batch4-20261112",
+      "verified_ci_run": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43245678768",
+      "original_research_results": "research/preserved/xau_volatility_patterns_m1_m30_2025plus_20261112.json",
+      "parameters": {
+        "pattern": "Mean true range of previous 6 completed bars <=72% of mean TR in preceding 20 bars; signal expands >=1.4 times recent average range, closes beyond previous 8-bar max/min by 0.08 ATR and directional body >=0.34",
+        "stop": "min(signal low,prior8 high)-0.12 ATR14 long; max(signal high,prior8 low)+0.12 ATR14 short",
+        "execution": "Closed candle signal, enter next bar open; stop-first if ambiguous OHLC, gaps unfavorable",
+        "targets_r": [
+          1,
+          1.5
+        ],
+        "tp_partial_size_each": 0.3333333333333333,
+        "runner_remaining": 0.3333333333333333,
+        "runner_max_trading_minutes": 5760,
+        "runner_max_bars": 288,
+        "assumed_point_price_usd": 0.01
+      },
+      "historical_2025": {
+        "trades": 140,
+        "net_points_at_cost_0_8": 21794.1,
+        "profit_factor_at_cost_0_8": 1.303,
+        "max_drawdown_closed_trade_points_at_cost_0_8": 13901.8,
+        "net_points_at_cost_1_2": 16194.1,
+        "net_points_at_cost_1_6": 10594.1
+      },
+      "historical_2026_partial": {
+        "trades": 66,
+        "net_points_at_cost_0_8": 33451.4,
+        "profit_factor_at_cost_0_8": 1.631,
+        "max_drawdown_closed_trade_points_at_cost_0_8": 11340.5,
+        "net_points_at_cost_1_2": 30811.4,
+        "net_points_at_cost_1_6": 28171.4
+      },
+      "quarterly_net_at_cost_0_8": [
+        {
+          "year": "2025",
+          "quarter": "2025Q1",
+          "estimated_net_pts_at_0_8": -10542.6,
+          "trades": 34,
+          "pf": 0.383
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q2",
+          "estimated_net_pts_at_0_8": 4853.1,
+          "trades": 38,
+          "pf": 1.244
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q3",
+          "estimated_net_pts_at_0_8": 7664,
+          "trades": 36,
+          "pf": 1.612
+        },
+        {
+          "year": "2025",
+          "quarter": "2025Q4",
+          "estimated_net_pts_at_0_8": 19819.6,
+          "trades": 32,
+          "pf": 1.889
+        },
+        {
+          "year": "2026",
+          "quarter": "2026Q2",
+          "estimated_net_pts_at_0_8": 28544.8,
+          "trades": 30,
+          "pf": 2.175
+        },
+        {
+          "year": "2026",
+          "quarter": "2026Q3",
+          "estimated_net_pts_at_0_8": 4906.6,
+          "trades": 36,
+          "pf": 1.171
+        }
+      ],
+      "research_status": "USER_SELECTED_PRESERVED_RESEARCH_CANDIDATE_NOT_BROKER_TESTED",
+      "ready_for_live_trading": false,
+      "timeframe_policy_status": "HISTORICAL_ONLY_TIMEFRAME_NOT_ALLOWED",
+      "active_eligible_under_timeframe_policy": false,
+      "note_timeframe_policy": "Original M12/M20 performance remains in archival research only. This is NOT an allowed current timeframe; no automatic migration or transfer of profits to permitted timeframes."
+    }
+  ],
+  "historical_only_count": 4,
+  "all_seven_prior_user_selected_ideas_preserved": true,
+  "all_seven_original_record": "research/preserved/xau_selected_seven_candidates_20261112.json",
+  "existing_research_only": true,
+  "already_analysed_permitted_tf_results": [
+    {
+      "slot": 1,
+      "strategy": "EMA21_BASE",
+      "timeframe": "M1",
+      "original_saved_tf": "M15",
+      "year_2025": {
+        "N": 2055,
+        "net_pts_at_cost_0_8": -181351.3,
+        "pf_at_cost_0_8": 0.37,
+        "net_pts_at_cost_1_2": -263551.3,
+        "pf_at_cost_1_2": 0.274,
+        "net_pts_at_cost_1_6": -345751.3
+      },
+      "year_2026_partial": {
+        "N": 630,
+        "net_pts_at_cost_0_8": -34015.1,
+        "pf_at_cost_0_8": 0.717,
+        "net_pts_at_cost_1_2": -59215.1,
+        "pf_at_cost_1_2": 0.577,
+        "net_pts_at_cost_1_6": -84415.1
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 1,
+      "strategy": "EMA21_BASE",
+      "timeframe": "M5",
+      "original_saved_tf": "M15",
+      "year_2025": {
+        "N": 695,
+        "net_pts_at_cost_0_8": -45316.6,
+        "pf_at_cost_0_8": 0.729,
+        "net_pts_at_cost_1_2": -73116.6,
+        "pf_at_cost_1_2": 0.611,
+        "net_pts_at_cost_1_6": -100916.6
+      },
+      "year_2026_partial": {
+        "N": 257,
+        "net_pts_at_cost_0_8": 1666.6,
+        "pf_at_cost_0_8": 1.018,
+        "net_pts_at_cost_1_2": -8613.4,
+        "pf_at_cost_1_2": 0.914,
+        "net_pts_at_cost_1_6": -18893.4
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 1,
+      "strategy": "EMA21_BASE",
+      "timeframe": "M15",
+      "original_saved_tf": "M15",
+      "year_2025": {
+        "N": 320,
+        "net_pts_at_cost_0_8": 14839.4,
+        "pf_at_cost_0_8": 1.138,
+        "net_pts_at_cost_1_2": 2039.4,
+        "pf_at_cost_1_2": 1.018,
+        "net_pts_at_cost_1_6": -10760.6
+      },
+      "year_2026_partial": {
+        "N": 156,
+        "net_pts_at_cost_0_8": 6527.2,
+        "pf_at_cost_0_8": 1.082,
+        "net_pts_at_cost_1_2": 287.2,
+        "pf_at_cost_1_2": 1.003,
+        "net_pts_at_cost_1_6": -5952.8
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 1,
+      "strategy": "EMA21_BASE",
+      "timeframe": "M30",
+      "original_saved_tf": "M15",
+      "year_2025": {
+        "N": 214,
+        "net_pts_at_cost_0_8": -9214.4,
+        "pf_at_cost_0_8": 0.917,
+        "net_pts_at_cost_1_2": -17774.4,
+        "pf_at_cost_1_2": 0.848,
+        "net_pts_at_cost_1_6": -26334.4
+      },
+      "year_2026_partial": {
+        "N": 105,
+        "net_pts_at_cost_0_8": 21289.6,
+        "pf_at_cost_0_8": 1.29,
+        "net_pts_at_cost_1_2": 17089.6,
+        "pf_at_cost_1_2": 1.226,
+        "net_pts_at_cost_1_6": 12889.6
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 2,
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M1",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 1396,
+        "net_pts_at_cost_0_8": -111059.4,
+        "pf_at_cost_0_8": 0.45,
+        "net_pts_at_cost_1_2": -166899.4,
+        "pf_at_cost_1_2": 0.339,
+        "net_pts_at_cost_1_6": -222739.4
+      },
+      "year_2026_partial": {
+        "N": 545,
+        "net_pts_at_cost_0_8": -30557.9,
+        "pf_at_cost_0_8": 0.732,
+        "net_pts_at_cost_1_2": -52357.9,
+        "pf_at_cost_1_2": 0.597,
+        "net_pts_at_cost_1_6": -74157.9
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 2,
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M5",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 421,
+        "net_pts_at_cost_0_8": 4018.5,
+        "pf_at_cost_0_8": 1.038,
+        "net_pts_at_cost_1_2": -12821.5,
+        "pf_at_cost_1_2": 0.89,
+        "net_pts_at_cost_1_6": -29661.5
+      },
+      "year_2026_partial": {
+        "N": 223,
+        "net_pts_at_cost_0_8": -8408.7,
+        "pf_at_cost_0_8": 0.905,
+        "net_pts_at_cost_1_2": -17328.7,
+        "pf_at_cost_1_2": 0.816,
+        "net_pts_at_cost_1_6": -26248.7
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 2,
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M15",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 215,
+        "net_pts_at_cost_0_8": -12711.3,
+        "pf_at_cost_0_8": 0.858,
+        "net_pts_at_cost_1_2": -21311.3,
+        "pf_at_cost_1_2": 0.775,
+        "net_pts_at_cost_1_6": -29911.3
+      },
+      "year_2026_partial": {
+        "N": 101,
+        "net_pts_at_cost_0_8": -13272.3,
+        "pf_at_cost_0_8": 0.815,
+        "net_pts_at_cost_1_2": -17312.3,
+        "pf_at_cost_1_2": 0.768,
+        "net_pts_at_cost_1_6": -21352.3
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 2,
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M30",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 113,
+        "net_pts_at_cost_0_8": 12240.5,
+        "pf_at_cost_0_8": 1.2,
+        "net_pts_at_cost_1_2": 7720.5,
+        "pf_at_cost_1_2": 1.121,
+        "net_pts_at_cost_1_6": 3200.5
+      },
+      "year_2026_partial": {
+        "N": 54,
+        "net_pts_at_cost_0_8": 19682.8,
+        "pf_at_cost_0_8": 1.518,
+        "net_pts_at_cost_1_2": 17522.8,
+        "pf_at_cost_1_2": 1.448,
+        "net_pts_at_cost_1_6": 15362.8
+      },
+      "screen_at_cost_1_2": true
+    },
+    {
+      "slot": 3,
+      "strategy": "HULL21_PULLBACK",
+      "timeframe": "M1",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 1582,
+        "net_pts_at_cost_0_8": -118606.1,
+        "pf_at_cost_0_8": 0.501,
+        "net_pts_at_cost_1_2": -181886.1,
+        "pf_at_cost_1_2": 0.381,
+        "net_pts_at_cost_1_6": -245166.1
+      },
+      "year_2026_partial": {
+        "N": 795,
+        "net_pts_at_cost_0_8": -54932.1,
+        "pf_at_cost_0_8": 0.657,
+        "net_pts_at_cost_1_2": -86732.1,
+        "pf_at_cost_1_2": 0.529,
+        "net_pts_at_cost_1_6": -118532.1
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 3,
+      "strategy": "HULL21_PULLBACK",
+      "timeframe": "M5",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 696,
+        "net_pts_at_cost_0_8": -41820.2,
+        "pf_at_cost_0_8": 0.754,
+        "net_pts_at_cost_1_2": -69660.2,
+        "pf_at_cost_1_2": 0.633,
+        "net_pts_at_cost_1_6": -97500.2
+      },
+      "year_2026_partial": {
+        "N": 249,
+        "net_pts_at_cost_0_8": 17608.6,
+        "pf_at_cost_0_8": 1.189,
+        "net_pts_at_cost_1_2": 7648.6,
+        "pf_at_cost_1_2": 1.077,
+        "net_pts_at_cost_1_6": -2311.4
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 3,
+      "strategy": "HULL21_PULLBACK",
+      "timeframe": "M15",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 319,
+        "net_pts_at_cost_0_8": 152.6,
+        "pf_at_cost_0_8": 1.001,
+        "net_pts_at_cost_1_2": -12607.4,
+        "pf_at_cost_1_2": 0.909,
+        "net_pts_at_cost_1_6": -25367.4
+      },
+      "year_2026_partial": {
+        "N": 154,
+        "net_pts_at_cost_0_8": 17502.2,
+        "pf_at_cost_0_8": 1.225,
+        "net_pts_at_cost_1_2": 11342.2,
+        "pf_at_cost_1_2": 1.139,
+        "net_pts_at_cost_1_6": 5182.2
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 3,
+      "strategy": "HULL21_PULLBACK",
+      "timeframe": "M30",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 244,
+        "net_pts_at_cost_0_8": 1004.5,
+        "pf_at_cost_0_8": 1.007,
+        "net_pts_at_cost_1_2": -8755.5,
+        "pf_at_cost_1_2": 0.94,
+        "net_pts_at_cost_1_6": -18515.5
+      },
+      "year_2026_partial": {
+        "N": 118,
+        "net_pts_at_cost_0_8": -10129.8,
+        "pf_at_cost_0_8": 0.905,
+        "net_pts_at_cost_1_2": -14849.8,
+        "pf_at_cost_1_2": 0.865,
+        "net_pts_at_cost_1_6": -19569.8
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 4,
+      "strategy": "ASIA_SWEEP_RECLAIM",
+      "timeframe": "M1",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 113,
+        "net_pts_at_cost_0_8": -4516.7,
+        "pf_at_cost_0_8": 0.73,
+        "net_pts_at_cost_1_2": -9036.7,
+        "pf_at_cost_1_2": 0.556,
+        "net_pts_at_cost_1_6": -13556.7
+      },
+      "year_2026_partial": {
+        "N": 97,
+        "net_pts_at_cost_0_8": -15171.7,
+        "pf_at_cost_0_8": 0.399,
+        "net_pts_at_cost_1_2": -19051.7,
+        "pf_at_cost_1_2": 0.324,
+        "net_pts_at_cost_1_6": -22931.7
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 4,
+      "strategy": "ASIA_SWEEP_RECLAIM",
+      "timeframe": "M5",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 105,
+        "net_pts_at_cost_0_8": -4553.8,
+        "pf_at_cost_0_8": 0.85,
+        "net_pts_at_cost_1_2": -8753.8,
+        "pf_at_cost_1_2": 0.735,
+        "net_pts_at_cost_1_6": -12953.8
+      },
+      "year_2026_partial": {
+        "N": 87,
+        "net_pts_at_cost_0_8": -2001.3,
+        "pf_at_cost_0_8": 0.953,
+        "net_pts_at_cost_1_2": -5481.3,
+        "pf_at_cost_1_2": 0.879,
+        "net_pts_at_cost_1_6": -8961.3
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 4,
+      "strategy": "ASIA_SWEEP_RECLAIM",
+      "timeframe": "M15",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 87,
+        "net_pts_at_cost_0_8": 4673.2,
+        "pf_at_cost_0_8": 1.124,
+        "net_pts_at_cost_1_2": 1193.2,
+        "pf_at_cost_1_2": 1.03,
+        "net_pts_at_cost_1_6": -2286.8
+      },
+      "year_2026_partial": {
+        "N": 73,
+        "net_pts_at_cost_0_8": -3168,
+        "pf_at_cost_0_8": 0.937,
+        "net_pts_at_cost_1_2": -6088,
+        "pf_at_cost_1_2": 0.884,
+        "net_pts_at_cost_1_6": -9008
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 4,
+      "strategy": "ASIA_SWEEP_RECLAIM",
+      "timeframe": "M30",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 74,
+        "net_pts_at_cost_0_8": -4455.5,
+        "pf_at_cost_0_8": 0.899,
+        "net_pts_at_cost_1_2": -7415.5,
+        "pf_at_cost_1_2": 0.838,
+        "net_pts_at_cost_1_6": -10375.5
+      },
+      "year_2026_partial": {
+        "N": 65,
+        "net_pts_at_cost_0_8": -3237.8,
+        "pf_at_cost_0_8": 0.941,
+        "net_pts_at_cost_1_2": -5837.8,
+        "pf_at_cost_1_2": 0.897,
+        "net_pts_at_cost_1_6": -8437.8
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 5,
+      "strategy": "INSIDE_MOTHER_BREAK",
+      "timeframe": "M1",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 884,
+        "net_pts_at_cost_0_8": -35350.7,
+        "pf_at_cost_0_8": 0.775,
+        "net_pts_at_cost_1_2": -70710.7,
+        "pf_at_cost_1_2": 0.618,
+        "net_pts_at_cost_1_6": -106070.7
+      },
+      "year_2026_partial": {
+        "N": 467,
+        "net_pts_at_cost_0_8": -31858.8,
+        "pf_at_cost_0_8": 0.766,
+        "net_pts_at_cost_1_2": -50538.8,
+        "pf_at_cost_1_2": 0.661,
+        "net_pts_at_cost_1_6": -69218.8
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 5,
+      "strategy": "INSIDE_MOTHER_BREAK",
+      "timeframe": "M5",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 385,
+        "net_pts_at_cost_0_8": 1794.4,
+        "pf_at_cost_0_8": 1.013,
+        "net_pts_at_cost_1_2": -13605.6,
+        "pf_at_cost_1_2": 0.909,
+        "net_pts_at_cost_1_6": -29005.6
+      },
+      "year_2026_partial": {
+        "N": 210,
+        "net_pts_at_cost_0_8": -27880.1,
+        "pf_at_cost_0_8": 0.791,
+        "net_pts_at_cost_1_2": -36280.1,
+        "pf_at_cost_1_2": 0.738,
+        "net_pts_at_cost_1_6": -44680.1
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 5,
+      "strategy": "INSIDE_MOTHER_BREAK",
+      "timeframe": "M15",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 224,
+        "net_pts_at_cost_0_8": -13353.3,
+        "pf_at_cost_0_8": 0.906,
+        "net_pts_at_cost_1_2": -22313.3,
+        "pf_at_cost_1_2": 0.848,
+        "net_pts_at_cost_1_6": -31273.3
+      },
+      "year_2026_partial": {
+        "N": 96,
+        "net_pts_at_cost_0_8": 10927.3,
+        "pf_at_cost_0_8": 1.133,
+        "net_pts_at_cost_1_2": 7087.3,
+        "pf_at_cost_1_2": 1.084,
+        "net_pts_at_cost_1_6": 3247.3
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 5,
+      "strategy": "INSIDE_MOTHER_BREAK",
+      "timeframe": "M30",
+      "original_saved_tf": "M12",
+      "year_2025": {
+        "N": 146,
+        "net_pts_at_cost_0_8": -19304.1,
+        "pf_at_cost_0_8": 0.847,
+        "net_pts_at_cost_1_2": -25144.1,
+        "pf_at_cost_1_2": 0.807,
+        "net_pts_at_cost_1_6": -30984.1
+      },
+      "year_2026_partial": {
+        "N": 71,
+        "net_pts_at_cost_0_8": 17279,
+        "pf_at_cost_0_8": 1.223,
+        "net_pts_at_cost_1_2": 14439,
+        "pf_at_cost_1_2": 1.182,
+        "net_pts_at_cost_1_6": 11599
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 6,
+      "strategy": "VOL_COMPRESSION_RELEASE",
+      "timeframe": "M1",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 990,
+        "net_pts_at_cost_0_8": -68248,
+        "pf_at_cost_0_8": 0.559,
+        "net_pts_at_cost_1_2": -107848,
+        "pf_at_cost_1_2": 0.429,
+        "net_pts_at_cost_1_6": -147448
+      },
+      "year_2026_partial": {
+        "N": 416,
+        "net_pts_at_cost_0_8": -21220.8,
+        "pf_at_cost_0_8": 0.792,
+        "net_pts_at_cost_1_2": -37860.8,
+        "pf_at_cost_1_2": 0.667,
+        "net_pts_at_cost_1_6": -54500.8
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 6,
+      "strategy": "VOL_COMPRESSION_RELEASE",
+      "timeframe": "M5",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 367,
+        "net_pts_at_cost_0_8": -16290.7,
+        "pf_at_cost_0_8": 0.821,
+        "net_pts_at_cost_1_2": -30970.7,
+        "pf_at_cost_1_2": 0.692,
+        "net_pts_at_cost_1_6": -45650.7
+      },
+      "year_2026_partial": {
+        "N": 200,
+        "net_pts_at_cost_0_8": -26303.7,
+        "pf_at_cost_0_8": 0.691,
+        "net_pts_at_cost_1_2": -34303.7,
+        "pf_at_cost_1_2": 0.62,
+        "net_pts_at_cost_1_6": -42303.7
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 6,
+      "strategy": "VOL_COMPRESSION_RELEASE",
+      "timeframe": "M15",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 190,
+        "net_pts_at_cost_0_8": -15651.7,
+        "pf_at_cost_0_8": 0.848,
+        "net_pts_at_cost_1_2": -23251.7,
+        "pf_at_cost_1_2": 0.784,
+        "net_pts_at_cost_1_6": -30851.7
+      },
+      "year_2026_partial": {
+        "N": 111,
+        "net_pts_at_cost_0_8": -8624.6,
+        "pf_at_cost_0_8": 0.889,
+        "net_pts_at_cost_1_2": -13064.6,
+        "pf_at_cost_1_2": 0.838,
+        "net_pts_at_cost_1_6": -17504.6
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 6,
+      "strategy": "VOL_COMPRESSION_RELEASE",
+      "timeframe": "M30",
+      "original_saved_tf": "M20",
+      "year_2025": {
+        "N": 121,
+        "net_pts_at_cost_0_8": 25715.7,
+        "pf_at_cost_0_8": 1.421,
+        "net_pts_at_cost_1_2": 20875.7,
+        "pf_at_cost_1_2": 1.328,
+        "net_pts_at_cost_1_6": 16035.7
+      },
+      "year_2026_partial": {
+        "N": 66,
+        "net_pts_at_cost_0_8": -9202.8,
+        "pf_at_cost_0_8": 0.874,
+        "net_pts_at_cost_1_2": -11842.8,
+        "pf_at_cost_1_2": 0.841,
+        "net_pts_at_cost_1_6": -14482.8
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 7,
+      "strategy": "EFFICIENCY_ER20_BREAK",
+      "timeframe": "M1",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 1072,
+        "net_pts_at_cost_0_8": -74160.3,
+        "pf_at_cost_0_8": 0.571,
+        "net_pts_at_cost_1_2": -117040.3,
+        "pf_at_cost_1_2": 0.44,
+        "net_pts_at_cost_1_6": -159920.3
+      },
+      "year_2026_partial": {
+        "N": 425,
+        "net_pts_at_cost_0_8": -10286.1,
+        "pf_at_cost_0_8": 0.906,
+        "net_pts_at_cost_1_2": -27286.1,
+        "pf_at_cost_1_2": 0.777,
+        "net_pts_at_cost_1_6": -44286.1
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 7,
+      "strategy": "EFFICIENCY_ER20_BREAK",
+      "timeframe": "M5",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 405,
+        "net_pts_at_cost_0_8": -16841.2,
+        "pf_at_cost_0_8": 0.874,
+        "net_pts_at_cost_1_2": -33041.2,
+        "pf_at_cost_1_2": 0.772,
+        "net_pts_at_cost_1_6": -49241.2
+      },
+      "year_2026_partial": {
+        "N": 164,
+        "net_pts_at_cost_0_8": 31645.4,
+        "pf_at_cost_0_8": 1.479,
+        "net_pts_at_cost_1_2": 25085.4,
+        "pf_at_cost_1_2": 1.359,
+        "net_pts_at_cost_1_6": 18525.4
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 7,
+      "strategy": "EFFICIENCY_ER20_BREAK",
+      "timeframe": "M15",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 175,
+        "net_pts_at_cost_0_8": 26538.9,
+        "pf_at_cost_0_8": 1.299,
+        "net_pts_at_cost_1_2": 19538.9,
+        "pf_at_cost_1_2": 1.211,
+        "net_pts_at_cost_1_6": 12538.9
+      },
+      "year_2026_partial": {
+        "N": 96,
+        "net_pts_at_cost_0_8": 5811.3,
+        "pf_at_cost_0_8": 1.065,
+        "net_pts_at_cost_1_2": 1971.3,
+        "pf_at_cost_1_2": 1.021,
+        "net_pts_at_cost_1_6": -1868.7
+      },
+      "screen_at_cost_1_2": false
+    },
+    {
+      "slot": 7,
+      "strategy": "EFFICIENCY_ER20_BREAK",
+      "timeframe": "M30",
+      "original_saved_tf": "M30",
+      "year_2025": {
+        "N": 110,
+        "net_pts_at_cost_0_8": 39638.5,
+        "pf_at_cost_0_8": 1.518,
+        "net_pts_at_cost_1_2": 35238.5,
+        "pf_at_cost_1_2": 1.446,
+        "net_pts_at_cost_1_6": 30838.5
+      },
+      "year_2026_partial": {
+        "N": 52,
+        "net_pts_at_cost_0_8": 29870.4,
+        "pf_at_cost_0_8": 1.48,
+        "net_pts_at_cost_1_2": 27790.4,
+        "pf_at_cost_1_2": 1.438,
+        "net_pts_at_cost_1_6": 25710.4
+      },
+      "screen_at_cost_1_2": true
+    }
+  ],
+  "in_allowed_tf_screen_pass": [
+    {
+      "slot": 2,
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M30",
+      "net2025_cost1_2": 7720.5,
+      "net2026_partial_cost1_2": 17522.8
+    },
+    {
+      "slot": 7,
+      "strategy": "EFFICIENCY_ER20_BREAK",
+      "timeframe": "M30",
+      "net2025_cost1_2": 35238.5,
+      "net2026_partial_cost1_2": 27790.4
+    }
+  ],
+  "remaining_scope_note": "Results on M12/M20 CANNOT be represented as if they occurred on M1/M5/M15/M30. Other four ideas have historical proxy results across permitted timeframes but fail the specified screening or have no original approved TF. Preserve ideas but do not activate until revised and retested honestly.",
+  "caveats": [
+    "Historical OHLC proxy (not real ticks MT5)",
+    "2026 data partial Q2/Q3",
+    "2025/2026 heavily researched, not independent out-of-sample",
+    "Costs hypothetical 0.8, 1.2, 1.6 USD/oz",
+    "No real cash PnL, spread, broker Bid/Ask, swap, slippage or forward demo validation"
+  ],
+  "approved_for_real_trading": false
+}
