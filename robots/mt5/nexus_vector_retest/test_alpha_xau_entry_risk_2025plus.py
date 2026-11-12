@@ -111,13 +111,46 @@ class TestEntryRiskXAU(unittest.TestCase):
         with self.assertRaises(ValueError):
             simulate_profile(synthetic(),[],0,540,"MAGIC")
 
+    def test_reversal_be_does_not_move_stop_in_normal_trend(self):
+        f=synthetic();f.loc[3,"high"]=104.
+        s=[(1,1,98.,.7)]
+        base=simulate_profile(f,s,0,len(f),"RUNNER384_ORIGINAL")
+        gated=simulate_profile(f,s,0,len(f),"REVERSAL_GATED_BE")
+        self.assertEqual(base,gated)
+
+    def test_reversal_be_arms_only_after_two_closed_adverse_bars(self):
+        f=synthetic();f.loc[3,"high"]=103.3
+        f.loc[4:5,["low","close"]]=[99.3,99.5]
+        s=[(1,1,98.,.7)]
+        gated=simulate_profile(f,s,0,len(f),"REVERSAL_GATED_BE")
+        self.assertEqual(gated[0]["reason"],"SL_AFTER_TP2")
+        self.assertEqual(gated[0]["exit"],6)
+        self.assertTrue(gated[0]["stopped_at_be"])
+
+    def test_reversal_be_requires_two_adverse_closes(self):
+        f=synthetic();f.loc[3,"high"]=103.3
+        f.loc[4,["low","close"]]=[99.3,99.5]
+        s=[(1,1,98.,.7)]
+        gated=simulate_profile(f,s,0,len(f),"REVERSAL_GATED_BE")
+        self.assertEqual(gated[0]["reason"],"TIME")
+        self.assertFalse(gated[0]["stopped_at_be"])
+
+    def test_reversal_be_short_direction(self):
+        f=synthetic();f.loc[3,"low"]=96.7
+        f.loc[4:5,["high","close"]]=[100.7,100.5]
+        gated=simulate_profile(f,[(1,-1,102.,.7)],0,len(f),
+                               "REVERSAL_GATED_BE")
+        self.assertEqual(gated[0]["reason"],"SL_AFTER_TP2")
+        self.assertEqual(gated[0]["exit"],6)
+
     def test_comparison_requires_all_blocks(self):
         rows=[]
         for model,net,dd in [
             ("RUNNER384_ORIGINAL",10,100),
             ("ENTRY_QUALITY",9,90),
             ("BREAKEVEN_AFTER_TP2",11,110),
-            ("ENTRY_QUALITY_BE",12,90)]:
+            ("ENTRY_QUALITY_BE",12,90),
+            ("REVERSAL_GATED_BE",9,90)]:
             stats=dict(N=100,net_pts=net,mdd_pts=dd)
             rows.append(dict(dataset="2025",window=0,model=model,costs={
                 "0.8":stats,"1.2":stats}))
