@@ -1,0 +1,25 @@
+name: XAUUSD 65% green 159 entries month — vector scalp screening
+on:
+  push:
+    paths:
+      - 'research/xau159_65/**'
+      - '.github/workflows/xau159-65-research.yml'
+  workflow_dispatch:
+jobs:
+  historical-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Strict calendar months and untouched out-of-sample validation
+        run: python research/xau159_65/screen.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: XAUUSD-159-65-historical-screen
+          path: research/xau159_65/results/
+          if-no-files-found: warn
