@@ -1,0 +1,45 @@
+name: ALPHA V3 longer-horizon study — isolated
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/alpha/**'
+      - 'research/alpha_v3/**'
+      - 'tests/test_alpha_v3.py'
+      - '.github/workflows/alpha-v3-study.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safety-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: V3 causal code, accounting and source-gate tests
+        run: |
+          python -m unittest discover -s tests -p 'test_alpha_lab.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v2.py' -v
+          python -m unittest discover -s tests -p 'test_alpha_v3.py' -v
+  real-data-study:
+    needs: safety-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compare unchanged V1 V2 and frozen V3 on verified May June archives
+        run: python -m research.alpha_v3.run --out artifacts/alpha-v3
+      - name: Preserve financial ledgers and all source integrity details
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-v3-study-${{ github.run_id }}
+          path: artifacts/alpha-v3/
+          retention-days: 30
+          if-no-files-found: warn
