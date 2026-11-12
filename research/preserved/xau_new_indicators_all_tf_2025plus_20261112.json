@@ -1,0 +1,7581 @@
+{
+  "title": "XAUUSD new indicator research 2025+ M1-M30, all compared and failures retained",
+  "audit_date": "2026-11-12",
+  "symbol": "XAUUSD",
+  "scope_start_utc": "2025-01-01T00:00:00Z",
+  "sources": {
+    "year_2025_pin": "b2cfdc571ffac9eff9f2132ea6946da559d29af2",
+    "year_2026_sha256": "a587597bbf88c2d868a00a4e0019cd705cee6ca4f20b0485d6b745f19fcc8225",
+    "year_2026_available_quarters": [
+      "2026Q2",
+      "2026Q3"
+    ],
+    "year_2026_is_partial": true
+  },
+  "indicator_models": [
+    "EMA21_BASE",
+    "EMA21_ADX_DI",
+    "EMA21_RSI_MACD",
+    "ADX_DONCHIAN24",
+    "RSI_BOLLINGER20",
+    "MACD_RSI_TREND",
+    "KELTNER_SQUEEZE",
+    "STOCH_REJECTION"
+  ],
+  "timeframes": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M10",
+    "M12",
+    "M15",
+    "M20",
+    "M30"
+  ],
+  "research": {
+    "profile": "RUNNER_96H",
+    "first_targets_in_R": [
+      1,
+      1.5
+    ],
+    "point_size_assumed": 0.01,
+    "round_trip_cost_usd_per_oz": [
+      0.8,
+      1.2,
+      1.6
+    ],
+    "execution": "next bar open, stop-first if OHLC conflicts, gap-aware",
+    "quarterly_windows": true
+  },
+  "evidence": {
+    "workflow": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43227184319",
+    "result": "success",
+    "models_per_tf": 8,
+    "year_tf_cases": 22,
+    "quarters": 66
+  },
+  "screened_candidate": {
+    "tf": "M30",
+    "model": "EMA21_RSI_MACD",
+    "approved_for_live": false,
+    "status": "EXPERIMENTAL"
+  },
+  "research_warnings": [
+    "Observed periods already involved in previous research, not untouched OOS.",
+    "2026 only Q2/Q3 data, so do not call this a whole-year backtest.",
+    "Feed history differs between 2025/2026.",
+    "Only OHLC proxy. Real broker Bid/Ask, slippage, swap, spread, commission, position sizing not verified.",
+    "2025 M30 EMA21_RSI_MACD lost in Q1 and Q2 despite positive annual total.",
+    "No compounding, monetary bank profit, real signal fills or forward test are claimed.",
+    "No overwrite of approved models."
+  ],
+  "annual_metrics": [
+    {
+      "tf": "M1",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 33299,
+        "costs": {
+          "0.8": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -181351.3,
+            "PF": 0.37,
+            "win_pct": 11.87,
+            "mdd_pts": 185555.5,
+            "avg_hold": 152.5
+          },
+          "1.2": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -263551.3,
+            "PF": 0.274,
+            "win_pct": 6.03,
+            "mdd_pts": 267635.5,
+            "avg_hold": 152.5
+          },
+          "1.6": {
+            "N": 2055,
+            "gross_pts": -16951.3,
+            "net_pts": -345751.3,
+            "PF": 0.216,
+            "win_pct": 3.45,
+            "mdd_pts": 349760.9,
+            "avg_hold": 152.5
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 17060,
+        "costs": {
+          "0.8": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -34015.1,
+            "PF": 0.717,
+            "win_pct": 27.46,
+            "mdd_pts": 34153.1,
+            "avg_hold": 244
+          },
+          "1.2": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -59215.1,
+            "PF": 0.577,
+            "win_pct": 17.14,
+            "mdd_pts": 59308.7,
+            "avg_hold": 244
+          },
+          "1.6": {
+            "N": 630,
+            "gross_pts": 16384.9,
+            "net_pts": -84415.1,
+            "PF": 0.478,
+            "win_pct": 11.43,
+            "mdd_pts": 84468.7,
+            "avg_hold": 244
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 8225,
+        "costs": {
+          "0.8": {
+            "N": 1288,
+            "gross_pts": 14272.7,
+            "net_pts": -88767.3,
+            "PF": 0.514,
+            "win_pct": 13.98,
+            "mdd_pts": 93023.7,
+            "avg_hold": 203.3
+          },
+          "1.2": {
+            "N": 1288,
+            "gross_pts": 14272.7,
+            "net_pts": -140287.3,
+            "PF": 0.387,
+            "win_pct": 8,
+            "mdd_pts": 144463.7,
+            "avg_hold": 203.3
+          },
+          "1.6": {
+            "N": 1288,
+            "gross_pts": 14272.7,
+            "net_pts": -191807.3,
+            "PF": 0.308,
+            "win_pct": 4.74,
+            "mdd_pts": 195903.7,
+            "avg_hold": 203.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 4643,
+        "costs": {
+          "0.8": {
+            "N": 601,
+            "gross_pts": 13801.5,
+            "net_pts": -34278.5,
+            "PF": 0.713,
+            "win_pct": 28.79,
+            "mdd_pts": 34412.1,
+            "avg_hold": 211.5
+          },
+          "1.2": {
+            "N": 601,
+            "gross_pts": 13801.5,
+            "net_pts": -58318.5,
+            "PF": 0.579,
+            "win_pct": 17.64,
+            "mdd_pts": 58412.1,
+            "avg_hold": 211.5
+          },
+          "1.6": {
+            "N": 601,
+            "gross_pts": 13801.5,
+            "net_pts": -82358.5,
+            "PF": 0.481,
+            "win_pct": 12.15,
+            "mdd_pts": 82412.1,
+            "avg_hold": 211.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 7324,
+        "costs": {
+          "0.8": {
+            "N": 1396,
+            "gross_pts": 620.6,
+            "net_pts": -111059.4,
+            "PF": 0.45,
+            "win_pct": 12.89,
+            "mdd_pts": 114199.5,
+            "avg_hold": 186.2
+          },
+          "1.2": {
+            "N": 1396,
+            "gross_pts": 620.6,
+            "net_pts": -166899.4,
+            "PF": 0.339,
+            "win_pct": 7.16,
+            "mdd_pts": 169999.5,
+            "avg_hold": 186.2
+          },
+          "1.6": {
+            "N": 1396,
+            "gross_pts": 620.6,
+            "net_pts": -222739.4,
+            "PF": 0.271,
+            "win_pct": 3.87,
+            "mdd_pts": 225799.5,
+            "avg_hold": 186.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 4105,
+        "costs": {
+          "0.8": {
+            "N": 545,
+            "gross_pts": 13042.1,
+            "net_pts": -30557.9,
+            "PF": 0.732,
+            "win_pct": 31.74,
+            "mdd_pts": 34403.7,
+            "avg_hold": 257.7
+          },
+          "1.2": {
+            "N": 545,
+            "gross_pts": 13042.1,
+            "net_pts": -52357.9,
+            "PF": 0.597,
+            "win_pct": 21.47,
+            "mdd_pts": 56123.7,
+            "avg_hold": 257.7
+          },
+          "1.6": {
+            "N": 545,
+            "gross_pts": 13042.1,
+            "net_pts": -74157.9,
+            "PF": 0.499,
+            "win_pct": 13.94,
+            "mdd_pts": 77843.7,
+            "avg_hold": 257.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 19624,
+        "costs": {
+          "0.8": {
+            "N": 1063,
+            "gross_pts": 23836.5,
+            "net_pts": -61203.5,
+            "PF": 0.649,
+            "win_pct": 17.59,
+            "mdd_pts": 66066.1,
+            "avg_hold": 286.6
+          },
+          "1.2": {
+            "N": 1063,
+            "gross_pts": 23836.5,
+            "net_pts": -103723.5,
+            "PF": 0.509,
+            "win_pct": 10.44,
+            "mdd_pts": 108466.1,
+            "avg_hold": 286.6
+          },
+          "1.6": {
+            "N": 1063,
+            "gross_pts": 23836.5,
+            "net_pts": -146243.5,
+            "PF": 0.415,
+            "win_pct": 7.06,
+            "mdd_pts": 150927,
+            "avg_hold": 286.6
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 9398,
+        "costs": {
+          "0.8": {
+            "N": 453,
+            "gross_pts": 29425.6,
+            "net_pts": -6814.4,
+            "PF": 0.933,
+            "win_pct": 34.66,
+            "mdd_pts": 25431.4,
+            "avg_hold": 326.4
+          },
+          "1.2": {
+            "N": 453,
+            "gross_pts": 29425.6,
+            "net_pts": -24934.4,
+            "PF": 0.783,
+            "win_pct": 24.5,
+            "mdd_pts": 30565.1,
+            "avg_hold": 326.4
+          },
+          "1.6": {
+            "N": 453,
+            "gross_pts": 29425.6,
+            "net_pts": -43054.4,
+            "PF": 0.667,
+            "win_pct": 17.22,
+            "mdd_pts": 43054.4,
+            "avg_hold": 326.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 13936,
+        "costs": {
+          "0.8": {
+            "N": 1382,
+            "gross_pts": 14565.3,
+            "net_pts": -95994.7,
+            "PF": 0.538,
+            "win_pct": 16.5,
+            "mdd_pts": 97339.4,
+            "avg_hold": 225.2
+          },
+          "1.2": {
+            "N": 1382,
+            "gross_pts": 14565.3,
+            "net_pts": -151274.7,
+            "PF": 0.409,
+            "win_pct": 10.06,
+            "mdd_pts": 152019.4,
+            "avg_hold": 225.2
+          },
+          "1.6": {
+            "N": 1382,
+            "gross_pts": 14565.3,
+            "net_pts": -206554.7,
+            "PF": 0.327,
+            "win_pct": 6.01,
+            "mdd_pts": 206699.4,
+            "avg_hold": 225.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 7411,
+        "costs": {
+          "0.8": {
+            "N": 726,
+            "gross_pts": 22381.3,
+            "net_pts": -35698.7,
+            "PF": 0.772,
+            "win_pct": 27.41,
+            "mdd_pts": 40601.2,
+            "avg_hold": 215.3
+          },
+          "1.2": {
+            "N": 726,
+            "gross_pts": 22381.3,
+            "net_pts": -64738.7,
+            "PF": 0.638,
+            "win_pct": 19.01,
+            "mdd_pts": 69533.2,
+            "avg_hold": 215.3
+          },
+          "1.6": {
+            "N": 726,
+            "gross_pts": 22381.3,
+            "net_pts": -93778.7,
+            "PF": 0.538,
+            "win_pct": 12.67,
+            "mdd_pts": 98493.2,
+            "avg_hold": 215.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 9394,
+        "costs": {
+          "0.8": {
+            "N": 1129,
+            "gross_pts": 13367.1,
+            "net_pts": -76952.9,
+            "PF": 0.594,
+            "win_pct": 19.66,
+            "mdd_pts": 80810.1,
+            "avg_hold": 265.3
+          },
+          "1.2": {
+            "N": 1129,
+            "gross_pts": 13367.1,
+            "net_pts": -122112.9,
+            "PF": 0.464,
+            "win_pct": 12.05,
+            "mdd_pts": 125813.7,
+            "avg_hold": 265.3
+          },
+          "1.6": {
+            "N": 1129,
+            "gross_pts": 13367.1,
+            "net_pts": -167272.9,
+            "PF": 0.377,
+            "win_pct": 7.97,
+            "mdd_pts": 170933.7,
+            "avg_hold": 265.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 4767,
+        "costs": {
+          "0.8": {
+            "N": 427,
+            "gross_pts": 28882,
+            "net_pts": -5278,
+            "PF": 0.948,
+            "win_pct": 37.94,
+            "mdd_pts": 20965.5,
+            "avg_hold": 344.1
+          },
+          "1.2": {
+            "N": 427,
+            "gross_pts": 28882,
+            "net_pts": -22358,
+            "PF": 0.803,
+            "win_pct": 29.04,
+            "mdd_pts": 28285.5,
+            "avg_hold": 344.1
+          },
+          "1.6": {
+            "N": 427,
+            "gross_pts": 28882,
+            "net_pts": -39438,
+            "PF": 0.688,
+            "win_pct": 20.14,
+            "mdd_pts": 39901.6,
+            "avg_hold": 344.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 4651,
+        "costs": {
+          "0.8": {
+            "N": 1049,
+            "gross_pts": 13385.9,
+            "net_pts": -70534.1,
+            "PF": 0.567,
+            "win_pct": 17.06,
+            "mdd_pts": 74895.8,
+            "avg_hold": 229.6
+          },
+          "1.2": {
+            "N": 1049,
+            "gross_pts": 13385.9,
+            "net_pts": -112494.1,
+            "PF": 0.435,
+            "win_pct": 10.77,
+            "mdd_pts": 116815.8,
+            "avg_hold": 229.6
+          },
+          "1.6": {
+            "N": 1049,
+            "gross_pts": 13385.9,
+            "net_pts": -154454.1,
+            "PF": 0.35,
+            "win_pct": 6.29,
+            "mdd_pts": 158735.8,
+            "avg_hold": 229.6
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2561,
+        "costs": {
+          "0.8": {
+            "N": 543,
+            "gross_pts": 5346.2,
+            "net_pts": -38093.8,
+            "PF": 0.686,
+            "win_pct": 36.28,
+            "mdd_pts": 40050,
+            "avg_hold": 215.6
+          },
+          "1.2": {
+            "N": 543,
+            "gross_pts": 5346.2,
+            "net_pts": -59813.8,
+            "PF": 0.561,
+            "win_pct": 28.18,
+            "mdd_pts": 61290,
+            "avg_hold": 215.6
+          },
+          "1.6": {
+            "N": 543,
+            "gross_pts": 5346.2,
+            "net_pts": -81533.8,
+            "PF": 0.467,
+            "win_pct": 18.6,
+            "mdd_pts": 82530,
+            "avg_hold": 215.6
+          }
+        }
+      }
+    },
+    {
+      "tf": "M1",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 12783,
+        "costs": {
+          "0.8": {
+            "N": 1329,
+            "gross_pts": 41905.2,
+            "net_pts": -64414.8,
+            "PF": 0.613,
+            "win_pct": 11.06,
+            "mdd_pts": 87034.1,
+            "avg_hold": 226.1
+          },
+          "1.2": {
+            "N": 1329,
+            "gross_pts": 41905.2,
+            "net_pts": -117574.8,
+            "PF": 0.454,
+            "win_pct": 5.64,
+            "mdd_pts": 133954.1,
+            "avg_hold": 226.1
+          },
+          "1.6": {
+            "N": 1329,
+            "gross_pts": 41905.2,
+            "net_pts": -170734.8,
+            "PF": 0.358,
+            "win_pct": 3.99,
+            "mdd_pts": 180874.1,
+            "avg_hold": 226.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 6646,
+        "costs": {
+          "0.8": {
+            "N": 865,
+            "gross_pts": -12074.8,
+            "net_pts": -81274.8,
+            "PF": 0.486,
+            "win_pct": 25.43,
+            "mdd_pts": 81472.9,
+            "avg_hold": 160.7
+          },
+          "1.2": {
+            "N": 865,
+            "gross_pts": -12074.8,
+            "net_pts": -115874.8,
+            "PF": 0.378,
+            "win_pct": 13.87,
+            "mdd_pts": 115968.2,
+            "avg_hold": 160.7
+          },
+          "1.6": {
+            "N": 865,
+            "gross_pts": -12074.8,
+            "net_pts": -150474.8,
+            "PF": 0.307,
+            "win_pct": 7.86,
+            "mdd_pts": 150511.6,
+            "avg_hold": 160.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 16763,
+        "costs": {
+          "0.8": {
+            "N": 1147,
+            "gross_pts": 19771.9,
+            "net_pts": -71988.1,
+            "PF": 0.621,
+            "win_pct": 22.49,
+            "mdd_pts": 86261.6,
+            "avg_hold": 134.2
+          },
+          "1.2": {
+            "N": 1147,
+            "gross_pts": 19771.9,
+            "net_pts": -117868.1,
+            "PF": 0.482,
+            "win_pct": 14.04,
+            "mdd_pts": 124893.7,
+            "avg_hold": 134.2
+          },
+          "1.6": {
+            "N": 1147,
+            "gross_pts": 19771.9,
+            "net_pts": -163748.1,
+            "PF": 0.389,
+            "win_pct": 9.59,
+            "mdd_pts": 170733.7,
+            "avg_hold": 134.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 8471,
+        "costs": {
+          "0.8": {
+            "N": 402,
+            "gross_pts": 23086.9,
+            "net_pts": -9073.1,
+            "PF": 0.912,
+            "win_pct": 34.08,
+            "mdd_pts": 22065.5,
+            "avg_hold": 192.9
+          },
+          "1.2": {
+            "N": 402,
+            "gross_pts": 23086.9,
+            "net_pts": -25153.1,
+            "PF": 0.779,
+            "win_pct": 28.86,
+            "mdd_pts": 33145.5,
+            "avg_hold": 192.9
+          },
+          "1.6": {
+            "N": 402,
+            "gross_pts": 23086.9,
+            "net_pts": -41233.1,
+            "PF": 0.672,
+            "win_pct": 20.15,
+            "mdd_pts": 45023.4,
+            "avg_hold": 192.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 4532,
+        "costs": {
+          "0.8": {
+            "N": 763,
+            "gross_pts": 31915.8,
+            "net_pts": -29124.2,
+            "PF": 0.781,
+            "win_pct": 21.89,
+            "mdd_pts": 40805.2,
+            "avg_hold": 166
+          },
+          "1.2": {
+            "N": 763,
+            "gross_pts": 31915.8,
+            "net_pts": -59644.2,
+            "PF": 0.623,
+            "win_pct": 13.76,
+            "mdd_pts": 64070.4,
+            "avg_hold": 166
+          },
+          "1.6": {
+            "N": 763,
+            "gross_pts": 31915.8,
+            "net_pts": -90164.2,
+            "PF": 0.513,
+            "win_pct": 9.57,
+            "mdd_pts": 93910.4,
+            "avg_hold": 166
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2520,
+        "costs": {
+          "0.8": {
+            "N": 388,
+            "gross_pts": -9239,
+            "net_pts": -40279,
+            "PF": 0.594,
+            "win_pct": 32.99,
+            "mdd_pts": 40359.6,
+            "avg_hold": 159.7
+          },
+          "1.2": {
+            "N": 388,
+            "gross_pts": -9239,
+            "net_pts": -55799,
+            "PF": 0.493,
+            "win_pct": 25.77,
+            "mdd_pts": 55839.6,
+            "avg_hold": 159.7
+          },
+          "1.6": {
+            "N": 388,
+            "gross_pts": -9239,
+            "net_pts": -71319,
+            "PF": 0.416,
+            "win_pct": 17.78,
+            "mdd_pts": 71319.6,
+            "avg_hold": 159.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 3796,
+        "costs": {
+          "0.8": {
+            "N": 768,
+            "gross_pts": 39696.5,
+            "net_pts": -21743.5,
+            "PF": 0.834,
+            "win_pct": 23.83,
+            "mdd_pts": 26548.5,
+            "avg_hold": 169.7
+          },
+          "1.2": {
+            "N": 768,
+            "gross_pts": 39696.5,
+            "net_pts": -52463.5,
+            "PF": 0.664,
+            "win_pct": 14.71,
+            "mdd_pts": 52805.1,
+            "avg_hold": 169.7
+          },
+          "1.6": {
+            "N": 768,
+            "gross_pts": 39696.5,
+            "net_pts": -83183.5,
+            "PF": 0.546,
+            "win_pct": 10.42,
+            "mdd_pts": 83485.1,
+            "avg_hold": 169.7
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1960,
+        "costs": {
+          "0.8": {
+            "N": 352,
+            "gross_pts": 15145,
+            "net_pts": -13015,
+            "PF": 0.863,
+            "win_pct": 32.39,
+            "mdd_pts": 37307.5,
+            "avg_hold": 174.6
+          },
+          "1.2": {
+            "N": 352,
+            "gross_pts": 15145,
+            "net_pts": -27095,
+            "PF": 0.741,
+            "win_pct": 27.56,
+            "mdd_pts": 45267.5,
+            "avg_hold": 174.6
+          },
+          "1.6": {
+            "N": 352,
+            "gross_pts": 15145,
+            "net_pts": -41175,
+            "PF": 0.643,
+            "win_pct": 21.59,
+            "mdd_pts": 53227.5,
+            "avg_hold": 174.6
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 9619,
+        "costs": {
+          "0.8": {
+            "N": 804,
+            "gross_pts": 10236,
+            "net_pts": -54084,
+            "PF": 0.672,
+            "win_pct": 24.13,
+            "mdd_pts": 57980.5,
+            "avg_hold": 179.6
+          },
+          "1.2": {
+            "N": 804,
+            "gross_pts": 10236,
+            "net_pts": -86244,
+            "PF": 0.547,
+            "win_pct": 16.29,
+            "mdd_pts": 89668,
+            "avg_hold": 179.6
+          },
+          "1.6": {
+            "N": 804,
+            "gross_pts": 10236,
+            "net_pts": -118404,
+            "PF": 0.457,
+            "win_pct": 12.19,
+            "mdd_pts": 121758.3,
+            "avg_hold": 179.6
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 4547,
+        "costs": {
+          "0.8": {
+            "N": 291,
+            "gross_pts": 43101.9,
+            "net_pts": 19821.9,
+            "PF": 1.231,
+            "win_pct": 38.14,
+            "mdd_pts": 21164.5,
+            "avg_hold": 246.6
+          },
+          "1.2": {
+            "N": 291,
+            "gross_pts": 43101.9,
+            "net_pts": 8181.9,
+            "PF": 1.088,
+            "win_pct": 34.36,
+            "mdd_pts": 24562.9,
+            "avg_hold": 246.6
+          },
+          "1.6": {
+            "N": 291,
+            "gross_pts": 43101.9,
+            "net_pts": -3458.1,
+            "PF": 0.966,
+            "win_pct": 27.84,
+            "mdd_pts": 30602.9,
+            "avg_hold": 246.6
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 7203,
+        "costs": {
+          "0.8": {
+            "N": 1104,
+            "gross_pts": -10930.8,
+            "net_pts": -99250.8,
+            "PF": 0.515,
+            "win_pct": 22.1,
+            "mdd_pts": 99774.2,
+            "avg_hold": 135.8
+          },
+          "1.2": {
+            "N": 1104,
+            "gross_pts": -10930.8,
+            "net_pts": -143410.8,
+            "PF": 0.404,
+            "win_pct": 13.95,
+            "mdd_pts": 143414,
+            "avg_hold": 135.8
+          },
+          "1.6": {
+            "N": 1104,
+            "gross_pts": -10930.8,
+            "net_pts": -187570.8,
+            "PF": 0.33,
+            "win_pct": 9.06,
+            "mdd_pts": 187570.8,
+            "avg_hold": 135.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 3772,
+        "costs": {
+          "0.8": {
+            "N": 516,
+            "gross_pts": 16900.4,
+            "net_pts": -24379.6,
+            "PF": 0.828,
+            "win_pct": 35.27,
+            "mdd_pts": 38964.3,
+            "avg_hold": 145.7
+          },
+          "1.2": {
+            "N": 516,
+            "gross_pts": 16900.4,
+            "net_pts": -45019.6,
+            "PF": 0.712,
+            "win_pct": 27.33,
+            "mdd_pts": 49844.3,
+            "avg_hold": 145.7
+          },
+          "1.6": {
+            "N": 516,
+            "gross_pts": 16900.4,
+            "net_pts": -65659.6,
+            "PF": 0.618,
+            "win_pct": 21.12,
+            "mdd_pts": 68529.1,
+            "avg_hold": 145.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 4702,
+        "costs": {
+          "0.8": {
+            "N": 795,
+            "gross_pts": 13446.9,
+            "net_pts": -50153.1,
+            "PF": 0.708,
+            "win_pct": 28.68,
+            "mdd_pts": 61575.7,
+            "avg_hold": 177.2
+          },
+          "1.2": {
+            "N": 795,
+            "gross_pts": 13446.9,
+            "net_pts": -81953.1,
+            "PF": 0.582,
+            "win_pct": 20,
+            "mdd_pts": 89752.3,
+            "avg_hold": 177.2
+          },
+          "1.6": {
+            "N": 795,
+            "gross_pts": 13446.9,
+            "net_pts": -113753.1,
+            "PF": 0.489,
+            "win_pct": 13.46,
+            "mdd_pts": 120872.3,
+            "avg_hold": 177.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2294,
+        "costs": {
+          "0.8": {
+            "N": 336,
+            "gross_pts": -8302.8,
+            "net_pts": -35182.8,
+            "PF": 0.727,
+            "win_pct": 35.71,
+            "mdd_pts": 41898,
+            "avg_hold": 210.4
+          },
+          "1.2": {
+            "N": 336,
+            "gross_pts": -8302.8,
+            "net_pts": -48622.8,
+            "PF": 0.647,
+            "win_pct": 31.85,
+            "mdd_pts": 53319.1,
+            "avg_hold": 210.4
+          },
+          "1.6": {
+            "N": 336,
+            "gross_pts": -8302.8,
+            "net_pts": -62062.8,
+            "PF": 0.578,
+            "win_pct": 29.17,
+            "mdd_pts": 66519.1,
+            "avg_hold": 210.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 2559,
+        "costs": {
+          "0.8": {
+            "N": 752,
+            "gross_pts": 9333,
+            "net_pts": -50827,
+            "PF": 0.647,
+            "win_pct": 24.07,
+            "mdd_pts": 54314.5,
+            "avg_hold": 139.9
+          },
+          "1.2": {
+            "N": 752,
+            "gross_pts": 9333,
+            "net_pts": -80907,
+            "PF": 0.52,
+            "win_pct": 16.22,
+            "mdd_pts": 84274.5,
+            "avg_hold": 139.9
+          },
+          "1.6": {
+            "N": 752,
+            "gross_pts": 9333,
+            "net_pts": -110987,
+            "PF": 0.429,
+            "win_pct": 10.9,
+            "mdd_pts": 114251.2,
+            "avg_hold": 139.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1264,
+        "costs": {
+          "0.8": {
+            "N": 245,
+            "gross_pts": 32429.4,
+            "net_pts": 12829.4,
+            "PF": 1.188,
+            "win_pct": 40.41,
+            "mdd_pts": 15372.1,
+            "avg_hold": 246.5
+          },
+          "1.2": {
+            "N": 245,
+            "gross_pts": 32429.4,
+            "net_pts": 3029.4,
+            "PF": 1.041,
+            "win_pct": 32.24,
+            "mdd_pts": 17612.1,
+            "avg_hold": 246.5
+          },
+          "1.6": {
+            "N": 245,
+            "gross_pts": 32429.4,
+            "net_pts": -6770.6,
+            "PF": 0.917,
+            "win_pct": 27.35,
+            "mdd_pts": 22133,
+            "avg_hold": 246.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M2",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 6360,
+        "costs": {
+          "0.8": {
+            "N": 1109,
+            "gross_pts": 22648.4,
+            "net_pts": -66071.6,
+            "PF": 0.622,
+            "win_pct": 17.31,
+            "mdd_pts": 69336,
+            "avg_hold": 122.5
+          },
+          "1.2": {
+            "N": 1109,
+            "gross_pts": 22648.4,
+            "net_pts": -110431.6,
+            "PF": 0.481,
+            "win_pct": 10.19,
+            "mdd_pts": 113656,
+            "avg_hold": 122.5
+          },
+          "1.6": {
+            "N": 1109,
+            "gross_pts": 22648.4,
+            "net_pts": -154791.6,
+            "PF": 0.39,
+            "win_pct": 6.22,
+            "mdd_pts": 157976,
+            "avg_hold": 122.5
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 3285,
+        "costs": {
+          "0.8": {
+            "N": 506,
+            "gross_pts": 25028.5,
+            "net_pts": -15451.5,
+            "PF": 0.863,
+            "win_pct": 31.23,
+            "mdd_pts": 35000.9,
+            "avg_hold": 137.5
+          },
+          "1.2": {
+            "N": 506,
+            "gross_pts": 25028.5,
+            "net_pts": -35691.5,
+            "PF": 0.719,
+            "win_pct": 22.73,
+            "mdd_pts": 44240.9,
+            "avg_hold": 137.5
+          },
+          "1.6": {
+            "N": 506,
+            "gross_pts": 25028.5,
+            "net_pts": -55931.5,
+            "PF": 0.611,
+            "win_pct": 14.43,
+            "mdd_pts": 59726.4,
+            "avg_hold": 137.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 11071,
+        "costs": {
+          "0.8": {
+            "N": 969,
+            "gross_pts": 2107.1,
+            "net_pts": -75412.9,
+            "PF": 0.61,
+            "win_pct": 24.36,
+            "mdd_pts": 97279.9,
+            "avg_hold": 101.2
+          },
+          "1.2": {
+            "N": 969,
+            "gross_pts": 2107.1,
+            "net_pts": -114172.9,
+            "PF": 0.492,
+            "win_pct": 14.96,
+            "mdd_pts": 127076.1,
+            "avg_hold": 101.2
+          },
+          "1.6": {
+            "N": 969,
+            "gross_pts": 2107.1,
+            "net_pts": -152932.9,
+            "PF": 0.409,
+            "win_pct": 10.22,
+            "mdd_pts": 159801.5,
+            "avg_hold": 101.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 5595,
+        "costs": {
+          "0.8": {
+            "N": 388,
+            "gross_pts": 3465.7,
+            "net_pts": -27574.3,
+            "PF": 0.77,
+            "win_pct": 35.57,
+            "mdd_pts": 33543.6,
+            "avg_hold": 128.7
+          },
+          "1.2": {
+            "N": 388,
+            "gross_pts": 3465.7,
+            "net_pts": -43094.3,
+            "PF": 0.669,
+            "win_pct": 31.19,
+            "mdd_pts": 44388,
+            "avg_hold": 128.7
+          },
+          "1.6": {
+            "N": 388,
+            "gross_pts": 3465.7,
+            "net_pts": -58614.3,
+            "PF": 0.585,
+            "win_pct": 25,
+            "mdd_pts": 59868,
+            "avg_hold": 128.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 2986,
+        "costs": {
+          "0.8": {
+            "N": 560,
+            "gross_pts": 34481.5,
+            "net_pts": -10318.5,
+            "PF": 0.904,
+            "win_pct": 27.14,
+            "mdd_pts": 37325.7,
+            "avg_hold": 143.8
+          },
+          "1.2": {
+            "N": 560,
+            "gross_pts": 34481.5,
+            "net_pts": -32718.5,
+            "PF": 0.739,
+            "win_pct": 18.04,
+            "mdd_pts": 55525.7,
+            "avg_hold": 143.8
+          },
+          "1.6": {
+            "N": 560,
+            "gross_pts": 34481.5,
+            "net_pts": -55118.5,
+            "PF": 0.618,
+            "win_pct": 12.68,
+            "mdd_pts": 73725.7,
+            "avg_hold": 143.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1659,
+        "costs": {
+          "0.8": {
+            "N": 295,
+            "gross_pts": -10309.4,
+            "net_pts": -33909.4,
+            "PF": 0.69,
+            "win_pct": 32.2,
+            "mdd_pts": 47166.2,
+            "avg_hold": 131.8
+          },
+          "1.2": {
+            "N": 295,
+            "gross_pts": -10309.4,
+            "net_pts": -45709.4,
+            "PF": 0.612,
+            "win_pct": 29.15,
+            "mdd_pts": 50326.2,
+            "avg_hold": 131.8
+          },
+          "1.6": {
+            "N": 295,
+            "gross_pts": -10309.4,
+            "net_pts": -57509.4,
+            "PF": 0.545,
+            "win_pct": 22.71,
+            "mdd_pts": 57509.4,
+            "avg_hold": 131.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 2605,
+        "costs": {
+          "0.8": {
+            "N": 668,
+            "gross_pts": -2403.3,
+            "net_pts": -55843.3,
+            "PF": 0.632,
+            "win_pct": 28.44,
+            "mdd_pts": 62762.8,
+            "avg_hold": 115.5
+          },
+          "1.2": {
+            "N": 668,
+            "gross_pts": -2403.3,
+            "net_pts": -82563.3,
+            "PF": 0.521,
+            "win_pct": 20.21,
+            "mdd_pts": 88466.2,
+            "avg_hold": 115.5
+          },
+          "1.6": {
+            "N": 668,
+            "gross_pts": -2403.3,
+            "net_pts": -109283.3,
+            "PF": 0.439,
+            "win_pct": 13.62,
+            "mdd_pts": 115146.2,
+            "avg_hold": 115.5
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1352,
+        "costs": {
+          "0.8": {
+            "N": 255,
+            "gross_pts": 30444,
+            "net_pts": 10044,
+            "PF": 1.14,
+            "win_pct": 40.78,
+            "mdd_pts": 15668.8,
+            "avg_hold": 160.4
+          },
+          "1.2": {
+            "N": 255,
+            "gross_pts": 30444,
+            "net_pts": -156,
+            "PF": 0.998,
+            "win_pct": 37.25,
+            "mdd_pts": 19788.8,
+            "avg_hold": 160.4
+          },
+          "1.6": {
+            "N": 255,
+            "gross_pts": 30444,
+            "net_pts": -10356,
+            "PF": 0.878,
+            "win_pct": 32.55,
+            "mdd_pts": 24885.3,
+            "avg_hold": 160.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 6238,
+        "costs": {
+          "0.8": {
+            "N": 547,
+            "gross_pts": 35506.1,
+            "net_pts": -8253.9,
+            "PF": 0.936,
+            "win_pct": 30.53,
+            "mdd_pts": 26995,
+            "avg_hold": 171.3
+          },
+          "1.2": {
+            "N": 547,
+            "gross_pts": 35506.1,
+            "net_pts": -30133.9,
+            "PF": 0.792,
+            "win_pct": 22.3,
+            "mdd_pts": 44875,
+            "avg_hold": 171.3
+          },
+          "1.6": {
+            "N": 547,
+            "gross_pts": 35506.1,
+            "net_pts": -52013.9,
+            "PF": 0.68,
+            "win_pct": 18.28,
+            "mdd_pts": 62755,
+            "avg_hold": 171.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 3085,
+        "costs": {
+          "0.8": {
+            "N": 262,
+            "gross_pts": 38362.2,
+            "net_pts": 17402.2,
+            "PF": 1.195,
+            "win_pct": 40.08,
+            "mdd_pts": 19882.7,
+            "avg_hold": 174.1
+          },
+          "1.2": {
+            "N": 262,
+            "gross_pts": 38362.2,
+            "net_pts": 6922.2,
+            "PF": 1.073,
+            "win_pct": 38.93,
+            "mdd_pts": 23042.7,
+            "avg_hold": 174.1
+          },
+          "1.6": {
+            "N": 262,
+            "gross_pts": 38362.2,
+            "net_pts": -3557.8,
+            "PF": 0.965,
+            "win_pct": 34.35,
+            "mdd_pts": 26547.6,
+            "avg_hold": 174.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 4898,
+        "costs": {
+          "0.8": {
+            "N": 789,
+            "gross_pts": 10132.5,
+            "net_pts": -52987.5,
+            "PF": 0.676,
+            "win_pct": 24.21,
+            "mdd_pts": 54069.4,
+            "avg_hold": 122.1
+          },
+          "1.2": {
+            "N": 789,
+            "gross_pts": 10132.5,
+            "net_pts": -84547.5,
+            "PF": 0.552,
+            "win_pct": 15.59,
+            "mdd_pts": 84684.5,
+            "avg_hold": 122.1
+          },
+          "1.6": {
+            "N": 789,
+            "gross_pts": 10132.5,
+            "net_pts": -116107.5,
+            "PF": 0.463,
+            "win_pct": 12.29,
+            "mdd_pts": 116204.5,
+            "avg_hold": 122.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2643,
+        "costs": {
+          "0.8": {
+            "N": 410,
+            "gross_pts": -30029.8,
+            "net_pts": -62829.8,
+            "PF": 0.573,
+            "win_pct": 36.59,
+            "mdd_pts": 70441.4,
+            "avg_hold": 116.3
+          },
+          "1.2": {
+            "N": 410,
+            "gross_pts": -30029.8,
+            "net_pts": -79229.8,
+            "PF": 0.498,
+            "win_pct": 32.93,
+            "mdd_pts": 85721.4,
+            "avg_hold": 116.3
+          },
+          "1.6": {
+            "N": 410,
+            "gross_pts": -30029.8,
+            "net_pts": -95629.8,
+            "PF": 0.435,
+            "win_pct": 26.1,
+            "mdd_pts": 101001.4,
+            "avg_hold": 116.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 3035,
+        "costs": {
+          "0.8": {
+            "N": 571,
+            "gross_pts": 13648.9,
+            "net_pts": -32031.1,
+            "PF": 0.777,
+            "win_pct": 33.45,
+            "mdd_pts": 50350.7,
+            "avg_hold": 159
+          },
+          "1.2": {
+            "N": 571,
+            "gross_pts": 13648.9,
+            "net_pts": -54871.1,
+            "PF": 0.657,
+            "win_pct": 26.09,
+            "mdd_pts": 67910.7,
+            "avg_hold": 159
+          },
+          "1.6": {
+            "N": 571,
+            "gross_pts": 13648.9,
+            "net_pts": -77711.1,
+            "PF": 0.562,
+            "win_pct": 19.79,
+            "mdd_pts": 85747.6,
+            "avg_hold": 159
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1541,
+        "costs": {
+          "0.8": {
+            "N": 274,
+            "gross_pts": -4791.6,
+            "net_pts": -26711.6,
+            "PF": 0.756,
+            "win_pct": 37.96,
+            "mdd_pts": 36633.1,
+            "avg_hold": 157.2
+          },
+          "1.2": {
+            "N": 274,
+            "gross_pts": -4791.6,
+            "net_pts": -37671.6,
+            "PF": 0.677,
+            "win_pct": 36.5,
+            "mdd_pts": 43033.1,
+            "avg_hold": 157.2
+          },
+          "1.6": {
+            "N": 274,
+            "gross_pts": -4791.6,
+            "net_pts": -48631.6,
+            "PF": 0.607,
+            "win_pct": 33.21,
+            "mdd_pts": 49433.1,
+            "avg_hold": 157.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 1737,
+        "costs": {
+          "0.8": {
+            "N": 467,
+            "gross_pts": 38168.8,
+            "net_pts": 808.8,
+            "PF": 1.008,
+            "win_pct": 29.34,
+            "mdd_pts": 12715.7,
+            "avg_hold": 160.9
+          },
+          "1.2": {
+            "N": 467,
+            "gross_pts": 38168.8,
+            "net_pts": -17871.2,
+            "PF": 0.839,
+            "win_pct": 23.77,
+            "mdd_pts": 24235.8,
+            "avg_hold": 160.9
+          },
+          "1.6": {
+            "N": 467,
+            "gross_pts": 38168.8,
+            "net_pts": -36551.2,
+            "PF": 0.71,
+            "win_pct": 18.2,
+            "mdd_pts": 39097.1,
+            "avg_hold": 160.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 913,
+        "costs": {
+          "0.8": {
+            "N": 232,
+            "gross_pts": -67.5,
+            "net_pts": -18627.5,
+            "PF": 0.795,
+            "win_pct": 35.34,
+            "mdd_pts": 27208.6,
+            "avg_hold": 150.8
+          },
+          "1.2": {
+            "N": 232,
+            "gross_pts": -67.5,
+            "net_pts": -27907.5,
+            "PF": 0.712,
+            "win_pct": 33.62,
+            "mdd_pts": 31728.6,
+            "avg_hold": 150.8
+          },
+          "1.6": {
+            "N": 232,
+            "gross_pts": -67.5,
+            "net_pts": -37187.5,
+            "PF": 0.64,
+            "win_pct": 28.88,
+            "mdd_pts": 37187.5,
+            "avg_hold": 150.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M3",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 4226,
+        "costs": {
+          "0.8": {
+            "N": 810,
+            "gross_pts": 20792,
+            "net_pts": -44008,
+            "PF": 0.688,
+            "win_pct": 25.19,
+            "mdd_pts": 61820.8,
+            "avg_hold": 108.2
+          },
+          "1.2": {
+            "N": 810,
+            "gross_pts": 20792,
+            "net_pts": -76408,
+            "PF": 0.542,
+            "win_pct": 16.42,
+            "mdd_pts": 85761.1,
+            "avg_hold": 108.2
+          },
+          "1.6": {
+            "N": 810,
+            "gross_pts": 20792,
+            "net_pts": -108808,
+            "PF": 0.441,
+            "win_pct": 11.36,
+            "mdd_pts": 112304.3,
+            "avg_hold": 108.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2181,
+        "costs": {
+          "0.8": {
+            "N": 403,
+            "gross_pts": 9650.5,
+            "net_pts": -22589.5,
+            "PF": 0.796,
+            "win_pct": 33.25,
+            "mdd_pts": 36170.1,
+            "avg_hold": 113.5
+          },
+          "1.2": {
+            "N": 403,
+            "gross_pts": 9650.5,
+            "net_pts": -38709.5,
+            "PF": 0.683,
+            "win_pct": 27.05,
+            "mdd_pts": 45890.1,
+            "avg_hold": 113.5
+          },
+          "1.6": {
+            "N": 403,
+            "gross_pts": 9650.5,
+            "net_pts": -54829.5,
+            "PF": 0.592,
+            "win_pct": 20.84,
+            "mdd_pts": 57774.2,
+            "avg_hold": 113.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 8284,
+        "costs": {
+          "0.8": {
+            "N": 786,
+            "gross_pts": 11202.9,
+            "net_pts": -51677.1,
+            "PF": 0.713,
+            "win_pct": 26.08,
+            "mdd_pts": 66111.3,
+            "avg_hold": 92.3
+          },
+          "1.2": {
+            "N": 786,
+            "gross_pts": 11202.9,
+            "net_pts": -83117.1,
+            "PF": 0.594,
+            "win_pct": 17.94,
+            "mdd_pts": 90944.9,
+            "avg_hold": 92.3
+          },
+          "1.6": {
+            "N": 786,
+            "gross_pts": 11202.9,
+            "net_pts": -114557.1,
+            "PF": 0.505,
+            "win_pct": 12.21,
+            "mdd_pts": 121428.9,
+            "avg_hold": 92.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 4173,
+        "costs": {
+          "0.8": {
+            "N": 375,
+            "gross_pts": 7501,
+            "net_pts": -22499,
+            "PF": 0.819,
+            "win_pct": 35.47,
+            "mdd_pts": 23849.5,
+            "avg_hold": 94.9
+          },
+          "1.2": {
+            "N": 375,
+            "gross_pts": 7501,
+            "net_pts": -37499,
+            "PF": 0.72,
+            "win_pct": 31.2,
+            "mdd_pts": 37499,
+            "avg_hold": 94.9
+          },
+          "1.6": {
+            "N": 375,
+            "gross_pts": 7501,
+            "net_pts": -52499,
+            "PF": 0.637,
+            "win_pct": 27.73,
+            "mdd_pts": 52499,
+            "avg_hold": 94.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 2251,
+        "costs": {
+          "0.8": {
+            "N": 464,
+            "gross_pts": 35033.5,
+            "net_pts": -2086.5,
+            "PF": 0.979,
+            "win_pct": 31.47,
+            "mdd_pts": 26851.7,
+            "avg_hold": 121.3
+          },
+          "1.2": {
+            "N": 464,
+            "gross_pts": 35033.5,
+            "net_pts": -20646.5,
+            "PF": 0.821,
+            "win_pct": 22.2,
+            "mdd_pts": 39243.8,
+            "avg_hold": 121.3
+          },
+          "1.6": {
+            "N": 464,
+            "gross_pts": 35033.5,
+            "net_pts": -39206.5,
+            "PF": 0.7,
+            "win_pct": 15.73,
+            "mdd_pts": 52517.2,
+            "avg_hold": 121.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1171,
+        "costs": {
+          "0.8": {
+            "N": 239,
+            "gross_pts": 17103,
+            "net_pts": -2017,
+            "PF": 0.976,
+            "win_pct": 38.91,
+            "mdd_pts": 19113.6,
+            "avg_hold": 112.7
+          },
+          "1.2": {
+            "N": 239,
+            "gross_pts": 17103,
+            "net_pts": -11577,
+            "PF": 0.869,
+            "win_pct": 34.73,
+            "mdd_pts": 22861.6,
+            "avg_hold": 112.7
+          },
+          "1.6": {
+            "N": 239,
+            "gross_pts": 17103,
+            "net_pts": -21137,
+            "PF": 0.778,
+            "win_pct": 31.38,
+            "mdd_pts": 26821.6,
+            "avg_hold": 112.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 2025,
+        "costs": {
+          "0.8": {
+            "N": 489,
+            "gross_pts": 26847.5,
+            "net_pts": -12272.5,
+            "PF": 0.897,
+            "win_pct": 31.49,
+            "mdd_pts": 37140.3,
+            "avg_hold": 120.3
+          },
+          "1.2": {
+            "N": 489,
+            "gross_pts": 26847.5,
+            "net_pts": -31832.5,
+            "PF": 0.762,
+            "win_pct": 21.68,
+            "mdd_pts": 45941.6,
+            "avg_hold": 120.3
+          },
+          "1.6": {
+            "N": 489,
+            "gross_pts": 26847.5,
+            "net_pts": -51392.5,
+            "PF": 0.657,
+            "win_pct": 15.13,
+            "mdd_pts": 58297.5,
+            "avg_hold": 120.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 990,
+        "costs": {
+          "0.8": {
+            "N": 298,
+            "gross_pts": -20243.8,
+            "net_pts": -44083.8,
+            "PF": 0.594,
+            "win_pct": 40.27,
+            "mdd_pts": 46034.8,
+            "avg_hold": 87.3
+          },
+          "1.2": {
+            "N": 298,
+            "gross_pts": -20243.8,
+            "net_pts": -56003.8,
+            "PF": 0.517,
+            "win_pct": 36.91,
+            "mdd_pts": 57394.8,
+            "avg_hold": 87.3
+          },
+          "1.6": {
+            "N": 298,
+            "gross_pts": -20243.8,
+            "net_pts": -67923.8,
+            "PF": 0.451,
+            "win_pct": 31.54,
+            "mdd_pts": 68761.8,
+            "avg_hold": 87.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 4589,
+        "costs": {
+          "0.8": {
+            "N": 493,
+            "gross_pts": 30190,
+            "net_pts": -9250,
+            "PF": 0.929,
+            "win_pct": 35.5,
+            "mdd_pts": 32626.7,
+            "avg_hold": 139.9
+          },
+          "1.2": {
+            "N": 493,
+            "gross_pts": 30190,
+            "net_pts": -28970,
+            "PF": 0.799,
+            "win_pct": 27.79,
+            "mdd_pts": 49466.7,
+            "avg_hold": 139.9
+          },
+          "1.6": {
+            "N": 493,
+            "gross_pts": 30190,
+            "net_pts": -48690,
+            "PF": 0.693,
+            "win_pct": 22.92,
+            "mdd_pts": 66306.7,
+            "avg_hold": 139.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2272,
+        "costs": {
+          "0.8": {
+            "N": 188,
+            "gross_pts": 44129.7,
+            "net_pts": 29089.7,
+            "PF": 1.395,
+            "win_pct": 39.89,
+            "mdd_pts": 16807.5,
+            "avg_hold": 182.5
+          },
+          "1.2": {
+            "N": 188,
+            "gross_pts": 44129.7,
+            "net_pts": 21569.7,
+            "PF": 1.276,
+            "win_pct": 38.83,
+            "mdd_pts": 18728.2,
+            "avg_hold": 182.5
+          },
+          "1.6": {
+            "N": 188,
+            "gross_pts": 44129.7,
+            "net_pts": 14049.7,
+            "PF": 1.169,
+            "win_pct": 37.23,
+            "mdd_pts": 20795.7,
+            "avg_hold": 182.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 3668,
+        "costs": {
+          "0.8": {
+            "N": 553,
+            "gross_pts": 52505.3,
+            "net_pts": 8265.3,
+            "PF": 1.067,
+            "win_pct": 31.46,
+            "mdd_pts": 15305.4,
+            "avg_hold": 133.8
+          },
+          "1.2": {
+            "N": 553,
+            "gross_pts": 52505.3,
+            "net_pts": -13854.7,
+            "PF": 0.9,
+            "win_pct": 23.87,
+            "mdd_pts": 25105.4,
+            "avg_hold": 133.8
+          },
+          "1.6": {
+            "N": 553,
+            "gross_pts": 52505.3,
+            "net_pts": -35974.7,
+            "PF": 0.77,
+            "win_pct": 18.44,
+            "mdd_pts": 42745.4,
+            "avg_hold": 133.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1901,
+        "costs": {
+          "0.8": {
+            "N": 395,
+            "gross_pts": -38178.3,
+            "net_pts": -69778.3,
+            "PF": 0.563,
+            "win_pct": 38.99,
+            "mdd_pts": 74798.3,
+            "avg_hold": 89.9
+          },
+          "1.2": {
+            "N": 395,
+            "gross_pts": -38178.3,
+            "net_pts": -85578.3,
+            "PF": 0.495,
+            "win_pct": 35.44,
+            "mdd_pts": 90434.9,
+            "avg_hold": 89.9
+          },
+          "1.6": {
+            "N": 395,
+            "gross_pts": -38178.3,
+            "net_pts": -101378.3,
+            "PF": 0.436,
+            "win_pct": 32.15,
+            "mdd_pts": 106114.9,
+            "avg_hold": 89.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 2193,
+        "costs": {
+          "0.8": {
+            "N": 516,
+            "gross_pts": 13520.7,
+            "net_pts": -27759.3,
+            "PF": 0.81,
+            "win_pct": 33.72,
+            "mdd_pts": 56640.3,
+            "avg_hold": 123.7
+          },
+          "1.2": {
+            "N": 516,
+            "gross_pts": 13520.7,
+            "net_pts": -48399.3,
+            "PF": 0.698,
+            "win_pct": 27.13,
+            "mdd_pts": 70880.3,
+            "avg_hold": 123.7
+          },
+          "1.6": {
+            "N": 516,
+            "gross_pts": 13520.7,
+            "net_pts": -69039.3,
+            "PF": 0.608,
+            "win_pct": 20.54,
+            "mdd_pts": 85417.7,
+            "avg_hold": 123.7
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1094,
+        "costs": {
+          "0.8": {
+            "N": 255,
+            "gross_pts": -365.1,
+            "net_pts": -20765.1,
+            "PF": 0.813,
+            "win_pct": 36.47,
+            "mdd_pts": 34796,
+            "avg_hold": 121.9
+          },
+          "1.2": {
+            "N": 255,
+            "gross_pts": -365.1,
+            "net_pts": -30965.1,
+            "PF": 0.737,
+            "win_pct": 34.51,
+            "mdd_pts": 39356,
+            "avg_hold": 121.9
+          },
+          "1.6": {
+            "N": 255,
+            "gross_pts": -365.1,
+            "net_pts": -41165.1,
+            "PF": 0.67,
+            "win_pct": 31.37,
+            "mdd_pts": 43916,
+            "avg_hold": 121.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 1340,
+        "costs": {
+          "0.8": {
+            "N": 385,
+            "gross_pts": 25031.7,
+            "net_pts": -5768.3,
+            "PF": 0.94,
+            "win_pct": 34.55,
+            "mdd_pts": 22377.8,
+            "avg_hold": 136.3
+          },
+          "1.2": {
+            "N": 385,
+            "gross_pts": 25031.7,
+            "net_pts": -21168.3,
+            "PF": 0.802,
+            "win_pct": 27.79,
+            "mdd_pts": 30217.8,
+            "avg_hold": 136.3
+          },
+          "1.6": {
+            "N": 385,
+            "gross_pts": 25031.7,
+            "net_pts": -36568.3,
+            "PF": 0.691,
+            "win_pct": 22.08,
+            "mdd_pts": 40585.3,
+            "avg_hold": 136.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 651,
+        "costs": {
+          "0.8": {
+            "N": 180,
+            "gross_pts": -3901.8,
+            "net_pts": -18301.8,
+            "PF": 0.782,
+            "win_pct": 31.67,
+            "mdd_pts": 21167.9,
+            "avg_hold": 141.5
+          },
+          "1.2": {
+            "N": 180,
+            "gross_pts": -3901.8,
+            "net_pts": -25501.8,
+            "PF": 0.714,
+            "win_pct": 30.56,
+            "mdd_pts": 25898.9,
+            "avg_hold": 141.5
+          },
+          "1.6": {
+            "N": 180,
+            "gross_pts": -3901.8,
+            "net_pts": -32701.8,
+            "PF": 0.653,
+            "win_pct": 27.22,
+            "mdd_pts": 32938.9,
+            "avg_hold": 141.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M4",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 3240,
+        "costs": {
+          "0.8": {
+            "N": 658,
+            "gross_pts": 27322.4,
+            "net_pts": -25317.6,
+            "PF": 0.804,
+            "win_pct": 24.16,
+            "mdd_pts": 34111.3,
+            "avg_hold": 97.9
+          },
+          "1.2": {
+            "N": 658,
+            "gross_pts": 27322.4,
+            "net_pts": -51637.6,
+            "PF": 0.656,
+            "win_pct": 15.65,
+            "mdd_pts": 55068.6,
+            "avg_hold": 97.9
+          },
+          "1.6": {
+            "N": 658,
+            "gross_pts": 27322.4,
+            "net_pts": -77957.6,
+            "PF": 0.55,
+            "win_pct": 10.64,
+            "mdd_pts": 81348.6,
+            "avg_hold": 97.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1628,
+        "costs": {
+          "0.8": {
+            "N": 255,
+            "gross_pts": 30507.4,
+            "net_pts": 10107.4,
+            "PF": 1.133,
+            "win_pct": 36.86,
+            "mdd_pts": 16100,
+            "avg_hold": 129.1
+          },
+          "1.2": {
+            "N": 255,
+            "gross_pts": 30507.4,
+            "net_pts": -92.6,
+            "PF": 0.999,
+            "win_pct": 32.16,
+            "mdd_pts": 18464.3,
+            "avg_hold": 129.1
+          },
+          "1.6": {
+            "N": 255,
+            "gross_pts": 30507.4,
+            "net_pts": -10292.6,
+            "PF": 0.886,
+            "win_pct": 28.63,
+            "mdd_pts": 22384.3,
+            "avg_hold": 129.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 6565,
+        "costs": {
+          "0.8": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -45316.6,
+            "PF": 0.729,
+            "win_pct": 29.06,
+            "mdd_pts": 59207.3,
+            "avg_hold": 81.7
+          },
+          "1.2": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -73116.6,
+            "PF": 0.611,
+            "win_pct": 21.58,
+            "mdd_pts": 81967.3,
+            "avg_hold": 81.7
+          },
+          "1.6": {
+            "N": 695,
+            "gross_pts": 10283.4,
+            "net_pts": -100916.6,
+            "PF": 0.521,
+            "win_pct": 15.68,
+            "mdd_pts": 108065,
+            "avg_hold": 81.7
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 3311,
+        "costs": {
+          "0.8": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": 1666.6,
+            "PF": 1.018,
+            "win_pct": 38.52,
+            "mdd_pts": 30183.1,
+            "avg_hold": 117.2
+          },
+          "1.2": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": -8613.4,
+            "PF": 0.914,
+            "win_pct": 35.8,
+            "mdd_pts": 36183.1,
+            "avg_hold": 117.2
+          },
+          "1.6": {
+            "N": 257,
+            "gross_pts": 22226.6,
+            "net_pts": -18893.4,
+            "PF": 0.823,
+            "win_pct": 31.91,
+            "mdd_pts": 42183.1,
+            "avg_hold": 117.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 1829,
+        "costs": {
+          "0.8": {
+            "N": 428,
+            "gross_pts": 31455.3,
+            "net_pts": -2784.7,
+            "PF": 0.971,
+            "win_pct": 34.35,
+            "mdd_pts": 21811.8,
+            "avg_hold": 101.5
+          },
+          "1.2": {
+            "N": 428,
+            "gross_pts": 31455.3,
+            "net_pts": -19904.7,
+            "PF": 0.815,
+            "win_pct": 25.47,
+            "mdd_pts": 32655.8,
+            "avg_hold": 101.5
+          },
+          "1.6": {
+            "N": 428,
+            "gross_pts": 31455.3,
+            "net_pts": -37024.7,
+            "PF": 0.695,
+            "win_pct": 17.29,
+            "mdd_pts": 46575.8,
+            "avg_hold": 101.5
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 940,
+        "costs": {
+          "0.8": {
+            "N": 206,
+            "gross_pts": 5252.5,
+            "net_pts": -11227.5,
+            "PF": 0.847,
+            "win_pct": 39.81,
+            "mdd_pts": 20162.1,
+            "avg_hold": 107.9
+          },
+          "1.2": {
+            "N": 206,
+            "gross_pts": 5252.5,
+            "net_pts": -19467.5,
+            "PF": 0.752,
+            "win_pct": 36.89,
+            "mdd_pts": 23142.2,
+            "avg_hold": 107.9
+          },
+          "1.6": {
+            "N": 206,
+            "gross_pts": 5252.5,
+            "net_pts": -27707.5,
+            "PF": 0.671,
+            "win_pct": 30.1,
+            "mdd_pts": 28273.1,
+            "avg_hold": 107.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 1563,
+        "costs": {
+          "0.8": {
+            "N": 421,
+            "gross_pts": 37698.5,
+            "net_pts": 4018.5,
+            "PF": 1.038,
+            "win_pct": 34.44,
+            "mdd_pts": 24221.7,
+            "avg_hold": 107.9
+          },
+          "1.2": {
+            "N": 421,
+            "gross_pts": 37698.5,
+            "net_pts": -12821.5,
+            "PF": 0.89,
+            "win_pct": 27.08,
+            "mdd_pts": 35221.7,
+            "avg_hold": 107.9
+          },
+          "1.6": {
+            "N": 421,
+            "gross_pts": 37698.5,
+            "net_pts": -29661.5,
+            "PF": 0.772,
+            "win_pct": 19.24,
+            "mdd_pts": 46221.7,
+            "avg_hold": 107.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 819,
+        "costs": {
+          "0.8": {
+            "N": 223,
+            "gross_pts": 9431.3,
+            "net_pts": -8408.7,
+            "PF": 0.905,
+            "win_pct": 40.81,
+            "mdd_pts": 34930.7,
+            "avg_hold": 95.2
+          },
+          "1.2": {
+            "N": 223,
+            "gross_pts": 9431.3,
+            "net_pts": -17328.7,
+            "PF": 0.816,
+            "win_pct": 39.91,
+            "mdd_pts": 39243.9,
+            "avg_hold": 95.2
+          },
+          "1.6": {
+            "N": 223,
+            "gross_pts": 9431.3,
+            "net_pts": -26248.7,
+            "PF": 0.737,
+            "win_pct": 37.22,
+            "mdd_pts": 43603.9,
+            "avg_hold": 95.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 3589,
+        "costs": {
+          "0.8": {
+            "N": 416,
+            "gross_pts": 28847.8,
+            "net_pts": -4432.2,
+            "PF": 0.963,
+            "win_pct": 38.46,
+            "mdd_pts": 15429.7,
+            "avg_hold": 127.4
+          },
+          "1.2": {
+            "N": 416,
+            "gross_pts": 28847.8,
+            "net_pts": -21072.2,
+            "PF": 0.839,
+            "win_pct": 30.53,
+            "mdd_pts": 26075.1,
+            "avg_hold": 127.4
+          },
+          "1.6": {
+            "N": 416,
+            "gross_pts": 28847.8,
+            "net_pts": -37712.2,
+            "PF": 0.736,
+            "win_pct": 25.48,
+            "mdd_pts": 41729,
+            "avg_hold": 127.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1762,
+        "costs": {
+          "0.8": {
+            "N": 186,
+            "gross_pts": 20831.5,
+            "net_pts": 5951.5,
+            "PF": 1.066,
+            "win_pct": 41.4,
+            "mdd_pts": 20664.9,
+            "avg_hold": 138.8
+          },
+          "1.2": {
+            "N": 186,
+            "gross_pts": 20831.5,
+            "net_pts": -1488.5,
+            "PF": 0.984,
+            "win_pct": 41.4,
+            "mdd_pts": 23784.9,
+            "avg_hold": 138.8
+          },
+          "1.6": {
+            "N": 186,
+            "gross_pts": 20831.5,
+            "net_pts": -8928.5,
+            "PF": 0.909,
+            "win_pct": 40.86,
+            "mdd_pts": 26904.9,
+            "avg_hold": 138.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 3000,
+        "costs": {
+          "0.8": {
+            "N": 568,
+            "gross_pts": 29179.2,
+            "net_pts": -16260.8,
+            "PF": 0.88,
+            "win_pct": 33.1,
+            "mdd_pts": 40641.3,
+            "avg_hold": 99.8
+          },
+          "1.2": {
+            "N": 568,
+            "gross_pts": 29179.2,
+            "net_pts": -38980.8,
+            "PF": 0.742,
+            "win_pct": 25.88,
+            "mdd_pts": 57541.1,
+            "avg_hold": 99.8
+          },
+          "1.6": {
+            "N": 568,
+            "gross_pts": 29179.2,
+            "net_pts": -61700.8,
+            "PF": 0.634,
+            "win_pct": 20.6,
+            "mdd_pts": 74461.1,
+            "avg_hold": 99.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1578,
+        "costs": {
+          "0.8": {
+            "N": 307,
+            "gross_pts": 4221.3,
+            "net_pts": -20338.7,
+            "PF": 0.837,
+            "win_pct": 40.39,
+            "mdd_pts": 33967.5,
+            "avg_hold": 90.3
+          },
+          "1.2": {
+            "N": 307,
+            "gross_pts": 4221.3,
+            "net_pts": -32618.7,
+            "PF": 0.753,
+            "win_pct": 39.09,
+            "mdd_pts": 43807.5,
+            "avg_hold": 90.3
+          },
+          "1.6": {
+            "N": 307,
+            "gross_pts": 4221.3,
+            "net_pts": -44898.7,
+            "PF": 0.678,
+            "win_pct": 33.88,
+            "mdd_pts": 53647.5,
+            "avg_hold": 90.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 1803,
+        "costs": {
+          "0.8": {
+            "N": 421,
+            "gross_pts": 7556.6,
+            "net_pts": -26123.4,
+            "PF": 0.808,
+            "win_pct": 34.68,
+            "mdd_pts": 35877.5,
+            "avg_hold": 122.4
+          },
+          "1.2": {
+            "N": 421,
+            "gross_pts": 7556.6,
+            "net_pts": -42963.4,
+            "PF": 0.709,
+            "win_pct": 31.59,
+            "mdd_pts": 51782.2,
+            "avg_hold": 122.4
+          },
+          "1.6": {
+            "N": 421,
+            "gross_pts": 7556.6,
+            "net_pts": -59803.4,
+            "PF": 0.625,
+            "win_pct": 25.89,
+            "mdd_pts": 68062.2,
+            "avg_hold": 122.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 861,
+        "costs": {
+          "0.8": {
+            "N": 184,
+            "gross_pts": 8519.7,
+            "net_pts": -6200.3,
+            "PF": 0.931,
+            "win_pct": 39.67,
+            "mdd_pts": 22233.9,
+            "avg_hold": 138
+          },
+          "1.2": {
+            "N": 184,
+            "gross_pts": 8519.7,
+            "net_pts": -13560.3,
+            "PF": 0.856,
+            "win_pct": 38.59,
+            "mdd_pts": 26313.9,
+            "avg_hold": 138
+          },
+          "1.6": {
+            "N": 184,
+            "gross_pts": 8519.7,
+            "net_pts": -20920.3,
+            "PF": 0.788,
+            "win_pct": 35.33,
+            "mdd_pts": 30393.9,
+            "avg_hold": 138
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 1077,
+        "costs": {
+          "0.8": {
+            "N": 342,
+            "gross_pts": 30340.6,
+            "net_pts": 2980.6,
+            "PF": 1.033,
+            "win_pct": 37.72,
+            "mdd_pts": 17647.9,
+            "avg_hold": 115.2
+          },
+          "1.2": {
+            "N": 342,
+            "gross_pts": 30340.6,
+            "net_pts": -10699.4,
+            "PF": 0.893,
+            "win_pct": 28.65,
+            "mdd_pts": 24949.8,
+            "avg_hold": 115.2
+          },
+          "1.6": {
+            "N": 342,
+            "gross_pts": 30340.6,
+            "net_pts": -24379.4,
+            "PF": 0.78,
+            "win_pct": 21.93,
+            "mdd_pts": 32852.1,
+            "avg_hold": 115.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 528,
+        "costs": {
+          "0.8": {
+            "N": 139,
+            "gross_pts": 22394.3,
+            "net_pts": 11274.3,
+            "PF": 1.19,
+            "win_pct": 41.73,
+            "mdd_pts": 14094.3,
+            "avg_hold": 152.6
+          },
+          "1.2": {
+            "N": 139,
+            "gross_pts": 22394.3,
+            "net_pts": 5714.3,
+            "PF": 1.091,
+            "win_pct": 40.29,
+            "mdd_pts": 15014.3,
+            "avg_hold": 152.6
+          },
+          "1.6": {
+            "N": 139,
+            "gross_pts": 22394.3,
+            "net_pts": 154.3,
+            "PF": 1.002,
+            "win_pct": 38.13,
+            "mdd_pts": 16895.2,
+            "avg_hold": 152.6
+          }
+        }
+      }
+    },
+    {
+      "tf": "M5",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 2633,
+        "costs": {
+          "0.8": {
+            "N": 662,
+            "gross_pts": 21003.5,
+            "net_pts": -31956.5,
+            "PF": 0.759,
+            "win_pct": 28.25,
+            "mdd_pts": 55470,
+            "avg_hold": 72
+          },
+          "1.2": {
+            "N": 662,
+            "gross_pts": 21003.5,
+            "net_pts": -58436.5,
+            "PF": 0.618,
+            "win_pct": 17.82,
+            "mdd_pts": 77590,
+            "avg_hold": 72
+          },
+          "1.6": {
+            "N": 662,
+            "gross_pts": 21003.5,
+            "net_pts": -84916.5,
+            "PF": 0.516,
+            "win_pct": 11.33,
+            "mdd_pts": 99710,
+            "avg_hold": 72
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1330,
+        "costs": {
+          "0.8": {
+            "N": 299,
+            "gross_pts": -762.7,
+            "net_pts": -24682.7,
+            "PF": 0.754,
+            "win_pct": 30.1,
+            "mdd_pts": 27524.2,
+            "avg_hold": 82.7
+          },
+          "1.2": {
+            "N": 299,
+            "gross_pts": -762.7,
+            "net_pts": -36642.7,
+            "PF": 0.664,
+            "win_pct": 26.76,
+            "mdd_pts": 36642.7,
+            "avg_hold": 82.7
+          },
+          "1.6": {
+            "N": 299,
+            "gross_pts": -762.7,
+            "net_pts": -48602.7,
+            "PF": 0.588,
+            "win_pct": 22.74,
+            "mdd_pts": 48602.7,
+            "avg_hold": 82.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 5596,
+        "costs": {
+          "0.8": {
+            "N": 571,
+            "gross_pts": 22273.1,
+            "net_pts": -23406.9,
+            "PF": 0.851,
+            "win_pct": 30.47,
+            "mdd_pts": 37567.1,
+            "avg_hold": 85.1
+          },
+          "1.2": {
+            "N": 571,
+            "gross_pts": 22273.1,
+            "net_pts": -46246.9,
+            "PF": 0.734,
+            "win_pct": 23.12,
+            "mdd_pts": 53167.1,
+            "avg_hold": 85.1
+          },
+          "1.6": {
+            "N": 571,
+            "gross_pts": 22273.1,
+            "net_pts": -69086.9,
+            "PF": 0.641,
+            "win_pct": 17.69,
+            "mdd_pts": 75856.6,
+            "avg_hold": 85.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 2773,
+        "costs": {
+          "0.8": {
+            "N": 278,
+            "gross_pts": 10520.4,
+            "net_pts": -11719.6,
+            "PF": 0.887,
+            "win_pct": 43.53,
+            "mdd_pts": 25833.7,
+            "avg_hold": 86.4
+          },
+          "1.2": {
+            "N": 278,
+            "gross_pts": 10520.4,
+            "net_pts": -22839.6,
+            "PF": 0.792,
+            "win_pct": 42.45,
+            "mdd_pts": 31433.7,
+            "avg_hold": 86.4
+          },
+          "1.6": {
+            "N": 278,
+            "gross_pts": 10520.4,
+            "net_pts": -33959.6,
+            "PF": 0.709,
+            "win_pct": 36.69,
+            "mdd_pts": 40501.1,
+            "avg_hold": 86.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 1494,
+        "costs": {
+          "0.8": {
+            "N": 347,
+            "gross_pts": 40362.7,
+            "net_pts": 12602.7,
+            "PF": 1.146,
+            "win_pct": 33.72,
+            "mdd_pts": 24384.6,
+            "avg_hold": 104.1
+          },
+          "1.2": {
+            "N": 347,
+            "gross_pts": 40362.7,
+            "net_pts": -1277.3,
+            "PF": 0.987,
+            "win_pct": 25.94,
+            "mdd_pts": 33885.2,
+            "avg_hold": 104.1
+          },
+          "1.6": {
+            "N": 347,
+            "gross_pts": 40362.7,
+            "net_pts": -15157.3,
+            "PF": 0.858,
+            "win_pct": 19.88,
+            "mdd_pts": 43405.2,
+            "avg_hold": 104.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 820,
+        "costs": {
+          "0.8": {
+            "N": 208,
+            "gross_pts": -14437.4,
+            "net_pts": -31077.4,
+            "PF": 0.657,
+            "win_pct": 37.02,
+            "mdd_pts": 31180.1,
+            "avg_hold": 80.7
+          },
+          "1.2": {
+            "N": 208,
+            "gross_pts": -14437.4,
+            "net_pts": -39397.4,
+            "PF": 0.589,
+            "win_pct": 35.58,
+            "mdd_pts": 39429.4,
+            "avg_hold": 80.7
+          },
+          "1.6": {
+            "N": 208,
+            "gross_pts": -14437.4,
+            "net_pts": -47717.4,
+            "PF": 0.529,
+            "win_pct": 29.81,
+            "mdd_pts": 47717.4,
+            "avg_hold": 80.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 1368,
+        "costs": {
+          "0.8": {
+            "N": 382,
+            "gross_pts": 14093.7,
+            "net_pts": -16466.3,
+            "PF": 0.845,
+            "win_pct": 32.46,
+            "mdd_pts": 29361.7,
+            "avg_hold": 96.1
+          },
+          "1.2": {
+            "N": 382,
+            "gross_pts": 14093.7,
+            "net_pts": -31746.3,
+            "PF": 0.728,
+            "win_pct": 27.23,
+            "mdd_pts": 38281.1,
+            "avg_hold": 96.1
+          },
+          "1.6": {
+            "N": 382,
+            "gross_pts": 14093.7,
+            "net_pts": -47026.3,
+            "PF": 0.634,
+            "win_pct": 21.99,
+            "mdd_pts": 49001.1,
+            "avg_hold": 96.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 684,
+        "costs": {
+          "0.8": {
+            "N": 196,
+            "gross_pts": 21821.5,
+            "net_pts": 6141.5,
+            "PF": 1.076,
+            "win_pct": 43.88,
+            "mdd_pts": 20354.4,
+            "avg_hold": 91.1
+          },
+          "1.2": {
+            "N": 196,
+            "gross_pts": 21821.5,
+            "net_pts": -1698.5,
+            "PF": 0.98,
+            "win_pct": 43.88,
+            "mdd_pts": 23994.4,
+            "avg_hold": 91.1
+          },
+          "1.6": {
+            "N": 196,
+            "gross_pts": 21821.5,
+            "net_pts": -9538.5,
+            "PF": 0.894,
+            "win_pct": 42.35,
+            "mdd_pts": 27634.4,
+            "avg_hold": 91.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 3007,
+        "costs": {
+          "0.8": {
+            "N": 395,
+            "gross_pts": 35377,
+            "net_pts": 3777,
+            "PF": 1.032,
+            "win_pct": 38.23,
+            "mdd_pts": 22457,
+            "avg_hold": 109.1
+          },
+          "1.2": {
+            "N": 395,
+            "gross_pts": 35377,
+            "net_pts": -12023,
+            "PF": 0.907,
+            "win_pct": 32.66,
+            "mdd_pts": 32640.8,
+            "avg_hold": 109.1
+          },
+          "1.6": {
+            "N": 395,
+            "gross_pts": 35377,
+            "net_pts": -27823,
+            "PF": 0.803,
+            "win_pct": 26.58,
+            "mdd_pts": 42840.8,
+            "avg_hold": 109.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1436,
+        "costs": {
+          "0.8": {
+            "N": 175,
+            "gross_pts": 21391.5,
+            "net_pts": 7391.5,
+            "PF": 1.081,
+            "win_pct": 41.14,
+            "mdd_pts": 20170.6,
+            "avg_hold": 118.9
+          },
+          "1.2": {
+            "N": 175,
+            "gross_pts": 21391.5,
+            "net_pts": 391.5,
+            "PF": 1.004,
+            "win_pct": 40.57,
+            "mdd_pts": 21610.6,
+            "avg_hold": 118.9
+          },
+          "1.6": {
+            "N": 175,
+            "gross_pts": 21391.5,
+            "net_pts": -6608.5,
+            "PF": 0.934,
+            "win_pct": 39.43,
+            "mdd_pts": 23050.6,
+            "avg_hold": 118.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 2397,
+        "costs": {
+          "0.8": {
+            "N": 464,
+            "gross_pts": 24446,
+            "net_pts": -12674,
+            "PF": 0.902,
+            "win_pct": 38.79,
+            "mdd_pts": 29570.5,
+            "avg_hold": 101.1
+          },
+          "1.2": {
+            "N": 464,
+            "gross_pts": 24446,
+            "net_pts": -31234,
+            "PF": 0.779,
+            "win_pct": 32.97,
+            "mdd_pts": 40930.5,
+            "avg_hold": 101.1
+          },
+          "1.6": {
+            "N": 464,
+            "gross_pts": 24446,
+            "net_pts": -49794,
+            "PF": 0.678,
+            "win_pct": 27.16,
+            "mdd_pts": 52384.2,
+            "avg_hold": 101.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1302,
+        "costs": {
+          "0.8": {
+            "N": 249,
+            "gross_pts": 15170.9,
+            "net_pts": -4749.1,
+            "PF": 0.959,
+            "win_pct": 40.16,
+            "mdd_pts": 35659.4,
+            "avg_hold": 95.1
+          },
+          "1.2": {
+            "N": 249,
+            "gross_pts": 15170.9,
+            "net_pts": -14709.1,
+            "PF": 0.88,
+            "win_pct": 39.36,
+            "mdd_pts": 38579.4,
+            "avg_hold": 95.1
+          },
+          "1.6": {
+            "N": 249,
+            "gross_pts": 15170.9,
+            "net_pts": -24669.1,
+            "PF": 0.808,
+            "win_pct": 36.55,
+            "mdd_pts": 43123.8,
+            "avg_hold": 95.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 1520,
+        "costs": {
+          "0.8": {
+            "N": 450,
+            "gross_pts": -930.9,
+            "net_pts": -36930.9,
+            "PF": 0.748,
+            "win_pct": 34.22,
+            "mdd_pts": 59916.1,
+            "avg_hold": 89
+          },
+          "1.2": {
+            "N": 450,
+            "gross_pts": -930.9,
+            "net_pts": -54930.9,
+            "PF": 0.654,
+            "win_pct": 29.78,
+            "mdd_pts": 74836.1,
+            "avg_hold": 89
+          },
+          "1.6": {
+            "N": 450,
+            "gross_pts": -930.9,
+            "net_pts": -72930.9,
+            "PF": 0.576,
+            "win_pct": 24.89,
+            "mdd_pts": 89756.1,
+            "avg_hold": 89
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 714,
+        "costs": {
+          "0.8": {
+            "N": 220,
+            "gross_pts": -13891,
+            "net_pts": -31491,
+            "PF": 0.709,
+            "win_pct": 38.64,
+            "mdd_pts": 35926.5,
+            "avg_hold": 84.7
+          },
+          "1.2": {
+            "N": 220,
+            "gross_pts": -13891,
+            "net_pts": -40291,
+            "PF": 0.645,
+            "win_pct": 38.18,
+            "mdd_pts": 42326.5,
+            "avg_hold": 84.7
+          },
+          "1.6": {
+            "N": 220,
+            "gross_pts": -13891,
+            "net_pts": -49091,
+            "PF": 0.588,
+            "win_pct": 36.82,
+            "mdd_pts": 50735.9,
+            "avg_hold": 84.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 882,
+        "costs": {
+          "0.8": {
+            "N": 296,
+            "gross_pts": 27622.8,
+            "net_pts": 3942.8,
+            "PF": 1.043,
+            "win_pct": 36.15,
+            "mdd_pts": 16819.2,
+            "avg_hold": 100.3
+          },
+          "1.2": {
+            "N": 296,
+            "gross_pts": 27622.8,
+            "net_pts": -7897.2,
+            "PF": 0.921,
+            "win_pct": 32.09,
+            "mdd_pts": 22468.1,
+            "avg_hold": 100.3
+          },
+          "1.6": {
+            "N": 296,
+            "gross_pts": 27622.8,
+            "net_pts": -19737.2,
+            "PF": 0.818,
+            "win_pct": 27.7,
+            "mdd_pts": 30775.4,
+            "avg_hold": 100.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 430,
+        "costs": {
+          "0.8": {
+            "N": 138,
+            "gross_pts": -3688.2,
+            "net_pts": -14728.2,
+            "PF": 0.803,
+            "win_pct": 34.78,
+            "mdd_pts": 27133.8,
+            "avg_hold": 109.8
+          },
+          "1.2": {
+            "N": 138,
+            "gross_pts": -3688.2,
+            "net_pts": -20248.2,
+            "PF": 0.742,
+            "win_pct": 34.06,
+            "mdd_pts": 29973.8,
+            "avg_hold": 109.8
+          },
+          "1.6": {
+            "N": 138,
+            "gross_pts": -3688.2,
+            "net_pts": -25768.2,
+            "PF": 0.686,
+            "win_pct": 32.61,
+            "mdd_pts": 32813.8,
+            "avg_hold": 109.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M6",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 2151,
+        "costs": {
+          "0.8": {
+            "N": 577,
+            "gross_pts": 13596.3,
+            "net_pts": -32563.7,
+            "PF": 0.735,
+            "win_pct": 29.81,
+            "mdd_pts": 32733.1,
+            "avg_hold": 67.9
+          },
+          "1.2": {
+            "N": 577,
+            "gross_pts": 13596.3,
+            "net_pts": -55643.7,
+            "PF": 0.603,
+            "win_pct": 21.66,
+            "mdd_pts": 55760.6,
+            "avg_hold": 67.9
+          },
+          "1.6": {
+            "N": 577,
+            "gross_pts": 13596.3,
+            "net_pts": -78723.7,
+            "PF": 0.505,
+            "win_pct": 14.73,
+            "mdd_pts": 78800.6,
+            "avg_hold": 67.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1119,
+        "costs": {
+          "0.8": {
+            "N": 314,
+            "gross_pts": -21298.6,
+            "net_pts": -46418.6,
+            "PF": 0.584,
+            "win_pct": 36.31,
+            "mdd_pts": 46418.6,
+            "avg_hold": 56.6
+          },
+          "1.2": {
+            "N": 314,
+            "gross_pts": -21298.6,
+            "net_pts": -58978.6,
+            "PF": 0.508,
+            "win_pct": 33.44,
+            "mdd_pts": 58978.6,
+            "avg_hold": 56.6
+          },
+          "1.6": {
+            "N": 314,
+            "gross_pts": -21298.6,
+            "net_pts": -71538.6,
+            "PF": 0.444,
+            "win_pct": 26.75,
+            "mdd_pts": 71538.6,
+            "avg_hold": 56.6
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 3249,
+        "costs": {
+          "0.8": {
+            "N": 410,
+            "gross_pts": 33421.3,
+            "net_pts": 621.3,
+            "PF": 1.005,
+            "win_pct": 37.56,
+            "mdd_pts": 31798.3,
+            "avg_hold": 69.4
+          },
+          "1.2": {
+            "N": 410,
+            "gross_pts": 33421.3,
+            "net_pts": -15778.7,
+            "PF": 0.886,
+            "win_pct": 33.66,
+            "mdd_pts": 43638.3,
+            "avg_hold": 69.4
+          },
+          "1.6": {
+            "N": 410,
+            "gross_pts": 33421.3,
+            "net_pts": -32178.7,
+            "PF": 0.786,
+            "win_pct": 27.32,
+            "mdd_pts": 56068.1,
+            "avg_hold": 69.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1635,
+        "costs": {
+          "0.8": {
+            "N": 242,
+            "gross_pts": 691.4,
+            "net_pts": -18668.6,
+            "PF": 0.833,
+            "win_pct": 45.87,
+            "mdd_pts": 30352.8,
+            "avg_hold": 53
+          },
+          "1.2": {
+            "N": 242,
+            "gross_pts": 691.4,
+            "net_pts": -28348.6,
+            "PF": 0.757,
+            "win_pct": 45.04,
+            "mdd_pts": 35792.8,
+            "avg_hold": 53
+          },
+          "1.6": {
+            "N": 242,
+            "gross_pts": 691.4,
+            "net_pts": -38028.6,
+            "PF": 0.689,
+            "win_pct": 42.98,
+            "mdd_pts": 41232.8,
+            "avg_hold": 53
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 857,
+        "costs": {
+          "0.8": {
+            "N": 264,
+            "gross_pts": 28668.4,
+            "net_pts": 7548.4,
+            "PF": 1.085,
+            "win_pct": 35.61,
+            "mdd_pts": 20840.3,
+            "avg_hold": 74.3
+          },
+          "1.2": {
+            "N": 264,
+            "gross_pts": 28668.4,
+            "net_pts": -3011.6,
+            "PF": 0.968,
+            "win_pct": 31.82,
+            "mdd_pts": 23800.3,
+            "avg_hold": 74.3
+          },
+          "1.6": {
+            "N": 264,
+            "gross_pts": 28668.4,
+            "net_pts": -13571.6,
+            "PF": 0.868,
+            "win_pct": 25.38,
+            "mdd_pts": 26760.3,
+            "avg_hold": 74.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 519,
+        "costs": {
+          "0.8": {
+            "N": 165,
+            "gross_pts": -11141.3,
+            "net_pts": -24341.3,
+            "PF": 0.719,
+            "win_pct": 40.61,
+            "mdd_pts": 25099.2,
+            "avg_hold": 51.3
+          },
+          "1.2": {
+            "N": 165,
+            "gross_pts": -11141.3,
+            "net_pts": -30941.3,
+            "PF": 0.658,
+            "win_pct": 39.39,
+            "mdd_pts": 30941.3,
+            "avg_hold": 51.3
+          },
+          "1.6": {
+            "N": 165,
+            "gross_pts": -11141.3,
+            "net_pts": -37541.3,
+            "PF": 0.603,
+            "win_pct": 38.79,
+            "mdd_pts": 37541.3,
+            "avg_hold": 51.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 719,
+        "costs": {
+          "0.8": {
+            "N": 280,
+            "gross_pts": 12334.7,
+            "net_pts": -10065.3,
+            "PF": 0.906,
+            "win_pct": 40,
+            "mdd_pts": 25460.7,
+            "avg_hold": 65.9
+          },
+          "1.2": {
+            "N": 280,
+            "gross_pts": 12334.7,
+            "net_pts": -21265.3,
+            "PF": 0.813,
+            "win_pct": 35.36,
+            "mdd_pts": 35580.7,
+            "avg_hold": 65.9
+          },
+          "1.6": {
+            "N": 280,
+            "gross_pts": 12334.7,
+            "net_pts": -32465.3,
+            "PF": 0.732,
+            "win_pct": 30,
+            "mdd_pts": 45700.7,
+            "avg_hold": 65.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 385,
+        "costs": {
+          "0.8": {
+            "N": 132,
+            "gross_pts": 4915.4,
+            "net_pts": -5644.6,
+            "PF": 0.916,
+            "win_pct": 43.94,
+            "mdd_pts": 18614.8,
+            "avg_hold": 62.1
+          },
+          "1.2": {
+            "N": 132,
+            "gross_pts": 4915.4,
+            "net_pts": -10924.6,
+            "PF": 0.845,
+            "win_pct": 43.94,
+            "mdd_pts": 20964.1,
+            "avg_hold": 62.1
+          },
+          "1.6": {
+            "N": 132,
+            "gross_pts": 4915.4,
+            "net_pts": -16204.6,
+            "PF": 0.78,
+            "win_pct": 43.94,
+            "mdd_pts": 23324.1,
+            "avg_hold": 62.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 1777,
+        "costs": {
+          "0.8": {
+            "N": 294,
+            "gross_pts": 11451,
+            "net_pts": -12069,
+            "PF": 0.898,
+            "win_pct": 38.78,
+            "mdd_pts": 41849.1,
+            "avg_hold": 75.9
+          },
+          "1.2": {
+            "N": 294,
+            "gross_pts": 11451,
+            "net_pts": -23829,
+            "PF": 0.811,
+            "win_pct": 36.05,
+            "mdd_pts": 49849.1,
+            "avg_hold": 75.9
+          },
+          "1.6": {
+            "N": 294,
+            "gross_pts": 11451,
+            "net_pts": -35589,
+            "PF": 0.734,
+            "win_pct": 31.63,
+            "mdd_pts": 57849.1,
+            "avg_hold": 75.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 884,
+        "costs": {
+          "0.8": {
+            "N": 112,
+            "gross_pts": 16678.1,
+            "net_pts": 7718.1,
+            "PF": 1.098,
+            "win_pct": 36.61,
+            "mdd_pts": 17339.9,
+            "avg_hold": 109.7
+          },
+          "1.2": {
+            "N": 112,
+            "gross_pts": 16678.1,
+            "net_pts": 3238.1,
+            "PF": 1.039,
+            "win_pct": 36.61,
+            "mdd_pts": 18979.9,
+            "avg_hold": 109.7
+          },
+          "1.6": {
+            "N": 112,
+            "gross_pts": 16678.1,
+            "net_pts": -1241.9,
+            "PF": 0.985,
+            "win_pct": 36.61,
+            "mdd_pts": 20619.9,
+            "avg_hold": 109.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 1453,
+        "costs": {
+          "0.8": {
+            "N": 439,
+            "gross_pts": -9972.3,
+            "net_pts": -45092.3,
+            "PF": 0.701,
+            "win_pct": 38.27,
+            "mdd_pts": 56563,
+            "avg_hold": 59.4
+          },
+          "1.2": {
+            "N": 439,
+            "gross_pts": -9972.3,
+            "net_pts": -62652.3,
+            "PF": 0.613,
+            "win_pct": 35.99,
+            "mdd_pts": 72956.7,
+            "avg_hold": 59.4
+          },
+          "1.6": {
+            "N": 439,
+            "gross_pts": -9972.3,
+            "net_pts": -80212.3,
+            "PF": 0.539,
+            "win_pct": 30.07,
+            "mdd_pts": 89956.7,
+            "avg_hold": 59.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 766,
+        "costs": {
+          "0.8": {
+            "N": 231,
+            "gross_pts": -22944.4,
+            "net_pts": -41424.4,
+            "PF": 0.685,
+            "win_pct": 36.8,
+            "mdd_pts": 56223.5,
+            "avg_hold": 53.7
+          },
+          "1.2": {
+            "N": 231,
+            "gross_pts": -22944.4,
+            "net_pts": -50664.4,
+            "PF": 0.631,
+            "win_pct": 36.36,
+            "mdd_pts": 64503.5,
+            "avg_hold": 53.7
+          },
+          "1.6": {
+            "N": 231,
+            "gross_pts": -22944.4,
+            "net_pts": -59904.4,
+            "PF": 0.582,
+            "win_pct": 34.63,
+            "mdd_pts": 72783.5,
+            "avg_hold": 53.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 895,
+        "costs": {
+          "0.8": {
+            "N": 267,
+            "gross_pts": 36924.8,
+            "net_pts": 15564.8,
+            "PF": 1.145,
+            "win_pct": 40.45,
+            "mdd_pts": 21465.3,
+            "avg_hold": 90.3
+          },
+          "1.2": {
+            "N": 267,
+            "gross_pts": 36924.8,
+            "net_pts": 4884.8,
+            "PF": 1.043,
+            "win_pct": 36.33,
+            "mdd_pts": 26825.3,
+            "avg_hold": 90.3
+          },
+          "1.6": {
+            "N": 267,
+            "gross_pts": 36924.8,
+            "net_pts": -5795.2,
+            "PF": 0.952,
+            "win_pct": 34.08,
+            "mdd_pts": 32185.3,
+            "avg_hold": 90.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 435,
+        "costs": {
+          "0.8": {
+            "N": 154,
+            "gross_pts": -24725.3,
+            "net_pts": -37045.3,
+            "PF": 0.623,
+            "win_pct": 38.96,
+            "mdd_pts": 38030.7,
+            "avg_hold": 69.7
+          },
+          "1.2": {
+            "N": 154,
+            "gross_pts": -24725.3,
+            "net_pts": -43205.3,
+            "PF": 0.577,
+            "win_pct": 38.31,
+            "mdd_pts": 43661.5,
+            "avg_hold": 69.7
+          },
+          "1.6": {
+            "N": 154,
+            "gross_pts": -24725.3,
+            "net_pts": -49365.3,
+            "PF": 0.534,
+            "win_pct": 37.66,
+            "mdd_pts": 49781.5,
+            "avg_hold": 69.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 615,
+        "costs": {
+          "0.8": {
+            "N": 212,
+            "gross_pts": 32701.2,
+            "net_pts": 15741.2,
+            "PF": 1.199,
+            "win_pct": 41.98,
+            "mdd_pts": 12352.8,
+            "avg_hold": 84.2
+          },
+          "1.2": {
+            "N": 212,
+            "gross_pts": 32701.2,
+            "net_pts": 7261.2,
+            "PF": 1.086,
+            "win_pct": 41.51,
+            "mdd_pts": 15965.9,
+            "avg_hold": 84.2
+          },
+          "1.6": {
+            "N": 212,
+            "gross_pts": 32701.2,
+            "net_pts": -1218.8,
+            "PF": 0.986,
+            "win_pct": 37.74,
+            "mdd_pts": 21245.9,
+            "avg_hold": 84.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 260,
+        "costs": {
+          "0.8": {
+            "N": 129,
+            "gross_pts": -53853.6,
+            "net_pts": -64173.6,
+            "PF": 0.355,
+            "win_pct": 30.23,
+            "mdd_pts": 64173.6,
+            "avg_hold": 45.7
+          },
+          "1.2": {
+            "N": 129,
+            "gross_pts": -53853.6,
+            "net_pts": -69333.6,
+            "PF": 0.328,
+            "win_pct": 30.23,
+            "mdd_pts": 69333.6,
+            "avg_hold": 45.7
+          },
+          "1.6": {
+            "N": 129,
+            "gross_pts": -53853.6,
+            "net_pts": -74493.6,
+            "PF": 0.302,
+            "win_pct": 30.23,
+            "mdd_pts": 74493.6,
+            "avg_hold": 45.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M10",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 1327,
+        "costs": {
+          "0.8": {
+            "N": 399,
+            "gross_pts": 6940.3,
+            "net_pts": -24979.7,
+            "PF": 0.767,
+            "win_pct": 37.34,
+            "mdd_pts": 29705.6,
+            "avg_hold": 54.1
+          },
+          "1.2": {
+            "N": 399,
+            "gross_pts": 6940.3,
+            "net_pts": -40939.7,
+            "PF": 0.652,
+            "win_pct": 30.08,
+            "mdd_pts": 42145.5,
+            "avg_hold": 54.1
+          },
+          "1.6": {
+            "N": 399,
+            "gross_pts": 6940.3,
+            "net_pts": -56899.7,
+            "PF": 0.561,
+            "win_pct": 21.8,
+            "mdd_pts": 57887.6,
+            "avg_hold": 54.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 635,
+        "costs": {
+          "0.8": {
+            "N": 179,
+            "gross_pts": 14464.5,
+            "net_pts": 144.5,
+            "PF": 1.002,
+            "win_pct": 41.34,
+            "mdd_pts": 18244.5,
+            "avg_hold": 63.2
+          },
+          "1.2": {
+            "N": 179,
+            "gross_pts": 14464.5,
+            "net_pts": -7015.5,
+            "PF": 0.909,
+            "win_pct": 40.22,
+            "mdd_pts": 21444.5,
+            "avg_hold": 63.2
+          },
+          "1.6": {
+            "N": 179,
+            "gross_pts": 14464.5,
+            "net_pts": -14175.5,
+            "PF": 0.826,
+            "win_pct": 36.87,
+            "mdd_pts": 24644.5,
+            "avg_hold": 63.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 2737,
+        "costs": {
+          "0.8": {
+            "N": 365,
+            "gross_pts": 17470.7,
+            "net_pts": -11729.3,
+            "PF": 0.914,
+            "win_pct": 36.44,
+            "mdd_pts": 31223.9,
+            "avg_hold": 63.8
+          },
+          "1.2": {
+            "N": 365,
+            "gross_pts": 17470.7,
+            "net_pts": -26329.3,
+            "PF": 0.82,
+            "win_pct": 31.23,
+            "mdd_pts": 40757.3,
+            "avg_hold": 63.8
+          },
+          "1.6": {
+            "N": 365,
+            "gross_pts": 17470.7,
+            "net_pts": -40929.3,
+            "PF": 0.738,
+            "win_pct": 26.85,
+            "mdd_pts": 50699.7,
+            "avg_hold": 63.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1332,
+        "costs": {
+          "0.8": {
+            "N": 217,
+            "gross_pts": 10128.9,
+            "net_pts": -7231.1,
+            "PF": 0.928,
+            "win_pct": 44.7,
+            "mdd_pts": 18762.8,
+            "avg_hold": 49
+          },
+          "1.2": {
+            "N": 217,
+            "gross_pts": 10128.9,
+            "net_pts": -15911.1,
+            "PF": 0.848,
+            "win_pct": 44.24,
+            "mdd_pts": 21322.8,
+            "avg_hold": 49
+          },
+          "1.6": {
+            "N": 217,
+            "gross_pts": 10128.9,
+            "net_pts": -24591.1,
+            "PF": 0.775,
+            "win_pct": 43.32,
+            "mdd_pts": 24971.3,
+            "avg_hold": 49
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 727,
+        "costs": {
+          "0.8": {
+            "N": 232,
+            "gross_pts": 27739.4,
+            "net_pts": 9179.4,
+            "PF": 1.12,
+            "win_pct": 38.36,
+            "mdd_pts": 17181.7,
+            "avg_hold": 62
+          },
+          "1.2": {
+            "N": 232,
+            "gross_pts": 27739.4,
+            "net_pts": -100.6,
+            "PF": 0.999,
+            "win_pct": 33.19,
+            "mdd_pts": 20966.5,
+            "avg_hold": 62
+          },
+          "1.6": {
+            "N": 232,
+            "gross_pts": 27739.4,
+            "net_pts": -9380.6,
+            "PF": 0.894,
+            "win_pct": 28.45,
+            "mdd_pts": 27003.3,
+            "avg_hold": 62
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 456,
+        "costs": {
+          "0.8": {
+            "N": 138,
+            "gross_pts": 4814.7,
+            "net_pts": -6225.3,
+            "PF": 0.906,
+            "win_pct": 43.48,
+            "mdd_pts": 21298.5,
+            "avg_hold": 46.7
+          },
+          "1.2": {
+            "N": 138,
+            "gross_pts": 4814.7,
+            "net_pts": -11745.3,
+            "PF": 0.831,
+            "win_pct": 42.75,
+            "mdd_pts": 24298.5,
+            "avg_hold": 46.7
+          },
+          "1.6": {
+            "N": 138,
+            "gross_pts": 4814.7,
+            "net_pts": -17265.3,
+            "PF": 0.762,
+            "win_pct": 42.75,
+            "mdd_pts": 27977.2,
+            "avg_hold": 46.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 627,
+        "costs": {
+          "0.8": {
+            "N": 261,
+            "gross_pts": -9485.8,
+            "net_pts": -30365.8,
+            "PF": 0.706,
+            "win_pct": 36.78,
+            "mdd_pts": 31288.9,
+            "avg_hold": 53.9
+          },
+          "1.2": {
+            "N": 261,
+            "gross_pts": -9485.8,
+            "net_pts": -40805.8,
+            "PF": 0.629,
+            "win_pct": 33.72,
+            "mdd_pts": 41208.5,
+            "avg_hold": 53.9
+          },
+          "1.6": {
+            "N": 261,
+            "gross_pts": -9485.8,
+            "net_pts": -51245.8,
+            "PF": 0.563,
+            "win_pct": 30.65,
+            "mdd_pts": 51608.5,
+            "avg_hold": 53.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 341,
+        "costs": {
+          "0.8": {
+            "N": 138,
+            "gross_pts": 11736.1,
+            "net_pts": 696.1,
+            "PF": 1.01,
+            "win_pct": 41.3,
+            "mdd_pts": 13357.5,
+            "avg_hold": 53.2
+          },
+          "1.2": {
+            "N": 138,
+            "gross_pts": 11736.1,
+            "net_pts": -4823.9,
+            "PF": 0.937,
+            "win_pct": 40.58,
+            "mdd_pts": 15481.7,
+            "avg_hold": 53.2
+          },
+          "1.6": {
+            "N": 138,
+            "gross_pts": 11736.1,
+            "net_pts": -10343.9,
+            "PF": 0.87,
+            "win_pct": 40.58,
+            "mdd_pts": 17681.7,
+            "avg_hold": 53.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 1506,
+        "costs": {
+          "0.8": {
+            "N": 239,
+            "gross_pts": 27732.2,
+            "net_pts": 8612.2,
+            "PF": 1.083,
+            "win_pct": 40.59,
+            "mdd_pts": 28957.9,
+            "avg_hold": 78.7
+          },
+          "1.2": {
+            "N": 239,
+            "gross_pts": 27732.2,
+            "net_pts": -947.8,
+            "PF": 0.991,
+            "win_pct": 39.33,
+            "mdd_pts": 33757.9,
+            "avg_hold": 78.7
+          },
+          "1.6": {
+            "N": 239,
+            "gross_pts": 27732.2,
+            "net_pts": -10507.8,
+            "PF": 0.909,
+            "win_pct": 33.89,
+            "mdd_pts": 39261,
+            "avg_hold": 78.7
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 751,
+        "costs": {
+          "0.8": {
+            "N": 117,
+            "gross_pts": 11748.6,
+            "net_pts": 2388.6,
+            "PF": 1.027,
+            "win_pct": 39.32,
+            "mdd_pts": 19798.9,
+            "avg_hold": 84.4
+          },
+          "1.2": {
+            "N": 117,
+            "gross_pts": 11748.6,
+            "net_pts": -2291.4,
+            "PF": 0.975,
+            "win_pct": 39.32,
+            "mdd_pts": 21948,
+            "avg_hold": 84.4
+          },
+          "1.6": {
+            "N": 117,
+            "gross_pts": 11748.6,
+            "net_pts": -6971.4,
+            "PF": 0.926,
+            "win_pct": 39.32,
+            "mdd_pts": 24508,
+            "avg_hold": 84.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 1203,
+        "costs": {
+          "0.8": {
+            "N": 365,
+            "gross_pts": 14489.2,
+            "net_pts": -14710.8,
+            "PF": 0.88,
+            "win_pct": 38.9,
+            "mdd_pts": 26516.2,
+            "avg_hold": 58.1
+          },
+          "1.2": {
+            "N": 365,
+            "gross_pts": 14489.2,
+            "net_pts": -29310.8,
+            "PF": 0.777,
+            "win_pct": 35.89,
+            "mdd_pts": 29529.8,
+            "avg_hold": 58.1
+          },
+          "1.6": {
+            "N": 365,
+            "gross_pts": 14489.2,
+            "net_pts": -43910.8,
+            "PF": 0.689,
+            "win_pct": 29.32,
+            "mdd_pts": 44089.8,
+            "avg_hold": 58.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 634,
+        "costs": {
+          "0.8": {
+            "N": 177,
+            "gross_pts": -955.3,
+            "net_pts": -15115.3,
+            "PF": 0.86,
+            "win_pct": 34.46,
+            "mdd_pts": 53901.5,
+            "avg_hold": 60.7
+          },
+          "1.2": {
+            "N": 177,
+            "gross_pts": -955.3,
+            "net_pts": -22195.3,
+            "PF": 0.803,
+            "win_pct": 34.46,
+            "mdd_pts": 58781.5,
+            "avg_hold": 60.7
+          },
+          "1.6": {
+            "N": 177,
+            "gross_pts": -955.3,
+            "net_pts": -29275.3,
+            "PF": 0.751,
+            "win_pct": 33.9,
+            "mdd_pts": 63661.5,
+            "avg_hold": 60.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 764,
+        "costs": {
+          "0.8": {
+            "N": 242,
+            "gross_pts": 8342.5,
+            "net_pts": -11017.5,
+            "PF": 0.9,
+            "win_pct": 39.67,
+            "mdd_pts": 26041.4,
+            "avg_hold": 76.3
+          },
+          "1.2": {
+            "N": 242,
+            "gross_pts": 8342.5,
+            "net_pts": -20697.5,
+            "PF": 0.822,
+            "win_pct": 38.02,
+            "mdd_pts": 30721.4,
+            "avg_hold": 76.3
+          },
+          "1.6": {
+            "N": 242,
+            "gross_pts": 8342.5,
+            "net_pts": -30377.5,
+            "PF": 0.751,
+            "win_pct": 35.54,
+            "mdd_pts": 36060.8,
+            "avg_hold": 76.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 348,
+        "costs": {
+          "0.8": {
+            "N": 128,
+            "gross_pts": -19103.4,
+            "net_pts": -29343.4,
+            "PF": 0.682,
+            "win_pct": 42.97,
+            "mdd_pts": 35695.1,
+            "avg_hold": 67
+          },
+          "1.2": {
+            "N": 128,
+            "gross_pts": -19103.4,
+            "net_pts": -34463.4,
+            "PF": 0.637,
+            "win_pct": 42.97,
+            "mdd_pts": 40175.1,
+            "avg_hold": 67
+          },
+          "1.6": {
+            "N": 128,
+            "gross_pts": -19103.4,
+            "net_pts": -39583.4,
+            "PF": 0.596,
+            "win_pct": 42.97,
+            "mdd_pts": 44655.1,
+            "avg_hold": 67
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 510,
+        "costs": {
+          "0.8": {
+            "N": 178,
+            "gross_pts": 22620.9,
+            "net_pts": 8380.9,
+            "PF": 1.098,
+            "win_pct": 42.13,
+            "mdd_pts": 27644.3,
+            "avg_hold": 82.8
+          },
+          "1.2": {
+            "N": 178,
+            "gross_pts": 22620.9,
+            "net_pts": 1260.9,
+            "PF": 1.014,
+            "win_pct": 40.45,
+            "mdd_pts": 30284.3,
+            "avg_hold": 82.8
+          },
+          "1.6": {
+            "N": 178,
+            "gross_pts": 22620.9,
+            "net_pts": -5859.1,
+            "PF": 0.937,
+            "win_pct": 39.33,
+            "mdd_pts": 32924.3,
+            "avg_hold": 82.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 266,
+        "costs": {
+          "0.8": {
+            "N": 103,
+            "gross_pts": -21409.2,
+            "net_pts": -29649.2,
+            "PF": 0.648,
+            "win_pct": 35.92,
+            "mdd_pts": 30627.6,
+            "avg_hold": 57.2
+          },
+          "1.2": {
+            "N": 103,
+            "gross_pts": -21409.2,
+            "net_pts": -33769.2,
+            "PF": 0.611,
+            "win_pct": 35.92,
+            "mdd_pts": 34667.6,
+            "avg_hold": 57.2
+          },
+          "1.6": {
+            "N": 103,
+            "gross_pts": -21409.2,
+            "net_pts": -37889.2,
+            "PF": 0.576,
+            "win_pct": 35.92,
+            "mdd_pts": 38707.6,
+            "avg_hold": 57.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M12",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 1074,
+        "costs": {
+          "0.8": {
+            "N": 336,
+            "gross_pts": 40242.4,
+            "net_pts": 13362.4,
+            "PF": 1.174,
+            "win_pct": 43.45,
+            "mdd_pts": 19345.5,
+            "avg_hold": 53.2
+          },
+          "1.2": {
+            "N": 336,
+            "gross_pts": 40242.4,
+            "net_pts": -77.6,
+            "PF": 0.999,
+            "win_pct": 35.71,
+            "mdd_pts": 29664.4,
+            "avg_hold": 53.2
+          },
+          "1.6": {
+            "N": 336,
+            "gross_pts": 40242.4,
+            "net_pts": -13517.6,
+            "PF": 0.856,
+            "win_pct": 26.79,
+            "mdd_pts": 40487.3,
+            "avg_hold": 53.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 538,
+        "costs": {
+          "0.8": {
+            "N": 161,
+            "gross_pts": 14062.4,
+            "net_pts": 1182.4,
+            "PF": 1.02,
+            "win_pct": 47.2,
+            "mdd_pts": 11849.4,
+            "avg_hold": 56.5
+          },
+          "1.2": {
+            "N": 161,
+            "gross_pts": 14062.4,
+            "net_pts": -5257.6,
+            "PF": 0.916,
+            "win_pct": 45.96,
+            "mdd_pts": 14843.4,
+            "avg_hold": 56.5
+          },
+          "1.6": {
+            "N": 161,
+            "gross_pts": 14062.4,
+            "net_pts": -11697.6,
+            "PF": 0.823,
+            "win_pct": 43.48,
+            "mdd_pts": 20243.4,
+            "avg_hold": 56.5
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 2125,
+        "costs": {
+          "0.8": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": 14839.4,
+            "PF": 1.138,
+            "win_pct": 42.5,
+            "mdd_pts": 16345.8,
+            "avg_hold": 55.3
+          },
+          "1.2": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": 2039.4,
+            "PF": 1.018,
+            "win_pct": 39.06,
+            "mdd_pts": 17905.8,
+            "avg_hold": 55.3
+          },
+          "1.6": {
+            "N": 320,
+            "gross_pts": 40439.4,
+            "net_pts": -10760.6,
+            "PF": 0.913,
+            "win_pct": 34.06,
+            "mdd_pts": 23945.6,
+            "avg_hold": 55.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 1076,
+        "costs": {
+          "0.8": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": 6527.2,
+            "PF": 1.082,
+            "win_pct": 43.59,
+            "mdd_pts": 21230.4,
+            "avg_hold": 55.4
+          },
+          "1.2": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": 287.2,
+            "PF": 1.003,
+            "win_pct": 43.59,
+            "mdd_pts": 21830.4,
+            "avg_hold": 55.4
+          },
+          "1.6": {
+            "N": 156,
+            "gross_pts": 19007.2,
+            "net_pts": -5952.8,
+            "PF": 0.931,
+            "win_pct": 41.67,
+            "mdd_pts": 25036.1,
+            "avg_hold": 55.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 591,
+        "costs": {
+          "0.8": {
+            "N": 187,
+            "gross_pts": 16213.9,
+            "net_pts": 1253.9,
+            "PF": 1.019,
+            "win_pct": 42.25,
+            "mdd_pts": 18802.2,
+            "avg_hold": 55.3
+          },
+          "1.2": {
+            "N": 187,
+            "gross_pts": 16213.9,
+            "net_pts": -6226.1,
+            "PF": 0.911,
+            "win_pct": 37.43,
+            "mdd_pts": 22264.3,
+            "avg_hold": 55.3
+          },
+          "1.6": {
+            "N": 187,
+            "gross_pts": 16213.9,
+            "net_pts": -13706.1,
+            "PF": 0.818,
+            "win_pct": 31.55,
+            "mdd_pts": 26824.3,
+            "avg_hold": 55.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 387,
+        "costs": {
+          "0.8": {
+            "N": 110,
+            "gross_pts": 16563,
+            "net_pts": 7763,
+            "PF": 1.146,
+            "win_pct": 50.91,
+            "mdd_pts": 17995.7,
+            "avg_hold": 56.1
+          },
+          "1.2": {
+            "N": 110,
+            "gross_pts": 16563,
+            "net_pts": 3363,
+            "PF": 1.061,
+            "win_pct": 50.91,
+            "mdd_pts": 18795.7,
+            "avg_hold": 56.1
+          },
+          "1.6": {
+            "N": 110,
+            "gross_pts": 16563,
+            "net_pts": -1037,
+            "PF": 0.982,
+            "win_pct": 49.09,
+            "mdd_pts": 19595.7,
+            "avg_hold": 56.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 488,
+        "costs": {
+          "0.8": {
+            "N": 215,
+            "gross_pts": 4488.7,
+            "net_pts": -12711.3,
+            "PF": 0.858,
+            "win_pct": 40.47,
+            "mdd_pts": 15436.1,
+            "avg_hold": 50.1
+          },
+          "1.2": {
+            "N": 215,
+            "gross_pts": 4488.7,
+            "net_pts": -21311.3,
+            "PF": 0.775,
+            "win_pct": 37.21,
+            "mdd_pts": 21936.3,
+            "avg_hold": 50.1
+          },
+          "1.6": {
+            "N": 215,
+            "gross_pts": 4488.7,
+            "net_pts": -29911.3,
+            "PF": 0.702,
+            "win_pct": 34.88,
+            "mdd_pts": 30456.3,
+            "avg_hold": 50.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 255,
+        "costs": {
+          "0.8": {
+            "N": 101,
+            "gross_pts": -5192.3,
+            "net_pts": -13272.3,
+            "PF": 0.815,
+            "win_pct": 35.64,
+            "mdd_pts": 22127.3,
+            "avg_hold": 52.7
+          },
+          "1.2": {
+            "N": 101,
+            "gross_pts": -5192.3,
+            "net_pts": -17312.3,
+            "PF": 0.768,
+            "win_pct": 35.64,
+            "mdd_pts": 23887.3,
+            "avg_hold": 52.7
+          },
+          "1.6": {
+            "N": 101,
+            "gross_pts": -5192.3,
+            "net_pts": -21352.3,
+            "PF": 0.723,
+            "win_pct": 35.64,
+            "mdd_pts": 25647.3,
+            "avg_hold": 52.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 1165,
+        "costs": {
+          "0.8": {
+            "N": 237,
+            "gross_pts": -14213.2,
+            "net_pts": -33173.2,
+            "PF": 0.754,
+            "win_pct": 35.02,
+            "mdd_pts": 37852.8,
+            "avg_hold": 60.4
+          },
+          "1.2": {
+            "N": 237,
+            "gross_pts": -14213.2,
+            "net_pts": -42653.2,
+            "PF": 0.697,
+            "win_pct": 34.18,
+            "mdd_pts": 47092.8,
+            "avg_hold": 60.4
+          },
+          "1.6": {
+            "N": 237,
+            "gross_pts": -14213.2,
+            "net_pts": -52133.2,
+            "PF": 0.646,
+            "win_pct": 29.54,
+            "mdd_pts": 56332.8,
+            "avg_hold": 60.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 603,
+        "costs": {
+          "0.8": {
+            "N": 105,
+            "gross_pts": 7075,
+            "net_pts": -1325,
+            "PF": 0.984,
+            "win_pct": 38.1,
+            "mdd_pts": 18342.7,
+            "avg_hold": 73.3
+          },
+          "1.2": {
+            "N": 105,
+            "gross_pts": 7075,
+            "net_pts": -5525,
+            "PF": 0.935,
+            "win_pct": 38.1,
+            "mdd_pts": 19422.7,
+            "avg_hold": 73.3
+          },
+          "1.6": {
+            "N": 105,
+            "gross_pts": 7075,
+            "net_pts": -9725,
+            "PF": 0.889,
+            "win_pct": 38.1,
+            "mdd_pts": 20968.4,
+            "avg_hold": 73.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 946,
+        "costs": {
+          "0.8": {
+            "N": 305,
+            "gross_pts": -17387.7,
+            "net_pts": -41787.7,
+            "PF": 0.712,
+            "win_pct": 40,
+            "mdd_pts": 47290.4,
+            "avg_hold": 52.4
+          },
+          "1.2": {
+            "N": 305,
+            "gross_pts": -17387.7,
+            "net_pts": -53987.7,
+            "PF": 0.646,
+            "win_pct": 38.69,
+            "mdd_pts": 56290.4,
+            "avg_hold": 52.4
+          },
+          "1.6": {
+            "N": 305,
+            "gross_pts": -17387.7,
+            "net_pts": -66187.7,
+            "PF": 0.587,
+            "win_pct": 34.75,
+            "mdd_pts": 67108.1,
+            "avg_hold": 52.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 506,
+        "costs": {
+          "0.8": {
+            "N": 183,
+            "gross_pts": -41911.2,
+            "net_pts": -56551.2,
+            "PF": 0.568,
+            "win_pct": 31.15,
+            "mdd_pts": 61923.9,
+            "avg_hold": 40.1
+          },
+          "1.2": {
+            "N": 183,
+            "gross_pts": -41911.2,
+            "net_pts": -63871.2,
+            "PF": 0.53,
+            "win_pct": 31.15,
+            "mdd_pts": 69083.9,
+            "avg_hold": 40.1
+          },
+          "1.6": {
+            "N": 183,
+            "gross_pts": -41911.2,
+            "net_pts": -71191.2,
+            "PF": 0.495,
+            "win_pct": 30.05,
+            "mdd_pts": 76243.9,
+            "avg_hold": 40.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 579,
+        "costs": {
+          "0.8": {
+            "N": 197,
+            "gross_pts": 20565.4,
+            "net_pts": 4805.4,
+            "PF": 1.048,
+            "win_pct": 39.09,
+            "mdd_pts": 25004.9,
+            "avg_hold": 75
+          },
+          "1.2": {
+            "N": 197,
+            "gross_pts": 20565.4,
+            "net_pts": -3074.6,
+            "PF": 0.971,
+            "win_pct": 38.07,
+            "mdd_pts": 28484.9,
+            "avg_hold": 75
+          },
+          "1.6": {
+            "N": 197,
+            "gross_pts": 20565.4,
+            "net_pts": -10954.6,
+            "PF": 0.9,
+            "win_pct": 36.55,
+            "mdd_pts": 31964.9,
+            "avg_hold": 75
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 293,
+        "costs": {
+          "0.8": {
+            "N": 114,
+            "gross_pts": -14724.7,
+            "net_pts": -23844.7,
+            "PF": 0.723,
+            "win_pct": 41.23,
+            "mdd_pts": 26456.7,
+            "avg_hold": 56.4
+          },
+          "1.2": {
+            "N": 114,
+            "gross_pts": -14724.7,
+            "net_pts": -28404.7,
+            "PF": 0.68,
+            "win_pct": 41.23,
+            "mdd_pts": 30560.6,
+            "avg_hold": 56.4
+          },
+          "1.6": {
+            "N": 114,
+            "gross_pts": -14724.7,
+            "net_pts": -32964.7,
+            "PF": 0.639,
+            "win_pct": 41.23,
+            "mdd_pts": 35040.6,
+            "avg_hold": 56.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 429,
+        "costs": {
+          "0.8": {
+            "N": 150,
+            "gross_pts": 34491.1,
+            "net_pts": 22491.1,
+            "PF": 1.316,
+            "win_pct": 47.33,
+            "mdd_pts": 17953.8,
+            "avg_hold": 76.2
+          },
+          "1.2": {
+            "N": 150,
+            "gross_pts": 34491.1,
+            "net_pts": 16491.1,
+            "PF": 1.222,
+            "win_pct": 47.33,
+            "mdd_pts": 20033.8,
+            "avg_hold": 76.2
+          },
+          "1.6": {
+            "N": 150,
+            "gross_pts": 34491.1,
+            "net_pts": 10491.1,
+            "PF": 1.135,
+            "win_pct": 46,
+            "mdd_pts": 22113.8,
+            "avg_hold": 76.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 213,
+        "costs": {
+          "0.8": {
+            "N": 79,
+            "gross_pts": 4995.5,
+            "net_pts": -1324.5,
+            "PF": 0.978,
+            "win_pct": 40.51,
+            "mdd_pts": 14093.5,
+            "avg_hold": 62.2
+          },
+          "1.2": {
+            "N": 79,
+            "gross_pts": 4995.5,
+            "net_pts": -4484.5,
+            "PF": 0.926,
+            "win_pct": 40.51,
+            "mdd_pts": 15573.5,
+            "avg_hold": 62.2
+          },
+          "1.6": {
+            "N": 79,
+            "gross_pts": 4995.5,
+            "net_pts": -7644.5,
+            "PF": 0.878,
+            "win_pct": 40.51,
+            "mdd_pts": 17053.5,
+            "avg_hold": 62.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M15",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 876,
+        "costs": {
+          "0.8": {
+            "N": 314,
+            "gross_pts": 6905.3,
+            "net_pts": -18214.7,
+            "PF": 0.799,
+            "win_pct": 38.22,
+            "mdd_pts": 22222.6,
+            "avg_hold": 41
+          },
+          "1.2": {
+            "N": 314,
+            "gross_pts": 6905.3,
+            "net_pts": -30774.7,
+            "PF": 0.688,
+            "win_pct": 32.8,
+            "mdd_pts": 32580.5,
+            "avg_hold": 41
+          },
+          "1.6": {
+            "N": 314,
+            "gross_pts": 6905.3,
+            "net_pts": -43334.7,
+            "PF": 0.597,
+            "win_pct": 25.8,
+            "mdd_pts": 44820.5,
+            "avg_hold": 41
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 437,
+        "costs": {
+          "0.8": {
+            "N": 145,
+            "gross_pts": 6121.3,
+            "net_pts": -5478.7,
+            "PF": 0.918,
+            "win_pct": 42.07,
+            "mdd_pts": 27047.2,
+            "avg_hold": 47.7
+          },
+          "1.2": {
+            "N": 145,
+            "gross_pts": 6121.3,
+            "net_pts": -11278.7,
+            "PF": 0.84,
+            "win_pct": 41.38,
+            "mdd_pts": 31237.4,
+            "avg_hold": 47.7
+          },
+          "1.6": {
+            "N": 145,
+            "gross_pts": 6121.3,
+            "net_pts": -17078.7,
+            "PF": 0.768,
+            "win_pct": 40,
+            "mdd_pts": 35877.4,
+            "avg_hold": 47.7
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 1572,
+        "costs": {
+          "0.8": {
+            "N": 276,
+            "gross_pts": 17065.9,
+            "net_pts": -5014.1,
+            "PF": 0.957,
+            "win_pct": 38.77,
+            "mdd_pts": 18043.8,
+            "avg_hold": 46.6
+          },
+          "1.2": {
+            "N": 276,
+            "gross_pts": 17065.9,
+            "net_pts": -16054.1,
+            "PF": 0.871,
+            "win_pct": 36.23,
+            "mdd_pts": 21262,
+            "avg_hold": 46.6
+          },
+          "1.6": {
+            "N": 276,
+            "gross_pts": 17065.9,
+            "net_pts": -27094.1,
+            "PF": 0.794,
+            "win_pct": 34.42,
+            "mdd_pts": 28980.8,
+            "avg_hold": 46.6
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 775,
+        "costs": {
+          "0.8": {
+            "N": 136,
+            "gross_pts": 16637.7,
+            "net_pts": 5757.7,
+            "PF": 1.072,
+            "win_pct": 43.38,
+            "mdd_pts": 18472.3,
+            "avg_hold": 44.8
+          },
+          "1.2": {
+            "N": 136,
+            "gross_pts": 16637.7,
+            "net_pts": 317.7,
+            "PF": 1.004,
+            "win_pct": 43.38,
+            "mdd_pts": 18912.3,
+            "avg_hold": 44.8
+          },
+          "1.6": {
+            "N": 136,
+            "gross_pts": 16637.7,
+            "net_pts": -5122.3,
+            "PF": 0.941,
+            "win_pct": 43.38,
+            "mdd_pts": 19352.3,
+            "avg_hold": 44.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 411,
+        "costs": {
+          "0.8": {
+            "N": 160,
+            "gross_pts": -3179.4,
+            "net_pts": -15979.4,
+            "PF": 0.765,
+            "win_pct": 40.62,
+            "mdd_pts": 21277.8,
+            "avg_hold": 44.1
+          },
+          "1.2": {
+            "N": 160,
+            "gross_pts": -3179.4,
+            "net_pts": -22379.4,
+            "PF": 0.689,
+            "win_pct": 39.38,
+            "mdd_pts": 24717.8,
+            "avg_hold": 44.1
+          },
+          "1.6": {
+            "N": 160,
+            "gross_pts": -3179.4,
+            "net_pts": -28779.4,
+            "PF": 0.621,
+            "win_pct": 36.25,
+            "mdd_pts": 29581.8,
+            "avg_hold": 44.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 266,
+        "costs": {
+          "0.8": {
+            "N": 99,
+            "gross_pts": 9400,
+            "net_pts": 1480,
+            "PF": 1.03,
+            "win_pct": 50.51,
+            "mdd_pts": 8123.5,
+            "avg_hold": 42
+          },
+          "1.2": {
+            "N": 99,
+            "gross_pts": 9400,
+            "net_pts": -2480,
+            "PF": 0.952,
+            "win_pct": 50.51,
+            "mdd_pts": 9462.6,
+            "avg_hold": 42
+          },
+          "1.6": {
+            "N": 99,
+            "gross_pts": 9400,
+            "net_pts": -6440,
+            "PF": 0.879,
+            "win_pct": 50.51,
+            "mdd_pts": 11782.6,
+            "avg_hold": 42
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 382,
+        "costs": {
+          "0.8": {
+            "N": 157,
+            "gross_pts": -150.6,
+            "net_pts": -12710.6,
+            "PF": 0.848,
+            "win_pct": 38.85,
+            "mdd_pts": 23401.1,
+            "avg_hold": 53.7
+          },
+          "1.2": {
+            "N": 157,
+            "gross_pts": -150.6,
+            "net_pts": -18990.6,
+            "PF": 0.783,
+            "win_pct": 38.22,
+            "mdd_pts": 26081.1,
+            "avg_hold": 53.7
+          },
+          "1.6": {
+            "N": 157,
+            "gross_pts": -150.6,
+            "net_pts": -25270.6,
+            "PF": 0.724,
+            "win_pct": 34.39,
+            "mdd_pts": 31546,
+            "avg_hold": 53.7
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 176,
+        "costs": {
+          "0.8": {
+            "N": 83,
+            "gross_pts": 4206.6,
+            "net_pts": -2433.4,
+            "PF": 0.964,
+            "win_pct": 37.35,
+            "mdd_pts": 18010.7,
+            "avg_hold": 43.4
+          },
+          "1.2": {
+            "N": 83,
+            "gross_pts": 4206.6,
+            "net_pts": -5753.4,
+            "PF": 0.918,
+            "win_pct": 37.35,
+            "mdd_pts": 19890.7,
+            "avg_hold": 43.4
+          },
+          "1.6": {
+            "N": 83,
+            "gross_pts": 4206.6,
+            "net_pts": -9073.4,
+            "PF": 0.874,
+            "win_pct": 37.35,
+            "mdd_pts": 21770.7,
+            "avg_hold": 43.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 899,
+        "costs": {
+          "0.8": {
+            "N": 183,
+            "gross_pts": 5515.5,
+            "net_pts": -9124.5,
+            "PF": 0.92,
+            "win_pct": 36.07,
+            "mdd_pts": 29162.3,
+            "avg_hold": 55.5
+          },
+          "1.2": {
+            "N": 183,
+            "gross_pts": 5515.5,
+            "net_pts": -16444.5,
+            "PF": 0.861,
+            "win_pct": 33.88,
+            "mdd_pts": 34882.3,
+            "avg_hold": 55.5
+          },
+          "1.6": {
+            "N": 183,
+            "gross_pts": 5515.5,
+            "net_pts": -23764.5,
+            "PF": 0.807,
+            "win_pct": 32.79,
+            "mdd_pts": 40602.3,
+            "avg_hold": 55.5
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 439,
+        "costs": {
+          "0.8": {
+            "N": 81,
+            "gross_pts": 19792.5,
+            "net_pts": 13312.5,
+            "PF": 1.178,
+            "win_pct": 37.04,
+            "mdd_pts": 17604.6,
+            "avg_hold": 69.4
+          },
+          "1.2": {
+            "N": 81,
+            "gross_pts": 19792.5,
+            "net_pts": 10072.5,
+            "PF": 1.131,
+            "win_pct": 37.04,
+            "mdd_pts": 19564.6,
+            "avg_hold": 69.4
+          },
+          "1.6": {
+            "N": 81,
+            "gross_pts": 19792.5,
+            "net_pts": 6832.5,
+            "PF": 1.086,
+            "win_pct": 37.04,
+            "mdd_pts": 21524.6,
+            "avg_hold": 69.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 681,
+        "costs": {
+          "0.8": {
+            "N": 305,
+            "gross_pts": 17417.3,
+            "net_pts": -6982.7,
+            "PF": 0.944,
+            "win_pct": 34.43,
+            "mdd_pts": 31452.1,
+            "avg_hold": 34.9
+          },
+          "1.2": {
+            "N": 305,
+            "gross_pts": 17417.3,
+            "net_pts": -19182.7,
+            "PF": 0.856,
+            "win_pct": 33.11,
+            "mdd_pts": 41532.1,
+            "avg_hold": 34.9
+          },
+          "1.6": {
+            "N": 305,
+            "gross_pts": 17417.3,
+            "net_pts": -31382.7,
+            "PF": 0.779,
+            "win_pct": 29.18,
+            "mdd_pts": 51612.1,
+            "avg_hold": 34.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 336,
+        "costs": {
+          "0.8": {
+            "N": 131,
+            "gross_pts": -2938.5,
+            "net_pts": -13418.5,
+            "PF": 0.869,
+            "win_pct": 32.06,
+            "mdd_pts": 38906.7,
+            "avg_hold": 38.9
+          },
+          "1.2": {
+            "N": 131,
+            "gross_pts": -2938.5,
+            "net_pts": -18658.5,
+            "PF": 0.823,
+            "win_pct": 32.06,
+            "mdd_pts": 42666.7,
+            "avg_hold": 38.9
+          },
+          "1.6": {
+            "N": 131,
+            "gross_pts": -2938.5,
+            "net_pts": -23898.5,
+            "PF": 0.781,
+            "win_pct": 32.06,
+            "mdd_pts": 46504.2,
+            "avg_hold": 38.9
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 407,
+        "costs": {
+          "0.8": {
+            "N": 141,
+            "gross_pts": 22398.8,
+            "net_pts": 11118.8,
+            "PF": 1.129,
+            "win_pct": 41.13,
+            "mdd_pts": 22897.5,
+            "avg_hold": 72.3
+          },
+          "1.2": {
+            "N": 141,
+            "gross_pts": 22398.8,
+            "net_pts": 5478.8,
+            "PF": 1.061,
+            "win_pct": 41.13,
+            "mdd_pts": 26417.5,
+            "avg_hold": 72.3
+          },
+          "1.6": {
+            "N": 141,
+            "gross_pts": 22398.8,
+            "net_pts": -161.2,
+            "PF": 0.998,
+            "win_pct": 40.43,
+            "mdd_pts": 29937.5,
+            "avg_hold": 72.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 201,
+        "costs": {
+          "0.8": {
+            "N": 96,
+            "gross_pts": -41310.6,
+            "net_pts": -48990.6,
+            "PF": 0.538,
+            "win_pct": 33.33,
+            "mdd_pts": 49698.8,
+            "avg_hold": 43.3
+          },
+          "1.2": {
+            "N": 96,
+            "gross_pts": -41310.6,
+            "net_pts": -52830.6,
+            "PF": 0.514,
+            "win_pct": 33.33,
+            "mdd_pts": 53498.8,
+            "avg_hold": 43.3
+          },
+          "1.6": {
+            "N": 96,
+            "gross_pts": -41310.6,
+            "net_pts": -56670.6,
+            "PF": 0.49,
+            "win_pct": 33.33,
+            "mdd_pts": 57298.8,
+            "avg_hold": 43.3
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 331,
+        "costs": {
+          "0.8": {
+            "N": 118,
+            "gross_pts": 40542.5,
+            "net_pts": 31102.5,
+            "PF": 1.544,
+            "win_pct": 54.24,
+            "mdd_pts": 8345,
+            "avg_hold": 73.9
+          },
+          "1.2": {
+            "N": 118,
+            "gross_pts": 40542.5,
+            "net_pts": 26382.5,
+            "PF": 1.444,
+            "win_pct": 53.39,
+            "mdd_pts": 10185,
+            "avg_hold": 73.9
+          },
+          "1.6": {
+            "N": 118,
+            "gross_pts": 40542.5,
+            "net_pts": 21662.5,
+            "PF": 1.352,
+            "win_pct": 52.54,
+            "mdd_pts": 12025,
+            "avg_hold": 73.9
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 149,
+        "costs": {
+          "0.8": {
+            "N": 67,
+            "gross_pts": -6022,
+            "net_pts": -11382,
+            "PF": 0.797,
+            "win_pct": 46.27,
+            "mdd_pts": 23128.1,
+            "avg_hold": 46
+          },
+          "1.2": {
+            "N": 67,
+            "gross_pts": -6022,
+            "net_pts": -14062,
+            "PF": 0.756,
+            "win_pct": 46.27,
+            "mdd_pts": 24288.1,
+            "avg_hold": 46
+          },
+          "1.6": {
+            "N": 67,
+            "gross_pts": -6022,
+            "net_pts": -16742,
+            "PF": 0.716,
+            "win_pct": 46.27,
+            "mdd_pts": 25448.1,
+            "avg_hold": 46
+          }
+        }
+      }
+    },
+    {
+      "tf": "M20",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 629,
+        "costs": {
+          "0.8": {
+            "N": 277,
+            "gross_pts": 4345.2,
+            "net_pts": -17814.8,
+            "PF": 0.796,
+            "win_pct": 40.79,
+            "mdd_pts": 22448.2,
+            "avg_hold": 29.4
+          },
+          "1.2": {
+            "N": 277,
+            "gross_pts": 4345.2,
+            "net_pts": -28894.8,
+            "PF": 0.693,
+            "win_pct": 33.94,
+            "mdd_pts": 28894.8,
+            "avg_hold": 29.4
+          },
+          "1.6": {
+            "N": 277,
+            "gross_pts": 4345.2,
+            "net_pts": -39974.8,
+            "PF": 0.607,
+            "win_pct": 27.8,
+            "mdd_pts": 39974.8,
+            "avg_hold": 29.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 315,
+        "costs": {
+          "0.8": {
+            "N": 119,
+            "gross_pts": 14926.3,
+            "net_pts": 5406.3,
+            "PF": 1.087,
+            "win_pct": 46.22,
+            "mdd_pts": 16969.2,
+            "avg_hold": 43.2
+          },
+          "1.2": {
+            "N": 119,
+            "gross_pts": 14926.3,
+            "net_pts": 646.3,
+            "PF": 1.01,
+            "win_pct": 46.22,
+            "mdd_pts": 19057.2,
+            "avg_hold": 43.2
+          },
+          "1.6": {
+            "N": 119,
+            "gross_pts": 14926.3,
+            "net_pts": -4113.7,
+            "PF": 0.939,
+            "win_pct": 46.22,
+            "mdd_pts": 21977.2,
+            "avg_hold": 43.2
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "EMA21_BASE",
+      "year_2025": {
+        "signals": 986,
+        "costs": {
+          "0.8": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -9214.4,
+            "PF": 0.917,
+            "win_pct": 39.25,
+            "mdd_pts": 19391.1,
+            "avg_hold": 35.2
+          },
+          "1.2": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -17774.4,
+            "PF": 0.848,
+            "win_pct": 38.79,
+            "mdd_pts": 25511.1,
+            "avg_hold": 35.2
+          },
+          "1.6": {
+            "N": 214,
+            "gross_pts": 7905.6,
+            "net_pts": -26334.4,
+            "PF": 0.784,
+            "win_pct": 35.98,
+            "mdd_pts": 31806.2,
+            "avg_hold": 35.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 505,
+        "costs": {
+          "0.8": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 21289.6,
+            "PF": 1.29,
+            "win_pct": 43.81,
+            "mdd_pts": 13847.5,
+            "avg_hold": 37.8
+          },
+          "1.2": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 17089.6,
+            "PF": 1.226,
+            "win_pct": 43.81,
+            "mdd_pts": 15047.5,
+            "avg_hold": 37.8
+          },
+          "1.6": {
+            "N": 105,
+            "gross_pts": 29689.6,
+            "net_pts": 12889.6,
+            "PF": 1.165,
+            "win_pct": 43.81,
+            "mdd_pts": 16247.5,
+            "avg_hold": 37.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "EMA21_ADX_DI",
+      "year_2025": {
+        "signals": 252,
+        "costs": {
+          "0.8": {
+            "N": 109,
+            "gross_pts": 110.1,
+            "net_pts": -8609.9,
+            "PF": 0.853,
+            "win_pct": 38.53,
+            "mdd_pts": 24947.1,
+            "avg_hold": 32.2
+          },
+          "1.2": {
+            "N": 109,
+            "gross_pts": 110.1,
+            "net_pts": -12969.9,
+            "PF": 0.788,
+            "win_pct": 37.61,
+            "mdd_pts": 25947.1,
+            "avg_hold": 32.2
+          },
+          "1.6": {
+            "N": 109,
+            "gross_pts": 110.1,
+            "net_pts": -17329.9,
+            "PF": 0.729,
+            "win_pct": 35.78,
+            "mdd_pts": 26947.1,
+            "avg_hold": 32.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 194,
+        "costs": {
+          "0.8": {
+            "N": 87,
+            "gross_pts": -21653.8,
+            "net_pts": -28613.8,
+            "PF": 0.554,
+            "win_pct": 41.38,
+            "mdd_pts": 28613.8,
+            "avg_hold": 26.6
+          },
+          "1.2": {
+            "N": 87,
+            "gross_pts": -21653.8,
+            "net_pts": -32093.8,
+            "PF": 0.515,
+            "win_pct": 41.38,
+            "mdd_pts": 32093.8,
+            "avg_hold": 26.6
+          },
+          "1.6": {
+            "N": 87,
+            "gross_pts": -21653.8,
+            "net_pts": -35573.8,
+            "PF": 0.478,
+            "win_pct": 41.38,
+            "mdd_pts": 35573.8,
+            "avg_hold": 26.6
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "EMA21_RSI_MACD",
+      "year_2025": {
+        "signals": 238,
+        "costs": {
+          "0.8": {
+            "N": 113,
+            "gross_pts": 21280.5,
+            "net_pts": 12240.5,
+            "PF": 1.2,
+            "win_pct": 43.36,
+            "mdd_pts": 12275,
+            "avg_hold": 41.3
+          },
+          "1.2": {
+            "N": 113,
+            "gross_pts": 21280.5,
+            "net_pts": 7720.5,
+            "PF": 1.121,
+            "win_pct": 43.36,
+            "mdd_pts": 13290.1,
+            "avg_hold": 41.3
+          },
+          "1.6": {
+            "N": 113,
+            "gross_pts": 21280.5,
+            "net_pts": 3200.5,
+            "PF": 1.048,
+            "win_pct": 40.71,
+            "mdd_pts": 14907.6,
+            "avg_hold": 41.3
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 117,
+        "costs": {
+          "0.8": {
+            "N": 54,
+            "gross_pts": 24002.8,
+            "net_pts": 19682.8,
+            "PF": 1.518,
+            "win_pct": 50,
+            "mdd_pts": 17735.3,
+            "avg_hold": 44.4
+          },
+          "1.2": {
+            "N": 54,
+            "gross_pts": 24002.8,
+            "net_pts": 17522.8,
+            "PF": 1.448,
+            "win_pct": 50,
+            "mdd_pts": 18415.3,
+            "avg_hold": 44.4
+          },
+          "1.6": {
+            "N": 54,
+            "gross_pts": 24002.8,
+            "net_pts": 15362.8,
+            "PF": 1.383,
+            "win_pct": 50,
+            "mdd_pts": 19095.3,
+            "avg_hold": 44.4
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "ADX_DONCHIAN24",
+      "year_2025": {
+        "signals": 588,
+        "costs": {
+          "0.8": {
+            "N": 131,
+            "gross_pts": 2290.5,
+            "net_pts": -8189.5,
+            "PF": 0.916,
+            "win_pct": 37.4,
+            "mdd_pts": 32480.7,
+            "avg_hold": 44.2
+          },
+          "1.2": {
+            "N": 131,
+            "gross_pts": 2290.5,
+            "net_pts": -13429.5,
+            "PF": 0.867,
+            "win_pct": 36.64,
+            "mdd_pts": 34160.7,
+            "avg_hold": 44.2
+          },
+          "1.6": {
+            "N": 131,
+            "gross_pts": 2290.5,
+            "net_pts": -18669.5,
+            "PF": 0.821,
+            "win_pct": 35.88,
+            "mdd_pts": 36009.1,
+            "avg_hold": 44.2
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 286,
+        "costs": {
+          "0.8": {
+            "N": 74,
+            "gross_pts": 8252.7,
+            "net_pts": 2332.7,
+            "PF": 1.028,
+            "win_pct": 31.08,
+            "mdd_pts": 21806.1,
+            "avg_hold": 40.8
+          },
+          "1.2": {
+            "N": 74,
+            "gross_pts": 8252.7,
+            "net_pts": -627.3,
+            "PF": 0.993,
+            "win_pct": 31.08,
+            "mdd_pts": 22366.1,
+            "avg_hold": 40.8
+          },
+          "1.6": {
+            "N": 74,
+            "gross_pts": 8252.7,
+            "net_pts": -3587.3,
+            "PF": 0.959,
+            "win_pct": 31.08,
+            "mdd_pts": 22926.1,
+            "avg_hold": 40.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "RSI_BOLLINGER20",
+      "year_2025": {
+        "signals": 473,
+        "costs": {
+          "0.8": {
+            "N": 206,
+            "gross_pts": 22251,
+            "net_pts": 5771,
+            "PF": 1.054,
+            "win_pct": 39.81,
+            "mdd_pts": 19583,
+            "avg_hold": 36.1
+          },
+          "1.2": {
+            "N": 206,
+            "gross_pts": 22251,
+            "net_pts": -2469,
+            "PF": 0.978,
+            "win_pct": 38.35,
+            "mdd_pts": 22728.6,
+            "avg_hold": 36.1
+          },
+          "1.6": {
+            "N": 206,
+            "gross_pts": 22251,
+            "net_pts": -10709,
+            "PF": 0.908,
+            "win_pct": 36.89,
+            "mdd_pts": 25968.6,
+            "avg_hold": 36.1
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 218,
+        "costs": {
+          "0.8": {
+            "N": 111,
+            "gross_pts": -6814.3,
+            "net_pts": -15694.3,
+            "PF": 0.851,
+            "win_pct": 35.14,
+            "mdd_pts": 54293.4,
+            "avg_hold": 31.8
+          },
+          "1.2": {
+            "N": 111,
+            "gross_pts": -6814.3,
+            "net_pts": -20134.3,
+            "PF": 0.814,
+            "win_pct": 35.14,
+            "mdd_pts": 57373.4,
+            "avg_hold": 31.8
+          },
+          "1.6": {
+            "N": 111,
+            "gross_pts": -6814.3,
+            "net_pts": -24574.3,
+            "PF": 0.778,
+            "win_pct": 35.14,
+            "mdd_pts": 60453.4,
+            "avg_hold": 31.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "MACD_RSI_TREND",
+      "year_2025": {
+        "signals": 264,
+        "costs": {
+          "0.8": {
+            "N": 120,
+            "gross_pts": 8129.1,
+            "net_pts": -1470.9,
+            "PF": 0.985,
+            "win_pct": 38.33,
+            "mdd_pts": 19160.4,
+            "avg_hold": 48.8
+          },
+          "1.2": {
+            "N": 120,
+            "gross_pts": 8129.1,
+            "net_pts": -6270.9,
+            "PF": 0.937,
+            "win_pct": 38.33,
+            "mdd_pts": 21684.8,
+            "avg_hold": 48.8
+          },
+          "1.6": {
+            "N": 120,
+            "gross_pts": 8129.1,
+            "net_pts": -11070.9,
+            "PF": 0.892,
+            "win_pct": 37.5,
+            "mdd_pts": 24964.8,
+            "avg_hold": 48.8
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 128,
+        "costs": {
+          "0.8": {
+            "N": 64,
+            "gross_pts": -4954.6,
+            "net_pts": -10074.6,
+            "PF": 0.868,
+            "win_pct": 42.19,
+            "mdd_pts": 32937.9,
+            "avg_hold": 40.8
+          },
+          "1.2": {
+            "N": 64,
+            "gross_pts": -4954.6,
+            "net_pts": -12634.6,
+            "PF": 0.837,
+            "win_pct": 42.19,
+            "mdd_pts": 34137.9,
+            "avg_hold": 40.8
+          },
+          "1.6": {
+            "N": 64,
+            "gross_pts": -4954.6,
+            "net_pts": -15194.6,
+            "PF": 0.808,
+            "win_pct": 42.19,
+            "mdd_pts": 35337.9,
+            "avg_hold": 40.8
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "KELTNER_SQUEEZE",
+      "year_2025": {
+        "signals": 230,
+        "costs": {
+          "0.8": {
+            "N": 91,
+            "gross_pts": 19348.9,
+            "net_pts": 12068.9,
+            "PF": 1.223,
+            "win_pct": 49.45,
+            "mdd_pts": 14101.6,
+            "avg_hold": 51
+          },
+          "1.2": {
+            "N": 91,
+            "gross_pts": 19348.9,
+            "net_pts": 8428.9,
+            "PF": 1.151,
+            "win_pct": 49.45,
+            "mdd_pts": 15581.6,
+            "avg_hold": 51
+          },
+          "1.6": {
+            "N": 91,
+            "gross_pts": 19348.9,
+            "net_pts": 4788.9,
+            "PF": 1.083,
+            "win_pct": 49.45,
+            "mdd_pts": 17061.6,
+            "avg_hold": 51
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 95,
+        "costs": {
+          "0.8": {
+            "N": 45,
+            "gross_pts": 12699.8,
+            "net_pts": 9099.8,
+            "PF": 1.199,
+            "win_pct": 42.22,
+            "mdd_pts": 21996,
+            "avg_hold": 53.1
+          },
+          "1.2": {
+            "N": 45,
+            "gross_pts": 12699.8,
+            "net_pts": 7299.8,
+            "PF": 1.156,
+            "win_pct": 42.22,
+            "mdd_pts": 22716,
+            "avg_hold": 53.1
+          },
+          "1.6": {
+            "N": 45,
+            "gross_pts": 12699.8,
+            "net_pts": 5499.8,
+            "PF": 1.115,
+            "win_pct": 42.22,
+            "mdd_pts": 23436,
+            "avg_hold": 53.1
+          }
+        }
+      }
+    },
+    {
+      "tf": "M30",
+      "model": "STOCH_REJECTION",
+      "year_2025": {
+        "signals": 424,
+        "costs": {
+          "0.8": {
+            "N": 186,
+            "gross_pts": 2020,
+            "net_pts": -12860,
+            "PF": 0.845,
+            "win_pct": 40.32,
+            "mdd_pts": 36372.1,
+            "avg_hold": 28.4
+          },
+          "1.2": {
+            "N": 186,
+            "gross_pts": 2020,
+            "net_pts": -20300,
+            "PF": 0.768,
+            "win_pct": 38.71,
+            "mdd_pts": 40052.1,
+            "avg_hold": 28.4
+          },
+          "1.6": {
+            "N": 186,
+            "gross_pts": 2020,
+            "net_pts": -27740,
+            "PF": 0.698,
+            "win_pct": 36.02,
+            "mdd_pts": 43732.1,
+            "avg_hold": 28.4
+          }
+        }
+      },
+      "year_2026_partial": {
+        "signals": 189,
+        "costs": {
+          "0.8": {
+            "N": 81,
+            "gross_pts": -5532.7,
+            "net_pts": -12012.7,
+            "PF": 0.803,
+            "win_pct": 35.8,
+            "mdd_pts": 22374.9,
+            "avg_hold": 31.5
+          },
+          "1.2": {
+            "N": 81,
+            "gross_pts": -5532.7,
+            "net_pts": -15252.7,
+            "PF": 0.758,
+            "win_pct": 35.8,
+            "mdd_pts": 24054.9,
+            "avg_hold": 31.5
+          },
+          "1.6": {
+            "N": 81,
+            "gross_pts": -5532.7,
+            "net_pts": -18492.7,
+            "PF": 0.716,
+            "win_pct": 35.8,
+            "mdd_pts": 25734.9,
+            "avg_hold": 31.5
+          }
+        }
+      }
+    }
+  ],
+  "quarterly_net_at_cost_0_8": [
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 469,
+        "gross_pts": -1208,
+        "net_pts": -38728,
+        "PF": 0.291,
+        "win_pct": 7.04,
+        "mdd_pts": 39097,
+        "avg_hold": 163.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -29938,
+        "EMA21_RSI_MACD": -23001.8,
+        "ADX_DONCHIAN24": -24886,
+        "RSI_BOLLINGER20": -22202.7,
+        "MACD_RSI_TREND": -14098.7,
+        "KELTNER_SQUEEZE": -12876.8,
+        "STOCH_REJECTION": -36101.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 571,
+        "gross_pts": -16353.6,
+        "net_pts": -62033.6,
+        "PF": 0.245,
+        "win_pct": 17.16,
+        "mdd_pts": 64648.4,
+        "avg_hold": 139.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -26436.9,
+        "EMA21_RSI_MACD": -44148.6,
+        "ADX_DONCHIAN24": -17282.3,
+        "RSI_BOLLINGER20": -17032.6,
+        "MACD_RSI_TREND": -26879.8,
+        "KELTNER_SQUEEZE": -24613.6,
+        "STOCH_REJECTION": -24733.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 591,
+        "gross_pts": -13313.1,
+        "net_pts": -60593.1,
+        "PF": 0.2,
+        "win_pct": 5.75,
+        "mdd_pts": 63175.5,
+        "avg_hold": 131.1
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -23635.1,
+        "EMA21_RSI_MACD": -32099.2,
+        "ADX_DONCHIAN24": -9918.5,
+        "RSI_BOLLINGER20": -34988.7,
+        "MACD_RSI_TREND": -34591.7,
+        "KELTNER_SQUEEZE": -22637.7,
+        "STOCH_REJECTION": -23202.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M1",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 424,
+        "gross_pts": 13923.3,
+        "net_pts": -19996.7,
+        "PF": 0.734,
+        "win_pct": 18.63,
+        "mdd_pts": 39351.1,
+        "avg_hold": 187.7
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -8757.3,
+        "EMA21_RSI_MACD": -11809.8,
+        "ADX_DONCHIAN24": -9116.7,
+        "RSI_BOLLINGER20": -21770.8,
+        "MACD_RSI_TREND": -1382.7,
+        "KELTNER_SQUEEZE": -10406,
+        "STOCH_REJECTION": 19623.3
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M1",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 287,
+        "gross_pts": 14002.9,
+        "net_pts": -8957.1,
+        "PF": 0.851,
+        "win_pct": 28.57,
+        "mdd_pts": 27865.1,
+        "avg_hold": 272.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -14089.3,
+        "EMA21_RSI_MACD": -15264,
+        "ADX_DONCHIAN24": 7546.5,
+        "RSI_BOLLINGER20": 28,
+        "MACD_RSI_TREND": 10933.3,
+        "KELTNER_SQUEEZE": -15903.5,
+        "STOCH_REJECTION": -59108
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M1",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 343,
+        "gross_pts": 2382.1,
+        "net_pts": -25057.9,
+        "PF": 0.582,
+        "win_pct": 26.53,
+        "mdd_pts": 25057.9,
+        "avg_hold": 220.1
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -20189.2,
+        "EMA21_RSI_MACD": -15293.9,
+        "ADX_DONCHIAN24": -14360.9,
+        "RSI_BOLLINGER20": -35726.7,
+        "MACD_RSI_TREND": -16211.3,
+        "KELTNER_SQUEEZE": -22190.4,
+        "STOCH_REJECTION": -22166.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 298,
+        "gross_pts": -2304.5,
+        "net_pts": -26144.5,
+        "PF": 0.366,
+        "win_pct": 12.42,
+        "mdd_pts": 27392.8,
+        "avg_hold": 123.4
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -19415.2,
+        "EMA21_RSI_MACD": -4584.4,
+        "ADX_DONCHIAN24": -19102.8,
+        "RSI_BOLLINGER20": -17404.8,
+        "MACD_RSI_TREND": -19617.3,
+        "KELTNER_SQUEEZE": -21836.3,
+        "STOCH_REJECTION": -36256.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 284,
+        "gross_pts": -5083.5,
+        "net_pts": -27803.5,
+        "PF": 0.463,
+        "win_pct": 30.28,
+        "mdd_pts": 30657.5,
+        "avg_hold": 139.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -4028.8,
+        "EMA21_RSI_MACD": -1032.6,
+        "ADX_DONCHIAN24": -2543.8,
+        "RSI_BOLLINGER20": -26335.3,
+        "MACD_RSI_TREND": -24745.1,
+        "KELTNER_SQUEEZE": -4558.3,
+        "STOCH_REJECTION": -5754.7
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 323,
+        "gross_pts": -1942.2,
+        "net_pts": -27782.2,
+        "PF": 0.382,
+        "win_pct": 17.34,
+        "mdd_pts": 30646.7,
+        "avg_hold": 118.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -12606.8,
+        "EMA21_RSI_MACD": -18597.2,
+        "ADX_DONCHIAN24": -21445.7,
+        "RSI_BOLLINGER20": -39129.3,
+        "MACD_RSI_TREND": -12166,
+        "KELTNER_SQUEEZE": -12084.4,
+        "STOCH_REJECTION": -16083.2
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M2",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 242,
+        "gross_pts": 29102,
+        "net_pts": 9742,
+        "PF": 1.188,
+        "win_pct": 32.64,
+        "mdd_pts": 22012.7,
+        "avg_hold": 162.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 6926.6,
+        "EMA21_RSI_MACD": 2470.7,
+        "ADX_DONCHIAN24": -10991.7,
+        "RSI_BOLLINGER20": -16381.4,
+        "MACD_RSI_TREND": 6375.3,
+        "KELTNER_SQUEEZE": -12348.1,
+        "STOCH_REJECTION": -7976.8
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M2",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 194,
+        "gross_pts": 7218.6,
+        "net_pts": -8301.4,
+        "PF": 0.849,
+        "win_pct": 36.08,
+        "mdd_pts": 21206.5,
+        "avg_hold": 197.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -20102.7,
+        "EMA21_RSI_MACD": -25917,
+        "ADX_DONCHIAN24": 29171.9,
+        "RSI_BOLLINGER20": 5242.4,
+        "MACD_RSI_TREND": -22269.7,
+        "KELTNER_SQUEEZE": 17580.8,
+        "STOCH_REJECTION": -8579.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M2",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 208,
+        "gross_pts": 15868.3,
+        "net_pts": -771.7,
+        "PF": 0.984,
+        "win_pct": 32.21,
+        "mdd_pts": 16948.7,
+        "avg_hold": 188.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -20176.3,
+        "EMA21_RSI_MACD": 12902,
+        "ADX_DONCHIAN24": -9350,
+        "RSI_BOLLINGER20": -29622,
+        "MACD_RSI_TREND": -12913,
+        "KELTNER_SQUEEZE": -4751.3,
+        "STOCH_REJECTION": -6871.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 237,
+        "gross_pts": -2722.7,
+        "net_pts": -21682.7,
+        "PF": 0.36,
+        "win_pct": 22.36,
+        "mdd_pts": 23861.5,
+        "avg_hold": 101.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -13150,
+        "EMA21_RSI_MACD": -17387.4,
+        "ADX_DONCHIAN24": -10984.2,
+        "RSI_BOLLINGER20": -10477,
+        "MACD_RSI_TREND": -9244.3,
+        "KELTNER_SQUEEZE": -2761.7,
+        "STOCH_REJECTION": -12758.2
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 290,
+        "gross_pts": -25740.2,
+        "net_pts": -48940.2,
+        "PF": 0.285,
+        "win_pct": 26.55,
+        "mdd_pts": 49033.8,
+        "avg_hold": 80.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -8043.1,
+        "EMA21_RSI_MACD": -16486.1,
+        "ADX_DONCHIAN24": -2075.2,
+        "RSI_BOLLINGER20": -12394.4,
+        "MACD_RSI_TREND": -16911.5,
+        "KELTNER_SQUEEZE": 2364.7,
+        "STOCH_REJECTION": -45130.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 252,
+        "gross_pts": 1159.1,
+        "net_pts": -19000.9,
+        "PF": 0.547,
+        "win_pct": 17.46,
+        "mdd_pts": 26657,
+        "avg_hold": 98.8
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -12703.8,
+        "EMA21_RSI_MACD": -14715.7,
+        "ADX_DONCHIAN24": -5747.1,
+        "RSI_BOLLINGER20": -25755.5,
+        "MACD_RSI_TREND": -15172.2,
+        "KELTNER_SQUEEZE": -2364.4,
+        "STOCH_REJECTION": 743.3
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M3",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 190,
+        "gross_pts": 29410.8,
+        "net_pts": 14210.8,
+        "PF": 1.289,
+        "win_pct": 32.63,
+        "mdd_pts": 13157.6,
+        "avg_hold": 135.8
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 23578.5,
+        "EMA21_RSI_MACD": -7254.1,
+        "ADX_DONCHIAN24": 10552.6,
+        "RSI_BOLLINGER20": -4360.5,
+        "MACD_RSI_TREND": 9297,
+        "KELTNER_SQUEEZE": 3570.3,
+        "STOCH_REJECTION": 13137.7
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M3",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 195,
+        "gross_pts": -1002.5,
+        "net_pts": -16602.5,
+        "PF": 0.741,
+        "win_pct": 35.38,
+        "mdd_pts": 33543.6,
+        "avg_hold": 128.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -27524.1,
+        "EMA21_RSI_MACD": 2733.1,
+        "ADX_DONCHIAN24": 22191.8,
+        "RSI_BOLLINGER20": -32609.2,
+        "MACD_RSI_TREND": 5460.5,
+        "KELTNER_SQUEEZE": -2947.2,
+        "STOCH_REJECTION": 10555.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M3",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 193,
+        "gross_pts": 4468.2,
+        "net_pts": -10971.8,
+        "PF": 0.802,
+        "win_pct": 35.75,
+        "mdd_pts": 17618,
+        "avg_hold": 129.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -6385.3,
+        "EMA21_RSI_MACD": 7310.9,
+        "ADX_DONCHIAN24": -4789.6,
+        "RSI_BOLLINGER20": -30220.6,
+        "MACD_RSI_TREND": -32172.1,
+        "KELTNER_SQUEEZE": -15680.4,
+        "STOCH_REJECTION": -33145.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 211,
+        "gross_pts": -5952.5,
+        "net_pts": -22832.5,
+        "PF": 0.367,
+        "win_pct": 19.43,
+        "mdd_pts": 22923.9,
+        "avg_hold": 80.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -14678.6,
+        "EMA21_RSI_MACD": -2496.7,
+        "ADX_DONCHIAN24": -11546.2,
+        "RSI_BOLLINGER20": 2103.2,
+        "MACD_RSI_TREND": -5471.2,
+        "KELTNER_SQUEEZE": -1765.9,
+        "STOCH_REJECTION": -7296.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 206,
+        "gross_pts": -12773.6,
+        "net_pts": -29253.6,
+        "PF": 0.465,
+        "win_pct": 27.67,
+        "mdd_pts": 33413,
+        "avg_hold": 86.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -9904.8,
+        "EMA21_RSI_MACD": -9620.3,
+        "ADX_DONCHIAN24": -12146.6,
+        "RSI_BOLLINGER20": 5432.8,
+        "MACD_RSI_TREND": -33540.6,
+        "KELTNER_SQUEEZE": -6295.8,
+        "STOCH_REJECTION": -7864.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 184,
+        "gross_pts": 7350,
+        "net_pts": -7370,
+        "PF": 0.779,
+        "win_pct": 23.91,
+        "mdd_pts": 13622.4,
+        "avg_hold": 103
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 4626.7,
+        "EMA21_RSI_MACD": -14395.4,
+        "ADX_DONCHIAN24": -592.8,
+        "RSI_BOLLINGER20": -10194.1,
+        "MACD_RSI_TREND": -9850.9,
+        "KELTNER_SQUEEZE": -2290.4,
+        "STOCH_REJECTION": -6643.3
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M4",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 185,
+        "gross_pts": 22579.1,
+        "net_pts": 7779.1,
+        "PF": 1.139,
+        "win_pct": 34.05,
+        "mdd_pts": 17155.6,
+        "avg_hold": 102.1
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 17870.3,
+        "EMA21_RSI_MACD": 14240,
+        "ADX_DONCHIAN24": 15035.5,
+        "RSI_BOLLINGER20": 10923.5,
+        "MACD_RSI_TREND": 21103.4,
+        "KELTNER_SQUEEZE": 4583.8,
+        "STOCH_REJECTION": -3513.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M4",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 175,
+        "gross_pts": 5232.3,
+        "net_pts": -8767.7,
+        "PF": 0.857,
+        "win_pct": 34.86,
+        "mdd_pts": 23849.5,
+        "avg_hold": 105.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -5162.4,
+        "EMA21_RSI_MACD": -24465.5,
+        "ADX_DONCHIAN24": 27157.3,
+        "RSI_BOLLINGER20": -55809.5,
+        "MACD_RSI_TREND": -11079.6,
+        "KELTNER_SQUEEZE": -546.9,
+        "STOCH_REJECTION": 3524.4
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M4",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 200,
+        "gross_pts": 2268.7,
+        "net_pts": -13731.3,
+        "PF": 0.781,
+        "win_pct": 36,
+        "mdd_pts": 20397.6,
+        "avg_hold": 85.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 3145.4,
+        "EMA21_RSI_MACD": -19618.4,
+        "ADX_DONCHIAN24": 1932.5,
+        "RSI_BOLLINGER20": -13968.8,
+        "MACD_RSI_TREND": -9685.4,
+        "KELTNER_SQUEEZE": -17754.9,
+        "STOCH_REJECTION": 6583
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 197,
+        "gross_pts": -7917.3,
+        "net_pts": -23677.3,
+        "PF": 0.331,
+        "win_pct": 18.78,
+        "mdd_pts": 23711.8,
+        "avg_hold": 67.7
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -15225.3,
+        "EMA21_RSI_MACD": -5479.7,
+        "ADX_DONCHIAN24": -6195.9,
+        "RSI_BOLLINGER20": -17778.7,
+        "MACD_RSI_TREND": -5743.3,
+        "KELTNER_SQUEEZE": 1366.4,
+        "STOCH_REJECTION": -24701.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 186,
+        "gross_pts": -6529.6,
+        "net_pts": -21409.6,
+        "PF": 0.56,
+        "win_pct": 37.1,
+        "mdd_pts": 21466.6,
+        "avg_hold": 73.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -1774.2,
+        "EMA21_RSI_MACD": -2540.2,
+        "ADX_DONCHIAN24": -3148.5,
+        "RSI_BOLLINGER20": -11435.5,
+        "MACD_RSI_TREND": -11570.8,
+        "KELTNER_SQUEEZE": -211.7,
+        "STOCH_REJECTION": -16829.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 167,
+        "gross_pts": 4423.2,
+        "net_pts": -8936.8,
+        "PF": 0.709,
+        "win_pct": 28.74,
+        "mdd_pts": 12718.3,
+        "avg_hold": 88.1
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 5738.1,
+        "EMA21_RSI_MACD": -7051.5,
+        "ADX_DONCHIAN24": 2306.1,
+        "RSI_BOLLINGER20": -97.1,
+        "MACD_RSI_TREND": -6313.8,
+        "KELTNER_SQUEEZE": -6343.1,
+        "STOCH_REJECTION": -9659.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M5",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 145,
+        "gross_pts": 20307.2,
+        "net_pts": 8707.2,
+        "PF": 1.166,
+        "win_pct": 33.1,
+        "mdd_pts": 13748.4,
+        "avg_hold": 104.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 8476.7,
+        "EMA21_RSI_MACD": 19089.9,
+        "ADX_DONCHIAN24": 2606.1,
+        "RSI_BOLLINGER20": 13050.5,
+        "MACD_RSI_TREND": -2495.5,
+        "KELTNER_SQUEEZE": 8169,
+        "STOCH_REJECTION": 19234.2
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M5",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 154,
+        "gross_pts": -2618.8,
+        "net_pts": -14938.8,
+        "PF": 0.754,
+        "win_pct": 36.36,
+        "mdd_pts": 30183.1,
+        "avg_hold": 98.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -6194.8,
+        "EMA21_RSI_MACD": -20863,
+        "ADX_DONCHIAN24": 6873.2,
+        "RSI_BOLLINGER20": -2259.5,
+        "MACD_RSI_TREND": 13067.3,
+        "KELTNER_SQUEEZE": 10006.7,
+        "STOCH_REJECTION": -7130.2
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M5",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 103,
+        "gross_pts": 24845.4,
+        "net_pts": 16605.4,
+        "PF": 1.508,
+        "win_pct": 41.75,
+        "mdd_pts": 11751.3,
+        "avg_hold": 145.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -5032.7,
+        "EMA21_RSI_MACD": 12454.4,
+        "ADX_DONCHIAN24": -921.7,
+        "RSI_BOLLINGER20": -18079.3,
+        "MACD_RSI_TREND": -19267.6,
+        "KELTNER_SQUEEZE": 1267.6,
+        "STOCH_REJECTION": -17552.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 110,
+        "gross_pts": 4808.1,
+        "net_pts": -3991.9,
+        "PF": 0.813,
+        "win_pct": 24.55,
+        "mdd_pts": 9045.8,
+        "avg_hold": 108.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -15662.4,
+        "EMA21_RSI_MACD": -1727,
+        "ADX_DONCHIAN24": -4654.2,
+        "RSI_BOLLINGER20": -5994.6,
+        "MACD_RSI_TREND": -17168.2,
+        "KELTNER_SQUEEZE": -7933,
+        "STOCH_REJECTION": -17196.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 169,
+        "gross_pts": -6970.6,
+        "net_pts": -20490.6,
+        "PF": 0.617,
+        "win_pct": 30.77,
+        "mdd_pts": 24063.7,
+        "avg_hold": 71.8
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -3640.6,
+        "EMA21_RSI_MACD": -18496,
+        "ADX_DONCHIAN24": -8805.4,
+        "RSI_BOLLINGER20": -16629.7,
+        "MACD_RSI_TREND": -21504.9,
+        "KELTNER_SQUEEZE": -35.7,
+        "STOCH_REJECTION": -2311.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 141,
+        "gross_pts": 6872.7,
+        "net_pts": -4407.3,
+        "PF": 0.84,
+        "win_pct": 31.21,
+        "mdd_pts": 13125.9,
+        "avg_hold": 87.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 6305,
+        "EMA21_RSI_MACD": -2259.2,
+        "ADX_DONCHIAN24": 839.1,
+        "RSI_BOLLINGER20": 5922,
+        "MACD_RSI_TREND": -17641.4,
+        "KELTNER_SQUEEZE": -2095.9,
+        "STOCH_REJECTION": 1196.4
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M6",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 151,
+        "gross_pts": 17562.8,
+        "net_pts": 5482.8,
+        "PF": 1.1,
+        "win_pct": 33.77,
+        "mdd_pts": 22385.9,
+        "avg_hold": 80.7
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 25600.6,
+        "EMA21_RSI_MACD": 6015.8,
+        "ADX_DONCHIAN24": 16397.6,
+        "RSI_BOLLINGER20": 4028.3,
+        "MACD_RSI_TREND": 19383.6,
+        "KELTNER_SQUEEZE": 14007.3,
+        "STOCH_REJECTION": -14252.3
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M6",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 142,
+        "gross_pts": -1039.4,
+        "net_pts": -12399.4,
+        "PF": 0.78,
+        "win_pct": 42.96,
+        "mdd_pts": 25833.7,
+        "avg_hold": 85
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -11767.1,
+        "EMA21_RSI_MACD": 3845,
+        "ADX_DONCHIAN24": 14437.1,
+        "RSI_BOLLINGER20": -8868,
+        "MACD_RSI_TREND": -20020.5,
+        "KELTNER_SQUEEZE": -15272.4,
+        "STOCH_REJECTION": -16557
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M6",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 136,
+        "gross_pts": 11559.8,
+        "net_pts": 679.8,
+        "PF": 1.014,
+        "win_pct": 44.12,
+        "mdd_pts": 14258.4,
+        "avg_hold": 87.8
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -19310.2,
+        "EMA21_RSI_MACD": 2296.5,
+        "ADX_DONCHIAN24": -7045.6,
+        "RSI_BOLLINGER20": 4118.9,
+        "MACD_RSI_TREND": -11470.5,
+        "KELTNER_SQUEEZE": 544.2,
+        "STOCH_REJECTION": -29861.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 101,
+        "gross_pts": -1565.1,
+        "net_pts": -9645.1,
+        "PF": 0.64,
+        "win_pct": 25.74,
+        "mdd_pts": 11897.5,
+        "avg_hold": 65.4
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -8741.2,
+        "EMA21_RSI_MACD": 2890.3,
+        "ADX_DONCHIAN24": -16497.2,
+        "RSI_BOLLINGER20": -6472,
+        "MACD_RSI_TREND": -790.6,
+        "KELTNER_SQUEEZE": -888.3,
+        "STOCH_REJECTION": -15199.7
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 100,
+        "gross_pts": 4340,
+        "net_pts": -3660,
+        "PF": 0.899,
+        "win_pct": 41,
+        "mdd_pts": 14017.2,
+        "avg_hold": 74
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 1330.8,
+        "EMA21_RSI_MACD": -8344.2,
+        "ADX_DONCHIAN24": -19480.3,
+        "RSI_BOLLINGER20": -23298.2,
+        "MACD_RSI_TREND": 196.2,
+        "KELTNER_SQUEEZE": -1038.8,
+        "STOCH_REJECTION": -7717.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 116,
+        "gross_pts": -1763.7,
+        "net_pts": -11043.7,
+        "PF": 0.615,
+        "win_pct": 33.62,
+        "mdd_pts": 14077.3,
+        "avg_hold": 61.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 10494.9,
+        "EMA21_RSI_MACD": -7654.2,
+        "ADX_DONCHIAN24": 4681.3,
+        "RSI_BOLLINGER20": -10049.2,
+        "MACD_RSI_TREND": -10926.6,
+        "KELTNER_SQUEEZE": -1885,
+        "STOCH_REJECTION": 11230.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M10",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 93,
+        "gross_pts": 32410.1,
+        "net_pts": 24970.1,
+        "PF": 1.68,
+        "win_pct": 51.61,
+        "mdd_pts": 9204.5,
+        "avg_hold": 79
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 4463.9,
+        "EMA21_RSI_MACD": 3042.8,
+        "ADX_DONCHIAN24": 19227.2,
+        "RSI_BOLLINGER20": -5272.8,
+        "MACD_RSI_TREND": 27085.9,
+        "KELTNER_SQUEEZE": 19553.3,
+        "STOCH_REJECTION": -13292.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M10",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 140,
+        "gross_pts": -7297.2,
+        "net_pts": -18497.2,
+        "PF": 0.758,
+        "win_pct": 39.29,
+        "mdd_pts": 30352.8,
+        "avg_hold": 45.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -14316.3,
+        "EMA21_RSI_MACD": -2551.5,
+        "ADX_DONCHIAN24": 9986.7,
+        "RSI_BOLLINGER20": -25908.1,
+        "MACD_RSI_TREND": -2427.6,
+        "KELTNER_SQUEEZE": -40559.4,
+        "STOCH_REJECTION": -1089
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M10",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 102,
+        "gross_pts": 7988.6,
+        "net_pts": -171.4,
+        "PF": 0.995,
+        "win_pct": 54.9,
+        "mdd_pts": 7791.6,
+        "avg_hold": 63.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -10025,
+        "EMA21_RSI_MACD": -3093.2,
+        "ADX_DONCHIAN24": -2268.6,
+        "RSI_BOLLINGER20": -15516.2,
+        "MACD_RSI_TREND": -34617.7,
+        "KELTNER_SQUEEZE": -23614.2,
+        "STOCH_REJECTION": 1233.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 72,
+        "gross_pts": 6020,
+        "net_pts": 260,
+        "PF": 1.014,
+        "win_pct": 33.33,
+        "mdd_pts": 6411.1,
+        "avg_hold": 79
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -4126.5,
+        "EMA21_RSI_MACD": -1191.7,
+        "ADX_DONCHIAN24": -17343.9,
+        "RSI_BOLLINGER20": -10032.9,
+        "MACD_RSI_TREND": 2381.9,
+        "KELTNER_SQUEEZE": 4533.1,
+        "STOCH_REJECTION": -2735.5
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 91,
+        "gross_pts": -2619.7,
+        "net_pts": -9899.7,
+        "PF": 0.753,
+        "win_pct": 38.46,
+        "mdd_pts": 14769.3,
+        "avg_hold": 66.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -3850.5,
+        "EMA21_RSI_MACD": -3272.4,
+        "ADX_DONCHIAN24": -5656.3,
+        "RSI_BOLLINGER20": 7040.8,
+        "MACD_RSI_TREND": -11337.5,
+        "KELTNER_SQUEEZE": -11744.3,
+        "STOCH_REJECTION": -4332.3
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 103,
+        "gross_pts": -4033.1,
+        "net_pts": -12273.1,
+        "PF": 0.548,
+        "win_pct": 34.95,
+        "mdd_pts": 16625.5,
+        "avg_hold": 57
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -1862.8,
+        "EMA21_RSI_MACD": -13918.2,
+        "ADX_DONCHIAN24": 8508.2,
+        "RSI_BOLLINGER20": 7503.7,
+        "MACD_RSI_TREND": -8162.2,
+        "KELTNER_SQUEEZE": -5278.2,
+        "STOCH_REJECTION": -4456.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M12",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 99,
+        "gross_pts": 18103.5,
+        "net_pts": 10183.5,
+        "PF": 1.202,
+        "win_pct": 38.38,
+        "mdd_pts": 19723.6,
+        "avg_hold": 57.6
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 19019.2,
+        "EMA21_RSI_MACD": -11983.4,
+        "ADX_DONCHIAN24": 23104.3,
+        "RSI_BOLLINGER20": -19222.5,
+        "MACD_RSI_TREND": 6100.3,
+        "KELTNER_SQUEEZE": 20870.2,
+        "STOCH_REJECTION": 24887.1
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M12",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 108,
+        "gross_pts": 14750,
+        "net_pts": 6110,
+        "PF": 1.111,
+        "win_pct": 41.67,
+        "mdd_pts": 17179.9,
+        "avg_hold": 51
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -10709.8,
+        "EMA21_RSI_MACD": 9895,
+        "ADX_DONCHIAN24": 16651.1,
+        "RSI_BOLLINGER20": -18761.6,
+        "MACD_RSI_TREND": -276.1,
+        "KELTNER_SQUEEZE": -11877.8,
+        "STOCH_REJECTION": -1849.7
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M12",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 109,
+        "gross_pts": -4621.1,
+        "net_pts": -13341.1,
+        "PF": 0.7,
+        "win_pct": 47.71,
+        "mdd_pts": 18762.8,
+        "avg_hold": 46.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 4484.5,
+        "EMA21_RSI_MACD": -9198.9,
+        "ADX_DONCHIAN24": -14262.5,
+        "RSI_BOLLINGER20": 3646.3,
+        "MACD_RSI_TREND": -29067.3,
+        "KELTNER_SQUEEZE": -17771.4,
+        "STOCH_REJECTION": 3032.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 62,
+        "gross_pts": 6885.7,
+        "net_pts": 1925.7,
+        "PF": 1.125,
+        "win_pct": 41.94,
+        "mdd_pts": 6252.1,
+        "avg_hold": 70.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -14389.6,
+        "EMA21_RSI_MACD": -8846.8,
+        "ADX_DONCHIAN24": -14383.2,
+        "RSI_BOLLINGER20": 3213.1,
+        "MACD_RSI_TREND": 4406.1,
+        "KELTNER_SQUEEZE": 7280.3,
+        "STOCH_REJECTION": -10827.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 69,
+        "gross_pts": 7579.4,
+        "net_pts": 2059.4,
+        "PF": 1.07,
+        "win_pct": 40.58,
+        "mdd_pts": 10593.1,
+        "avg_hold": 67.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 1766,
+        "EMA21_RSI_MACD": 4671.6,
+        "ADX_DONCHIAN24": -11312.2,
+        "RSI_BOLLINGER20": -17344.6,
+        "MACD_RSI_TREND": -4935.2,
+        "KELTNER_SQUEEZE": -5252.5,
+        "STOCH_REJECTION": -2151.6
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 88,
+        "gross_pts": 3998.8,
+        "net_pts": -3041.2,
+        "PF": 0.864,
+        "win_pct": 43.18,
+        "mdd_pts": 8431.2,
+        "avg_hold": 51.3
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 6860.2,
+        "EMA21_RSI_MACD": -5414,
+        "ADX_DONCHIAN24": 61.3,
+        "RSI_BOLLINGER20": -2762.2,
+        "MACD_RSI_TREND": -4225.9,
+        "KELTNER_SQUEEZE": 662.2,
+        "STOCH_REJECTION": 9507.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M15",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 101,
+        "gross_pts": 21975.6,
+        "net_pts": 13895.6,
+        "PF": 1.344,
+        "win_pct": 43.56,
+        "mdd_pts": 16345.8,
+        "avg_hold": 40.8
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 7017.2,
+        "EMA21_RSI_MACD": -3122.2,
+        "ADX_DONCHIAN24": -7539.1,
+        "RSI_BOLLINGER20": -24894,
+        "MACD_RSI_TREND": 9560.4,
+        "KELTNER_SQUEEZE": 19801.1,
+        "STOCH_REJECTION": -14742.5
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M15",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 88,
+        "gross_pts": 3197.5,
+        "net_pts": -3842.5,
+        "PF": 0.925,
+        "win_pct": 37.5,
+        "mdd_pts": 21230.4,
+        "avg_hold": 48.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 1370.4,
+        "EMA21_RSI_MACD": -8268.6,
+        "ADX_DONCHIAN24": 10191.2,
+        "RSI_BOLLINGER20": -41480,
+        "MACD_RSI_TREND": -1348.6,
+        "KELTNER_SQUEEZE": 11990.7,
+        "STOCH_REJECTION": -12552.6
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M15",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 68,
+        "gross_pts": 15809.7,
+        "net_pts": 10369.7,
+        "PF": 1.362,
+        "win_pct": 51.47,
+        "mdd_pts": 9957.6,
+        "avg_hold": 63.8
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 6392.6,
+        "EMA21_RSI_MACD": -5003.7,
+        "ADX_DONCHIAN24": -11516.2,
+        "RSI_BOLLINGER20": -15071.2,
+        "MACD_RSI_TREND": -22496.1,
+        "KELTNER_SQUEEZE": -13315.3,
+        "STOCH_REJECTION": 7073.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 60,
+        "gross_pts": 2520.2,
+        "net_pts": -2279.8,
+        "PF": 0.893,
+        "win_pct": 36.67,
+        "mdd_pts": 7323.5,
+        "avg_hold": 52.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -8597.8,
+        "EMA21_RSI_MACD": -5344.1,
+        "ADX_DONCHIAN24": -18598.7,
+        "RSI_BOLLINGER20": -13503.7,
+        "MACD_RSI_TREND": 8168.9,
+        "KELTNER_SQUEEZE": 5140.1,
+        "STOCH_REJECTION": -2149.1
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 65,
+        "gross_pts": 3376,
+        "net_pts": -1824,
+        "PF": 0.936,
+        "win_pct": 38.46,
+        "mdd_pts": 15107,
+        "avg_hold": 47.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 132.5,
+        "EMA21_RSI_MACD": -11840.5,
+        "ADX_DONCHIAN24": -3698.9,
+        "RSI_BOLLINGER20": -5994.9,
+        "MACD_RSI_TREND": -3652.2,
+        "KELTNER_SQUEEZE": 808.4,
+        "STOCH_REJECTION": -5513.9
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 67,
+        "gross_pts": 5077.6,
+        "net_pts": -282.4,
+        "PF": 0.985,
+        "win_pct": 43.28,
+        "mdd_pts": 8103.6,
+        "avg_hold": 52.5
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -146,
+        "EMA21_RSI_MACD": 2860.4,
+        "ADX_DONCHIAN24": -3831.4,
+        "RSI_BOLLINGER20": -11796.5,
+        "MACD_RSI_TREND": -843.3,
+        "KELTNER_SQUEEZE": 2482.1,
+        "STOCH_REJECTION": -6398.8
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M20",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 84,
+        "gross_pts": 6092,
+        "net_pts": -628,
+        "PF": 0.987,
+        "win_pct": 36.9,
+        "mdd_pts": 17976.3,
+        "avg_hold": 37.1
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -7368,
+        "EMA21_RSI_MACD": 1613.7,
+        "ADX_DONCHIAN24": 17004.4,
+        "RSI_BOLLINGER20": 24312.4,
+        "MACD_RSI_TREND": 7445.4,
+        "KELTNER_SQUEEZE": 22671.9,
+        "STOCH_REJECTION": -3753.1
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M20",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 60,
+        "gross_pts": 12164.7,
+        "net_pts": 7364.7,
+        "PF": 1.172,
+        "win_pct": 43.33,
+        "mdd_pts": 18472.3,
+        "avg_hold": 52.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 1642.8,
+        "EMA21_RSI_MACD": -4456.6,
+        "ADX_DONCHIAN24": 26320.1,
+        "RSI_BOLLINGER20": 6669.2,
+        "MACD_RSI_TREND": -24929.5,
+        "KELTNER_SQUEEZE": -12029.8,
+        "STOCH_REJECTION": -10254.9
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M20",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 76,
+        "gross_pts": 4473,
+        "net_pts": -1607,
+        "PF": 0.957,
+        "win_pct": 43.42,
+        "mdd_pts": 9460.4,
+        "avg_hold": 38.4
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -162.7,
+        "EMA21_RSI_MACD": 2023.2,
+        "ADX_DONCHIAN24": -13007.6,
+        "RSI_BOLLINGER20": -20087.7,
+        "MACD_RSI_TREND": -24061.2,
+        "KELTNER_SQUEEZE": 647.8,
+        "STOCH_REJECTION": 15661.2
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q1",
+      "baseline": {
+        "N": 47,
+        "gross_pts": 5563.8,
+        "net_pts": 1803.8,
+        "PF": 1.127,
+        "win_pct": 48.94,
+        "mdd_pts": 3762.3,
+        "avg_hold": 39.9
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 2387.7,
+        "EMA21_RSI_MACD": -5351.5,
+        "ADX_DONCHIAN24": -2766.2,
+        "RSI_BOLLINGER20": -8958.2,
+        "MACD_RSI_TREND": 387.6,
+        "KELTNER_SQUEEZE": 2876.5,
+        "STOCH_REJECTION": -9262
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q2",
+      "baseline": {
+        "N": 49,
+        "gross_pts": 1286.7,
+        "net_pts": -2633.3,
+        "PF": 0.906,
+        "win_pct": 38.78,
+        "mdd_pts": 15559.3,
+        "avg_hold": 38.1
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 191.3,
+        "EMA21_RSI_MACD": -637.3,
+        "ADX_DONCHIAN24": -18277.2,
+        "RSI_BOLLINGER20": 14826.3,
+        "MACD_RSI_TREND": -6578.8,
+        "KELTNER_SQUEEZE": 3314.8,
+        "STOCH_REJECTION": -20126.2
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q3",
+      "baseline": {
+        "N": 57,
+        "gross_pts": 331.2,
+        "net_pts": -4228.8,
+        "PF": 0.829,
+        "win_pct": 36.84,
+        "mdd_pts": 8421,
+        "avg_hold": 35
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": 4607.1,
+        "EMA21_RSI_MACD": 6809.3,
+        "ADX_DONCHIAN24": 2298.7,
+        "RSI_BOLLINGER20": -16328.7,
+        "MACD_RSI_TREND": 1398.4,
+        "KELTNER_SQUEEZE": 5769.2,
+        "STOCH_REJECTION": 9058
+      }
+    },
+    {
+      "year": "2025",
+      "tf": "M30",
+      "quarter": "2025Q4",
+      "baseline": {
+        "N": 61,
+        "gross_pts": 723.9,
+        "net_pts": -4156.1,
+        "PF": 0.907,
+        "win_pct": 34.43,
+        "mdd_pts": 12815.4,
+        "avg_hold": 29.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -15796,
+        "EMA21_RSI_MACD": 11420,
+        "ADX_DONCHIAN24": 10555.2,
+        "RSI_BOLLINGER20": 16231.7,
+        "MACD_RSI_TREND": 3321.8,
+        "KELTNER_SQUEEZE": 108.3,
+        "STOCH_REJECTION": 7470.2
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M30",
+      "quarter": "2026Q2",
+      "baseline": {
+        "N": 42,
+        "gross_pts": 29954.9,
+        "net_pts": 26594.9,
+        "PF": 1.85,
+        "win_pct": 52.38,
+        "mdd_pts": 10596.4,
+        "avg_hold": 49.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -5445.2,
+        "EMA21_RSI_MACD": 11835.9,
+        "ADX_DONCHIAN24": 13381.2,
+        "RSI_BOLLINGER20": 2960.7,
+        "MACD_RSI_TREND": -20338.9,
+        "KELTNER_SQUEEZE": -3915.8,
+        "STOCH_REJECTION": -10795.5
+      }
+    },
+    {
+      "year": "2026",
+      "tf": "M30",
+      "quarter": "2026Q3",
+      "baseline": {
+        "N": 63,
+        "gross_pts": -265.3,
+        "net_pts": -5305.3,
+        "PF": 0.874,
+        "win_pct": 38.1,
+        "mdd_pts": 13847.5,
+        "avg_hold": 30.2
+      },
+      "alternatives": {
+        "EMA21_ADX_DI": -23168.6,
+        "EMA21_RSI_MACD": 7846.9,
+        "ADX_DONCHIAN24": -11048.5,
+        "RSI_BOLLINGER20": -18655,
+        "MACD_RSI_TREND": 10264.2,
+        "KELTNER_SQUEEZE": 13015.6,
+        "STOCH_REJECTION": -1217.2
+      }
+    }
+  ]
+}
