@@ -1,0 +1,107 @@
+{
+  "updated_at_utc": "2026-11-12",
+  "symbol": "XAUUSD",
+  "historic_scope_start": "2025-01-01T00:00:00Z",
+  "purpose": "Exactly two priority configurations user explicitly selected for further testing; existing other candidate archives remain unchanged.",
+  "candidate_count": 2,
+  "priority_candidates": [
+    {
+      "slot": 1,
+      "id": "XAU_EMA21_RUNNER_M15",
+      "strategy": "EMA21_BASE",
+      "timeframe": "M15",
+      "data_source_code": "robots/mt5/nexus_vector_retest/alpha_xau_mtf_2025plus.py",
+      "reference_branch": "research/xau-ema21-m1-to-m30-2025plus-20261112",
+      "parameters": {
+        "ema_fast": 21,
+        "ema_slow": 55,
+        "stop": "signal candle extreme or EMA21 +0.12 ATR14",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "partial_size_each": 0.3333333333333333,
+        "runner": "remaining 1/3, original SL or 384 M15 bars"
+      },
+      "historic_2025": {
+        "trades": 320,
+        "estimated_net_points_at_0_80": 14839.4,
+        "pf_at_0_80": 1.138,
+        "drawdown_closed_points": 16345.8
+      },
+      "historic_2026_partial": {
+        "trades": 156,
+        "estimated_net_points_at_0_80": 6527.2,
+        "pf_at_0_80": 1.082,
+        "drawdown_closed_points": 21230.4
+      },
+      "stress_cost_1_20_estimated_net_pts": {
+        "2025": 2039.4,
+        "2026_partial": 287.2
+      },
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE"
+    },
+    {
+      "slot": 2,
+      "id": "XAU_EMA21_RSI_MACD_M30",
+      "strategy": "EMA21_RSI_MACD",
+      "timeframe": "M30",
+      "data_source_code": "robots/mt5/nexus_vector_retest/xau_indicator_lab_2025plus.py",
+      "reference_branch": "research/xau-new-indicators-2025plus-20261112",
+      "parameters": {
+        "ema_fast": 21,
+        "ema_slow": 55,
+        "rsi_period": 14,
+        "macd": [
+          12,
+          26,
+          9
+        ],
+        "long_gate": "52 < RSI < 78 and MACD histogram > 0",
+        "short_gate": "22 < RSI < 48 and MACD histogram < 0",
+        "signal": "closed-candle EMA21 pullback",
+        "partial_tp_r": [
+          1,
+          1.5
+        ],
+        "partial_size_each": 0.3333333333333333,
+        "runner": "remaining 1/3, original stop or 192 M30 bars"
+      },
+      "historic_2025": {
+        "trades": 113,
+        "estimated_net_points_at_0_80": 12240.5,
+        "pf_at_0_80": 1.2,
+        "drawdown_closed_points": 12275
+      },
+      "historic_2026_partial": {
+        "trades": 54,
+        "estimated_net_points_at_0_80": 19682.8,
+        "pf_at_0_80": 1.518,
+        "drawdown_closed_points": 17735.3
+      },
+      "stress_cost_1_60_estimated_net_pts": {
+        "2025": 3200.5,
+        "2026_partial": 15362.8
+      },
+      "validation_status": "PRESERVED_RESEARCH_CANDIDATE"
+    }
+  ],
+  "research_assumptions": {
+    "point": 0.01,
+    "roundtrip_cost_usd_per_ounce": 0.8,
+    "method": "historical OHLC stop-first, next-bar-open, gap-aware; not native MT5 execution",
+    "year_2026_status": "only Q2-Q3 of an available partial historical source"
+  },
+  "blocking_steps_before_live": [
+    "Reproduce each signal and trade lifecycle in an MQL5 EA; compile it in MetaEditor",
+    "Run MT5 Strategy Tester using every real tick and verified broker specs, bid/ask, spread, commissions, slippage, swap and tick value",
+    "Test a genuinely unseen forward demo period after freezing code and parameters",
+    "Review per-month results and intratrade drawdown; assess multiple-model selection bias"
+  ],
+  "approved_for_live": false,
+  "preserved_reference_reports": [
+    "research/preserved/xau_ema21_full_m1_m30_2025plus_20261112.md",
+    "research/preserved/xau_new_indicators_m1_m30_2025plus_20261112.md"
+  ],
+  "note": "2 priority candidates are NOT the only previously archived strategies; earlier research records remain preserved."
+}
