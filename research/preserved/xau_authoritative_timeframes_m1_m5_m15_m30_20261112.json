@@ -210,9 +210,17 @@
       "timeframe": "M15",
       "current_scope_status": "USER_SAVED_RESEARCH_ONLY_PREDECLARED_SCREEN_FAILED",
       "ready_for_live": false
+    },
+    {
+      "slot": 10,
+      "id": "XAU_EMA21_RSI_MACD_M30_COST_TO_STOP_10PCT",
+      "strategy": "EMA21_RSI_MACD_COST_TO_STOP_GATE",
+      "timeframe": "M30",
+      "current_scope_status": "USER_SAVED_EXPERIMENTAL_RESEARCH_ONLY_INSUFFICIENT_TRADE_COUNT",
+      "ready_for_live": false
     }
   ],
-  "allowed_strategy_configurations_count": 5,
+  "allowed_strategy_configurations_count": 6,
   "historical_only_outside_policy": [
     {
       "slot": 3,
@@ -1164,11 +1172,12 @@
     "No real cash PnL, spread, broker Bid/Ask, swap, slippage or forward demo validation"
   ],
   "approved_for_real_trading": false,
-  "latest_selected_registry": "research/preserved/xau_selected_nine_candidates_20261112.json",
+  "latest_selected_registry": "research/preserved/xau_selected_ten_candidates_20261112.json",
   "all_nine_user_saved_ideas_preserved": true,
-  "total_user_saved_ideas": 9,
+  "total_user_saved_ideas": 10,
   "saved_ideas_on_non_allowed_timeframes_remain_historical_only": 4,
   "latest_updates_on": "2026-11-12",
   "added_two_not_homologated": true,
-  "current_prior_tf_research_validation": "Existing three + two Shock Exhaustion entries are saved research only, no broker real-tick or forward test."
+  "current_prior_tf_research_validation": "Existing three + two Shock Exhaustion entries are saved research only, no broker real-tick or forward test.",
+  "all_ten_user_saved_ideas_preserved": true
 }
