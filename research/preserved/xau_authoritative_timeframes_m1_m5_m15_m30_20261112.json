@@ -194,9 +194,25 @@
       "timeframe_policy_status": "IN_ALLOWED_TIMEFRAME_RESEARCH_ONLY",
       "active_eligible_under_timeframe_policy": true,
       "note_timeframe_policy": "Original signal and timeframe preserved in currently permitted scope; execution validation not performed"
+    },
+    {
+      "slot": 8,
+      "id": "XAU_SHOCK_EXHAUSTION_M5",
+      "strategy": "SHOCK_EXHAUSTION",
+      "timeframe": "M5",
+      "current_scope_status": "USER_SAVED_RESEARCH_ONLY_PREDECLARED_SCREEN_FAILED",
+      "ready_for_live": false
+    },
+    {
+      "slot": 9,
+      "id": "XAU_SHOCK_EXHAUSTION_M15",
+      "strategy": "SHOCK_EXHAUSTION",
+      "timeframe": "M15",
+      "current_scope_status": "USER_SAVED_RESEARCH_ONLY_PREDECLARED_SCREEN_FAILED",
+      "ready_for_live": false
     }
   ],
-  "allowed_strategy_configurations_count": 3,
+  "allowed_strategy_configurations_count": 5,
   "historical_only_outside_policy": [
     {
       "slot": 3,
@@ -1147,5 +1163,12 @@
     "Costs hypothetical 0.8, 1.2, 1.6 USD/oz",
     "No real cash PnL, spread, broker Bid/Ask, swap, slippage or forward demo validation"
   ],
-  "approved_for_real_trading": false
+  "approved_for_real_trading": false,
+  "latest_selected_registry": "research/preserved/xau_selected_nine_candidates_20261112.json",
+  "all_nine_user_saved_ideas_preserved": true,
+  "total_user_saved_ideas": 9,
+  "saved_ideas_on_non_allowed_timeframes_remain_historical_only": 4,
+  "latest_updates_on": "2026-11-12",
+  "added_two_not_homologated": true,
+  "current_prior_tf_research_validation": "Existing three + two Shock Exhaustion entries are saved research only, no broker real-tick or forward test."
 }
