@@ -1,21 +1,12 @@
 {
   "schema": 1,
   "market": "XAUUSD",
-  "h4_watermark": 1794456000,
+  "h4_watermark": 1794470400,
   "paper_only": true,
   "books": {
     "rsi_trend": {
-      "equity": 5024.479241557779,
-      "position": {
-        "side": -1,
-        "entry": 4082.199951171875,
-        "start": 1794312000,
-        "i": 328,
-        "held_bars": 9,
-        "qty": 0.4720288266253133,
-        "stop": 4162.033199028993,
-        "target": 3942.491767421918
-      },
+      "equity": 5089.099771567639,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793260800,
@@ -36,6 +27,16 @@
           "net_usd": -39.4022,
           "cost_usd": 1.42309,
           "exit_type": "STOP"
+        },
+        {
+          "entry_ts": 1794312000,
+          "exit_ts": 1794470400,
+          "side": -1,
+          "entry": 4082.199951,
+          "exit": 3942.491767,
+          "net_usd": 64.62053,
+          "cost_usd": 1.32576,
+          "exit_type": "TARGET"
         }
       ]
     },
@@ -46,7 +47,7 @@
         "entry": 4012.39990234375,
         "start": 1794412800,
         "i": 328,
-        "held_bars": 3,
+        "held_bars": 4,
         "qty": 0.5192373668976684,
         "stop": 4084.054698251767,
         "target": 3887.0040095047198
@@ -65,17 +66,8 @@
       ]
     },
     "pullback20": {
-      "equity": 5063.9222113306605,
-      "position": {
-        "side": -1,
-        "entry": 4082.199951171875,
-        "start": 1794312000,
-        "i": 328,
-        "held_bars": 9,
-        "qty": 0.4757343287968655,
-        "stop": 4162.033199028993,
-        "target": 3942.491767421918
-      },
+      "equity": 5129.050022889384,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793246400,
@@ -85,6 +77,16 @@
           "exit": 3942.096642,
           "net_usd": 63.92221,
           "cost_usd": 1.70279,
+          "exit_type": "TARGET"
+        },
+        {
+          "entry_ts": 1794312000,
+          "exit_ts": 1794470400,
+          "side": -1,
+          "entry": 4082.199951,
+          "exit": 3942.491767,
+          "net_usd": 65.12781,
+          "cost_usd": 1.33617,
           "exit_type": "TARGET"
         }
       ]
@@ -96,7 +98,7 @@
         "entry": 3984.199951171875,
         "start": 1794441600,
         "i": 326,
-        "held_bars": 2,
+        "held_bars": 3,
         "qty": 0.5527600106881669,
         "stop": 4052.908641834387,
         "target": 3863.9597425124794
