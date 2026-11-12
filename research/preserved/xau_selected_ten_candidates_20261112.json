@@ -708,5 +708,10 @@
   "research_results_battery7": "research/preserved/xau_entry_quality_batch7_full_2025plus_20261112.json",
   "all_original_nine_remain_unchanged": true,
   "live_approval": false,
-  "caveat": "Preservation is NOT validation. All 2025/2026 tests share already-explored history, no independent out-of-sample; broker real ticks and forward demo mandatory."
+  "caveat": "Preservation is NOT validation. All 2025/2026 tests share already-explored history, no independent out-of-sample; broker real ticks and forward demo mandatory.",
+  "related_historical_positive_variants_archive": "research/preserved/xau_positive_variants_all_batches6_7_20261112.json",
+  "related_historical_positive_variants_unique_count": 18,
+  "related_historical_positive_variants_stress_1_6_count": 12,
+  "related_tested_variant_comparisons_total": 50,
+  "scope_note": "18 variants historically positive both periods after hypothetical 1.2/oz cost; most are variants of same 5 underlying strategies, NOT 18 independent validated trading robots. All losing configurations in archive. None newly live approved."
 }
