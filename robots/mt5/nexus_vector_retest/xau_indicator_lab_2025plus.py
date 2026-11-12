@@ -214,6 +214,7 @@ def run_year(raw, year, tf):
     signals={name:build_signals(data,name,baseline=base) for name in MODELS}
     horizon=horizon_bars(tf)
     results=[]
+    closed_trades={name:[] for name in MODELS}
     for q,first,last in windows_by_quarter(data,horizon):
         if first is None:
             results.append(dict(quarter=q,status="INSUFFICIENT_BARS"))
@@ -221,6 +222,7 @@ def run_year(raw, year, tf):
         models={}
         for name in MODELS:
             trades=replay_one(data,signals[name],first,last,tf,PROFILE)
+            closed_trades[name].extend(trades)
             models[name]={str(cost):summarize(trades,cost) for cost in COST_GRID}
         results.append(dict(quarter=q,first=str(data.index[first]),
                             last=str(data.index[last-1]),models=models))
@@ -233,15 +235,10 @@ def run_year(raw, year, tf):
         valid_quarters=sum("models" in q for q in results),
         quarters=results)
     for name in MODELS:
-        # Pool trades from separate, non-overlapping quarters; drawdown must be
-        # computed on chronological trade sequence, not sum of quarterly MDDs.
-        all_deals=[]
-        for q,first,last in windows_by_quarter(data,horizon):
-            if first is None:
-                continue
-            all_deals.extend(replay_one(data,signals[name],first,last,tf,PROFILE))
+        # Pool trades from non-overlapping quarters chronologically; drawdown
+        # on the entire closing-equity curve, NOT added quarterly drawdowns.
         result.setdefault("summary",{})[name]={
-            str(cost):summarize(all_deals,cost) for cost in COST_GRID}
+            str(cost):summarize(closed_trades[name],cost) for cost in COST_GRID}
     print("INDICATOR_YEAR",json.dumps(dict(year=year,tf=f"M{tf}",
         signals=result["raw_signals"],summary=result["summary"])),flush=True)
     return result
