@@ -72,10 +72,16 @@ def normalized(raw):
     field=next((v for v in ("tick_volume","tickvol","volume","vol") if v in d.columns),None)
     if not field: raise ValueError("H1 source missing actual volume; cannot backtest RVOL")
     d["volume"]=pd.to_numeric(d[field],errors="coerce")
-    if d["volume"].isna().any() or (d["volume"]<0).any() or (d["volume"]>0).sum()<4700:
-        raise ValueError(f"H1 volume is incomplete: {field}")
-    d=d[["open","high","low","close","volume"]]
-    d.index=pd.DatetimeIndex(when,name="datetime")
+    valid=d["volume"].notna() & (d["volume"]>0)
+    print("H1_VOLUME_VALID",int(valid.sum()),"TOTAL",len(d),
+          "LAST6000_VALID",int(valid.tail(6000).sum()),flush=True)
+    if int(valid.sum())<BARS+WARM:
+        raise ValueError(f"Insufficient H1 candle bars with ACTUAL volume: {int(valid.sum())}")
+    # Never manufacture tick volume: exclude H1 rows with missing/zero volume.
+    dates=pd.DatetimeIndex(when,name="datetime")
+    mask=valid.to_numpy()
+    d=d.loc[valid,["open","high","low","close","volume"]].copy()
+    d.index=dates[mask]
     d=d.dropna().sort_index()
     if d.index.duplicated().any(): raise ValueError("Duplicate H1 timestamps")
     if not ((d.high>=d[["open","low","close"]].max(axis=1))&
