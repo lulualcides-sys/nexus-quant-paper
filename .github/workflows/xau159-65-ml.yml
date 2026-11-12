@@ -1,0 +1,25 @@
+name: XAUUSD 65/159 high frequency vector ML causal
+on:
+  push:
+    paths:
+      - 'research/xau159_65/ml_screen.py'
+      - '.github/workflows/xau159-65-ml.yml'
+  workflow_dispatch:
+jobs:
+  ml-study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3 scikit-learn==1.7.2
+      - name: Train old candles, validate June, untouched July and August
+        run: python research/xau159_65/ml_screen.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: XAUUSD-159-65-vector-ML-experiment
+          path: research/xau159_65/results_ml/
+          if-no-files-found: warn
