@@ -2,13 +2,13 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1794528000,
+  "h4_watermark": 1794571200,
   "books": {
     "lev_channel20": {
       "equity": 5480.155939310954,
       "peak_equity": 5480.155939310954,
-      "today": "2026-11-12",
-      "day_start_equity": 5171.743968811271,
+      "today": "2026-11-13",
+      "day_start_equity": 5480.155939310954,
       "frozen": false,
       "position": null,
       "closed": [
@@ -45,8 +45,8 @@
     "lev_momentum100": {
       "equity": 5330.3382761226685,
       "peak_equity": 5330.3382761226685,
-      "today": "2026-11-12",
-      "day_start_equity": 5095.482420660978,
+      "today": "2026-11-13",
+      "day_start_equity": 5330.3382761226685,
       "frozen": false,
       "position": null,
       "closed": [
@@ -83,8 +83,8 @@
     "lev_channel55": {
       "equity": 5079.254778546534,
       "peak_equity": 5171.743968811271,
-      "today": "2026-11-12",
-      "day_start_equity": 5171.743968811271,
+      "today": "2026-11-13",
+      "day_start_equity": 5079.254778546534,
       "frozen": false,
       "position": null,
       "closed": [
@@ -121,7 +121,7 @@
     "lev_momentum40": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-11-12",
+      "today": "2026-11-13",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,
@@ -130,7 +130,7 @@
     "lev_trend_long": {
       "equity": 5000.0,
       "peak_equity": 5000.0,
-      "today": "2026-11-12",
+      "today": "2026-11-13",
       "day_start_equity": 5000.0,
       "frozen": false,
       "position": null,

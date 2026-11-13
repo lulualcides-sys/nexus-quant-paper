@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "market": "XAUUSD",
-  "h4_watermark": 1794528000,
+  "h4_watermark": 1794571200,
   "paper_only": true,
   "books": {
     "rsi_trend": {
@@ -125,7 +125,7 @@
         "entry": 3874.699951171875,
         "start": 1794499200,
         "i": 328,
-        "held_bars": 2,
+        "held_bars": 5,
         "qty": 0.4341838014511485,
         "stop": 3960.391419689396,
         "target": 3724.739881266213
