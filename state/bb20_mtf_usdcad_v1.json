@@ -2,23 +2,9 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794555000,
-  "equity": 999.7930587212124,
-  "position": {
-    "side": 1,
-    "entry": 1.4250999689102173,
-    "entry_ts": 1794503700,
-    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 999.7930587212124,
-    "stop": 1.4242137984812355,
-    "initial_r": 0.0021662397801779664,
-    "best_close": 1.4263800382614136,
-    "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 7,
-    "green_protected": false,
-    "target": null,
-    "confirm_h1": 1794499200
-  },
+  "watermark_m15": 1794582900,
+  "equity": 999.3886561309873,
+  "position": null,
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -235,8 +221,20 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.4241636774454944
+    },
+    {
+      "entry_ts": 1794503700,
+      "exit_ts": 1794576600,
+      "entry": 1.4250999689102173,
+      "exit": 1.4246737079203224,
+      "side": 1,
+      "net_usd": -0.4044,
+      "cost_usd": 0.10527,
+      "exit_type": "TRAIL_STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.4246737079203224
     }
   ],
   "last_entry_h1": 1794499200,
-  "last_reason": "Stop móvel subiu"
+  "last_reason": "H1 sem tendência EMA50/EMA200 alinhada"
 }
