@@ -1169,7 +1169,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1794517200
+      "watermark": 1794520800
     },
     "US500": {
       "signals": [
@@ -2300,10 +2300,22 @@
           "side": -1,
           "strategy": "reversal_ai",
           "ts": 1794506400
+        },
+        {
+          "asset": "US500",
+          "atr": 23.673732503554223,
+          "close": 7642.0,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "US500:pullback_master:1794524400",
+          "side": 1,
+          "strategy": "pullback_master",
+          "ts": 1794524400
         }
       ],
       "source": "ES=F",
-      "watermark": 1794517200
+      "watermark": 1794524400
     },
     "USDJPY": {
       "signals": [
@@ -3353,7 +3365,7 @@
         }
       ],
       "source": "JPY=X",
-      "watermark": 1794517200
+      "watermark": 1794520800
     },
     "XAUUSD": {
       "signals": [
@@ -4508,10 +4520,22 @@
           "side": -1,
           "strategy": "momentum_x",
           "ts": 1794488400
+        },
+        {
+          "asset": "XAUUSD",
+          "atr": 16.350104772509066,
+          "close": 3884.699951171875,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "XAUUSD:reversal_ai:1794524400",
+          "side": 1,
+          "strategy": "reversal_ai",
+          "ts": 1794524400
         }
       ],
       "source": "GC=F",
-      "watermark": 1794517200
+      "watermark": 1794524400
     },
     "XTIUSD": {
       "signals": [
@@ -5407,9 +5431,9 @@
           "asset": "XTIUSD",
           "atr": 0.9790064473270367,
           "close": 88.02999877929688,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.7048,
+          "eval": "favoravel",
+          "evaluated_at": 1794524400,
           "id": "XTIUSD:breakout_pro:1794502800",
           "side": 1,
           "strategy": "breakout_pro",
@@ -5429,7 +5453,7 @@
         }
       ],
       "source": "CL=F",
-      "watermark": 1794517200
+      "watermark": 1794524400
     }
   },
   "schema": 4
