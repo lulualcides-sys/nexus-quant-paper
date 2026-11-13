@@ -1,0 +1,12 @@
+{
+  "day": "2026-11-13",
+  "paper_only": true,
+  "historical_snapshots_old": 52,
+  "historical_snapshots_v8": 30,
+  "unique_families": 15,
+  "available": 14,
+  "unavailable": [
+    "usdcad_m15:bb20"
+  ],
+  "data_watermark_min": 1794499200
+}
