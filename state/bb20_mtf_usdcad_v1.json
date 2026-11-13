@@ -2,9 +2,23 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794585600,
+  "watermark_m15": 1794586500,
   "equity": 999.3886561309873,
-  "position": null,
+  "position": {
+    "side": 1,
+    "entry": 1.4249000549316406,
+    "entry_ts": 1794586500,
+    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
+    "qty_usd": 999.3886561309873,
+    "stop": 1.4230117705256333,
+    "initial_r": 0.0021082255452285225,
+    "best_close": 1.4251199960708618,
+    "stop_policy": "close_trailing_no_tp_v1",
+    "stop_updates": 1,
+    "green_protected": false,
+    "target": null,
+    "confirm_h1": 1794582000
+  },
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -235,6 +249,6 @@
       "final_stop": 1.4246737079203224
     }
   ],
-  "last_entry_h1": 1794499200,
-  "last_reason": "H1 sem tendência EMA50/EMA200 alinhada"
+  "last_entry_h1": 1794582000,
+  "last_reason": "Stop móvel subiu"
 }
