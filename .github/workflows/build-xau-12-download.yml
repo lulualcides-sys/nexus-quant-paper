@@ -1,0 +1,66 @@
+name: Download Nexus Quant XAUUSD 12 candidates source bundle
+on:
+  push:
+    branches:
+      - delivery/xau-12-candidates-download-20261113
+    paths:
+      - 'distribution/xau_saved_12/**'
+      - '.github/workflows/build-xau-12-download.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-test-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout research source branch with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Pin Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch latest saved 12-candidate registry (main)
+        run: git fetch --quiet origin main
+      - name: Check build and test runner syntax
+        run: |
+          python -m py_compile distribution/xau_saved_12/build_zip.py distribution/xau_saved_12/testar_8_permitidos.py
+      - name: Build the genuine ZIP from exact saved source scripts and 12 registered candidates
+        run: python -u distribution/xau_saved_12/build_zip.py
+      - name: Inspect contents and cross-check the ZIP against the registry
+        run: |
+          python - <<'PY'
+          import json, zipfile, pathlib, subprocess
+          path=pathlib.Path('dist/NexusQuant_XAUUSD_12_Salvos_CODIGOS.zip')
+          assert path.exists() and path.stat().st_size > 100000
+          with zipfile.ZipFile(path) as z:
+              names=z.namelist()
+              prefix='NexusQuant_XAUUSD_12_Salvos/'
+              data=json.loads(z.read(prefix+'catalogo/12_candidatos_salvos.json'))
+              assert len(data['selected_candidates']) == 12
+              selected={x['id'] for x in data['selected_candidates']}
+              included={n.split('/')[-1].replace('.json','') for n in names if '/configuracoes_individuais/' in n and n.endswith('.json')}
+              assert included == selected
+              assert len([n for n in names if n.endswith('.mq5')]) == 1
+              assert not any(n.endswith('.ex5') for n in names)
+              assert len([n for n in names if n.startswith(prefix+'pesquisa_python/') and n.endswith('.py')]) >= 20
+              print('ZIP_VERIFIED',json.dumps(dict(zip_bytes=path.stat().st_size,models=len(selected),python_files=len([n for n in names if n.endswith('.py')]),mql_files=1,compiled_ex5=0)),flush=True)
+          PY
+      - name: Test whether bundled Python replay actually runs on pinned 2026 partial OHLC data
+        run: |
+          python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+          mkdir -p dist/unpacked
+          cd dist/unpacked
+          unzip -q ../NexusQuant_XAUUSD_12_Salvos_CODIGOS.zip
+          cd NexusQuant_XAUUSD_12_Salvos
+          python -u testar_8_permitidos.py --periodo 2026
+      - name: Upload single downloadable ZIP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: NexusQuant_XAUUSD_12_Salvos_CODIGOS_ZIP
+          path: dist/NexusQuant_XAUUSD_12_Salvos_CODIGOS.zip
+          if-no-files-found: error
+          retention-days: 90
