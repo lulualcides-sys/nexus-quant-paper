@@ -1,0 +1,43 @@
+name: XAUUSD true MetaQuotes MA12 shift6 baseline and three experiments
+on:
+  push:
+    branches: [research/xau-ma126-structure-sweep-volatility-20261114]
+    paths:
+      - 'robots/mt5/nexus_vector_retest/xau_ma126_official_shift6_ab_2024plus.py'
+      - 'robots/mt5/nexus_vector_retest/test_xau_ma126_official_shift6_ab_2024plus.py'
+      - '.github/workflows/xau-ma12-official-shift6-ab-2024plus.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Exact MetaQuotes 12 shift6 copybuffer parity and causal tests
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/xau_ma126_official_shift6_ab_2024plus.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_ma126_official_shift6_ab_2024plus.py' -v
+      - name: Pinned XAUUSD M1 2024 and 2025 OHLC sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2024 XAUUSD/1m/2025
+      - name: Compare MetaQuotes example and three experimental entries M1 M5 M15 M30
+        run: python -u robots/mt5/nexus_vector_retest/xau_ma126_official_shift6_ab_2024plus.py
+      - name: Preserve full historic gains AND losses
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: XAU-MA12-OFFICIAL-SHIFT6-2024-2026-RESEARCH
+          path: robots/mt5/nexus_vector_retest/xau_ma126_structure_sweep_results/
+          if-no-files-found: warn
