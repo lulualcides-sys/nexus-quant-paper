@@ -65,7 +65,9 @@ def signal_pairs(f):
     e21=prev.ema21.to_numpy(dtype=float);e55=prev.ema55.to_numpy(dtype=float)
     e200=prev.ema200.to_numpy(dtype=float);rvol=prev.rvol.to_numpy(dtype=float)
     body=prev.body.to_numpy(dtype=float)
-    hour=prev.index.hour.to_numpy()
+    # A signal at i is from bar i-1, so use the LAST CLOSED bar hour.
+    tf_minutes=int((f.index[1]-f.index[0]).total_seconds()/60)
+    hour=(f.index-pd.Timedelta(minutes=tf_minutes)).hour.to_numpy()
     active=(hour>=12)&(hour<=17)
     up=(e21>e55)&(e55>e200);down=(e21<e55)&(e55<e200)
     hi=prev.prior_hi.to_numpy(dtype=float);lo=prev.prior_lo.to_numpy(dtype=float)
