@@ -103,8 +103,8 @@ class TestMA12Experiments(unittest.TestCase):
             for model in MODELS:
                 for yr in ("2024","2025","2026_partial"):
                     fake.append(dict(year=yr,model=model,timeframe=f"M{tf}",
-                        metrics={"1.2":dict(net_pts=10000,net_R=100,N=3,positive_quarters=4),
-                                 "1.6":dict(net_pts=10000,net_R=100,N=3,positive_quarters=4)}))
+                        metrics={"1.2":dict(net_pts=10000,net_R=100,N=3,positive_quarters=4,PF=3.0,win_pct=90.),
+                                 "1.6":dict(net_pts=10000,net_R=100,N=3,positive_quarters=4,PF=3.0,win_pct=90.)}))
         rows=screen(fake)
         self.assertEqual(len(rows),20)
         self.assertFalse(any(r["tentative_screen"] for r in rows))
