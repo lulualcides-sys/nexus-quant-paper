@@ -68,6 +68,9 @@ class TestMA12Experiments(unittest.TestCase):
         raw=example(500)
         f=features(raw,1)
         s=np.zeros(len(f),dtype=np.int8);s[260]=1
+        # Force an unambiguous adverse hit in the same candle, to test
+        # stop-first rather than relying on a random favorable path.
+        f.loc[f.index[260],"low"]=float(f.open.iloc[260]-10*f.atr_pre.iloc[260])
         m=sim_quarter(f,s,250,450,1.2)
         self.assertEqual(m["N"],1)
         self.assertGreater(m["closed_trade_MDD_pts"],0)
