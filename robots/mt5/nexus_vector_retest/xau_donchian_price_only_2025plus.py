@@ -164,7 +164,7 @@ def main():
             eligible=(ac["N"]>=35 and bc["N"]>=15 and ac["net_pts"]>0 and
                 bc["net_pts"]>0 and stress["net_pts"]>0 and ac["PF"] is not None and
                 bc["PF"] is not None and ac["PF"]>=1.2 and bc["PF"]>=1.1)
-            screen.append(dict(tf=f"M{tf}",model=model,2025=ac,2026_partial=bc,
+            screen.append(dict(tf=f"M{tf}",model=model,year2025=ac,year2026_partial=bc,
                                stress=stress,eligible=bool(eligible)))
     OUT.mkdir(parents=True,exist_ok=True)
     result=dict(periods=periods,all_models=out,screen=screen,costs=COSTS,
