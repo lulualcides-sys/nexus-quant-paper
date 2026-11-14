@@ -1,0 +1,4490 @@
+{
+  "status": "research_only_not_live_approved",
+  "created_at": "2026-11-14",
+  "repo": "lulualcides-sys/nexus-quant-paper",
+  "branch": "research/xau-donchian-price-only-2025plus-20261114",
+  "ci": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43652618416",
+  "symbol": "XAUUSD",
+  "timeframes": [
+    "M1",
+    "M5",
+    "M15",
+    "M30"
+  ],
+  "models": [
+    "DON20_LONG",
+    "DON20_BOTH",
+    "DON55_LONG",
+    "DON20_LONG_EMA200"
+  ],
+  "original_hypothesis": "Donchian close above previous 20/55 candle high or below low, 0.05ATR buffer, trade next candle open, 2ATR stop, 4ATR take profit, no timer, one position, no volume or VWAP",
+  "datapoints": [
+    {
+      "period": "2025",
+      "N": 355816,
+      "start": "2025-01-01 23:04:00+00:00",
+      "end": "2025-12-31 21:59:00+00:00"
+    },
+    {
+      "period": "2026_partial",
+      "N": 179662,
+      "start": "2026-03-26 02:28:00+00:00",
+      "end": "2026-09-25 20:44:00+00:00"
+    }
+  ],
+  "costs_usd_per_ounce": [
+    0.8,
+    1.2,
+    1.6
+  ],
+  "price_point_usd_per_oz": 0.01,
+  "results": {
+    "annual": [
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 7267,
+            "win_count": 2548,
+            "red_count": 4719,
+            "net_pts": -524299.9,
+            "net_R": -2604.989,
+            "PF": 0.686,
+            "win_rate": 35.06,
+            "mdd_closed_pts": 525118,
+            "gross_gain_pts": 1144091.79,
+            "gross_loss_pts": 1668391.64,
+            "exits": {
+              "stop": 4719,
+              "tp": 2548,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 7267,
+            "win_count": 2543,
+            "red_count": 4724,
+            "net_pts": -814979.9,
+            "net_R": -4075.099,
+            "PF": 0.561,
+            "win_rate": 34.99,
+            "mdd_closed_pts": 815574,
+            "gross_gain_pts": 1042209.69,
+            "gross_loss_pts": 1857189.55,
+            "exits": {
+              "stop": 4719,
+              "tp": 2548,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 7267,
+            "win_count": 2503,
+            "red_count": 4764,
+            "net_pts": -1105659.9,
+            "net_R": -5545.21,
+            "PF": 0.46,
+            "win_rate": 34.44,
+            "mdd_closed_pts": 1106134,
+            "gross_gain_pts": 941116.94,
+            "gross_loss_pts": 2046776.8,
+            "exits": {
+              "stop": 4719,
+              "tp": 2548,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 13135,
+            "win_count": 4421,
+            "red_count": 8714,
+            "net_pts": -1061815.3,
+            "net_R": -5126.693,
+            "PF": 0.665,
+            "win_rate": 33.66,
+            "mdd_closed_pts": 1069407.4,
+            "gross_gain_pts": 2104416.31,
+            "gross_loss_pts": 3166231.65,
+            "exits": {
+              "stop": 8714,
+              "tp": 4420,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 13135,
+            "win_count": 4407,
+            "red_count": 8728,
+            "net_pts": -1587215.3,
+            "net_R": -7714.857,
+            "PF": 0.548,
+            "win_rate": 33.55,
+            "mdd_closed_pts": 1593647.4,
+            "gross_gain_pts": 1927729.89,
+            "gross_loss_pts": 3514945.23,
+            "exits": {
+              "stop": 8714,
+              "tp": 4420,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 13135,
+            "win_count": 4340,
+            "red_count": 8795,
+            "net_pts": -2112615.3,
+            "net_R": -10303.022,
+            "PF": 0.453,
+            "win_rate": 33.04,
+            "mdd_closed_pts": 2117887.4,
+            "gross_gain_pts": 1752486.74,
+            "gross_loss_pts": 3865102.08,
+            "exits": {
+              "stop": 8714,
+              "tp": 4420,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 4797,
+            "win_count": 1698,
+            "red_count": 3099,
+            "net_pts": -323337.3,
+            "net_R": -1667.085,
+            "PF": 0.697,
+            "win_rate": 35.4,
+            "mdd_closed_pts": 325792,
+            "gross_gain_pts": 745337.52,
+            "gross_loss_pts": 1068674.87,
+            "exits": {
+              "stop": 3099,
+              "tp": 1697,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 4797,
+            "win_count": 1694,
+            "red_count": 3103,
+            "net_pts": -515217.3,
+            "net_R": -2637.266,
+            "PF": 0.568,
+            "win_rate": 35.31,
+            "mdd_closed_pts": 517112,
+            "gross_gain_pts": 677449.66,
+            "gross_loss_pts": 1192667.01,
+            "exits": {
+              "stop": 3099,
+              "tp": 1697,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 4797,
+            "win_count": 1672,
+            "red_count": 3125,
+            "net_pts": -707097.3,
+            "net_R": -3607.448,
+            "PF": 0.463,
+            "win_rate": 34.86,
+            "mdd_closed_pts": 708432,
+            "gross_gain_pts": 610082.57,
+            "gross_loss_pts": 1317179.91,
+            "exits": {
+              "stop": 3099,
+              "tp": 1697,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 6205,
+            "win_count": 2162,
+            "red_count": 4043,
+            "net_pts": -452711.1,
+            "net_R": -2299.099,
+            "PF": 0.673,
+            "win_rate": 34.84,
+            "mdd_closed_pts": 453235.4,
+            "gross_gain_pts": 931622.14,
+            "gross_loss_pts": 1384333.28,
+            "exits": {
+              "stop": 4043,
+              "tp": 2162,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 6205,
+            "win_count": 2157,
+            "red_count": 4048,
+            "net_pts": -700911.1,
+            "net_R": -3571.533,
+            "PF": 0.547,
+            "win_rate": 34.76,
+            "mdd_closed_pts": 701291.4,
+            "gross_gain_pts": 845180.05,
+            "gross_loss_pts": 1546091.19,
+            "exits": {
+              "stop": 4043,
+              "tp": 2162,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 6205,
+            "win_count": 2120,
+            "red_count": 4085,
+            "net_pts": -949111.1,
+            "net_R": -4843.967,
+            "PF": 0.444,
+            "win_rate": 34.17,
+            "mdd_closed_pts": 949451.4,
+            "gross_gain_pts": 759454.2,
+            "gross_loss_pts": 1708565.34,
+            "exits": {
+              "stop": 4043,
+              "tp": 2162,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 1429,
+            "win_count": 533,
+            "red_count": 896,
+            "net_pts": -28297.7,
+            "net_R": -63.939,
+            "PF": 0.957,
+            "win_rate": 37.3,
+            "mdd_closed_pts": 55428.2,
+            "gross_gain_pts": 627332.56,
+            "gross_loss_pts": 655630.31,
+            "exits": {
+              "stop": 896,
+              "tp": 533,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 1429,
+            "win_count": 533,
+            "red_count": 896,
+            "net_pts": -85457.7,
+            "net_R": -175.747,
+            "PF": 0.876,
+            "win_rate": 37.3,
+            "mdd_closed_pts": 100835.6,
+            "gross_gain_pts": 606012.56,
+            "gross_loss_pts": 691470.31,
+            "exits": {
+              "stop": 896,
+              "tp": 533,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 1429,
+            "win_count": 533,
+            "red_count": 896,
+            "net_pts": -142617.7,
+            "net_R": -287.556,
+            "PF": 0.804,
+            "win_rate": 37.3,
+            "mdd_closed_pts": 154954,
+            "gross_gain_pts": 584692.56,
+            "gross_loss_pts": 727310.31,
+            "exits": {
+              "stop": 896,
+              "tp": 533,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 2392,
+            "win_count": 825,
+            "red_count": 1567,
+            "net_pts": -170998.7,
+            "net_R": -287.595,
+            "PF": 0.859,
+            "win_rate": 34.49,
+            "mdd_closed_pts": 182896.1,
+            "gross_gain_pts": 1042415.57,
+            "gross_loss_pts": 1213414.24,
+            "exits": {
+              "stop": 1567,
+              "tp": 824,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 2392,
+            "win_count": 825,
+            "red_count": 1567,
+            "net_pts": -266678.7,
+            "net_R": -466.4,
+            "PF": 0.791,
+            "win_rate": 34.49,
+            "mdd_closed_pts": 273256.1,
+            "gross_gain_pts": 1009415.57,
+            "gross_loss_pts": 1276094.24,
+            "exits": {
+              "stop": 1567,
+              "tp": 824,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 2392,
+            "win_count": 824,
+            "red_count": 1568,
+            "net_pts": -362358.7,
+            "net_R": -645.205,
+            "PF": 0.729,
+            "win_rate": 34.45,
+            "mdd_closed_pts": 367680.3,
+            "gross_gain_pts": 976420.57,
+            "gross_loss_pts": 1338779.24,
+            "exits": {
+              "stop": 1567,
+              "tp": 824,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 946,
+            "win_count": 361,
+            "red_count": 585,
+            "net_pts": -7472.7,
+            "net_R": -24.359,
+            "PF": 0.982,
+            "win_rate": 38.16,
+            "mdd_closed_pts": 24746.2,
+            "gross_gain_pts": 416510.99,
+            "gross_loss_pts": 423983.73,
+            "exits": {
+              "stop": 585,
+              "tp": 361,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 946,
+            "win_count": 361,
+            "red_count": 585,
+            "net_pts": -45312.7,
+            "net_R": -99.545,
+            "PF": 0.899,
+            "win_rate": 38.16,
+            "mdd_closed_pts": 52728.1,
+            "gross_gain_pts": 402070.99,
+            "gross_loss_pts": 447383.73,
+            "exits": {
+              "stop": 585,
+              "tp": 361,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 946,
+            "win_count": 361,
+            "red_count": 585,
+            "net_pts": -83152.7,
+            "net_R": -174.731,
+            "PF": 0.823,
+            "win_rate": 38.16,
+            "mdd_closed_pts": 88328.1,
+            "gross_gain_pts": 387630.99,
+            "gross_loss_pts": 470783.73,
+            "exits": {
+              "stop": 585,
+              "tp": 361,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 1217,
+            "win_count": 455,
+            "red_count": 762,
+            "net_pts": -20046.8,
+            "net_R": -54.208,
+            "PF": 0.963,
+            "win_rate": 37.39,
+            "mdd_closed_pts": 35400.9,
+            "gross_gain_pts": 524729.08,
+            "gross_loss_pts": 544775.89,
+            "exits": {
+              "stop": 762,
+              "tp": 455,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 1217,
+            "win_count": 455,
+            "red_count": 762,
+            "net_pts": -68726.8,
+            "net_R": -150.608,
+            "PF": 0.881,
+            "win_rate": 37.39,
+            "mdd_closed_pts": 77935,
+            "gross_gain_pts": 506529.08,
+            "gross_loss_pts": 575255.89,
+            "exits": {
+              "stop": 762,
+              "tp": 455,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 1217,
+            "win_count": 455,
+            "red_count": 762,
+            "net_pts": -117406.8,
+            "net_R": -247.009,
+            "PF": 0.806,
+            "win_rate": 37.39,
+            "mdd_closed_pts": 123615,
+            "gross_gain_pts": 488329.08,
+            "gross_loss_pts": 605735.89,
+            "exits": {
+              "stop": 762,
+              "tp": 455,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 509,
+            "win_count": 198,
+            "red_count": 311,
+            "net_pts": 24849,
+            "net_R": 38.619,
+            "PF": 1.064,
+            "win_rate": 38.9,
+            "mdd_closed_pts": 43920.3,
+            "gross_gain_pts": 410234.08,
+            "gross_loss_pts": 385385.05,
+            "exits": {
+              "stop": 311,
+              "tp": 198,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 509,
+            "win_count": 198,
+            "red_count": 311,
+            "net_pts": 4489,
+            "net_R": 16.82,
+            "PF": 1.011,
+            "win_rate": 38.9,
+            "mdd_closed_pts": 46840.3,
+            "gross_gain_pts": 402314.08,
+            "gross_loss_pts": 397825.05,
+            "exits": {
+              "stop": 311,
+              "tp": 198,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 509,
+            "win_count": 198,
+            "red_count": 311,
+            "net_pts": -15871,
+            "net_R": -4.98,
+            "PF": 0.961,
+            "win_rate": 38.9,
+            "mdd_closed_pts": 49760.3,
+            "gross_gain_pts": 394394.08,
+            "gross_loss_pts": 410265.05,
+            "exits": {
+              "stop": 311,
+              "tp": 198,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 818,
+            "win_count": 288,
+            "red_count": 530,
+            "net_pts": -47505,
+            "net_R": -25.393,
+            "PF": 0.932,
+            "win_rate": 35.21,
+            "mdd_closed_pts": 66348,
+            "gross_gain_pts": 648972.26,
+            "gross_loss_pts": 696477.26,
+            "exits": {
+              "stop": 529,
+              "tp": 288,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 818,
+            "win_count": 288,
+            "red_count": 530,
+            "net_pts": -80225,
+            "net_R": -58.925,
+            "PF": 0.888,
+            "win_rate": 35.21,
+            "mdd_closed_pts": 94748,
+            "gross_gain_pts": 637452.26,
+            "gross_loss_pts": 717677.26,
+            "exits": {
+              "stop": 529,
+              "tp": 288,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 818,
+            "win_count": 288,
+            "red_count": 530,
+            "net_pts": -112945,
+            "net_R": -92.457,
+            "PF": 0.847,
+            "win_rate": 35.21,
+            "mdd_closed_pts": 123148,
+            "gross_gain_pts": 625932.26,
+            "gross_loss_pts": 738877.26,
+            "exits": {
+              "stop": 529,
+              "tp": 288,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 351,
+            "win_count": 132,
+            "red_count": 219,
+            "net_pts": 2338.8,
+            "net_R": 13.447,
+            "PF": 1.009,
+            "win_rate": 37.61,
+            "mdd_closed_pts": 35777.7,
+            "gross_gain_pts": 265623.27,
+            "gross_loss_pts": 263284.45,
+            "exits": {
+              "stop": 219,
+              "tp": 132,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 351,
+            "win_count": 132,
+            "red_count": 219,
+            "net_pts": -11701.2,
+            "net_R": -1.83,
+            "PF": 0.957,
+            "win_rate": 37.61,
+            "mdd_closed_pts": 37537.7,
+            "gross_gain_pts": 260343.27,
+            "gross_loss_pts": 272044.45,
+            "exits": {
+              "stop": 219,
+              "tp": 132,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 351,
+            "win_count": 132,
+            "red_count": 219,
+            "net_pts": -25741.2,
+            "net_R": -17.107,
+            "PF": 0.908,
+            "win_rate": 37.61,
+            "mdd_closed_pts": 39657.5,
+            "gross_gain_pts": 255063.27,
+            "gross_loss_pts": 280804.45,
+            "exits": {
+              "stop": 219,
+              "tp": 132,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 440,
+            "win_count": 175,
+            "red_count": 265,
+            "net_pts": 31383.5,
+            "net_R": 45.931,
+            "PF": 1.098,
+            "win_rate": 39.77,
+            "mdd_closed_pts": 50891.8,
+            "gross_gain_pts": 350986.06,
+            "gross_loss_pts": 319602.54,
+            "exits": {
+              "stop": 265,
+              "tp": 175,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 440,
+            "win_count": 175,
+            "red_count": 265,
+            "net_pts": 13783.5,
+            "net_R": 26.864,
+            "PF": 1.042,
+            "win_rate": 39.77,
+            "mdd_closed_pts": 53331.8,
+            "gross_gain_pts": 343986.06,
+            "gross_loss_pts": 330202.54,
+            "exits": {
+              "stop": 265,
+              "tp": 175,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 440,
+            "win_count": 175,
+            "red_count": 265,
+            "net_pts": -3816.5,
+            "net_R": 7.797,
+            "PF": 0.989,
+            "win_rate": 39.77,
+            "mdd_closed_pts": 55771.8,
+            "gross_gain_pts": 336986.06,
+            "gross_loss_pts": 340802.54,
+            "exits": {
+              "stop": 265,
+              "tp": 175,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 261,
+            "win_count": 109,
+            "red_count": 152,
+            "net_pts": 73326.8,
+            "net_R": 48.584,
+            "PF": 1.285,
+            "win_rate": 41.76,
+            "mdd_closed_pts": 33805.4,
+            "gross_gain_pts": 330711.71,
+            "gross_loss_pts": 257384.95,
+            "exits": {
+              "stop": 152,
+              "tp": 109,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 261,
+            "win_count": 109,
+            "red_count": 152,
+            "net_pts": 62886.8,
+            "net_R": 40.764,
+            "PF": 1.239,
+            "win_rate": 41.76,
+            "mdd_closed_pts": 35393.9,
+            "gross_gain_pts": 326351.71,
+            "gross_loss_pts": 263464.95,
+            "exits": {
+              "stop": 152,
+              "tp": 109,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 261,
+            "win_count": 109,
+            "red_count": 152,
+            "net_pts": 52446.8,
+            "net_R": 32.944,
+            "PF": 1.195,
+            "win_rate": 41.76,
+            "mdd_closed_pts": 38273.9,
+            "gross_gain_pts": 321991.71,
+            "gross_loss_pts": 269544.95,
+            "exits": {
+              "stop": 152,
+              "tp": 109,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 418,
+            "win_count": 150,
+            "red_count": 268,
+            "net_pts": -9879.8,
+            "net_R": 7.089,
+            "PF": 0.98,
+            "win_rate": 35.89,
+            "mdd_closed_pts": 47186.5,
+            "gross_gain_pts": 477149.32,
+            "gross_loss_pts": 487029.1,
+            "exits": {
+              "stop": 268,
+              "tp": 150,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 418,
+            "win_count": 150,
+            "red_count": 268,
+            "net_pts": -26599.8,
+            "net_R": -4.893,
+            "PF": 0.947,
+            "win_rate": 35.89,
+            "mdd_closed_pts": 52775.1,
+            "gross_gain_pts": 471149.32,
+            "gross_loss_pts": 497749.1,
+            "exits": {
+              "stop": 268,
+              "tp": 150,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 418,
+            "win_count": 150,
+            "red_count": 268,
+            "net_pts": -43319.8,
+            "net_R": -16.874,
+            "PF": 0.915,
+            "win_rate": 35.89,
+            "mdd_closed_pts": 59755.4,
+            "gross_gain_pts": 465149.32,
+            "gross_loss_pts": 508469.1,
+            "exits": {
+              "stop": 268,
+              "tp": 150,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 180,
+            "win_count": 84,
+            "red_count": 96,
+            "net_pts": 96258.6,
+            "net_R": 61.008,
+            "PF": 1.637,
+            "win_rate": 46.67,
+            "mdd_closed_pts": 15116.5,
+            "gross_gain_pts": 247311.88,
+            "gross_loss_pts": 151053.28,
+            "exits": {
+              "stop": 96,
+              "tp": 84,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 180,
+            "win_count": 84,
+            "red_count": 96,
+            "net_pts": 89058.6,
+            "net_R": 55.522,
+            "PF": 1.575,
+            "win_rate": 46.67,
+            "mdd_closed_pts": 15316.5,
+            "gross_gain_pts": 243951.88,
+            "gross_loss_pts": 154893.28,
+            "exits": {
+              "stop": 96,
+              "tp": 84,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 180,
+            "win_count": 84,
+            "red_count": 96,
+            "net_pts": 81858.6,
+            "net_R": 50.036,
+            "PF": 1.516,
+            "win_rate": 46.67,
+            "mdd_closed_pts": 15516.5,
+            "gross_gain_pts": 240591.88,
+            "gross_loss_pts": 158733.28,
+            "exits": {
+              "stop": 96,
+              "tp": 84,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2025",
+        "metrics": {
+          "0.8": {
+            "N": 239,
+            "win_count": 101,
+            "red_count": 138,
+            "net_pts": 83111.8,
+            "net_R": 49.417,
+            "PF": 1.382,
+            "win_rate": 42.26,
+            "mdd_closed_pts": 31605.7,
+            "gross_gain_pts": 300925.9,
+            "gross_loss_pts": 217814.14,
+            "exits": {
+              "stop": 138,
+              "tp": 101,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 239,
+            "win_count": 101,
+            "red_count": 138,
+            "net_pts": 73551.8,
+            "net_R": 42.125,
+            "PF": 1.329,
+            "win_rate": 42.26,
+            "mdd_closed_pts": 34205.7,
+            "gross_gain_pts": 296885.9,
+            "gross_loss_pts": 223334.14,
+            "exits": {
+              "stop": 138,
+              "tp": 101,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 239,
+            "win_count": 101,
+            "red_count": 138,
+            "net_pts": 63991.8,
+            "net_R": 34.834,
+            "PF": 1.28,
+            "win_rate": 42.26,
+            "mdd_closed_pts": 36805.7,
+            "gross_gain_pts": 292845.9,
+            "gross_loss_pts": 228854.14,
+            "exits": {
+              "stop": 138,
+              "tp": 101,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 3453,
+            "win_count": 1099,
+            "red_count": 2354,
+            "net_pts": -354313,
+            "net_R": -885.397,
+            "PF": 0.731,
+            "win_rate": 31.83,
+            "mdd_closed_pts": 354313,
+            "gross_gain_pts": 960663.78,
+            "gross_loss_pts": 1314976.76,
+            "exits": {
+              "stop": 2351,
+              "tp": 1102,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 3453,
+            "win_count": 1099,
+            "red_count": 2354,
+            "net_pts": -492433,
+            "net_R": -1240.663,
+            "PF": 0.651,
+            "win_rate": 31.83,
+            "mdd_closed_pts": 492433,
+            "gross_gain_pts": 916703.78,
+            "gross_loss_pts": 1409136.76,
+            "exits": {
+              "stop": 2351,
+              "tp": 1102,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 3453,
+            "win_count": 1099,
+            "red_count": 2354,
+            "net_pts": -630553,
+            "net_R": -1595.929,
+            "PF": 0.581,
+            "win_rate": 31.83,
+            "mdd_closed_pts": 630553,
+            "gross_gain_pts": 872743.78,
+            "gross_loss_pts": 1503296.76,
+            "exits": {
+              "stop": 2351,
+              "tp": 1102,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 6313,
+            "win_count": 2099,
+            "red_count": 4214,
+            "net_pts": -529315.2,
+            "net_R": -1322.972,
+            "PF": 0.778,
+            "win_rate": 33.25,
+            "mdd_closed_pts": 530467.8,
+            "gross_gain_pts": 1855586.96,
+            "gross_loss_pts": 2384902.13,
+            "exits": {
+              "stop": 4214,
+              "tp": 2098,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 6313,
+            "win_count": 2099,
+            "red_count": 4214,
+            "net_pts": -781835.2,
+            "net_R": -1955.021,
+            "PF": 0.694,
+            "win_rate": 33.25,
+            "mdd_closed_pts": 782092.7,
+            "gross_gain_pts": 1771626.96,
+            "gross_loss_pts": 2553462.13,
+            "exits": {
+              "stop": 4214,
+              "tp": 2098,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 6313,
+            "win_count": 2099,
+            "red_count": 4214,
+            "net_pts": -1034355.2,
+            "net_R": -2587.069,
+            "PF": 0.62,
+            "win_rate": 33.25,
+            "mdd_closed_pts": 1034532.7,
+            "gross_gain_pts": 1687666.96,
+            "gross_loss_pts": 2722022.13,
+            "exits": {
+              "stop": 4214,
+              "tp": 2098,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 2125,
+            "win_count": 687,
+            "red_count": 1438,
+            "net_pts": -206050.1,
+            "net_R": -488.146,
+            "PF": 0.746,
+            "win_rate": 32.33,
+            "mdd_closed_pts": 206050.1,
+            "gross_gain_pts": 606311.93,
+            "gross_loss_pts": 812362.04,
+            "exits": {
+              "stop": 1435,
+              "tp": 690,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 2125,
+            "win_count": 687,
+            "red_count": 1438,
+            "net_pts": -291050.1,
+            "net_R": -704.718,
+            "PF": 0.665,
+            "win_rate": 32.33,
+            "mdd_closed_pts": 291050.1,
+            "gross_gain_pts": 578831.93,
+            "gross_loss_pts": 869882.04,
+            "exits": {
+              "stop": 1435,
+              "tp": 690,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 2125,
+            "win_count": 687,
+            "red_count": 1438,
+            "net_pts": -376050.1,
+            "net_R": -921.291,
+            "PF": 0.595,
+            "win_rate": 32.33,
+            "mdd_closed_pts": 376050.1,
+            "gross_gain_pts": 551351.93,
+            "gross_loss_pts": 927402.04,
+            "exits": {
+              "stop": 1435,
+              "tp": 690,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 2734,
+            "win_count": 885,
+            "red_count": 1849,
+            "net_pts": -270469.9,
+            "net_R": -627.573,
+            "PF": 0.739,
+            "win_rate": 32.37,
+            "mdd_closed_pts": 270469.9,
+            "gross_gain_pts": 764522.94,
+            "gross_loss_pts": 1034992.84,
+            "exits": {
+              "stop": 1849,
+              "tp": 885,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 2734,
+            "win_count": 885,
+            "red_count": 1849,
+            "net_pts": -379829.9,
+            "net_R": -901.859,
+            "PF": 0.657,
+            "win_rate": 32.37,
+            "mdd_closed_pts": 379829.9,
+            "gross_gain_pts": 729122.94,
+            "gross_loss_pts": 1108952.84,
+            "exits": {
+              "stop": 1849,
+              "tp": 885,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 2734,
+            "win_count": 885,
+            "red_count": 1849,
+            "net_pts": -489189.9,
+            "net_R": -1176.146,
+            "PF": 0.586,
+            "win_rate": 32.37,
+            "mdd_closed_pts": 489189.9,
+            "gross_gain_pts": 693722.94,
+            "gross_loss_pts": 1182912.84,
+            "exits": {
+              "stop": 1849,
+              "tp": 885,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 681,
+            "win_count": 220,
+            "red_count": 461,
+            "net_pts": -89946.6,
+            "net_R": -80.908,
+            "PF": 0.839,
+            "win_rate": 32.31,
+            "mdd_closed_pts": 105331.9,
+            "gross_gain_pts": 469376.63,
+            "gross_loss_pts": 559323.23,
+            "exits": {
+              "stop": 460,
+              "tp": 220,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 681,
+            "win_count": 220,
+            "red_count": 461,
+            "net_pts": -117186.6,
+            "net_R": -108.482,
+            "PF": 0.797,
+            "win_rate": 32.31,
+            "mdd_closed_pts": 131691.9,
+            "gross_gain_pts": 460576.63,
+            "gross_loss_pts": 577763.23,
+            "exits": {
+              "stop": 460,
+              "tp": 220,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 681,
+            "win_count": 220,
+            "red_count": 461,
+            "net_pts": -144426.6,
+            "net_R": -136.056,
+            "PF": 0.758,
+            "win_rate": 32.31,
+            "mdd_closed_pts": 158051.9,
+            "gross_gain_pts": 451776.63,
+            "gross_loss_pts": 596203.23,
+            "exits": {
+              "stop": 460,
+              "tp": 220,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 1251,
+            "win_count": 404,
+            "red_count": 847,
+            "net_pts": -169692.2,
+            "net_R": -145.098,
+            "PF": 0.837,
+            "win_rate": 32.29,
+            "mdd_closed_pts": 178318.7,
+            "gross_gain_pts": 869914.57,
+            "gross_loss_pts": 1039606.77,
+            "exits": {
+              "stop": 846,
+              "tp": 404,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 1251,
+            "win_count": 404,
+            "red_count": 847,
+            "net_pts": -219732.2,
+            "net_R": -195.294,
+            "PF": 0.795,
+            "win_rate": 32.29,
+            "mdd_closed_pts": 227219.4,
+            "gross_gain_pts": 853754.57,
+            "gross_loss_pts": 1073486.77,
+            "exits": {
+              "stop": 846,
+              "tp": 404,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 1251,
+            "win_count": 404,
+            "red_count": 847,
+            "net_pts": -269772.2,
+            "net_R": -245.489,
+            "PF": 0.756,
+            "win_rate": 32.29,
+            "mdd_closed_pts": 276339.4,
+            "gross_gain_pts": 837594.57,
+            "gross_loss_pts": 1107366.77,
+            "exits": {
+              "stop": 846,
+              "tp": 404,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 403,
+            "win_count": 135,
+            "red_count": 268,
+            "net_pts": -49388.6,
+            "net_R": -29.684,
+            "PF": 0.853,
+            "win_rate": 33.5,
+            "mdd_closed_pts": 66368.9,
+            "gross_gain_pts": 287697.49,
+            "gross_loss_pts": 337086.12,
+            "exits": {
+              "stop": 268,
+              "tp": 135,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 403,
+            "win_count": 135,
+            "red_count": 268,
+            "net_pts": -65508.6,
+            "net_R": -45.413,
+            "PF": 0.812,
+            "win_rate": 33.5,
+            "mdd_closed_pts": 79264.6,
+            "gross_gain_pts": 282297.49,
+            "gross_loss_pts": 347806.12,
+            "exits": {
+              "stop": 268,
+              "tp": 135,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 403,
+            "win_count": 135,
+            "red_count": 268,
+            "net_pts": -81628.6,
+            "net_R": -61.142,
+            "PF": 0.772,
+            "win_rate": 33.5,
+            "mdd_closed_pts": 94584.6,
+            "gross_gain_pts": 276897.49,
+            "gross_loss_pts": 358526.12,
+            "exits": {
+              "stop": 268,
+              "tp": 135,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 537,
+            "win_count": 179,
+            "red_count": 358,
+            "net_pts": -56648.7,
+            "net_R": -46.925,
+            "PF": 0.869,
+            "win_rate": 33.33,
+            "mdd_closed_pts": 71964.5,
+            "gross_gain_pts": 375590.82,
+            "gross_loss_pts": 432239.5,
+            "exits": {
+              "stop": 357,
+              "tp": 179,
+              "end_of_data": 1
+            }
+          },
+          "1.2": {
+            "N": 537,
+            "win_count": 179,
+            "red_count": 358,
+            "net_pts": -78128.7,
+            "net_R": -68.896,
+            "PF": 0.825,
+            "win_rate": 33.33,
+            "mdd_closed_pts": 92564.5,
+            "gross_gain_pts": 368430.82,
+            "gross_loss_pts": 446559.5,
+            "exits": {
+              "stop": 357,
+              "tp": 179,
+              "end_of_data": 1
+            }
+          },
+          "1.6": {
+            "N": 537,
+            "win_count": 179,
+            "red_count": 358,
+            "net_pts": -99608.7,
+            "net_R": -90.868,
+            "PF": 0.784,
+            "win_rate": 33.33,
+            "mdd_closed_pts": 113164.5,
+            "gross_gain_pts": 361270.82,
+            "gross_loss_pts": 460879.5,
+            "exits": {
+              "stop": 357,
+              "tp": 179,
+              "end_of_data": 1
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 224,
+            "win_count": 76,
+            "red_count": 148,
+            "net_pts": -20890.4,
+            "net_R": -7.238,
+            "PF": 0.932,
+            "win_rate": 33.93,
+            "mdd_closed_pts": 58072.5,
+            "gross_gain_pts": 287495.57,
+            "gross_loss_pts": 308386.01,
+            "exits": {
+              "stop": 148,
+              "tp": 76,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 224,
+            "win_count": 76,
+            "red_count": 148,
+            "net_pts": -29850.4,
+            "net_R": -12.159,
+            "PF": 0.905,
+            "win_rate": 33.93,
+            "mdd_closed_pts": 61912.5,
+            "gross_gain_pts": 284455.57,
+            "gross_loss_pts": 314306.01,
+            "exits": {
+              "stop": 148,
+              "tp": 76,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 224,
+            "win_count": 76,
+            "red_count": 148,
+            "net_pts": -38810.4,
+            "net_R": -17.08,
+            "PF": 0.879,
+            "win_rate": 33.93,
+            "mdd_closed_pts": 65752.5,
+            "gross_gain_pts": 281415.57,
+            "gross_loss_pts": 320226.01,
+            "exits": {
+              "stop": 148,
+              "tp": 76,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 402,
+            "win_count": 142,
+            "red_count": 260,
+            "net_pts": -14862.7,
+            "net_R": 5.198,
+            "PF": 0.973,
+            "win_rate": 35.32,
+            "mdd_closed_pts": 75023.7,
+            "gross_gain_pts": 540456.97,
+            "gross_loss_pts": 555319.62,
+            "exits": {
+              "stop": 260,
+              "tp": 142,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 402,
+            "win_count": 142,
+            "red_count": 260,
+            "net_pts": -30942.7,
+            "net_R": -3.506,
+            "PF": 0.945,
+            "win_rate": 35.32,
+            "mdd_closed_pts": 78983.7,
+            "gross_gain_pts": 534776.97,
+            "gross_loss_pts": 565719.62,
+            "exits": {
+              "stop": 260,
+              "tp": 142,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 402,
+            "win_count": 142,
+            "red_count": 260,
+            "net_pts": -47022.7,
+            "net_R": -12.21,
+            "PF": 0.918,
+            "win_rate": 35.32,
+            "mdd_closed_pts": 82943.7,
+            "gross_gain_pts": 529096.97,
+            "gross_loss_pts": 576119.62,
+            "exits": {
+              "stop": 260,
+              "tp": 142,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 132,
+            "win_count": 45,
+            "red_count": 87,
+            "net_pts": -7656.9,
+            "net_R": -4.055,
+            "PF": 0.959,
+            "win_rate": 34.09,
+            "mdd_closed_pts": 38669.3,
+            "gross_gain_pts": 178126.04,
+            "gross_loss_pts": 185782.94,
+            "exits": {
+              "stop": 87,
+              "tp": 45,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 132,
+            "win_count": 45,
+            "red_count": 87,
+            "net_pts": -12936.9,
+            "net_R": -6.885,
+            "PF": 0.932,
+            "win_rate": 34.09,
+            "mdd_closed_pts": 40069.3,
+            "gross_gain_pts": 176326.04,
+            "gross_loss_pts": 189262.94,
+            "exits": {
+              "stop": 87,
+              "tp": 45,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 132,
+            "win_count": 45,
+            "red_count": 87,
+            "net_pts": -18216.9,
+            "net_R": -9.715,
+            "PF": 0.905,
+            "win_rate": 34.09,
+            "mdd_closed_pts": 41469.3,
+            "gross_gain_pts": 174526.04,
+            "gross_loss_pts": 192742.94,
+            "exits": {
+              "stop": 87,
+              "tp": 45,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 172,
+            "win_count": 63,
+            "red_count": 109,
+            "net_pts": 18815.9,
+            "net_R": 8.043,
+            "PF": 1.083,
+            "win_rate": 36.63,
+            "mdd_closed_pts": 24348.7,
+            "gross_gain_pts": 244509.56,
+            "gross_loss_pts": 225693.7,
+            "exits": {
+              "stop": 109,
+              "tp": 63,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 172,
+            "win_count": 63,
+            "red_count": 109,
+            "net_pts": 11935.9,
+            "net_R": 4.262,
+            "PF": 1.052,
+            "win_rate": 36.63,
+            "mdd_closed_pts": 26228.7,
+            "gross_gain_pts": 241989.56,
+            "gross_loss_pts": 230053.7,
+            "exits": {
+              "stop": 109,
+              "tp": 63,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 172,
+            "win_count": 63,
+            "red_count": 109,
+            "net_pts": 5055.9,
+            "net_R": 0.482,
+            "PF": 1.022,
+            "win_rate": 36.63,
+            "mdd_closed_pts": 28108.7,
+            "gross_gain_pts": 239469.56,
+            "gross_loss_pts": 234413.7,
+            "exits": {
+              "stop": 109,
+              "tp": 63,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 108,
+            "win_count": 37,
+            "red_count": 71,
+            "net_pts": -616.7,
+            "net_R": -0.951,
+            "PF": 0.997,
+            "win_rate": 34.26,
+            "mdd_closed_pts": 38554.8,
+            "gross_gain_pts": 202972.18,
+            "gross_loss_pts": 203588.87,
+            "exits": {
+              "stop": 71,
+              "tp": 37,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 108,
+            "win_count": 37,
+            "red_count": 71,
+            "net_pts": -4936.7,
+            "net_R": -2.588,
+            "PF": 0.976,
+            "win_rate": 34.26,
+            "mdd_closed_pts": 39714.8,
+            "gross_gain_pts": 201492.18,
+            "gross_loss_pts": 206428.87,
+            "exits": {
+              "stop": 71,
+              "tp": 37,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 108,
+            "win_count": 37,
+            "red_count": 71,
+            "net_pts": -9256.7,
+            "net_R": -4.225,
+            "PF": 0.956,
+            "win_rate": 34.26,
+            "mdd_closed_pts": 40874.8,
+            "gross_gain_pts": 200012.18,
+            "gross_loss_pts": 209268.87,
+            "exits": {
+              "stop": 71,
+              "tp": 37,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 203,
+            "win_count": 69,
+            "red_count": 134,
+            "net_pts": -11320.3,
+            "net_R": -2.849,
+            "PF": 0.971,
+            "win_rate": 33.99,
+            "mdd_closed_pts": 58302.7,
+            "gross_gain_pts": 373513.82,
+            "gross_loss_pts": 384834.12,
+            "exits": {
+              "stop": 134,
+              "tp": 69,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 203,
+            "win_count": 69,
+            "red_count": 134,
+            "net_pts": -19440.3,
+            "net_R": -5.935,
+            "PF": 0.95,
+            "win_rate": 33.99,
+            "mdd_closed_pts": 60542.7,
+            "gross_gain_pts": 370753.82,
+            "gross_loss_pts": 390194.12,
+            "exits": {
+              "stop": 134,
+              "tp": 69,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 203,
+            "win_count": 69,
+            "red_count": 134,
+            "net_pts": -27560.3,
+            "net_R": -9.02,
+            "PF": 0.93,
+            "win_rate": 33.99,
+            "mdd_closed_pts": 62782.7,
+            "gross_gain_pts": 367993.82,
+            "gross_loss_pts": 395554.12,
+            "exits": {
+              "stop": 134,
+              "tp": 69,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 61,
+            "win_count": 20,
+            "red_count": 41,
+            "net_pts": -2396.7,
+            "net_R": -3.493,
+            "PF": 0.98,
+            "win_rate": 32.79,
+            "mdd_closed_pts": 25981.2,
+            "gross_gain_pts": 115504.26,
+            "gross_loss_pts": 117900.92,
+            "exits": {
+              "stop": 41,
+              "tp": 20,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 61,
+            "win_count": 20,
+            "red_count": 41,
+            "net_pts": -4836.7,
+            "net_R": -4.401,
+            "PF": 0.96,
+            "win_rate": 32.79,
+            "mdd_closed_pts": 26781.2,
+            "gross_gain_pts": 114704.26,
+            "gross_loss_pts": 119540.92,
+            "exits": {
+              "stop": 41,
+              "tp": 20,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 61,
+            "win_count": 20,
+            "red_count": 41,
+            "net_pts": -7276.7,
+            "net_R": -5.308,
+            "PF": 0.94,
+            "win_rate": 32.79,
+            "mdd_closed_pts": 27581.2,
+            "gross_gain_pts": 113904.26,
+            "gross_loss_pts": 121180.92,
+            "exits": {
+              "stop": 41,
+              "tp": 20,
+              "end_of_data": 0
+            }
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2026_partial",
+        "metrics": {
+          "0.8": {
+            "N": 86,
+            "win_count": 25,
+            "red_count": 61,
+            "net_pts": -38765,
+            "net_R": -14.249,
+            "PF": 0.781,
+            "win_rate": 29.07,
+            "mdd_closed_pts": 54461.4,
+            "gross_gain_pts": 138556.05,
+            "gross_loss_pts": 177321.1,
+            "exits": {
+              "stop": 61,
+              "tp": 25,
+              "end_of_data": 0
+            }
+          },
+          "1.2": {
+            "N": 86,
+            "win_count": 25,
+            "red_count": 61,
+            "net_pts": -42205,
+            "net_R": -15.535,
+            "PF": 0.765,
+            "win_rate": 29.07,
+            "mdd_closed_pts": 57581.4,
+            "gross_gain_pts": 137556.05,
+            "gross_loss_pts": 179761.1,
+            "exits": {
+              "stop": 61,
+              "tp": 25,
+              "end_of_data": 0
+            }
+          },
+          "1.6": {
+            "N": 86,
+            "win_count": 25,
+            "red_count": 61,
+            "net_pts": -45645,
+            "net_R": -16.82,
+            "PF": 0.749,
+            "win_rate": 29.07,
+            "mdd_closed_pts": 60701.4,
+            "gross_gain_pts": 136556.05,
+            "gross_loss_pts": 182201.1,
+            "exits": {
+              "stop": 61,
+              "tp": 25,
+              "end_of_data": 0
+            }
+          }
+        }
+      }
+    ],
+    "quarterly": [
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 1801,
+          "win_count": 626,
+          "red_count": 1175,
+          "net_pts": -197589.5,
+          "net_R": -1458.254,
+          "PF": 0.406,
+          "win_rate": 34.76,
+          "mdd_closed_pts": 197589.5,
+          "gross_gain_pts": 135123.98,
+          "gross_loss_pts": 332713.5,
+          "exits": {
+            "stop": 1171,
+            "tp": 630,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 1844,
+          "win_count": 644,
+          "red_count": 1200,
+          "net_pts": -201139.7,
+          "net_R": -837.299,
+          "PF": 0.602,
+          "win_rate": 34.92,
+          "mdd_closed_pts": 201184.5,
+          "gross_gain_pts": 303930.55,
+          "gross_loss_pts": 505070.21,
+          "exits": {
+            "stop": 1200,
+            "tp": 644,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 1858,
+          "win_count": 663,
+          "red_count": 1195,
+          "net_pts": -200720.1,
+          "net_R": -1216.122,
+          "PF": 0.485,
+          "win_rate": 35.68,
+          "mdd_closed_pts": 202430.9,
+          "gross_gain_pts": 188670.71,
+          "gross_loss_pts": 389390.76,
+          "exits": {
+            "stop": 1194,
+            "tp": 664,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 1764,
+          "win_count": 610,
+          "red_count": 1154,
+          "net_pts": -215530.6,
+          "net_R": -563.424,
+          "PF": 0.658,
+          "win_rate": 34.58,
+          "mdd_closed_pts": 217668.9,
+          "gross_gain_pts": 414484.45,
+          "gross_loss_pts": 630015.08,
+          "exits": {
+            "stop": 1154,
+            "tp": 610,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 3212,
+          "win_count": 1067,
+          "red_count": 2145,
+          "net_pts": -385644,
+          "net_R": -2680.847,
+          "PF": 0.382,
+          "win_rate": 33.22,
+          "mdd_closed_pts": 385736.4,
+          "gross_gain_pts": 238271.95,
+          "gross_loss_pts": 623915.91,
+          "exits": {
+            "stop": 2136,
+            "tp": 1076,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 3432,
+          "win_count": 1198,
+          "red_count": 2234,
+          "net_pts": -380988.8,
+          "net_R": -1503.518,
+          "PF": 0.604,
+          "win_rate": 34.91,
+          "mdd_closed_pts": 380988.8,
+          "gross_gain_pts": 581503.63,
+          "gross_loss_pts": 962492.41,
+          "exits": {
+            "stop": 2233,
+            "tp": 1199,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 3327,
+          "win_count": 1099,
+          "red_count": 2228,
+          "net_pts": -417345.9,
+          "net_R": -2409.481,
+          "PF": 0.432,
+          "win_rate": 33.03,
+          "mdd_closed_pts": 417749.3,
+          "gross_gain_pts": 317543.75,
+          "gross_loss_pts": 734889.64,
+          "exits": {
+            "stop": 2224,
+            "tp": 1103,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 3164,
+          "win_count": 1043,
+          "red_count": 2121,
+          "net_pts": -403236.7,
+          "net_R": -1121.011,
+          "PF": 0.662,
+          "win_rate": 32.96,
+          "mdd_closed_pts": 409960.2,
+          "gross_gain_pts": 790410.56,
+          "gross_loss_pts": 1193647.27,
+          "exits": {
+            "stop": 2121,
+            "tp": 1042,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 1187,
+          "win_count": 416,
+          "red_count": 771,
+          "net_pts": -132587.4,
+          "net_R": -946.802,
+          "PF": 0.394,
+          "win_rate": 35.05,
+          "mdd_closed_pts": 132587.4,
+          "gross_gain_pts": 86374.95,
+          "gross_loss_pts": 218962.37,
+          "exits": {
+            "stop": 769,
+            "tp": 418,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 1213,
+          "win_count": 427,
+          "red_count": 786,
+          "net_pts": -133766,
+          "net_R": -539.171,
+          "PF": 0.591,
+          "win_rate": 35.2,
+          "mdd_closed_pts": 133766,
+          "gross_gain_pts": 193386.99,
+          "gross_loss_pts": 327153.03,
+          "exits": {
+            "stop": 786,
+            "tp": 427,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 1224,
+          "win_count": 436,
+          "red_count": 788,
+          "net_pts": -129020.8,
+          "net_R": -789.287,
+          "PF": 0.494,
+          "win_rate": 35.62,
+          "mdd_closed_pts": 131156.1,
+          "gross_gain_pts": 125864.89,
+          "gross_loss_pts": 254885.65,
+          "exits": {
+            "stop": 786,
+            "tp": 438,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 1173,
+          "win_count": 415,
+          "red_count": 758,
+          "net_pts": -119843.1,
+          "net_R": -362.006,
+          "PF": 0.694,
+          "win_rate": 35.38,
+          "mdd_closed_pts": 122242.8,
+          "gross_gain_pts": 271822.83,
+          "gross_loss_pts": 391665.95,
+          "exits": {
+            "stop": 758,
+            "tp": 414,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 1538,
+          "win_count": 535,
+          "red_count": 1003,
+          "net_pts": -171693.1,
+          "net_R": -1257.2,
+          "PF": 0.391,
+          "win_rate": 34.79,
+          "mdd_closed_pts": 171693.1,
+          "gross_gain_pts": 110351.07,
+          "gross_loss_pts": 282044.18,
+          "exits": {
+            "stop": 999,
+            "tp": 539,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 1560,
+          "win_count": 540,
+          "red_count": 1020,
+          "net_pts": -171995.6,
+          "net_R": -736.526,
+          "PF": 0.587,
+          "win_rate": 34.62,
+          "mdd_closed_pts": 172040.5,
+          "gross_gain_pts": 244169.05,
+          "gross_loss_pts": 416164.69,
+          "exits": {
+            "stop": 1020,
+            "tp": 540,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 1568,
+          "win_count": 561,
+          "red_count": 1007,
+          "net_pts": -169368.3,
+          "net_R": -1028.176,
+          "PF": 0.481,
+          "win_rate": 35.78,
+          "mdd_closed_pts": 170743.5,
+          "gross_gain_pts": 156923.35,
+          "gross_loss_pts": 326291.66,
+          "exits": {
+            "stop": 1006,
+            "tp": 562,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 1539,
+          "win_count": 521,
+          "red_count": 1018,
+          "net_pts": -187854.1,
+          "net_R": -549.632,
+          "PF": 0.64,
+          "win_rate": 33.85,
+          "mdd_closed_pts": 189542.1,
+          "gross_gain_pts": 333736.59,
+          "gross_loss_pts": 521590.66,
+          "exits": {
+            "stop": 1018,
+            "tp": 521,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 329,
+          "win_count": 132,
+          "red_count": 197,
+          "net_pts": -17115.2,
+          "net_R": -42.382,
+          "PF": 0.838,
+          "win_rate": 40.12,
+          "mdd_closed_pts": 17632.5,
+          "gross_gain_pts": 88213.42,
+          "gross_loss_pts": 105328.59,
+          "exits": {
+            "stop": 197,
+            "tp": 132,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 376,
+          "win_count": 143,
+          "red_count": 233,
+          "net_pts": -13356.3,
+          "net_R": -26.029,
+          "PF": 0.931,
+          "win_rate": 38.03,
+          "mdd_closed_pts": 22327.1,
+          "gross_gain_pts": 180564.52,
+          "gross_loss_pts": 193920.84,
+          "exits": {
+            "stop": 233,
+            "tp": 143,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 364,
+          "win_count": 127,
+          "red_count": 237,
+          "net_pts": -28976,
+          "net_R": -86.673,
+          "PF": 0.796,
+          "win_rate": 34.89,
+          "mdd_closed_pts": 37549.5,
+          "gross_gain_pts": 112798.45,
+          "gross_loss_pts": 141774.44,
+          "exits": {
+            "stop": 237,
+            "tp": 127,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 360,
+          "win_count": 131,
+          "red_count": 229,
+          "net_pts": -26010.3,
+          "net_R": -20.663,
+          "PF": 0.896,
+          "win_rate": 36.39,
+          "mdd_closed_pts": 43744.6,
+          "gross_gain_pts": 224436.17,
+          "gross_loss_pts": 250446.44,
+          "exits": {
+            "stop": 229,
+            "tp": 131,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 530,
+          "win_count": 191,
+          "red_count": 339,
+          "net_pts": -56009.1,
+          "net_R": -124.413,
+          "PF": 0.702,
+          "win_rate": 36.04,
+          "mdd_closed_pts": 57842.6,
+          "gross_gain_pts": 131744.55,
+          "gross_loss_pts": 187753.69,
+          "exits": {
+            "stop": 339,
+            "tp": 191,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 656,
+          "win_count": 238,
+          "red_count": 418,
+          "net_pts": -49807.4,
+          "net_R": -69.475,
+          "PF": 0.863,
+          "win_rate": 36.28,
+          "mdd_closed_pts": 62856.9,
+          "gross_gain_pts": 313212,
+          "gross_loss_pts": 363019.45,
+          "exits": {
+            "stop": 418,
+            "tp": 238,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 609,
+          "win_count": 192,
+          "red_count": 417,
+          "net_pts": -93679,
+          "net_R": -204.211,
+          "PF": 0.641,
+          "win_rate": 31.53,
+          "mdd_closed_pts": 98924,
+          "gross_gain_pts": 167063.17,
+          "gross_loss_pts": 260742.18,
+          "exits": {
+            "stop": 417,
+            "tp": 192,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 597,
+          "win_count": 204,
+          "red_count": 393,
+          "net_pts": -67183.1,
+          "net_R": -68.301,
+          "PF": 0.855,
+          "win_rate": 34.17,
+          "mdd_closed_pts": 80804.4,
+          "gross_gain_pts": 397395.85,
+          "gross_loss_pts": 464578.92,
+          "exits": {
+            "stop": 393,
+            "tp": 203,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 229,
+          "win_count": 83,
+          "red_count": 146,
+          "net_pts": -20032.4,
+          "net_R": -62.576,
+          "PF": 0.731,
+          "win_rate": 36.24,
+          "mdd_closed_pts": 21388.5,
+          "gross_gain_pts": 54479.84,
+          "gross_loss_pts": 74512.21,
+          "exits": {
+            "stop": 146,
+            "tp": 83,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 243,
+          "win_count": 94,
+          "red_count": 149,
+          "net_pts": -5482.3,
+          "net_R": -12.187,
+          "PF": 0.955,
+          "win_rate": 38.68,
+          "mdd_closed_pts": 18097.5,
+          "gross_gain_pts": 115885.22,
+          "gross_loss_pts": 121367.55,
+          "exits": {
+            "stop": 149,
+            "tp": 94,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 229,
+          "win_count": 93,
+          "red_count": 136,
+          "net_pts": -1417.4,
+          "net_R": -15.304,
+          "PF": 0.984,
+          "win_rate": 40.61,
+          "mdd_closed_pts": 13461,
+          "gross_gain_pts": 84896.89,
+          "gross_loss_pts": 86314.28,
+          "exits": {
+            "stop": 136,
+            "tp": 93,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 245,
+          "win_count": 91,
+          "red_count": 154,
+          "net_pts": -18380.7,
+          "net_R": -9.478,
+          "PF": 0.889,
+          "win_rate": 37.14,
+          "mdd_closed_pts": 30725.5,
+          "gross_gain_pts": 146809.04,
+          "gross_loss_pts": 165189.69,
+          "exits": {
+            "stop": 154,
+            "tp": 91,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 291,
+          "win_count": 112,
+          "red_count": 179,
+          "net_pts": -19501.7,
+          "net_R": -53.481,
+          "PF": 0.792,
+          "win_rate": 38.49,
+          "mdd_closed_pts": 20297,
+          "gross_gain_pts": 74308.61,
+          "gross_loss_pts": 93810.3,
+          "exits": {
+            "stop": 179,
+            "tp": 112,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 304,
+          "win_count": 115,
+          "red_count": 189,
+          "net_pts": -11983.7,
+          "net_R": -24.067,
+          "PF": 0.922,
+          "win_rate": 37.83,
+          "mdd_closed_pts": 20029,
+          "gross_gain_pts": 142135.67,
+          "gross_loss_pts": 154119.41,
+          "exits": {
+            "stop": 189,
+            "tp": 115,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 309,
+          "win_count": 113,
+          "red_count": 196,
+          "net_pts": -21260,
+          "net_R": -56.583,
+          "PF": 0.824,
+          "win_rate": 36.57,
+          "mdd_closed_pts": 25058.2,
+          "gross_gain_pts": 99434.95,
+          "gross_loss_pts": 120694.93,
+          "exits": {
+            "stop": 196,
+            "tp": 113,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 313,
+          "win_count": 115,
+          "red_count": 198,
+          "net_pts": -15981.4,
+          "net_R": -16.477,
+          "PF": 0.923,
+          "win_rate": 36.74,
+          "mdd_closed_pts": 30785.2,
+          "gross_gain_pts": 190649.87,
+          "gross_loss_pts": 206631.26,
+          "exits": {
+            "stop": 198,
+            "tp": 115,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 124,
+          "win_count": 49,
+          "red_count": 75,
+          "net_pts": -741.7,
+          "net_R": -0.824,
+          "PF": 0.988,
+          "win_rate": 39.52,
+          "mdd_closed_pts": 15542.2,
+          "gross_gain_pts": 61489.73,
+          "gross_loss_pts": 62231.42,
+          "exits": {
+            "stop": 75,
+            "tp": 49,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 133,
+          "win_count": 51,
+          "red_count": 82,
+          "net_pts": 9556.6,
+          "net_R": 4.615,
+          "PF": 1.083,
+          "win_rate": 38.35,
+          "mdd_closed_pts": 17346.2,
+          "gross_gain_pts": 124185.95,
+          "gross_loss_pts": 114629.36,
+          "exits": {
+            "stop": 82,
+            "tp": 51,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 120,
+          "win_count": 51,
+          "red_count": 69,
+          "net_pts": 17115.3,
+          "net_R": 14.892,
+          "PF": 1.258,
+          "win_rate": 42.5,
+          "mdd_closed_pts": 11436.3,
+          "gross_gain_pts": 83493.33,
+          "gross_loss_pts": 66378.01,
+          "exits": {
+            "stop": 69,
+            "tp": 51,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 132,
+          "win_count": 47,
+          "red_count": 85,
+          "net_pts": -21441.2,
+          "net_R": -1.864,
+          "PF": 0.861,
+          "win_rate": 35.61,
+          "mdd_closed_pts": 46840.3,
+          "gross_gain_pts": 133145.06,
+          "gross_loss_pts": 154586.25,
+          "exits": {
+            "stop": 85,
+            "tp": 47,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 196,
+          "win_count": 65,
+          "red_count": 131,
+          "net_pts": -31384.7,
+          "net_R": -38.319,
+          "PF": 0.721,
+          "win_rate": 33.16,
+          "mdd_closed_pts": 39363.4,
+          "gross_gain_pts": 81211.97,
+          "gross_loss_pts": 112596.64,
+          "exits": {
+            "stop": 131,
+            "tp": 65,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 231,
+          "win_count": 84,
+          "red_count": 147,
+          "net_pts": -3479.6,
+          "net_R": -3.957,
+          "PF": 0.984,
+          "win_rate": 36.36,
+          "mdd_closed_pts": 30727.4,
+          "gross_gain_pts": 213295.12,
+          "gross_loss_pts": 216774.74,
+          "exits": {
+            "stop": 147,
+            "tp": 84,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 188,
+          "win_count": 71,
+          "red_count": 117,
+          "net_pts": -7587.1,
+          "net_R": -2.924,
+          "PF": 0.937,
+          "win_rate": 37.77,
+          "mdd_closed_pts": 20145.2,
+          "gross_gain_pts": 112682.86,
+          "gross_loss_pts": 120269.98,
+          "exits": {
+            "stop": 117,
+            "tp": 71,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 203,
+          "win_count": 68,
+          "red_count": 135,
+          "net_pts": -37773.6,
+          "net_R": -13.725,
+          "PF": 0.859,
+          "win_rate": 33.5,
+          "mdd_closed_pts": 58760.5,
+          "gross_gain_pts": 230262.3,
+          "gross_loss_pts": 268035.9,
+          "exits": {
+            "stop": 134,
+            "tp": 68,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 90,
+          "win_count": 34,
+          "red_count": 56,
+          "net_pts": -4368.2,
+          "net_R": -5.172,
+          "PF": 0.905,
+          "win_rate": 37.78,
+          "mdd_closed_pts": 14305.9,
+          "gross_gain_pts": 41450.17,
+          "gross_loss_pts": 45818.39,
+          "exits": {
+            "stop": 56,
+            "tp": 34,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 85,
+          "win_count": 30,
+          "red_count": 55,
+          "net_pts": -639.1,
+          "net_R": -4.506,
+          "PF": 0.991,
+          "win_rate": 35.29,
+          "mdd_closed_pts": 17632.3,
+          "gross_gain_pts": 73493.45,
+          "gross_loss_pts": 74132.57,
+          "exits": {
+            "stop": 55,
+            "tp": 30,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 83,
+          "win_count": 37,
+          "red_count": 46,
+          "net_pts": 19051.9,
+          "net_R": 15.643,
+          "PF": 1.439,
+          "win_rate": 44.58,
+          "mdd_closed_pts": 8146.3,
+          "gross_gain_pts": 62462.09,
+          "gross_loss_pts": 43410.18,
+          "exits": {
+            "stop": 46,
+            "tp": 37,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 93,
+          "win_count": 31,
+          "red_count": 62,
+          "net_pts": -25745.8,
+          "net_R": -7.796,
+          "PF": 0.763,
+          "win_rate": 33.33,
+          "mdd_closed_pts": 37537.7,
+          "gross_gain_pts": 82937.56,
+          "gross_loss_pts": 108683.31,
+          "exits": {
+            "stop": 62,
+            "tp": 31,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 118,
+          "win_count": 47,
+          "red_count": 71,
+          "net_pts": -1200.5,
+          "net_R": 0.357,
+          "PF": 0.979,
+          "win_rate": 39.83,
+          "mdd_closed_pts": 15750.1,
+          "gross_gain_pts": 57270.04,
+          "gross_loss_pts": 58470.54,
+          "exits": {
+            "stop": 71,
+            "tp": 47,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 103,
+          "win_count": 42,
+          "red_count": 61,
+          "net_pts": 18537.9,
+          "net_R": 12.266,
+          "PF": 1.226,
+          "win_rate": 40.78,
+          "mdd_closed_pts": 10602.3,
+          "gross_gain_pts": 100685.73,
+          "gross_loss_pts": 82147.87,
+          "exits": {
+            "stop": 61,
+            "tp": 42,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 101,
+          "win_count": 45,
+          "red_count": 56,
+          "net_pts": 20159.9,
+          "net_R": 19.2,
+          "PF": 1.364,
+          "win_rate": 44.55,
+          "mdd_closed_pts": 9672.5,
+          "gross_gain_pts": 75517.47,
+          "gross_loss_pts": 55357.59,
+          "exits": {
+            "stop": 56,
+            "tp": 45,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 118,
+          "win_count": 41,
+          "red_count": 77,
+          "net_pts": -23713.7,
+          "net_R": -4.959,
+          "PF": 0.823,
+          "win_rate": 34.75,
+          "mdd_closed_pts": 53331.8,
+          "gross_gain_pts": 110512.82,
+          "gross_loss_pts": 134226.55,
+          "exits": {
+            "stop": 77,
+            "tp": 41,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 65,
+          "win_count": 28,
+          "red_count": 37,
+          "net_pts": 12344,
+          "net_R": 10.716,
+          "PF": 1.306,
+          "win_rate": 43.08,
+          "mdd_closed_pts": 6060.3,
+          "gross_gain_pts": 52693.03,
+          "gross_loss_pts": 40349.01,
+          "exits": {
+            "stop": 37,
+            "tp": 28,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 62,
+          "win_count": 24,
+          "red_count": 38,
+          "net_pts": 15778.6,
+          "net_R": 3.827,
+          "PF": 1.215,
+          "win_rate": 38.71,
+          "mdd_closed_pts": 24021.1,
+          "gross_gain_pts": 89214.79,
+          "gross_loss_pts": 73436.17,
+          "exits": {
+            "stop": 38,
+            "tp": 24,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 67,
+          "win_count": 28,
+          "red_count": 39,
+          "net_pts": 13963.6,
+          "net_R": 9.997,
+          "PF": 1.273,
+          "win_rate": 41.79,
+          "mdd_closed_pts": 16401.4,
+          "gross_gain_pts": 65196.24,
+          "gross_loss_pts": 51232.65,
+          "exits": {
+            "stop": 39,
+            "tp": 28,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 67,
+          "win_count": 29,
+          "red_count": 38,
+          "net_pts": 20800.5,
+          "net_R": 16.224,
+          "PF": 1.211,
+          "win_rate": 43.28,
+          "mdd_closed_pts": 34165.4,
+          "gross_gain_pts": 119247.65,
+          "gross_loss_pts": 98447.12,
+          "exits": {
+            "stop": 38,
+            "tp": 29,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 103,
+          "win_count": 36,
+          "red_count": 67,
+          "net_pts": -5055,
+          "net_R": -7.774,
+          "PF": 0.933,
+          "win_rate": 34.95,
+          "mdd_closed_pts": 17472.3,
+          "gross_gain_pts": 70221.59,
+          "gross_loss_pts": 75276.63,
+          "exits": {
+            "stop": 67,
+            "tp": 36,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 108,
+          "win_count": 36,
+          "red_count": 72,
+          "net_pts": -13178.6,
+          "net_R": -7.816,
+          "PF": 0.911,
+          "win_rate": 33.33,
+          "mdd_closed_pts": 38799.9,
+          "gross_gain_pts": 134613.75,
+          "gross_loss_pts": 147792.35,
+          "exits": {
+            "stop": 72,
+            "tp": 36,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 101,
+          "win_count": 39,
+          "red_count": 62,
+          "net_pts": 4796.8,
+          "net_R": 5.673,
+          "PF": 1.056,
+          "win_rate": 38.61,
+          "mdd_closed_pts": 19588.5,
+          "gross_gain_pts": 89994.48,
+          "gross_loss_pts": 85197.72,
+          "exits": {
+            "stop": 62,
+            "tp": 39,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 106,
+          "win_count": 39,
+          "red_count": 67,
+          "net_pts": -13162.9,
+          "net_R": 5.024,
+          "PF": 0.931,
+          "win_rate": 36.79,
+          "mdd_closed_pts": 47714.5,
+          "gross_gain_pts": 176319.5,
+          "gross_loss_pts": 189482.39,
+          "exits": {
+            "stop": 67,
+            "tp": 39,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 49,
+          "win_count": 22,
+          "red_count": 27,
+          "net_pts": 9231.1,
+          "net_R": 10.851,
+          "PF": 1.301,
+          "win_rate": 44.9,
+          "mdd_closed_pts": 6322.7,
+          "gross_gain_pts": 39923.87,
+          "gross_loss_pts": 30692.78,
+          "exits": {
+            "stop": 27,
+            "tp": 22,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 39,
+          "win_count": 18,
+          "red_count": 21,
+          "net_pts": 27990.9,
+          "net_R": 12.148,
+          "PF": 1.755,
+          "win_rate": 46.15,
+          "mdd_closed_pts": 13337.2,
+          "gross_gain_pts": 65047.67,
+          "gross_loss_pts": 37056.73,
+          "exits": {
+            "stop": 21,
+            "tp": 18,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 49,
+          "win_count": 24,
+          "red_count": 25,
+          "net_pts": 23808.5,
+          "net_R": 18.099,
+          "PF": 1.7,
+          "win_rate": 48.98,
+          "mdd_closed_pts": 10040.9,
+          "gross_gain_pts": 57802.94,
+          "gross_loss_pts": 33994.47,
+          "exits": {
+            "stop": 25,
+            "tp": 24,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 43,
+          "win_count": 20,
+          "red_count": 23,
+          "net_pts": 28028.1,
+          "net_R": 14.424,
+          "PF": 1.527,
+          "win_rate": 46.51,
+          "mdd_closed_pts": 15316.5,
+          "gross_gain_pts": 81177.41,
+          "gross_loss_pts": 53149.3,
+          "exits": {
+            "stop": 23,
+            "tp": 20,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q1",
+        "metrics": {
+          "N": 62,
+          "win_count": 27,
+          "red_count": 35,
+          "net_pts": 11833.6,
+          "net_R": 11.045,
+          "PF": 1.31,
+          "win_rate": 43.55,
+          "mdd_closed_pts": 6434.7,
+          "gross_gain_pts": 49993.17,
+          "gross_loss_pts": 38159.59,
+          "exits": {
+            "stop": 35,
+            "tp": 27,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q2",
+        "metrics": {
+          "N": 56,
+          "win_count": 21,
+          "red_count": 35,
+          "net_pts": 11740.3,
+          "net_R": 3.012,
+          "PF": 1.18,
+          "win_rate": 37.5,
+          "mdd_closed_pts": 20898.8,
+          "gross_gain_pts": 76858.66,
+          "gross_loss_pts": 65118.38,
+          "exits": {
+            "stop": 35,
+            "tp": 21,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q3",
+        "metrics": {
+          "N": 63,
+          "win_count": 26,
+          "red_count": 37,
+          "net_pts": 11316.8,
+          "net_R": 8.52,
+          "PF": 1.229,
+          "win_rate": 41.27,
+          "mdd_closed_pts": 15668.2,
+          "gross_gain_pts": 60673.69,
+          "gross_loss_pts": 49356.87,
+          "exits": {
+            "stop": 37,
+            "tp": 26,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2025",
+        "quarter": "2025Q4",
+        "metrics": {
+          "N": 58,
+          "win_count": 27,
+          "red_count": 31,
+          "net_pts": 38661.1,
+          "net_R": 19.549,
+          "PF": 1.547,
+          "win_rate": 46.55,
+          "mdd_closed_pts": 13338.7,
+          "gross_gain_pts": 109360.38,
+          "gross_loss_pts": 70699.3,
+          "exits": {
+            "stop": 31,
+            "tp": 27,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 103,
+          "win_count": 33,
+          "red_count": 70,
+          "net_pts": -17910.8,
+          "net_R": -20.095,
+          "PF": 0.745,
+          "win_rate": 32.04,
+          "mdd_closed_pts": 19284.5,
+          "gross_gain_pts": 52399.15,
+          "gross_loss_pts": 70309.92,
+          "exits": {
+            "stop": 70,
+            "tp": 33,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 1594,
+          "win_count": 490,
+          "red_count": 1104,
+          "net_pts": -255686.9,
+          "net_R": -586.606,
+          "PF": 0.642,
+          "win_rate": 30.74,
+          "mdd_closed_pts": 258397.5,
+          "gross_gain_pts": 458889.7,
+          "gross_loss_pts": 714576.63,
+          "exits": {
+            "stop": 1104,
+            "tp": 490,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 1756,
+          "win_count": 576,
+          "red_count": 1180,
+          "net_pts": -218835.3,
+          "net_R": -633.963,
+          "PF": 0.649,
+          "win_rate": 32.8,
+          "mdd_closed_pts": 222895.6,
+          "gross_gain_pts": 405414.93,
+          "gross_loss_pts": 624250.21,
+          "exits": {
+            "stop": 1177,
+            "tp": 579,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 177,
+          "win_count": 52,
+          "red_count": 125,
+          "net_pts": -35504,
+          "net_R": -49.15,
+          "PF": 0.704,
+          "win_rate": 29.38,
+          "mdd_closed_pts": 36877.7,
+          "gross_gain_pts": 84417.06,
+          "gross_loss_pts": 119921.02,
+          "exits": {
+            "stop": 125,
+            "tp": 52,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 2956,
+          "win_count": 978,
+          "red_count": 1978,
+          "net_pts": -369999.9,
+          "net_R": -853.41,
+          "PF": 0.716,
+          "win_rate": 33.09,
+          "mdd_closed_pts": 375212.8,
+          "gross_gain_pts": 932239.37,
+          "gross_loss_pts": 1302239.22,
+          "exits": {
+            "stop": 1978,
+            "tp": 978,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 3180,
+          "win_count": 1069,
+          "red_count": 2111,
+          "net_pts": -376331.4,
+          "net_R": -1052.461,
+          "PF": 0.667,
+          "win_rate": 33.62,
+          "mdd_closed_pts": 380264.3,
+          "gross_gain_pts": 754970.52,
+          "gross_loss_pts": 1131301.89,
+          "exits": {
+            "stop": 2111,
+            "tp": 1068,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 69,
+          "win_count": 18,
+          "red_count": 51,
+          "net_pts": -21383.7,
+          "net_R": -25.406,
+          "PF": 0.586,
+          "win_rate": 26.09,
+          "mdd_closed_pts": 21383.7,
+          "gross_gain_pts": 30313.7,
+          "gross_loss_pts": 51697.36,
+          "exits": {
+            "stop": 51,
+            "tp": 18,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 953,
+          "win_count": 300,
+          "red_count": 653,
+          "net_pts": -134256,
+          "net_R": -310.05,
+          "PF": 0.679,
+          "win_rate": 31.48,
+          "mdd_closed_pts": 144852.8,
+          "gross_gain_pts": 284578.77,
+          "gross_loss_pts": 418834.79,
+          "exits": {
+            "stop": 653,
+            "tp": 300,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 1103,
+          "win_count": 369,
+          "red_count": 734,
+          "net_pts": -135410.4,
+          "net_R": -369.262,
+          "PF": 0.661,
+          "win_rate": 33.45,
+          "mdd_closed_pts": 139740.4,
+          "gross_gain_pts": 263939.46,
+          "gross_loss_pts": 399349.89,
+          "exits": {
+            "stop": 731,
+            "tp": 372,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 92,
+          "win_count": 28,
+          "red_count": 64,
+          "net_pts": -20678.9,
+          "net_R": -22.314,
+          "PF": 0.679,
+          "win_rate": 30.43,
+          "mdd_closed_pts": 22052.6,
+          "gross_gain_pts": 43654.65,
+          "gross_loss_pts": 64333.53,
+          "exits": {
+            "stop": 64,
+            "tp": 28,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 1228,
+          "win_count": 381,
+          "red_count": 847,
+          "net_pts": -188590.5,
+          "net_R": -417.474,
+          "PF": 0.651,
+          "win_rate": 31.03,
+          "mdd_closed_pts": 191281.1,
+          "gross_gain_pts": 351258.85,
+          "gross_loss_pts": 539849.36,
+          "exits": {
+            "stop": 847,
+            "tp": 381,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M1",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 1414,
+          "win_count": 476,
+          "red_count": 938,
+          "net_pts": -170560.5,
+          "net_R": -462.072,
+          "PF": 0.662,
+          "win_rate": 33.66,
+          "mdd_closed_pts": 177288.7,
+          "gross_gain_pts": 334209.45,
+          "gross_loss_pts": 504769.94,
+          "exits": {
+            "stop": 938,
+            "tp": 476,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 19,
+          "win_count": 8,
+          "red_count": 11,
+          "net_pts": 10245.7,
+          "net_R": 3.747,
+          "PF": 1.479,
+          "win_rate": 42.11,
+          "mdd_closed_pts": 7308,
+          "gross_gain_pts": 31637.09,
+          "gross_loss_pts": 21391.37,
+          "exits": {
+            "stop": 11,
+            "tp": 8,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 312,
+          "win_count": 93,
+          "red_count": 219,
+          "net_pts": -81208.5,
+          "net_R": -72.006,
+          "PF": 0.727,
+          "win_rate": 29.81,
+          "mdd_closed_pts": 84621.4,
+          "gross_gain_pts": 216375.13,
+          "gross_loss_pts": 297583.64,
+          "exits": {
+            "stop": 219,
+            "tp": 93,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 350,
+          "win_count": 119,
+          "red_count": 231,
+          "net_pts": -46223.8,
+          "net_R": -40.224,
+          "PF": 0.821,
+          "win_rate": 34,
+          "mdd_closed_pts": 55202.5,
+          "gross_gain_pts": 212564.41,
+          "gross_loss_pts": 258788.23,
+          "exits": {
+            "stop": 230,
+            "tp": 119,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 29,
+          "win_count": 10,
+          "red_count": 19,
+          "net_pts": 1991.1,
+          "net_R": -1.052,
+          "PF": 1.057,
+          "win_rate": 34.48,
+          "mdd_closed_pts": 11716,
+          "gross_gain_pts": 37043.67,
+          "gross_loss_pts": 35052.6,
+          "exits": {
+            "stop": 19,
+            "tp": 10,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 609,
+          "win_count": 194,
+          "red_count": 415,
+          "net_pts": -132370.5,
+          "net_R": -98.527,
+          "PF": 0.77,
+          "win_rate": 31.86,
+          "mdd_closed_pts": 132747.7,
+          "gross_gain_pts": 442381.52,
+          "gross_loss_pts": 574752,
+          "exits": {
+            "stop": 415,
+            "tp": 194,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 613,
+          "win_count": 200,
+          "red_count": 413,
+          "net_pts": -89352.8,
+          "net_R": -95.715,
+          "PF": 0.807,
+          "win_rate": 32.63,
+          "mdd_closed_pts": 100362,
+          "gross_gain_pts": 374329.38,
+          "gross_loss_pts": 463682.17,
+          "exits": {
+            "stop": 412,
+            "tp": 200,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 14,
+          "win_count": 7,
+          "red_count": 7,
+          "net_pts": 11995,
+          "net_R": 6.103,
+          "PF": 1.824,
+          "win_rate": 50,
+          "mdd_closed_pts": 7648.9,
+          "gross_gain_pts": 26549.67,
+          "gross_loss_pts": 14554.67,
+          "exits": {
+            "stop": 7,
+            "tp": 7,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 175,
+          "win_count": 48,
+          "red_count": 127,
+          "net_pts": -64624.6,
+          "net_R": -49.822,
+          "PF": 0.631,
+          "win_rate": 27.43,
+          "mdd_closed_pts": 65530.3,
+          "gross_gain_pts": 110671.22,
+          "gross_loss_pts": 175295.85,
+          "exits": {
+            "stop": 127,
+            "tp": 48,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 214,
+          "win_count": 80,
+          "red_count": 134,
+          "net_pts": -12879,
+          "net_R": -1.694,
+          "PF": 0.918,
+          "win_rate": 37.38,
+          "mdd_closed_pts": 28629.6,
+          "gross_gain_pts": 145076.6,
+          "gross_loss_pts": 157955.6,
+          "exits": {
+            "stop": 134,
+            "tp": 80,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 19,
+          "win_count": 8,
+          "red_count": 11,
+          "net_pts": 10176.2,
+          "net_R": 3.76,
+          "PF": 1.472,
+          "win_rate": 42.11,
+          "mdd_closed_pts": 7308,
+          "gross_gain_pts": 31714.39,
+          "gross_loss_pts": 21538.17,
+          "exits": {
+            "stop": 11,
+            "tp": 8,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 229,
+          "win_count": 70,
+          "red_count": 159,
+          "net_pts": -57258.5,
+          "net_R": -48.365,
+          "PF": 0.732,
+          "win_rate": 30.57,
+          "mdd_closed_pts": 61782,
+          "gross_gain_pts": 156006.71,
+          "gross_loss_pts": 213265.22,
+          "exits": {
+            "stop": 159,
+            "tp": 70,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M5",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 289,
+          "win_count": 101,
+          "red_count": 188,
+          "net_pts": -31046.4,
+          "net_R": -24.292,
+          "PF": 0.853,
+          "win_rate": 34.95,
+          "mdd_closed_pts": 39906.5,
+          "gross_gain_pts": 180709.72,
+          "gross_loss_pts": 211756.12,
+          "exits": {
+            "stop": 187,
+            "tp": 101,
+            "end_of_data": 1
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 3,
+          "win_count": 2,
+          "red_count": 1,
+          "net_pts": 8438.2,
+          "net_R": 2.894,
+          "PF": 3.067,
+          "win_rate": 66.67,
+          "mdd_closed_pts": 4082,
+          "gross_gain_pts": 12520.18,
+          "gross_loss_pts": 4082,
+          "exits": {
+            "stop": 1,
+            "tp": 2,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 102,
+          "win_count": 28,
+          "red_count": 74,
+          "net_pts": -45988.4,
+          "net_R": -25.592,
+          "PF": 0.727,
+          "win_rate": 27.45,
+          "mdd_closed_pts": 61912.5,
+          "gross_gain_pts": 122418.91,
+          "gross_loss_pts": 168407.31,
+          "exits": {
+            "stop": 74,
+            "tp": 28,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 119,
+          "win_count": 46,
+          "red_count": 73,
+          "net_pts": 7699.8,
+          "net_R": 10.539,
+          "PF": 1.054,
+          "win_rate": 38.66,
+          "mdd_closed_pts": 27201.6,
+          "gross_gain_pts": 149516.47,
+          "gross_loss_pts": 141816.71,
+          "exits": {
+            "stop": 73,
+            "tp": 46,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 4,
+          "win_count": 2,
+          "red_count": 2,
+          "net_pts": 5764.4,
+          "net_R": 1.847,
+          "PF": 1.853,
+          "win_rate": 50,
+          "mdd_closed_pts": 6755.7,
+          "gross_gain_pts": 12520.18,
+          "gross_loss_pts": 6755.73,
+          "exits": {
+            "stop": 2,
+            "tp": 2,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 207,
+          "win_count": 72,
+          "red_count": 135,
+          "net_pts": -23193.5,
+          "net_R": -4.785,
+          "PF": 0.927,
+          "win_rate": 34.78,
+          "mdd_closed_pts": 78983.7,
+          "gross_gain_pts": 295959.12,
+          "gross_loss_pts": 319152.58,
+          "exits": {
+            "stop": 135,
+            "tp": 72,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 191,
+          "win_count": 68,
+          "red_count": 123,
+          "net_pts": -13513.6,
+          "net_R": -0.568,
+          "PF": 0.944,
+          "win_rate": 35.6,
+          "mdd_closed_pts": 33978.8,
+          "gross_gain_pts": 226297.67,
+          "gross_loss_pts": 239811.31,
+          "exits": {
+            "stop": 123,
+            "tp": 68,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 1,
+          "win_count": 0,
+          "red_count": 1,
+          "net_pts": -3746.8,
+          "net_R": -1.033,
+          "PF": 0,
+          "win_rate": 0,
+          "mdd_closed_pts": 3746.8,
+          "gross_gain_pts": 0,
+          "gross_loss_pts": 3746.76,
+          "exits": {
+            "stop": 1,
+            "tp": 0,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 56,
+          "win_count": 21,
+          "red_count": 35,
+          "net_pts": 10732.3,
+          "net_R": 2.407,
+          "PF": 1.126,
+          "win_rate": 37.5,
+          "mdd_closed_pts": 15537.5,
+          "gross_gain_pts": 95684.68,
+          "gross_loss_pts": 84952.41,
+          "exits": {
+            "stop": 35,
+            "tp": 21,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 75,
+          "win_count": 24,
+          "red_count": 51,
+          "net_pts": -19922.4,
+          "net_R": -8.259,
+          "PF": 0.802,
+          "win_rate": 32,
+          "mdd_closed_pts": 32460.8,
+          "gross_gain_pts": 80641.36,
+          "gross_loss_pts": 100563.76,
+          "exits": {
+            "stop": 51,
+            "tp": 24,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 3,
+          "win_count": 2,
+          "red_count": 1,
+          "net_pts": 8438.2,
+          "net_R": 2.894,
+          "PF": 3.067,
+          "win_rate": 66.67,
+          "mdd_closed_pts": 4082,
+          "gross_gain_pts": 12520.18,
+          "gross_loss_pts": 4082,
+          "exits": {
+            "stop": 1,
+            "tp": 2,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 72,
+          "win_count": 24,
+          "red_count": 48,
+          "net_pts": -2056.4,
+          "net_R": -5.753,
+          "PF": 0.981,
+          "win_rate": 33.33,
+          "mdd_closed_pts": 26228.7,
+          "gross_gain_pts": 107195.4,
+          "gross_loss_pts": 109251.75,
+          "exits": {
+            "stop": 48,
+            "tp": 24,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M15",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 97,
+          "win_count": 37,
+          "red_count": 60,
+          "net_pts": 5554,
+          "net_R": 7.121,
+          "PF": 1.048,
+          "win_rate": 38.14,
+          "mdd_closed_pts": 18796.7,
+          "gross_gain_pts": 122273.98,
+          "gross_loss_pts": 116719.95,
+          "exits": {
+            "stop": 60,
+            "tp": 37,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 0,
+          "win_count": 0,
+          "red_count": 0,
+          "net_pts": 0,
+          "net_R": 0,
+          "PF": null,
+          "win_rate": 0,
+          "mdd_closed_pts": 0,
+          "gross_gain_pts": 0,
+          "gross_loss_pts": 0,
+          "exits": {
+            "stop": 0,
+            "tp": 0,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 46,
+          "win_count": 14,
+          "red_count": 32,
+          "net_pts": -9401,
+          "net_R": -6.563,
+          "PF": 0.906,
+          "win_rate": 30.43,
+          "mdd_closed_pts": 39714.8,
+          "gross_gain_pts": 90706.22,
+          "gross_loss_pts": 100107.19,
+          "exits": {
+            "stop": 32,
+            "tp": 14,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 62,
+          "win_count": 23,
+          "red_count": 39,
+          "net_pts": 4464.3,
+          "net_R": 3.975,
+          "PF": 1.042,
+          "win_rate": 37.1,
+          "mdd_closed_pts": 22817.8,
+          "gross_gain_pts": 110785.96,
+          "gross_loss_pts": 106321.68,
+          "exits": {
+            "stop": 39,
+            "tp": 23,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 0,
+          "win_count": 0,
+          "red_count": 0,
+          "net_pts": 0,
+          "net_R": 0,
+          "PF": null,
+          "win_rate": 0,
+          "mdd_closed_pts": 0,
+          "gross_gain_pts": 0,
+          "gross_loss_pts": 0,
+          "exits": {
+            "stop": 0,
+            "tp": 0,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 99,
+          "win_count": 34,
+          "red_count": 65,
+          "net_pts": -7419.5,
+          "net_R": -1.856,
+          "PF": 0.964,
+          "win_rate": 34.34,
+          "mdd_closed_pts": 60542.7,
+          "gross_gain_pts": 196976.61,
+          "gross_loss_pts": 204396.07,
+          "exits": {
+            "stop": 65,
+            "tp": 34,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_BOTH",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 104,
+          "win_count": 35,
+          "red_count": 69,
+          "net_pts": -12020.8,
+          "net_R": -4.078,
+          "PF": 0.935,
+          "win_rate": 33.65,
+          "mdd_closed_pts": 32975.9,
+          "gross_gain_pts": 173777.22,
+          "gross_loss_pts": 185798.05,
+          "exits": {
+            "stop": 69,
+            "tp": 35,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 0,
+          "win_count": 0,
+          "red_count": 0,
+          "net_pts": 0,
+          "net_R": 0,
+          "PF": null,
+          "win_rate": 0,
+          "mdd_closed_pts": 0,
+          "gross_gain_pts": 0,
+          "gross_loss_pts": 0,
+          "exits": {
+            "stop": 0,
+            "tp": 0,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 21,
+          "win_count": 7,
+          "red_count": 14,
+          "net_pts": 9216.9,
+          "net_R": -1.524,
+          "PF": 1.215,
+          "win_rate": 33.33,
+          "mdd_closed_pts": 18869.1,
+          "gross_gain_pts": 52086.02,
+          "gross_loss_pts": 42869.13,
+          "exits": {
+            "stop": 14,
+            "tp": 7,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON55_LONG",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 40,
+          "win_count": 13,
+          "red_count": 27,
+          "net_pts": -14053.5,
+          "net_R": -2.877,
+          "PF": 0.817,
+          "win_rate": 32.5,
+          "mdd_closed_pts": 26781.2,
+          "gross_gain_pts": 62618.24,
+          "gross_loss_pts": 76671.79,
+          "exits": {
+            "stop": 27,
+            "tp": 13,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q1",
+        "metrics": {
+          "N": 0,
+          "win_count": 0,
+          "red_count": 0,
+          "net_pts": 0,
+          "net_R": 0,
+          "PF": null,
+          "win_rate": 0,
+          "mdd_closed_pts": 0,
+          "gross_gain_pts": 0,
+          "gross_loss_pts": 0,
+          "exits": {
+            "stop": 0,
+            "tp": 0,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q2",
+        "metrics": {
+          "N": 33,
+          "win_count": 8,
+          "red_count": 25,
+          "net_pts": -27499.2,
+          "net_R": -11.003,
+          "PF": 0.66,
+          "win_rate": 24.24,
+          "mdd_closed_pts": 41523.1,
+          "gross_gain_pts": 53283.39,
+          "gross_loss_pts": 80782.57,
+          "exits": {
+            "stop": 25,
+            "tp": 8,
+            "end_of_data": 0
+          }
+        }
+      },
+      {
+        "model": "DON20_LONG_EMA200",
+        "tf": "M30",
+        "year": "2026_partial",
+        "quarter": "2026Q3",
+        "metrics": {
+          "N": 53,
+          "win_count": 17,
+          "red_count": 36,
+          "net_pts": -14705.9,
+          "net_R": -4.532,
+          "PF": 0.851,
+          "win_rate": 32.08,
+          "mdd_closed_pts": 27699.9,
+          "gross_gain_pts": 84272.66,
+          "gross_loss_pts": 98978.53,
+          "exits": {
+            "stop": 36,
+            "tp": 17,
+            "end_of_data": 0
+          }
+        }
+      }
+    ],
+    "predeclared_gate_passed": []
+  },
+  "observations": [
+    "No profile passed both annual 2025 and partial 2026 historical robustness screen, even under OHLC assumptions",
+    "DON55_LONG on M30 +89058.6 points in 2025 (PF 1.575), -4836.7 in 2026 partial (PF .96)",
+    "DON20_LONG_EMA200 on M15 +13783.5 points in 2025 (PF1.042) and +11935.9 2026 partial (PF1.052), PF too close to 1 and stress cost1.6 loses in 2025",
+    "Historical source data are not MetaTrader broker real tick data, no independent MT5 verification",
+    "User's previous NY M30 EA was -269.55 USD on MT5 after roughly a year; source-model differences require broker reports before claims",
+    "Original MetaQuotes Moving Average 1.00 user-observed +3k USD is reference but not independently verified"
+  ],
+  "production_approved": false,
+  "account_pnl_not_computed": true
+}
