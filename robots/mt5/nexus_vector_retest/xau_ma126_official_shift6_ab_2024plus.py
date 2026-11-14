@@ -181,6 +181,11 @@ def sim_quarter(f,signal,lo,hi,cost,protective_stop=True):
     eqR=np.r_[0.,np.cumsum(rmult)]
     return {
       "N":len(result),"signals_raw":Nsignals,
+      "green":int(np.sum(points>0)),"red":int(np.sum(points<0)),
+      "gross_positive_pts":round(float(wins),3),
+      "gross_negative_pts":round(float(loss),3),
+      "gross_positive_R":round(float(winR),4),
+      "gross_negative_R":round(float(lossR),4),
       "net_pts":round(float(points.sum()),1),
       "net_R":round(float(rmult.sum()),4),
       "PF":round(float(wins/loss),3) if loss>0 else None,
@@ -232,11 +237,19 @@ def aggregate(cases):
                     pts=round(sum(x["net_pts"] for x in curr),1)
                     rn=round(sum(x["net_R"] for x in curr),4)
                     positives=sum(x["net_pts"]>0 for x in curr)
+                    gross_gain=sum(x["gross_positive_pts"] for x in curr)
+                    gross_loss=sum(x["gross_negative_pts"] for x in curr)
+                    gross_gain_R=sum(x["gross_positive_R"] for x in curr)
+                    gross_loss_R=sum(x["gross_negative_R"] for x in curr)
                     metrics[str(cost)]={"N":count,"net_pts":pts,"net_R":rn,
+                     "PF":round(gross_gain/gross_loss,3) if gross_loss>0 else None,
+                     "PF_R":round(gross_gain_R/gross_loss_R,3) if gross_loss_R>0 else None,
+                     "wins":sum(x["green"] for x in curr),
+                     "losses":sum(x["red"] for x in curr),
+                     "win_pct":round(100.*sum(x["green"] for x in curr)/count,2) if count else 0.,
                      "positive_quarters":positives,"tested_quarters":len(curr),
-                     # PF sums are NOT PF; keep separate PF only from robust
-                     # annual track with original per-trade levels if available
-                     "quarter_PF_range":[x["PF"] for x in curr],
+                     "gross_positive_pts":round(gross_gain,2),
+                     "gross_negative_pts":round(gross_loss,2),
                      "max_quarter_closed_MDD_pts":max(x["closed_trade_MDD_pts"] for x in curr)}
                 entry=dict(model=model,timeframe=f"M{tf}",year=year,metrics=metrics)
                 allcases.append(entry)
@@ -257,6 +270,7 @@ def screen(cases):
                 periods[y]["net_pts"]>0 and periods[y]["net_R"]>0
                 and stress[y]["net_R"]>0 and (
                     periods[y]["N"]>= (30 if y=="2026_partial" else 60))
+                and periods[y]["PF"] is not None and periods[y]["PF"]>1.15
                 and periods[y]["positive_quarters"]>=(
                     1 if y=="2026_partial" else 3)
                 for y in ("2024","2025","2026_partial")))
@@ -265,6 +279,8 @@ def screen(cases):
                 net_points={y:periods[y]["net_pts"] for y in periods},
                 net_R={y:periods[y]["net_R"] for y in periods},
                 stress_R={y:stress[y]["net_R"] for y in periods},
+                PF={y:periods[y]["PF"] for y in periods},
+                win_rate={y:periods[y]["win_pct"] for y in periods},
                 quarters_positive={y:periods[y]["positive_quarters"] for y in periods},
                 tentative_screen=pass_))
     return rows
@@ -306,11 +322,11 @@ def main():
       "2024/2025 full and 2026 partial, hypothetical 1.2 USD/oz costs.",
       "No tick-level MT5 real broker backtest. R is not percentage.",
       "",
-      "| Model | TF | Year | N | Net pts | Net R | Positive quarters |",
-      "|---|---|---|---:|---:|---:|---:|"]
+      "| Model | TF | Year | N | Net pts | PF | Win % | Net R | Positive quarters |",
+      "|---|---|---|---:|---:|---:|---:|---:|---:|"]
     for row in annual:
         x=row["metrics"]["1.2"]
-        lines.append(f"| {row['model']} | {row['timeframe']} | {row['year']} | {x['N']} | {x['net_pts']} | {x['net_R']} | {x['positive_quarters']}/{x['tested_quarters']} |")
+        lines.append(f"| {row['model']} | {row['timeframe']} | {row['year']} | {x['N']} | {x['net_pts']} | {x['PF']} | {x['win_pct']} | {x['net_R']} | {x['positive_quarters']}/{x['tested_quarters']} |")
     lines.extend(["","## Tentative screen",str(selected),
        "","Do NOT promote historical candidates to live or modify original EA."])
     (OUT/"REPORT.md").write_text("\n".join(lines)+"\n")
