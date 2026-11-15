@@ -1,0 +1,710 @@
+{
+  "description": "Technical plan hypotheses only, no Ollama backtest or AI probabilities",
+  "run_url": "https://github.com/lulualcides-sys/nexus-quant-paper/actions/runs/43746151888",
+  "sources": [
+    {
+      "year": "2025",
+      "raw_minutes": 355816,
+      "M15_bars": 23595,
+      "first": "2025-01-01 23:15:00+00:00",
+      "last": "2025-12-31 21:45:00+00:00"
+    },
+    {
+      "year": "2026_partial",
+      "raw_minutes": 179662,
+      "M15_bars": 11972,
+      "first": "2026-03-26 02:30:00+00:00",
+      "last": "2026-09-25 20:30:00+00:00"
+    }
+  ],
+  "results": [
+    {
+      "period": "2025",
+      "model": "EMA21_55_REGIME_CHANGE",
+      "cost_usd_per_oz": 0.8,
+      "bars": 23595,
+      "raw_signal_bars": 1452,
+      "trades": 856,
+      "win_pct": 39.02,
+      "net_usd": -1373.48,
+      "net_pct": -13.73,
+      "profit_factor": 0.946,
+      "drawdown_closed_pct": 20.25,
+      "max_consecutive_losses": 13,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 58,
+      "months": {
+        "2025-01": {
+          "N": 72,
+          "net_usd": -446.92
+        },
+        "2025-02": {
+          "N": 69,
+          "net_usd": 383.31
+        },
+        "2025-03": {
+          "N": 85,
+          "net_usd": -935.05
+        },
+        "2025-04": {
+          "N": 58,
+          "net_usd": 413.54
+        },
+        "2025-05": {
+          "N": 67,
+          "net_usd": 646.33
+        },
+        "2025-06": {
+          "N": 79,
+          "net_usd": -4.08
+        },
+        "2025-07": {
+          "N": 73,
+          "net_usd": -538.32
+        },
+        "2025-08": {
+          "N": 64,
+          "net_usd": -446.65
+        },
+        "2025-09": {
+          "N": 77,
+          "net_usd": 43.12
+        },
+        "2025-10": {
+          "N": 79,
+          "net_usd": -224.6
+        },
+        "2025-11": {
+          "N": 67,
+          "net_usd": -488.8
+        },
+        "2025-12": {
+          "N": 66,
+          "net_usd": 224.58
+        }
+      }
+    },
+    {
+      "period": "2025",
+      "model": "EMA21_55_REGIME_CHANGE",
+      "cost_usd_per_oz": 1.2,
+      "bars": 23595,
+      "raw_signal_bars": 1452,
+      "trades": 858,
+      "win_pct": 38.93,
+      "net_usd": -3264.28,
+      "net_pct": -32.64,
+      "profit_factor": 0.857,
+      "drawdown_closed_pct": 34.07,
+      "max_consecutive_losses": 13,
+      "min_lot_rejected": 1,
+      "new_entry_daily_locked": 54,
+      "months": {
+        "2025-01": {
+          "N": 72,
+          "net_usd": -750.72
+        },
+        "2025-02": {
+          "N": 69,
+          "net_usd": 65.24
+        },
+        "2025-03": {
+          "N": 85,
+          "net_usd": -1136.26
+        },
+        "2025-04": {
+          "N": 58,
+          "net_usd": 198.98
+        },
+        "2025-05": {
+          "N": 68,
+          "net_usd": 417.66
+        },
+        "2025-06": {
+          "N": 78,
+          "net_usd": -143.04
+        },
+        "2025-07": {
+          "N": 73,
+          "net_usd": -694.06
+        },
+        "2025-08": {
+          "N": 65,
+          "net_usd": -589.69
+        },
+        "2025-09": {
+          "N": 77,
+          "net_usd": -111.56
+        },
+        "2025-10": {
+          "N": 79,
+          "net_usd": -125.32
+        },
+        "2025-11": {
+          "N": 68,
+          "net_usd": -416.04
+        },
+        "2025-12": {
+          "N": 66,
+          "net_usd": 20.53
+        }
+      }
+    },
+    {
+      "period": "2025",
+      "model": "EMA21_55_REGIME_CHANGE",
+      "cost_usd_per_oz": 1.6,
+      "bars": 23595,
+      "raw_signal_bars": 1452,
+      "trades": 846,
+      "win_pct": 39.24,
+      "net_usd": -4300.77,
+      "net_pct": -43.01,
+      "profit_factor": 0.798,
+      "drawdown_closed_pct": 44.38,
+      "max_consecutive_losses": 13,
+      "min_lot_rejected": 4,
+      "new_entry_daily_locked": 65,
+      "months": {
+        "2025-01": {
+          "N": 70,
+          "net_usd": -925.23
+        },
+        "2025-02": {
+          "N": 68,
+          "net_usd": -109.94
+        },
+        "2025-03": {
+          "N": 82,
+          "net_usd": -1286.75
+        },
+        "2025-04": {
+          "N": 58,
+          "net_usd": 155.8
+        },
+        "2025-05": {
+          "N": 67,
+          "net_usd": 294.59
+        },
+        "2025-06": {
+          "N": 78,
+          "net_usd": -290.69
+        },
+        "2025-07": {
+          "N": 73,
+          "net_usd": -794.93
+        },
+        "2025-08": {
+          "N": 63,
+          "net_usd": -663.63
+        },
+        "2025-09": {
+          "N": 77,
+          "net_usd": -187.73
+        },
+        "2025-10": {
+          "N": 77,
+          "net_usd": -164
+        },
+        "2025-11": {
+          "N": 67,
+          "net_usd": -375.81
+        },
+        "2025-12": {
+          "N": 66,
+          "net_usd": 47.52
+        }
+      }
+    },
+    {
+      "period": "2025",
+      "model": "EMA21_55_BOS25",
+      "cost_usd_per_oz": 0.8,
+      "bars": 23595,
+      "raw_signal_bars": 1878,
+      "trades": 880,
+      "win_pct": 37.16,
+      "net_usd": -2801.84,
+      "net_pct": -28.02,
+      "profit_factor": 0.882,
+      "drawdown_closed_pct": 30.95,
+      "max_consecutive_losses": 13,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 1,
+      "months": {
+        "2025-01": {
+          "N": 73,
+          "net_usd": -516.96
+        },
+        "2025-02": {
+          "N": 71,
+          "net_usd": -150.98
+        },
+        "2025-03": {
+          "N": 77,
+          "net_usd": -738.86
+        },
+        "2025-04": {
+          "N": 75,
+          "net_usd": 449.33
+        },
+        "2025-05": {
+          "N": 84,
+          "net_usd": 158.97
+        },
+        "2025-06": {
+          "N": 72,
+          "net_usd": -538.68
+        },
+        "2025-07": {
+          "N": 72,
+          "net_usd": -38.52
+        },
+        "2025-08": {
+          "N": 65,
+          "net_usd": -777.94
+        },
+        "2025-09": {
+          "N": 78,
+          "net_usd": -307.36
+        },
+        "2025-10": {
+          "N": 83,
+          "net_usd": -168.45
+        },
+        "2025-11": {
+          "N": 62,
+          "net_usd": 106.26
+        },
+        "2025-12": {
+          "N": 68,
+          "net_usd": -278.52
+        }
+      }
+    },
+    {
+      "period": "2025",
+      "model": "EMA21_55_BOS25",
+      "cost_usd_per_oz": 1.2,
+      "bars": 23595,
+      "raw_signal_bars": 1878,
+      "trades": 875,
+      "win_pct": 37.37,
+      "net_usd": -4212.73,
+      "net_pct": -42.13,
+      "profit_factor": 0.805,
+      "drawdown_closed_pct": 43.58,
+      "max_consecutive_losses": 13,
+      "min_lot_rejected": 7,
+      "new_entry_daily_locked": 3,
+      "months": {
+        "2025-01": {
+          "N": 73,
+          "net_usd": -810.74
+        },
+        "2025-02": {
+          "N": 71,
+          "net_usd": -334.33
+        },
+        "2025-03": {
+          "N": 77,
+          "net_usd": -983.64
+        },
+        "2025-04": {
+          "N": 75,
+          "net_usd": 262.78
+        },
+        "2025-05": {
+          "N": 84,
+          "net_usd": -53.87
+        },
+        "2025-06": {
+          "N": 72,
+          "net_usd": -631.58
+        },
+        "2025-07": {
+          "N": 72,
+          "net_usd": -188.38
+        },
+        "2025-08": {
+          "N": 65,
+          "net_usd": -788.06
+        },
+        "2025-09": {
+          "N": 78,
+          "net_usd": -372.46
+        },
+        "2025-10": {
+          "N": 78,
+          "net_usd": -56.9
+        },
+        "2025-11": {
+          "N": 62,
+          "net_usd": 18.41
+        },
+        "2025-12": {
+          "N": 68,
+          "net_usd": -274.01
+        }
+      }
+    },
+    {
+      "period": "2025",
+      "model": "EMA21_55_BOS25",
+      "cost_usd_per_oz": 1.6,
+      "bars": 23595,
+      "raw_signal_bars": 1878,
+      "trades": 870,
+      "win_pct": 37.36,
+      "net_usd": -5206.15,
+      "net_pct": -52.06,
+      "profit_factor": 0.742,
+      "drawdown_closed_pct": 53.33,
+      "max_consecutive_losses": 13,
+      "min_lot_rejected": 13,
+      "new_entry_daily_locked": 4,
+      "months": {
+        "2025-01": {
+          "N": 73,
+          "net_usd": -1115.44
+        },
+        "2025-02": {
+          "N": 71,
+          "net_usd": -572.47
+        },
+        "2025-03": {
+          "N": 77,
+          "net_usd": -1110.37
+        },
+        "2025-04": {
+          "N": 75,
+          "net_usd": 284.37
+        },
+        "2025-05": {
+          "N": 84,
+          "net_usd": -108.82
+        },
+        "2025-06": {
+          "N": 72,
+          "net_usd": -657.49
+        },
+        "2025-07": {
+          "N": 72,
+          "net_usd": -300.68
+        },
+        "2025-08": {
+          "N": 65,
+          "net_usd": -827.79
+        },
+        "2025-09": {
+          "N": 78,
+          "net_usd": -406.33
+        },
+        "2025-10": {
+          "N": 76,
+          "net_usd": -168.89
+        },
+        "2025-11": {
+          "N": 62,
+          "net_usd": 34.46
+        },
+        "2025-12": {
+          "N": 65,
+          "net_usd": -256.8
+        }
+      }
+    },
+    {
+      "period": "2026_partial",
+      "model": "EMA21_55_REGIME_CHANGE",
+      "cost_usd_per_oz": 0.8,
+      "bars": 11972,
+      "raw_signal_bars": 702,
+      "trades": 465,
+      "win_pct": 35.27,
+      "net_usd": -1709.16,
+      "net_pct": -17.09,
+      "profit_factor": 0.857,
+      "drawdown_closed_pct": 19.92,
+      "max_consecutive_losses": 19,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 6,
+      "months": {
+        "2026-03": {
+          "N": 10,
+          "net_usd": -44.27
+        },
+        "2026-04": {
+          "N": 79,
+          "net_usd": -1607.92
+        },
+        "2026-05": {
+          "N": 72,
+          "net_usd": -11.64
+        },
+        "2026-06": {
+          "N": 72,
+          "net_usd": 526.93
+        },
+        "2026-07": {
+          "N": 85,
+          "net_usd": -414.7
+        },
+        "2026-08": {
+          "N": 73,
+          "net_usd": 301.76
+        },
+        "2026-09": {
+          "N": 74,
+          "net_usd": -459.26
+        }
+      }
+    },
+    {
+      "period": "2026_partial",
+      "model": "EMA21_55_REGIME_CHANGE",
+      "cost_usd_per_oz": 1.2,
+      "bars": 11972,
+      "raw_signal_bars": 702,
+      "trades": 463,
+      "win_pct": 35.21,
+      "net_usd": -2067.12,
+      "net_pct": -20.67,
+      "profit_factor": 0.825,
+      "drawdown_closed_pct": 21.63,
+      "max_consecutive_losses": 19,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 9,
+      "months": {
+        "2026-03": {
+          "N": 10,
+          "net_usd": -50.67
+        },
+        "2026-04": {
+          "N": 77,
+          "net_usd": -1693.35
+        },
+        "2026-05": {
+          "N": 72,
+          "net_usd": -110.98
+        },
+        "2026-06": {
+          "N": 72,
+          "net_usd": 442.51
+        },
+        "2026-07": {
+          "N": 85,
+          "net_usd": -456.32
+        },
+        "2026-08": {
+          "N": 73,
+          "net_usd": 204.59
+        },
+        "2026-09": {
+          "N": 74,
+          "net_usd": -402.84
+        }
+      }
+    },
+    {
+      "period": "2026_partial",
+      "model": "EMA21_55_REGIME_CHANGE",
+      "cost_usd_per_oz": 1.6,
+      "bars": 11972,
+      "raw_signal_bars": 702,
+      "trades": 458,
+      "win_pct": 34.93,
+      "net_usd": -2565.8,
+      "net_pct": -25.66,
+      "profit_factor": 0.781,
+      "drawdown_closed_pct": 26.44,
+      "max_consecutive_losses": 19,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 14,
+      "months": {
+        "2026-03": {
+          "N": 10,
+          "net_usd": -57.07
+        },
+        "2026-04": {
+          "N": 74,
+          "net_usd": -1743.18
+        },
+        "2026-05": {
+          "N": 72,
+          "net_usd": -197.19
+        },
+        "2026-06": {
+          "N": 72,
+          "net_usd": 398.53
+        },
+        "2026-07": {
+          "N": 84,
+          "net_usd": -557.95
+        },
+        "2026-08": {
+          "N": 73,
+          "net_usd": 104.64
+        },
+        "2026-09": {
+          "N": 73,
+          "net_usd": -513.52
+        }
+      }
+    },
+    {
+      "period": "2026_partial",
+      "model": "EMA21_55_BOS25",
+      "cost_usd_per_oz": 0.8,
+      "bars": 11972,
+      "raw_signal_bars": 846,
+      "trades": 435,
+      "win_pct": 35.63,
+      "net_usd": -1286.07,
+      "net_pct": -12.86,
+      "profit_factor": 0.891,
+      "drawdown_closed_pct": 17.91,
+      "max_consecutive_losses": 10,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 1,
+      "months": {
+        "2026-03": {
+          "N": 8,
+          "net_usd": 154.51
+        },
+        "2026-04": {
+          "N": 64,
+          "net_usd": -385.86
+        },
+        "2026-05": {
+          "N": 70,
+          "net_usd": -262.88
+        },
+        "2026-06": {
+          "N": 84,
+          "net_usd": -313.7
+        },
+        "2026-07": {
+          "N": 75,
+          "net_usd": -477.95
+        },
+        "2026-08": {
+          "N": 72,
+          "net_usd": 183.95
+        },
+        "2026-09": {
+          "N": 62,
+          "net_usd": -184.01
+        }
+      }
+    },
+    {
+      "period": "2026_partial",
+      "model": "EMA21_55_BOS25",
+      "cost_usd_per_oz": 1.2,
+      "bars": 11972,
+      "raw_signal_bars": 846,
+      "trades": 435,
+      "win_pct": 35.63,
+      "net_usd": -1740.5,
+      "net_pct": -17.4,
+      "profit_factor": 0.851,
+      "drawdown_closed_pct": 20.62,
+      "max_consecutive_losses": 10,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 1,
+      "months": {
+        "2026-03": {
+          "N": 8,
+          "net_usd": 149.31
+        },
+        "2026-04": {
+          "N": 64,
+          "net_usd": -472.96
+        },
+        "2026-05": {
+          "N": 70,
+          "net_usd": -353.68
+        },
+        "2026-06": {
+          "N": 84,
+          "net_usd": -356.77
+        },
+        "2026-07": {
+          "N": 75,
+          "net_usd": -550.34
+        },
+        "2026-08": {
+          "N": 72,
+          "net_usd": 88.36
+        },
+        "2026-09": {
+          "N": 62,
+          "net_usd": -244.32
+        }
+      }
+    },
+    {
+      "period": "2026_partial",
+      "model": "EMA21_55_BOS25",
+      "cost_usd_per_oz": 1.6,
+      "bars": 11972,
+      "raw_signal_bars": 846,
+      "trades": 434,
+      "win_pct": 35.71,
+      "net_usd": -2110.21,
+      "net_pct": -21.1,
+      "profit_factor": 0.818,
+      "drawdown_closed_pct": 23.63,
+      "max_consecutive_losses": 10,
+      "min_lot_rejected": 0,
+      "new_entry_daily_locked": 3,
+      "months": {
+        "2026-03": {
+          "N": 8,
+          "net_usd": 144.11
+        },
+        "2026-04": {
+          "N": 64,
+          "net_usd": -565.68
+        },
+        "2026-05": {
+          "N": 70,
+          "net_usd": -422.17
+        },
+        "2026-06": {
+          "N": 83,
+          "net_usd": -357.87
+        },
+        "2026-07": {
+          "N": 75,
+          "net_usd": -622.58
+        },
+        "2026-08": {
+          "N": 72,
+          "net_usd": 16.25
+        },
+        "2026-09": {
+          "N": 62,
+          "net_usd": -302.2
+        }
+      }
+    }
+  ],
+  "actual_EA_automatic_trades": 0,
+  "real_mt5_test": false,
+  "live_approved": false,
+  "assumptions": {
+    "balance_usd": 10000,
+    "risk_pct": 0.5,
+    "stop_atr": 1.5,
+    "target_r": 1.8,
+    "period": "M15",
+    "lot_contract_oz": 100,
+    "cost_usd_per_oz": [
+      0.8,
+      1.2,
+      1.6
+    ]
+  }
+}

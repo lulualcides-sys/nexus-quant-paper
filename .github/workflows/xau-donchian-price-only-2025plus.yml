@@ -1,0 +1,42 @@
+name: XAUUSD 2025+ Donchian price only 2ATR 4ATR
+on:
+  push:
+    branches: [research/xau-donchian-price-only-2025plus-20261114]
+    paths:
+      - 'robots/mt5/nexus_vector_retest/xau_donchian_price_only_2025plus.py'
+      - 'robots/mt5/nexus_vector_retest/test_xau_donchian_price_only_2025plus.py'
+      - '.github/workflows/xau-donchian-price-only-2025plus.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Frozen deps
+        run: python -m pip install numpy==2.3.4 pandas==2.3.3
+      - name: Causality and stop tests
+        run: |
+          python -m py_compile robots/mt5/nexus_vector_retest/xau_donchian_price_only_2025plus.py
+          python -m unittest discover -s robots/mt5/nexus_vector_retest -p 'test_xau_donchian_price_only_2025plus.py' -v
+      - name: Download pinned 2025 OHLC source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Price-only backtest 2025 and 2026 available, all winners and losers
+        run: python -u robots/mt5/nexus_vector_retest/xau_donchian_price_only_2025plus.py
+      - name: Preserve results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: XAUUSD-DONCHIAN-2025-26-FULL
+          path: robots/mt5/nexus_vector_retest/xau_donchian_price_only_results/
+          if-no-files-found: warn
