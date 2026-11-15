@@ -9,7 +9,8 @@ pending entry behavior or fills. Avoid lookahead: signal at CLOSED j, enter OPEN
 """
 from __future__ import annotations
 from pathlib import Path
-import argparse,json,math
+import argparse,json,math,sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'robots'/'mt5'/'nexus_vector_retest'))
 import numpy as np
 import pandas as pd
 from research_oos import download as partial_2026
