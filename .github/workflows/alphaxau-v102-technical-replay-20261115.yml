@@ -1,0 +1,42 @@
+name: AlphaXAU v1.02 technical signal research 2025+ M15
+on:
+  push:
+    branches: [research/alphaxau-technical-signals-2025-2026-20261115]
+    paths:
+      - 'research/alphaxau_v102_backtest_20261115/**'
+      - '.github/workflows/alphaxau-v102-technical-replay-20261115.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  historical_research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numerical dependencies
+        run: python -m pip install numpy==2.3.4 pandas==2.3.3
+      - name: Test closed-bar causality and risk arithmetic
+        run: |
+          python -m py_compile research/alphaxau_v102_backtest_20261115/alphaxau_technical_replay.py
+          python research/alphaxau_v102_backtest_20261115/alphaxau_technical_replay.py --test
+      - name: Retrieve pinned XAUUSD 2025 M1 public OHLC data
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: 2025 full + 2026 partial AlphaXAU hypothetical signal backtest
+        run: python -u research/alphaxau_v102_backtest_20261115/alphaxau_technical_replay.py
+      - name: Publish comprehensive simulated execution logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ALPHAXAU-TECHNICAL-SIGNAL-2025-2026
+          path: research/alphaxau_v102_backtest_20261115/alphaxau_bt_results/
+          if-no-files-found: warn
