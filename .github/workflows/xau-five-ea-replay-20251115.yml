@@ -1,0 +1,46 @@
+name: Five user EA XAUUSD real-historical OHLC replay 2025 and 2026
+on:
+  push:
+    branches: [research/xau-five-ea-ohcl-replay-20261115]
+    paths:
+      - 'research/xau_5ea_replay_20261115/**'
+      - '.github/workflows/xau-five-ea-replay-20251115.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install pinned numpy pandas
+        run: python -m pip install --disable-pip-version-check numpy==2.3.4 pandas==2.3.3
+      - name: Verify source SHA256 and decode mirrored five EA simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/xau_5ea_replay_20261115
+          cat chunk1.b64 chunk2.b64 chunk3.b64 chunk4.b64 | base64 -d | gzip -d > ../../robots/mt5/nexus_vector_retest/backtest_5_xau_ea_replay.py
+          echo '77546b44af8a61d242b4523518689ea3176fbc17334ea2862c3ed46bf30b8af6  ../../robots/mt5/nexus_vector_retest/backtest_5_xau_ea_replay.py' | sha256sum -c -
+          cd ../..
+          python -m py_compile robots/mt5/nexus_vector_retest/backtest_5_xau_ea_replay.py
+      - name: Download pinned 2025 XAUUSD minute dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p thirdparty
+          git clone --quiet --filter=blob:none --sparse https://github.com/parshant65-lang/Gold-XAUUSD-1m-2020-2025-Historical-Data.git thirdparty/gold
+          git -C thirdparty/gold checkout --quiet b2cfdc571ffac9eff9f2132ea6946da559d29af2
+          git -C thirdparty/gold sparse-checkout set XAUUSD/1m/2025
+      - name: Replay five EXACT delivered EA specifications with cautious OHLC surrogate
+        run: python -u robots/mt5/nexus_vector_retest/backtest_5_xau_ea_replay.py
+      - name: Upload detailed results and all closed trades even if negative
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: five-user-xau-ea-ohcl-2025-2026
+          path: robots/mt5/nexus_vector_retest/backtest_5_results/
+          if-no-files-found: warn
