@@ -78,20 +78,30 @@ def evaluate(f,signal,cost,model):
     equity=INITIAL;highwater=INITIAL;maxdd=0.
     day=None;daystart=INITIAL;daily_lock=0;rej_minlot=0
     trades=[];raw_count=int(np.count_nonzero(signal))
-    for i in range(110,len(f)-1):
+    i=110
+    while i<len(f)-1:
         date=ts[i].date()
         if date!=day:
             day=date;daystart=equity
-        if signal[i]==0 or i<=last:continue
+        if signal[i]==0:
+            i+=1
+            continue
         if equity<=0 or equity<=daystart*.98:
-            daily_lock+=1;continue
+            daily_lock+=1
+            i+=1
+            continue
         side=int(signal[i])
         ep=float(o[i]);dist=1.50*float(a[i-1])   # InpStopATR=1.50
-        if not np.isfinite(dist) or dist<=0:continue
+        if not np.isfinite(dist) or dist<=0:
+            i+=1
+            continue
         stop=ep-side*dist;target=ep+side*1.80*dist
         budget=equity*.005                   # InpRiskPerTradePct=0.50
         volume=math.floor(min(.50,budget/(CONTRACT*dist))/.01+1e-9)*.01
-        if volume<.01:rej_minlot+=1;continue
+        if volume<.01:
+            rej_minlot+=1
+            i+=1
+            continue
         # No Bid/Ask ticks; $ cost per ounce *100oz/lot*lot at close.
         # No slippage, swap, actual margin check (broker-dependent).
         ex=len(f)-1;xp=float(c[ex]);reason="END"
@@ -109,7 +119,10 @@ def evaluate(f,signal,cost,model):
           "entry":round(ep,3),"stop":round(stop,3),"target":round(target,3),
           "exit":round(xp,3),"exit_type":reason,"lot":round(volume,2),
           "net_usd":round(pnl,2),"net_R":round(pnl/(dist*CONTRACT*volume),4)})
+        # Advance calendar to AFTER the actual exit, so balance/daily risk
+        # cannot be applied on bars that occur before a future close.
         last=ex
+        i=ex+1
     prof=np.array([t["net_usd"] for t in trades])
     wins=float(prof[prof>0].sum()) if len(prof) else 0.
     losses=float(-prof[prof<0].sum()) if len(prof) else 0.
