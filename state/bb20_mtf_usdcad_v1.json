@@ -2,22 +2,22 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1794846600,
-  "equity": 999.3886561309873,
+  "watermark_m15": 1794852900,
+  "equity": 1001.9709922662566,
   "position": {
     "side": 1,
-    "entry": 1.4249000549316406,
-    "entry_ts": 1794586500,
+    "entry": 1.4300700426101685,
+    "entry_ts": 1794852900,
     "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 999.3886561309873,
-    "stop": 1.4287418034464707,
-    "initial_r": 0.0021082255452285225,
-    "best_close": 1.4308500289916992,
+    "qty_usd": 1001.9709922662566,
+    "stop": 1.4282071267804457,
+    "initial_r": 0.0018629158297228366,
+    "best_close": 1.4300700426101685,
     "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 27,
-    "green_protected": true,
+    "stop_updates": 0,
+    "green_protected": false,
     "target": null,
-    "confirm_h1": 1794582000
+    "confirm_h1": 1794848400
   },
   "closed": [
     {
@@ -247,8 +247,20 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.4246737079203224
+    },
+    {
+      "entry_ts": 1794586500,
+      "exit_ts": 1794849300,
+      "entry": 1.4249000549316406,
+      "exit": 1.4287418034464707,
+      "side": 1,
+      "net_usd": 2.58234,
+      "cost_usd": 0.10492,
+      "exit_type": "TRAIL_STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.4287418034464707
     }
   ],
-  "last_entry_h1": 1794582000,
-  "last_reason": "Stop móvel subiu"
+  "last_entry_h1": 1794848400,
+  "last_reason": "Entrada virtual COMPRA"
 }
