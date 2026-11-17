@@ -4,11 +4,11 @@
   "experimental_only": true,
   "source": "Yahoo indicative H1, not FBS",
   "watermarks": {
-    "EURUSD": 1794866400,
-    "USDJPY": 1794866400,
-    "XAUUSD": 1794870000,
-    "US500": 1794870000,
-    "XTIUSD": 1794870000
+    "EURUSD": 1794877200,
+    "USDJPY": 1794877200,
+    "XAUUSD": 1794877200,
+    "US500": 1794877200,
+    "XTIUSD": 1794877200
   },
   "books": {
     "EURUSD:ema20_retest": {
@@ -20,9 +20,9 @@
         "qty": 911.8008133607127,
         "stop": 1.1028929483803125,
         "initial_r": 0.0016926062019677276,
-        "best_close": 1.0998680591583252,
+        "best_close": 1.0997470617294312,
         "stop_updates": 0,
-        "held_bars": 13
+        "held_bars": 16
       },
       "closed": [
         {
@@ -193,7 +193,7 @@
         "no_setup": 144,
         "gap": 4,
         "cooldown": 9,
-        "in_position": 104,
+        "in_position": 107,
         "entered": 10,
         "exited": 9,
         "invalid": 0
@@ -209,9 +209,9 @@
         "qty": 918.3609779618854,
         "stop": 1.1028929483803125,
         "initial_r": 0.0016926062019677276,
-        "best_close": 1.0998680591583252,
+        "best_close": 1.0997470617294312,
         "stop_updates": 0,
-        "held_bars": 13
+        "held_bars": 16
       },
       "closed": [
         {
@@ -399,7 +399,7 @@
         "no_setup": 121,
         "gap": 2,
         "cooldown": 10,
-        "in_position": 129,
+        "in_position": 132,
         "entered": 11,
         "exited": 10,
         "invalid": 0
@@ -415,9 +415,9 @@
         "qty": 911.9889729731514,
         "stop": 1.1028929483803125,
         "initial_r": 0.0016926062019677276,
-        "best_close": 1.0998680591583252,
+        "best_close": 1.0997470617294312,
         "stop_updates": 0,
-        "held_bars": 13
+        "held_bars": 16
       },
       "closed": [
         {
@@ -588,7 +588,7 @@
         "no_setup": 143,
         "gap": 3,
         "cooldown": 9,
-        "in_position": 106,
+        "in_position": 109,
         "entered": 10,
         "exited": 9,
         "invalid": 0
@@ -606,7 +606,7 @@
         "initial_r": 0.28068235862898167,
         "best_close": 159.40899658203125,
         "stop_updates": 0,
-        "held_bars": 8
+        "held_bars": 11
       },
       "closed": [
         {
@@ -828,7 +828,7 @@
         "no_setup": 105,
         "gap": 1,
         "cooldown": 12,
-        "in_position": 139,
+        "in_position": 142,
         "entered": 13,
         "exited": 12,
         "invalid": 0
@@ -929,7 +929,7 @@
       ],
       "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 203,
+        "no_setup": 206,
         "gap": 4,
         "cooldown": 5,
         "in_position": 50,
@@ -950,7 +950,7 @@
         "initial_r": 0.28285765352011744,
         "best_close": 159.40899658203125,
         "stop_updates": 0,
-        "held_bars": 7
+        "held_bars": 10
       },
       "closed": [
         {
@@ -1138,7 +1138,7 @@
         "no_setup": 128,
         "gap": 2,
         "cooldown": 10,
-        "in_position": 119,
+        "in_position": 122,
         "entered": 11,
         "exited": 10,
         "invalid": 0
@@ -1156,7 +1156,7 @@
         "initial_r": 24.442456346658247,
         "best_close": 3854.5,
         "stop_updates": 0,
-        "held_bars": 10
+        "held_bars": 12
       },
       "closed": [
         {
@@ -1344,7 +1344,7 @@
         "no_setup": 140,
         "gap": 9,
         "cooldown": 9,
-        "in_position": 91,
+        "in_position": 93,
         "entered": 11,
         "exited": 10,
         "invalid": 0
@@ -1511,9 +1511,9 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: lacuna entre candles",
+      "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 109,
+        "no_setup": 111,
         "gap": 7,
         "cooldown": 9,
         "in_position": 126,
@@ -1534,7 +1534,7 @@
         "initial_r": 23.883462167103815,
         "best_close": 3854.5,
         "stop_updates": 0,
-        "held_bars": 9
+        "held_bars": 11
       },
       "closed": [
         {
@@ -1705,7 +1705,7 @@
         "no_setup": 151,
         "gap": 10,
         "cooldown": 8,
-        "in_position": 80,
+        "in_position": 82,
         "entered": 10,
         "exited": 9,
         "invalid": 0
@@ -1719,11 +1719,11 @@
         "entry": 7563.0,
         "start": 1794794400,
         "qty": 0.052288360082928614,
-        "stop": 7477.499514636329,
+        "stop": 7474.5096358124965,
         "initial_r": 47.2603667147145,
         "best_close": 7438.5,
-        "stop_updates": 8,
-        "held_bars": 19
+        "stop_updates": 10,
+        "held_bars": 21
       },
       "closed": [
         {
@@ -1928,7 +1928,7 @@
         "no_setup": 106,
         "gap": 6,
         "cooldown": 11,
-        "in_position": 128,
+        "in_position": 130,
         "entered": 12,
         "exited": 11,
         "invalid": 0
@@ -1942,11 +1942,11 @@
         "entry": 7505.0,
         "start": 1794841200,
         "qty": 0.07143712758515708,
-        "stop": 7477.499514636329,
+        "stop": 7474.5096358124965,
         "initial_r": 34.14824225154913,
         "best_close": 7438.5,
-        "stop_updates": 6,
-        "held_bars": 8
+        "stop_updates": 8,
+        "held_bars": 10
       },
       "closed": [
         {
@@ -2134,7 +2134,7 @@
         "no_setup": 123,
         "gap": 10,
         "cooldown": 10,
-        "in_position": 108,
+        "in_position": 110,
         "entered": 11,
         "exited": 10,
         "invalid": 0
@@ -2148,11 +2148,11 @@
         "entry": 7563.0,
         "start": 1794794400,
         "qty": 0.05227045145497458,
-        "stop": 7477.499514636329,
+        "stop": 7474.5096358124965,
         "initial_r": 47.2603667147145,
         "best_close": 7438.5,
-        "stop_updates": 8,
-        "held_bars": 19
+        "stop_updates": 10,
+        "held_bars": 21
       },
       "closed": [
         {
@@ -2357,7 +2357,7 @@
         "no_setup": 123,
         "gap": 7,
         "cooldown": 11,
-        "in_position": 110,
+        "in_position": 112,
         "entered": 12,
         "exited": 11,
         "invalid": 0
@@ -2558,9 +2558,9 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: lacuna entre candles",
+      "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 123,
+        "no_setup": 125,
         "gap": 10,
         "cooldown": 11,
         "in_position": 93,
@@ -2577,11 +2577,11 @@
         "entry": 86.0999984741211,
         "start": 1794852000,
         "qty": 2.4543553426280535,
-        "stop": 85.92581336289284,
+        "stop": 85.84760576126054,
         "initial_r": 1.016426634654053,
         "best_close": 85.05999755859375,
-        "stop_updates": 2,
-        "held_bars": 5
+        "stop_updates": 4,
+        "held_bars": 7
       },
       "closed": [
         {
@@ -2770,7 +2770,7 @@
         "no_setup": 108,
         "gap": 7,
         "cooldown": 9,
-        "in_position": 113,
+        "in_position": 115,
         "entered": 11,
         "exited": 10,
         "invalid": 0
@@ -2920,9 +2920,9 @@
           "risk_fraction": 0.0025
         }
       ],
-      "last_reason": "Sem entrada: lacuna entre candles",
+      "last_reason": "Aguardando setup H1 com candle fechado",
       "diagnostics": {
-        "no_setup": 129,
+        "no_setup": 131,
         "gap": 10,
         "cooldown": 8,
         "in_position": 92,
