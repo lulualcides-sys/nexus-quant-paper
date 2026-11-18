@@ -2,29 +2,15 @@
   "schema": 1,
   "paper_only": true,
   "type": "leveraged-research",
-  "h4_watermark": 1794974400,
+  "h4_watermark": 1795003200,
   "books": {
     "lev_channel20": {
-      "equity": 5480.155939310954,
-      "peak_equity": 5480.155939310954,
+      "equity": 5481.611829818162,
+      "peak_equity": 5481.611829818162,
       "today": "2026-11-18",
       "day_start_equity": 5480.155939310954,
       "frozen": false,
-      "position": {
-        "side": -1,
-        "entry": 3789.699951171875,
-        "start": 1794974400,
-        "qty": 2.892131836250701,
-        "stop": 3818.122700805664,
-        "entry_risk": 28.422749633789063,
-        "mode": "green_runner",
-        "green_protected": false,
-        "peak_favorable": 23.199951171875,
-        "target": null,
-        "held_bars": 1,
-        "borrowed": 5480.155939310954,
-        "notional_leverage": 2.0
-      },
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793347200,
@@ -50,6 +36,20 @@
           "gross_usd": 323.79973,
           "transaction_cost": 14.25422,
           "funding_cost": 1.13353,
+          "notional_leverage": 2.0,
+          "exit_type": "STOP",
+          "stop_policy": "green_runner"
+        },
+        {
+          "entry_ts": 1794974400,
+          "exit_ts": 1795003200,
+          "side": -1,
+          "entry": 3789.699951,
+          "exit": 3783.756698,
+          "net_usd": 1.45589,
+          "gross_usd": 17.18867,
+          "transaction_cost": 15.3324,
+          "funding_cost": 0.40038,
           "notional_leverage": 2.0,
           "exit_type": "STOP",
           "stop_policy": "green_runner"
@@ -95,26 +95,12 @@
       ]
     },
     "lev_channel55": {
-      "equity": 5079.254778546534,
+      "equity": 5080.604163289901,
       "peak_equity": 5171.743968811271,
       "today": "2026-11-18",
       "day_start_equity": 5079.254778546534,
       "frozen": false,
-      "position": {
-        "side": -1,
-        "entry": 3789.699951171875,
-        "start": 1794974400,
-        "qty": 2.6805577454626164,
-        "stop": 3818.122700805664,
-        "entry_risk": 28.42274963378906,
-        "mode": "green_runner",
-        "green_protected": false,
-        "peak_favorable": 23.199951171875,
-        "target": null,
-        "held_bars": 1,
-        "borrowed": 5079.254778546534,
-        "notional_leverage": 2.0
-      },
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793347200,
@@ -140,6 +126,20 @@
           "gross_usd": -77.57616,
           "transaction_cost": 14.53519,
           "funding_cost": 0.37784,
+          "notional_leverage": 2.0,
+          "exit_type": "STOP",
+          "stop_policy": "green_runner"
+        },
+        {
+          "entry_ts": 1794974400,
+          "exit_ts": 1795003200,
+          "side": -1,
+          "entry": 3789.699951,
+          "exit": 3783.756698,
+          "net_usd": 1.34938,
+          "gross_usd": 15.93123,
+          "transaction_cost": 14.21076,
+          "funding_cost": 0.37109,
           "notional_leverage": 2.0,
           "exit_type": "STOP",
           "stop_policy": "green_runner"

@@ -5,7 +5,7 @@
   "market": "XAUUSD",
   "strategy": "momentum60_lab",
   "source": "Yahoo GC=F proxy, no FBS fills",
-  "h4_watermark": 1794974400,
+  "h4_watermark": 1795003200,
   "equity": 5064.138703504751,
   "position": {
     "side": -1,
@@ -14,7 +14,7 @@
     "qty": 0.49661854126595767,
     "stop": 3866.179254943873,
     "target": 3655.8611695708787,
-    "held_bars": 1
+    "held_bars": 3
   },
   "entries": [
     {
