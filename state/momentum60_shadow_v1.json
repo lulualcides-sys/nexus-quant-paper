@@ -5,13 +5,28 @@
   "market": "XAUUSD",
   "strategy": "momentum60_lab",
   "source": "Yahoo GC=F proxy, no FBS fills",
-  "h4_watermark": 1794960000,
+  "h4_watermark": 1794974400,
   "equity": 5064.138703504751,
-  "position": null,
+  "position": {
+    "side": -1,
+    "entry": 3789.699951171875,
+    "start": 1794974400,
+    "qty": 0.49661854126595767,
+    "stop": 3866.179254943873,
+    "target": 3655.8611695708787,
+    "held_bars": 1
+  },
   "entries": [
     {
       "entry_ts": 1794484800,
       "entry": 3949.60009765625,
+      "side": -1,
+      "risk_fraction": 0.0075,
+      "source": "next H4 open, virtual only"
+    },
+    {
+      "entry_ts": 1794974400,
+      "entry": 3789.699951171875,
       "side": -1,
       "risk_fraction": 0.0075,
       "source": "next H4 open, virtual only"
