@@ -2,9 +2,23 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1795026600,
+  "watermark_m15": 1795041900,
   "equity": 999.5623892597617,
-  "position": null,
+  "position": {
+    "side": 1,
+    "entry": 1.4332300424575806,
+    "entry_ts": 1795029300,
+    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
+    "qty_usd": 999.5623892597617,
+    "stop": 1.4316147687958733,
+    "initial_r": 0.0017952796889287952,
+    "best_close": 1.4334100484848022,
+    "stop_policy": "close_trailing_no_tp_v1",
+    "stop_updates": 2,
+    "green_protected": false,
+    "target": null,
+    "confirm_h1": 1795024800
+  },
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -319,6 +333,6 @@
       "final_stop": 1.4320689947663676
     }
   ],
-  "last_entry_h1": 1795003200,
-  "last_reason": "Saída virtual TRAIL_STOP"
+  "last_entry_h1": 1795024800,
+  "last_reason": "Stop móvel subiu"
 }
