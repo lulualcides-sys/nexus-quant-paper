@@ -6,20 +6,10 @@
   "policy": "channel10_h1_cost_atr_4x_ema50_ema200_1p5atr",
   "market": "XTIUSD",
   "strategy": "channel10",
-  "h1_watermark": 1795046400,
+  "h1_watermark": 1795071600,
   "book": {
-    "equity": 1008.1786771730923,
-    "position": {
-      "side": -1,
-      "entry": 81.56999969482422,
-      "start": 1795021200,
-      "qty": 1.9186608824759448,
-      "stop": 82.88364856104815,
-      "initial_r": 1.3136488662239305,
-      "best_close": 81.4800033569336,
-      "stop_updates": 0,
-      "held_bars": 8
-    },
+    "equity": 1005.500465089215,
+    "position": null,
     "closed": [
       {
         "entry_ts": 1793761200,
@@ -100,6 +90,16 @@
         "net_usd": 3.646,
         "cost_usd": 0.21254,
         "exit_type": "STOP"
+      },
+      {
+        "entry_ts": 1795021200,
+        "exit_ts": 1795050000,
+        "side": -1,
+        "entry": 81.5699997,
+        "exit": 82.8836486,
+        "net_usd": -2.67821,
+        "cost_usd": 0.15777,
+        "exit_type": "STOP"
       }
     ],
     "entries": [
@@ -167,19 +167,19 @@
         "risk_fraction": 0.0025
       }
     ],
-    "last_reason": "Posição virtual aberta; stop acompanhado",
+    "last_reason": "Aguardando setup H1 com candle fechado",
     "diagnostics": {
-      "no_setup": 170,
+      "no_setup": 175,
       "gap": 12,
-      "cooldown": 8,
-      "in_position": 92,
+      "cooldown": 9,
+      "in_position": 93,
       "entered": 9,
-      "exited": 8,
+      "exited": 9,
       "invalid": 0
     },
-    "last_exit_ts": 1794999600
+    "last_exit_ts": 1795050000
   },
   "first_observation_ts": 1793606400,
   "no_historical_backfill": true,
-  "last_run_reason": "Sem novo candle H1 fechado"
+  "last_run_reason": "Aguardando setup H1 com candle fechado"
 }
