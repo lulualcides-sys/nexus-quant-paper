@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "market": "XAUUSD",
-  "h4_watermark": 1795118400,
+  "h4_watermark": 1795132800,
   "paper_only": true,
   "books": {
     "rsi_trend": {
@@ -129,17 +129,8 @@
       ]
     },
     "channel55": {
-      "equity": 5024.73506314697,
-      "position": {
-        "side": -1,
-        "entry": 3674.5,
-        "start": 1795104000,
-        "i": 328,
-        "held_bars": 2,
-        "qty": 0.4744300911246154,
-        "stop": 3753.9332266831357,
-        "target": 3535.4918533045125
-      },
+      "equity": 5089.487487868584,
+      "position": null,
       "closed": [
         {
           "entry_ts": 1793347200,
@@ -159,6 +150,16 @@
           "exit": 3724.739881,
           "net_usd": 63.95539,
           "cost_usd": 1.15484,
+          "exit_type": "TARGET"
+        },
+        {
+          "entry_ts": 1795104000,
+          "exit_ts": 1795132800,
+          "side": -1,
+          "entry": 3674.5,
+          "exit": 3535.491853,
+          "net_usd": 64.75242,
+          "cost_usd": 1.19722,
           "exit_type": "TARGET"
         }
       ]
