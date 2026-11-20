@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1795193100,
+  "watermark_m15": 1795198500,
   "equity": 997.9511550538964,
   "position": null,
   "closed": [
@@ -356,5 +356,5 @@
     }
   ],
   "last_entry_h1": 1795161600,
-  "last_reason": "H1 sem tendência EMA50/EMA200 alinhada"
+  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
 }
