@@ -2,7 +2,7 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1795128300,
+  "watermark_m15": 1795135500,
   "equity": 999.8932883145917,
   "position": null,
   "closed": [
@@ -332,5 +332,5 @@
     }
   ],
   "last_entry_h1": 1795024800,
-  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
+  "last_reason": "Confirmação H1 expirada"
 }

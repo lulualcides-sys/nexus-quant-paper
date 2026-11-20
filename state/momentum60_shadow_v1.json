@@ -5,17 +5,9 @@
   "market": "XAUUSD",
   "strategy": "momentum60_lab",
   "source": "Yahoo GC=F proxy, no FBS fills",
-  "h4_watermark": 1795104000,
-  "equity": 5064.138703504751,
-  "position": {
-    "side": -1,
-    "entry": 3789.699951171875,
-    "start": 1794974400,
-    "qty": 0.49661854126595767,
-    "stop": 3866.179254943873,
-    "target": 3655.8611695708787,
-    "held_bars": 9
-  },
+  "h4_watermark": 1795118400,
+  "equity": 5129.31136269231,
+  "position": null,
   "entries": [
     {
       "entry_ts": 1794484800,
@@ -41,6 +33,16 @@
       "exit": 3829.386135890923,
       "net_usd": 64.1387,
       "cost_usd": 1.4863,
+      "exit_type": "TARGET"
+    },
+    {
+      "entry_ts": 1794974400,
+      "exit_ts": 1795118400,
+      "side": -1,
+      "entry": 3789.699951171875,
+      "exit": 3655.8611695708787,
+      "net_usd": 65.17266,
+      "cost_usd": 1.29416,
       "exit_type": "TARGET"
     }
   ]
