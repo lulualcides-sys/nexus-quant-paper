@@ -8,12 +8,21 @@
   "validated": false,
   "signal_model": "independent_sweep_wick_relative_volume_v1",
   "source": "Yahoo GC=F proxy, not FBS or B3 broker executions",
-  "h4_watermark": 1795176000,
+  "h4_watermark": 1795392000,
   "equity": 5000.0,
-  "pending": null,
+  "pending": {
+    "side": 1,
+    "zero": 3502.89990234375,
+    "entry": 3530.8499755859375,
+    "hundred": 3558.800048828125,
+    "target": 3614.7001953125,
+    "stop": 3446.999755859375,
+    "signal_ts": 1795190400,
+    "age": 1
+  },
   "position": null,
   "entries": [],
   "closed": [],
   "cancelled": [],
-  "last_reason": "no_confirmed_signal"
+  "last_reason": "waiting_50_percent_limit"
 }
