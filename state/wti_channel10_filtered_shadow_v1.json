@@ -6,7 +6,7 @@
   "policy": "channel10_h1_cost_atr_4x_ema50_ema200_1p5atr",
   "market": "XTIUSD",
   "strategy": "channel10",
-  "h1_watermark": 1795489200,
+  "h1_watermark": 1795510800,
   "book": {
     "equity": 1002.8051743130582,
     "position": {
@@ -14,11 +14,11 @@
       "entry": 82.41000366210938,
       "start": 1795435200,
       "qty": 2.4955994177785077,
-      "stop": 80.76813759058595,
+      "stop": 80.46104751258986,
       "initial_r": 1.0045734575520529,
-      "best_close": 79.83000183105469,
-      "stop_updates": 10,
-      "held_bars": 15
+      "best_close": 79.58999633789062,
+      "stop_updates": 11,
+      "held_bars": 21
     },
     "closed": [
       {
@@ -206,7 +206,7 @@
       "no_setup": 208,
       "gap": 16,
       "cooldown": 10,
-      "in_position": 117,
+      "in_position": 123,
       "entered": 11,
       "exited": 10,
       "invalid": 0

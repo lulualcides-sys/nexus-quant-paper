@@ -2,23 +2,9 @@
   "schema": 1,
   "paper_only": true,
   "ticker": "CAD=X",
-  "watermark_m15": 1795494600,
-  "equity": 995.3181039297241,
-  "position": {
-    "side": 1,
-    "entry": 1.4368699789047241,
-    "entry_ts": 1795475700,
-    "entry_rule": "bb20_m15_sma20_touch_h1_ema50_trend_v3",
-    "qty_usd": 995.3181039297241,
-    "stop": 1.4348797954431525,
-    "initial_r": 0.001990183461571687,
-    "best_close": 1.4368699789047241,
-    "stop_policy": "close_trailing_no_tp_v1",
-    "stop_updates": 0,
-    "green_protected": false,
-    "target": null,
-    "confirm_h1": 1795471200
-  },
+  "watermark_m15": 1795513500,
+  "equity": 992.6583705331468,
+  "position": null,
   "closed": [
     {
       "entry_ts": 1793070900,
@@ -415,8 +401,32 @@
       "exit_type": "TRAIL_STOP",
       "stop_policy": "close_trailing_no_tp_v1",
       "final_stop": 1.4356905944483755
+    },
+    {
+      "entry_ts": 1795475700,
+      "exit_ts": 1795504500,
+      "entry": 1.4368699789047241,
+      "exit": 1.4348797954431525,
+      "side": 1,
+      "net_usd": -1.48456,
+      "cost_usd": 0.10405,
+      "exit_type": "STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.4348797954431525
+    },
+    {
+      "entry_ts": 1795509000,
+      "exit_ts": 1795509900,
+      "entry": 1.4362200498580933,
+      "exit": 1.4346735967089521,
+      "side": 1,
+      "net_usd": -1.17517,
+      "cost_usd": 0.10391,
+      "exit_type": "STOP",
+      "stop_policy": "close_trailing_no_tp_v1",
+      "final_stop": 1.4346735967089521
     }
   ],
-  "last_entry_h1": 1795471200,
-  "last_reason": "Entrada virtual COMPRA"
+  "last_entry_h1": 1795503600,
+  "last_reason": "Aguardando toque e retorno na SMA20 do M15"
 }

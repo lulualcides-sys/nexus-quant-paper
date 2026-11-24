@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "market": "XAUUSD",
-  "h4_watermark": 1795478400,
+  "h4_watermark": 1795492800,
   "paper_only": true,
   "books": {
     "rsi_trend": {
