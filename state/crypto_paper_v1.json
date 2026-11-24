@@ -4,8 +4,8 @@
   "spot_only": true,
   "source": "Binance SPOT USDT H1; indicative paper fills",
   "watermarks": {
-    "BTCUSDT": 1795496400,
-    "ETHUSDT": 1795496400
+    "BTCUSDT": 1795518000,
+    "ETHUSDT": 1795518000
   },
   "books": {
     "BTCUSDT:ema_pullback": {
