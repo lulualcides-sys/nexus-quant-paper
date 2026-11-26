@@ -1903,9 +1903,9 @@
           "asset": "EURUSD",
           "atr": 0.0008523093995726434,
           "close": 1.0963709354400635,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -1.27068,
+          "eval": "contrario",
+          "evaluated_at": 1795683600,
           "id": "EURUSD:pullback_master:1795662000",
           "side": -1,
           "strategy": "pullback_master",
@@ -1913,7 +1913,7 @@
         }
       ],
       "source": "EURUSD=X",
-      "watermark": 1795676400
+      "watermark": 1795690800
     },
     "US500": {
       "signals": [
@@ -5623,9 +5623,9 @@
           "asset": "USDJPY",
           "atr": 0.18787157999343396,
           "close": 159.16299438476562,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": -0.15432,
+          "eval": "neutro",
+          "evaluated_at": 1795680000,
           "id": "USDJPY:pullback_master:1795658400",
           "side": 1,
           "strategy": "pullback_master",
@@ -5635,9 +5635,9 @@
           "asset": "USDJPY",
           "atr": 0.16205454274020709,
           "close": 159.17100524902344,
-          "directional_move_atr": null,
-          "eval": null,
-          "evaluated_at": null,
+          "directional_move_atr": 0.67879,
+          "eval": "favoravel",
+          "evaluated_at": 1795687200,
           "id": "USDJPY:pullback_master:1795665600",
           "side": 1,
           "strategy": "pullback_master",
@@ -5654,10 +5654,34 @@
           "side": 1,
           "strategy": "pullback_master",
           "ts": 1795672800
+        },
+        {
+          "asset": "USDJPY",
+          "atr": 0.14745592460528412,
+          "close": 159.13400268554688,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "USDJPY:pullback_master:1795680000",
+          "side": -1,
+          "strategy": "pullback_master",
+          "ts": 1795680000
+        },
+        {
+          "asset": "USDJPY",
+          "atr": 0.1449948416891629,
+          "close": 159.2270050048828,
+          "directional_move_atr": null,
+          "eval": null,
+          "evaluated_at": null,
+          "id": "USDJPY:pullback_master:1795683600",
+          "side": 1,
+          "strategy": "pullback_master",
+          "ts": 1795683600
         }
       ],
       "source": "JPY=X",
-      "watermark": 1795676400
+      "watermark": 1795690800
     },
     "XAUUSD": {
       "signals": [
