@@ -6,7 +6,7 @@
   "policy": "channel10_h1_cost_atr_4x_ema50_ema200_1p5atr",
   "market": "XTIUSD",
   "strategy": "channel10",
-  "h1_watermark": 1795636800,
+  "h1_watermark": 1795654800,
   "book": {
     "equity": 1004.7141925486062,
     "position": null,
@@ -220,8 +220,8 @@
     ],
     "last_reason": "Aguardando setup H1 com candle fechado",
     "diagnostics": {
-      "no_setup": 235,
-      "gap": 17,
+      "no_setup": 238,
+      "gap": 18,
       "cooldown": 12,
       "in_position": 127,
       "entered": 12,
